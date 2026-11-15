@@ -230,6 +230,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .lg-cam .lg-lay{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0}
 .lg-dig{pointer-events:auto;position:absolute;inset:0;z-index:9;overflow:hidden;background:transparent;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
 .lg-dig .cr-fill{display:none}
+.lg-dig{background:rgba(5,6,10,.55)!important}.lg-dig .cr-mx,.lg-dig .dig-seg,.lg-dig .dig-foot{display:none!important}
+.lg-dig .dig-head h3{visibility:visible!important}
 .cr-mx{position:absolute;inset:0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
 .cr-my{position:absolute;inset:0;-webkit-mask-image:linear-gradient(180deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(180deg,transparent,#000 7%,#000 93%,transparent)}
 .cr-scene{position:absolute;left:0;top:0;width:1672px;height:941px;opacity:0;transition:opacity var(--xf,140ms) linear}
@@ -326,7 +328,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     </svg>
     <img class="lg-front" src="img/lounge-front.webp?v=7" alt="" width="886" height="442">
     <svg aria-hidden="true"><g id="lg-hold"></g></svg>
-    <button class="lg-hot crate" id="lg-crate-hot" aria-label="Flip through the records"></button>
+    <button class="lg-hot crate" id="lg-crate-hot" aria-label="Pick a record"></button>
     <button class="lg-hot deck" id="lg-deck-hot" aria-label="Play or pause the record"></button>
     <div class="lg-tag" id="lg-tag">Pick a record ↓</div>
     <div class="lg-panel" id="lg-panel" aria-live="polite">
@@ -349,7 +351,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
         <div class="cr-hot" id="cr-hot" aria-hidden="true"></div>
       </div></div></div>
       <div class="cr-ui">
-        <div class="dig-head"><button class="dig-x" id="dig-x">← Record player</button><h3>The crate</h3><div class="dig-seg"><button id="dig-m-crate" aria-pressed="true">Crate</button><button id="dig-m-list" aria-pressed="false">List</button></div></div>
+        <div class="dig-head"><button class="dig-x" id="dig-x">✕ Close</button><h3>Pick a record</h3><div class="dig-seg"><button id="dig-m-crate" aria-pressed="true">Crate</button><button id="dig-m-list" aria-pressed="false">List</button></div></div>
         <div class="dig-foot"><button class="dig-nav" id="dig-prev" aria-label="Flip back">▲</button><b id="dig-title" aria-live="polite"></b><button class="dig-nav" id="dig-next" aria-label="Flip forward">▼</button><button class="pill" style="--c:var(--pink)" id="dig-go">Put it on ▸</button></div>
         <div class="dig-list" id="dig-list"></div>
       </div>
@@ -467,10 +469,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   function setMode(m){ $("dig").dataset.mode=m; $("dig-m-crate").setAttribute("aria-pressed",m==="crate"); $("dig-m-list").setAttribute("aria-pressed",m==="list"); }
   $("dig-m-crate").addEventListener("click",()=>setMode("crate")); $("dig-m-list").addEventListener("click",()=>setMode("list"));
   // picking: the record tips up (state A) and you head back to the record player
-  function choose(i){
-    const go=async()=>{ scene("cs-A","A",sel); await step("cs-A",160); await wait(200); closeCrate(); setTimeout(()=>pick(i),still?0:380); };
-    setMode("crate"); if(i===sel) go(); else flipTo(i).then(go);
-  }
+  function choose(i){ closeCrate(); setTimeout(()=>pick(i),still?0:250); }
   // leaning in over the crate: the same picture, zoomed so the crate fills the view
   function crPose(){ const vw=innerWidth,vh=innerHeight, port=vw<vh;
     const s=port?Math.min(vw*.95/330,(vh-230)/300):Math.min(vw*.5/330,(vh-170)/300);
@@ -557,15 +556,11 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   let crOpen=false;
   function openCrate(){
     if(crOpen||anim) return; crOpen=true;
-    crFrame(); show(); rebuildLean(); setMode("crate");
-    $("lg-panel").style.opacity="0"; $("lg-tag").hidden=true;
-    const go=()=>{ $("dig").classList.add("open"); $("dig").setAttribute("aria-hidden","false"); setTimeout(()=>$("dig-go").focus({preventScroll:true}),250); };
-    if(still) go(); else zoomCam({s:S,ox:OX,oy:OY},crPose(),750,go);
+    show(); setMode("list"); $("lg-tag").hidden=true;
+    $("dig").classList.add("open"); $("dig").setAttribute("aria-hidden","false");
+    setTimeout(()=>{ const f=$("dig-list").querySelector(".dig-row:not([disabled])"); f&&f.focus({preventScroll:true}); },200);
   }
-  function closeCrate(){ if(!crOpen) return; crOpen=false; setTimeout(show,400);
-    $("dig").classList.remove("open"); $("dig").setAttribute("aria-hidden","true");
-    const back=()=>{ $("lg-panel").style.opacity=""; frame(); };
-    if(still) back(); else zoomCam(crPose(),{s:S,ox:OX,oy:OY},650,back); }
+  function closeCrate(){ if(!crOpen) return; crOpen=false; $("dig").classList.remove("open"); $("dig").setAttribute("aria-hidden","true"); }
   $("lg-crate-hot").addEventListener("click",openCrate);
   $("dig-x").addEventListener("click",closeCrate);
   addEventListener("keydown",e=>{ if(!L.classList.contains("on")) return;
