@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Motel Smile</title>
 <link rel="icon" href="img/smile-logo-96.webp">
-
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Motel Smile. New York rock.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -167,7 +166,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   <div class="sky">
     <h1 class="sign" aria-label="Motel Smile"><span class="w"><span class="b f1">M</span><span class="p">o</span><span class="b f2">t</span><span class="p f3">e</span><span class="p">l</span></span> <span class="w"><span class="p">S</span><span class="p">m</span><span class="p">i</span><span class="p f4">l</span><span class="p">e</span></span></h1>
     <div class="pills">
-      <a class="pill" style="--c:var(--pink)" data-open="listen" href="#listen"><span class="tri" aria-hidden="true"></span><span id="hero-song">Don't Mind It</span></a>
+      <a class="pill" style="--c:var(--pink)" data-lounge href="#lounge"><span class="tri" aria-hidden="true"></span>Listen in the lounge</a>
       <a class="pill" style="--c:var(--cyan)" data-open="shows" href="#shows">Live music</a>
     </div>
   </div>
@@ -189,6 +188,407 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     <button class="tile" style="--c:var(--green)" data-open="list" aria-expanded="false"><small>The list</small><b>Hear it first</b><em>Shows &amp; new music</em></button>
     <button class="tile" style="--c:var(--amber)" data-open="follow" aria-expanded="false"><small>Follow</small><b id="t-follow">@motelsmile</b><em>Socials</em></button>
   </nav>
+<style>
+/* Lounge: a second rooftop scene. "Listen in the lounge" pulls the camera back from the stage to the record player. */
+.lounge{position:fixed;inset:0;z-index:40;overflow:hidden;background:#05060a;opacity:0;pointer-events:none}
+.lounge.on{opacity:1;pointer-events:auto}
+.lg-fill{position:absolute;inset:-40px;background:url(img/lounge.webp) 62% 50%/cover;filter:blur(22px) brightness(.45)}
+.lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
+.lg-hero{z-index:3;background:url(img/rooftop-band.webp) 0 0/1672px 941px;pointer-events:none}
+.lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
+.lg-bg{left:0;top:0;width:1672px;height:941px}
+.lg-front{left:786px;top:499px;width:886px;height:442px;pointer-events:none}
+.lg-cam svg{position:absolute;left:0;top:0;width:1672px;height:941px;overflow:visible;pointer-events:none}
+.lg-hot{all:unset;position:absolute;cursor:pointer;border-radius:10px;z-index:4}
+.lg-hot:focus-visible{outline:4px solid var(--cyan);outline-offset:4px}
+.lg-hot.crate{left:1340px;top:575px;width:332px;height:366px}
+.lg-hot.deck{left:905px;top:450px;width:440px;height:105px}
+.lg-tag{position:absolute;left:1380px;top:505px;z-index:4;font-family:var(--tube);font-size:30px;color:#fff;padding:8px 22px;border:3px solid var(--pink);border-radius:40px;background:rgba(5,6,10,.6);box-shadow:0 0 14px var(--pink);text-shadow:0 0 10px var(--pink);pointer-events:none;animation:lgpulse 2.2s ease-in-out infinite;white-space:nowrap}
+.lg-tag[hidden]{display:none}
+@keyframes lgpulse{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-8px);opacity:.75}}
+/* front-of-console player: sits on the speaker grille */
+.lg-panel{position:absolute;left:836px;top:598px;width:414px;height:214px;z-index:4;transform:rotate(1.6deg);transform-origin:0 0;padding:22px 26px;background:rgba(5,6,10,.5);border:1.5px solid rgba(255,61,127,.35);border-radius:6px;box-shadow:inset 0 0 40px rgba(0,0,0,.6);backdrop-filter:blur(2px);display:flex;flex-direction:column;gap:10px;font-family:var(--mono);color:var(--fog)}
+.lg-panel small{font-size:15px;letter-spacing:.25em;text-transform:uppercase;color:var(--pink)}
+.lg-panel b{font-family:var(--tube);font-weight:400;font-size:40px;line-height:1.05;color:#fff;text-shadow:0 0 10px var(--pink)}
+.lg-panel .row{display:flex;align-items:center;gap:14px;font-size:17px}
+.lg-pp{all:unset;cursor:pointer;width:46px;height:46px;border-radius:50%;border:2.5px solid var(--pink);display:grid;place-items:center;box-shadow:0 0 10px var(--pink);flex:none}
+.lg-pp:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.lg-pp i{display:block;width:0;height:0;border-left:15px solid #fff;border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:4px}
+.lg-pp.playing i{width:14px;height:17px;border:0;margin:0;background:linear-gradient(90deg,#fff 0 35%,transparent 35% 65%,#fff 65%)}
+.lg-bar{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.15);overflow:hidden}
+.lg-bar span{display:block;height:100%;width:0;background:var(--pink);box-shadow:0 0 8px var(--pink)}
+.lg-panel a{color:var(--cyan);font-size:16px}
+.lg-panel iframe{border:0;border-radius:10px;width:100%;height:80px}
+/* screen UI */
+.lg-ui{position:absolute;inset:0;z-index:6;pointer-events:none}
+.lg-back{pointer-events:auto;position:absolute;left:max(16px,env(safe-area-inset-left,0px));top:14px}
+.lg-crate{pointer-events:auto;position:absolute;z-index:8;left:0;right:0;bottom:0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);transform:translateY(105%);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.lg-crate.open{transform:none}
+.lg-crate h3{margin:0 0 12px;font-family:var(--tube);font-weight:400;font-size:20px;color:#fff}
+.lg-crate .x{all:unset;cursor:pointer;position:absolute;right:16px;top:14px;font-size:18px;padding:4px 8px}
+.lg-sleeves{display:flex;gap:14px;overflow-x:auto;padding-bottom:4px}
+.lg-sl{all:unset;cursor:pointer;flex:none;width:132px;display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--fog)}
+.lg-sl:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.lg-sl .art{width:132px;height:132px;border-radius:4px;background:#0b0b12;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;position:relative;transition:transform .2s}
+.lg-sl:hover .art{transform:translateY(-6px)}
+.lg-sl .art img{width:62%;height:62%;object-fit:contain;filter:drop-shadow(0 0 10px var(--pink))}
+.lg-sl .art em{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-family:var(--script);font-style:normal;font-size:22px;color:#fff;text-shadow:0 0 8px var(--pink)}
+.lg-sl[disabled]{cursor:default;opacity:.45}
+.lg-sl[disabled]:hover .art{transform:none}
+.lg-sl b{color:#fff;font-weight:600}
+@media (max-width:760px) and (orientation:portrait){
+  .lg-panel{position:absolute;pointer-events:auto;left:12px;right:12px;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;height:auto;transform:none;background:var(--glass);border-color:var(--line);padding:14px 16px;gap:8px}
+  .lg-panel small{font-size:11px}.lg-panel b{font-size:24px}.lg-panel .row{font-size:13px}
+  .lg-pp{width:40px;height:40px}
+  .lg-tag{font-size:40px;left:1360px;top:480px}
+}
+@media (prefers-reduced-motion:reduce){.lg-tag{animation:none}.lg-crate{transition:none}}
+</style>
+
+<section class="lounge" id="lounge" aria-label="The lounge" aria-hidden="true">
+  <div class="lg-fill"></div>
+  <div class="lg-cam" id="lg-cam">
+    <img class="lg-bg" src="img/lounge.webp" alt="Rooftop lounge: a record player and a crate of records, the stage across the roof" width="1672" height="941">
+    <svg id="lg-svg" viewBox="0 0 1672 941" aria-hidden="true">
+      <defs>
+        <radialGradient id="lg-vinyl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1a1a20"/><stop offset=".36" stop-color="#0c0c10"/><stop offset=".37" stop-color="#16161c"/><stop offset="1" stop-color="#08080b"/></radialGradient>
+        <filter id="lg-rim" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5"/></filter>
+      </defs>
+      <g id="lg-rec" opacity="0">
+        <g id="lg-spin">
+          <circle r="150" fill="url(#lg-vinyl)"/>
+          <g fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1.2"><circle r="140"/><circle r="128"/><circle r="117"/><circle r="104"/><circle r="92"/><circle r="80"/><circle r="68"/></g>
+          <path d="M-150 0 A150 150 0 0 1 0 -150" fill="none" stroke="rgba(255,120,190,.18)" stroke-width="22"/>
+          <circle r="50" fill="#ff3d7f"/>
+          <circle r="50" fill="none" stroke="#ffd0e2" stroke-width="2"/>
+          <g fill="#14040b"><circle cx="-16" cy="-10" r="7"/><circle cx="16" cy="-10" r="7"/><path d="M-26 6 Q0 34 26 6 Q0 20 -26 6Z"/></g>
+          <rect x="-34" y="26" width="68" height="7" rx="3" fill="#14040b" opacity=".55"/>
+          <circle r="4" fill="#ddd"/>
+        </g>
+      </g>
+      <g id="lg-arm">
+        <line id="lg-tube" stroke="#8e919b" stroke-width="7" stroke-linecap="round"/>
+        <line id="lg-tube-hi" stroke="#fff" stroke-opacity=".3" stroke-width="1.5" stroke-linecap="round"/>
+        <g id="lg-head"><rect x="-17" y="-9" width="34" height="18" rx="3" fill="#15151b" stroke="#2c2c35"/><rect x="-14" y="5" width="9" height="5" fill="#e5383b"/></g>
+      </g>
+      <g id="lg-guy" opacity="0">
+        <g id="lg-guy-rim" filter="url(#lg-rim)" stroke="#ff3d7f" stroke-opacity=".75" fill="#ff3d7f" fill-opacity=".75" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="lg-guy-body" stroke="#07070b" fill="#07070b" stroke-linecap="round" stroke-linejoin="round"></g>
+      </g>
+      <g id="lg-sleeve" opacity="0"><rect x="-88" y="0" width="176" height="176" rx="3" fill="#0b0b12" stroke="#ff3d7f" stroke-opacity=".6" stroke-width="2"/><image href="img/smile-logo.webp" x="-48" y="26" width="96" height="96"/><text x="0" y="158" text-anchor="middle" font-family="Yellowtail, cursive" font-size="26" fill="#fff">Don't Mind It</text></g>
+    </svg>
+    <img class="lg-front" src="img/lounge-front.webp" alt="" width="886" height="442">
+    <svg aria-hidden="true"><g id="lg-hold"></g></svg>
+    <button class="lg-hot crate" id="lg-crate-hot" aria-label="Flip through the records"></button>
+    <button class="lg-hot deck" id="lg-deck-hot" aria-label="Play or pause the record"></button>
+    <div class="lg-tag" id="lg-tag">Pick a record ↓</div>
+    <div class="lg-panel" id="lg-panel" aria-live="polite">
+      <small id="lg-state">The lounge</small>
+      <b id="lg-title">Pick a record</b>
+      <div class="row" id="lg-ctrl" hidden><button class="lg-pp" id="lg-pp" aria-label="Play"><i></i></button><div class="lg-bar"><span id="lg-prog"></span></div><span id="lg-time">0:00</span></div>
+      <div id="lg-note" class="row">Flip through the crate.</div>
+      <div id="lg-spot"></div>
+    </div>
+  </div>
+  <div class="lg-hero" id="lg-hero"></div>
+  <div class="lg-ui">
+    <a class="pill lg-back" style="--c:var(--cyan)" href="#" id="lg-back">← Back to the stage</a>
+    <div class="lg-crate" id="lg-crate" role="dialog" aria-label="Record crate">
+      <button class="x" id="lg-crate-x" aria-label="Close">✕</button>
+      <h3>The crate</h3>
+      <div class="lg-sleeves" id="lg-sleeves"></div>
+    </div>
+  </div>
+  <audio id="lg-audio" preload="none"></audio>
+</section>
+
+<script>
+(()=>{
+  const $=id=>document.getElementById(id), NS="http://www.w3.org/2000/svg";
+  const W0=1672,H0=941, still=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  const L=$("lounge"), cam=$("lg-cam"), hero=$("lg-hero"), stg=$("stage");
+  const audio=$("lg-audio");
+  let REC=[], cur=null, playing=false;
+
+  /* ---------- content ---------- */
+  function records(c){
+    const f=(c&&c.music&&c.music.featured)||{}, links=(c&&c.music&&c.music.links)||{};
+    const list=(c&&Array.isArray(c.records)&&c.records.length)?c.records:[{title:f.title||"Don't Mind It",audio:f.audio||"",spotify:links.spotify||""}];
+    return list.map(r=>({title:r.title||"",audio:r.audio||"",spotify:r.spotify||links.spotify||"",soon:!!r.soon}));
+  }
+  function loadC(){
+    const inl=document.getElementById("content-inline");
+    if(inl){try{return Promise.resolve(JSON.parse(inl.textContent))}catch(e){}}
+    return fetch("content.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>({}));
+  }
+  loadC().then(c=>{REC=records(c);drawCrate();});
+  function drawCrate(){
+    const box=$("lg-sleeves"); box.innerHTML="";
+    const soon=Math.max(0,4-REC.length);
+    REC.forEach((r,i)=>{
+      const b=document.createElement("button"); b.className="lg-sl"; b.disabled=r.soon;
+      b.innerHTML=`<span class="art"><img src="img/smile-logo-96.webp" alt=""><em></em></span><b></b><span>${r.soon?"Coming soon":"Motel Smile"}</span>`;
+      b.querySelector("em").textContent=r.title; b.querySelector("b").textContent=r.title;
+      b.addEventListener("click",()=>pick(i)); box.appendChild(b);
+    });
+    for(let i=0;i<soon;i++){
+      const b=document.createElement("button"); b.className="lg-sl"; b.disabled=true;
+      b.innerHTML=`<span class="art"></span><b>Unreleased</b><span>Coming soon</span>`; box.appendChild(b);
+    }
+  }
+
+  /* ---------- framing: the 1672x941 scene box is scaled to cover the screen ---------- */
+  let S=1,OX=0,OY=0;
+  const portrait=()=>innerWidth<=760&&innerHeight>innerWidth;
+  function frame(){
+    const w=innerWidth,h=innerHeight;
+    const pan=$("lg-panel"), ui=document.querySelector(".lg-ui");
+    if(portrait()){ if(pan.parentNode!==ui) ui.insertBefore(pan,ui.firstChild); } else if(pan.parentNode!==cam) cam.appendChild(pan);
+    if(portrait()){ // phones: show the console + crate side, letterboxed over a blurred fill
+      S=w/880; OX=-792*S; OY=Math.max(60,(h-H0*S)/2-90);
+    }else{
+      S=Math.max(w/W0,h/H0); OX=(w-W0*S)*0.62; OY=(h-H0*S)*0.5;
+    }
+    if(!anim) cam.style.transform=`translate(${OX}px,${OY}px) scale(${S})`;
+  }
+  addEventListener("resize",frame);
+
+  /* ---------- transition: matched move on the drum kit ---------- */
+  const DR_H={x:1045,y:585,r:63}, DR_L={x:723,y:435,r:55};
+  let anim=null;
+  function heroBox(){ // where the hero image currently sits on screen
+    const w=stg.clientWidth,h=stg.clientHeight,s=Math.max(w/W0,h/H0);
+    const bp=(stg.style.backgroundPosition||"50% 42%").split(" ").map(v=>parseFloat(v)/100);
+    return {s,ox:(w-W0*s)*bp[0],oy:(h-H0*s)*(isNaN(bp[1])?0.42:bp[1])};
+  }
+  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  function move(dir,done){
+    frame();
+    const hb=heroBox(), k=DR_H.r/DR_L.r*1.12;
+    // drum kit on screen: hero at rest, lounge at rest
+    const hx=hb.ox+DR_H.x*hb.s, hy=hb.oy+DR_H.y*hb.s;
+    const lx=OX+DR_L.x*S, ly=OY+DR_L.y*S;
+    const dur=still?1:2200, t0=performance.now();
+    hero.style.display="block";
+    function step(now){
+      let t=Math.min(1,(now-t0)/dur); const e=ease(dir>0?t:1-t);
+      // camera: lounge starts zoomed on the kit so it lines up with the hero, then pulls back
+      const ls=S*(k+(1-k)*e), ldx=hx+(lx-hx)*e, ldy=hy+(ly-hy)*e;
+      cam.style.transform=`translate(${ldx-DR_L.x*ls}px,${ldy-DR_L.y*ls}px) scale(${ls})`;
+      const hs=hb.s*(1+(1/k-1)*e);
+      hero.style.transform=`translate(${ldx-DR_H.x*hs}px,${ldy-DR_H.y*hs}px) scale(${hs})`;
+      hero.style.opacity=String(Math.max(0,1-e*1.7));
+      if(t<1) anim=requestAnimationFrame(step); else {anim=null;hero.style.display="none";frame();done&&done();}
+    }
+    anim=requestAnimationFrame(step);
+  }
+  function enter(){
+    if(L.classList.contains("on")) return;
+    L.classList.add("on"); L.setAttribute("aria-hidden","false"); stg.setAttribute("aria-hidden","true");
+    hero.style.opacity="1";
+    move(1,()=>{ $("lg-crate-hot").focus({preventScroll:true}); });
+    if(location.hash!=="#lounge") history.pushState(null,"","#lounge");
+    loop();
+  }
+  function leave(){
+    closeCrate();
+    move(-1,()=>{ L.classList.remove("on"); L.setAttribute("aria-hidden","true"); stg.removeAttribute("aria-hidden"); });
+  }
+  $("lg-back").addEventListener("click",e=>{e.preventDefault(); if(location.hash==="#lounge") history.back(); else leave();});
+  addEventListener("popstate",()=>{ if(location.hash==="#lounge") enter(); else if(L.classList.contains("on")) leave(); });
+  document.querySelectorAll("[data-lounge]").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();e.stopImmediatePropagation();enter();},true));
+  if(location.hash==="#lounge") setTimeout(enter,300);
+
+  /* ---------- crate ---------- */
+  function openCrate(){ $("lg-crate").classList.add("open"); const f=$("lg-sleeves").querySelector(".lg-sl:not([disabled])"); f&&f.focus({preventScroll:true}); }
+  function closeCrate(){ $("lg-crate").classList.remove("open"); }
+  $("lg-crate-hot").addEventListener("click",openCrate);
+  $("lg-crate-x").addEventListener("click",closeCrate);
+  addEventListener("keydown",e=>{ if(e.key==="Escape"&&L.classList.contains("on")){ if($("lg-crate").classList.contains("open")) closeCrate(); else $("lg-back").click(); }});
+
+  /* ---------- the guy: a neon-rimmed silhouette, 2-bone IK limbs ---------- */
+  const H=640, FY=872;
+  const LEN={torso:.30*H,neck:.045*H,head:.068*H,ua:.165*H,fa:.16*H,th:.25*H,sh:.25*H,shw:.115*H,hpw:.075*H};
+  function ik(a,t,l1,l2,bend){
+    let dx=t.x-a.x,dy=t.y-a.y,d=Math.hypot(dx,dy)||1; const m=Math.min(d,l1+l2-.5);
+    const tx=a.x+dx/d*m, ty=a.y+dy/d*m;
+    const ca=(l1*l1+m*m-l2*l2)/(2*l1*m), ang=Math.atan2(ty-a.y,tx-a.x)+bend*Math.acos(Math.max(-1,Math.min(1,ca)));
+    return [{x:a.x+Math.cos(ang)*l1,y:a.y+Math.sin(ang)*l1},{x:tx,y:ty}];
+  }
+  function guyPaths(p){
+    const lean=p.lean*Math.PI/180, up={x:Math.sin(lean),y:-Math.cos(lean)}, side={x:Math.cos(lean),y:Math.sin(lean)};
+    const hip=p.hip, neck={x:hip.x+up.x*LEN.torso,y:hip.y+up.y*LEN.torso};
+    const sA={x:neck.x-side.x*LEN.shw,y:neck.y-side.y*LEN.shw+6}, sB={x:neck.x+side.x*LEN.shw,y:neck.y+side.y*LEN.shw+6};
+    const hA={x:hip.x-side.x*LEN.hpw,y:hip.y-side.y*LEN.hpw}, hB={x:hip.x+side.x*LEN.hpw,y:hip.y+side.y*LEN.hpw};
+    const nod=p.nod||0, hd={x:neck.x+up.x*(LEN.neck+LEN.head)+nod*.25,y:neck.y+up.y*(LEN.neck+LEN.head)+nod};
+    const [eA,wA]=ik(sA,p.handA,LEN.ua,LEN.fa,-1), [eB,wB]=ik(sB,p.handB,LEN.ua,LEN.fa,1);
+    const [kA,fA]=ik(hA,p.footA,LEN.th,LEN.sh,1), [kB,fB]=ik(hB,p.footB,LEN.th,LEN.sh,1);
+    const P=(...pts)=>"M"+pts.map(q=>q.x.toFixed(1)+" "+q.y.toFixed(1)).join(" L");
+    return [
+      {d:P(hA,kA,fA),w:.085*H},{d:P(hB,kB,fB),w:.085*H},
+      {d:P(hA,{x:hip.x+up.x*.3*LEN.torso-side.x*.07*H,y:hip.y+up.y*.3*LEN.torso-side.y*.07*H},{x:sA.x-side.x*.02*H,y:sA.y-side.y*.02*H},{x:neck.x-side.x*.04*H+up.x*.03*H,y:neck.y-side.y*.04*H+up.y*.03*H},{x:neck.x+side.x*.04*H+up.x*.03*H,y:neck.y+side.y*.04*H+up.y*.03*H},{x:sB.x+side.x*.02*H,y:sB.y+side.y*.02*H},{x:hip.x+up.x*.3*LEN.torso+side.x*.07*H,y:hip.y+up.y*.3*LEN.torso+side.y*.07*H},hB)+"Z",w:.035*H,fill:1},
+      {d:P(neck,{x:neck.x+up.x*LEN.neck,y:neck.y+up.y*LEN.neck}),w:.05*H},
+      {d:P(sA,eA,wA),w:.05*H},{d:P(sB,eB,wB),w:.05*H},
+      {circle:hd,r:LEN.head},
+      {circle:wA,r:.026*H},{circle:wB,r:.026*H}
+    ];
+  }
+  function drawGuy(p){
+    for(const [id,extra] of [["lg-guy-rim",5],["lg-guy-body",0]]){
+      const g=$(id); g.textContent="";
+      for(const s of guyPaths(p)){
+        let el;
+        if(s.circle){ el=document.createElementNS(NS,"circle"); el.setAttribute("cx",s.circle.x); el.setAttribute("cy",s.circle.y); el.setAttribute("r",s.r+extra/2); }
+        else { el=document.createElementNS(NS,"path"); el.setAttribute("d",s.d); el.setAttribute("stroke-width",s.w+extra); if(!s.fill) el.setAttribute("fill","none"); }
+        g.appendChild(el);
+      }
+    }
+  }
+
+  /* ---------- keyframed choreography ---------- */
+  const sm=t=>t*t*(3-2*t);
+  function track(keys,t){ // keys: [[time,value]], numbers or {x,y}
+    if(t<=keys[0][0]) return keys[0][1];
+    for(let i=1;i<keys.length;i++){ if(t<=keys[i][0]){ const [t0,a]=keys[i-1],[t1,b]=keys[i], u=sm((t-t0)/(t1-t0||1));
+      return typeof a==="number"?a+(b-a)*u:{x:a.x+(b.x-a.x)*u,y:a.y+(b.y-a.y)*u}; } }
+    return keys[keys.length-1][1];
+  }
+  const PIV={x:1300,y:470}, ARM_L=97, PLAT={x:1072,y:498,rx:150,q:.137};
+  const angTo=pt=>Math.atan2(pt.y-PIV.y,pt.x-PIV.x);
+  const A_REST=angTo({x:1322,y:562}), A_OUT=angTo({x:1212,y:511}), A_IN=angTo({x:1150,y:508});
+  const armHead=(a,lift)=>({x:PIV.x+Math.cos(a)*ARM_L,y:PIV.y+Math.sin(a)*ARM_L-(lift||0)});
+  const X=1525, X2=1445, HIPY=FY-.5*H+4;
+  const K={
+    hip:[[0,{x:1860,y:HIPY}],[1.9,{x:X,y:HIPY}],[2.3,{x:X,y:HIPY}],[2.8,{x:X-6,y:HIPY+46}],[3.3,{x:X-6,y:HIPY+46}],[3.9,{x:X,y:HIPY}],[5.1,{x:X,y:HIPY}],[5.9,{x:X2,y:HIPY}],[9.2,{x:X2,y:HIPY}],[9.9,{x:1480,y:HIPY}],[11.6,{x:1480,y:HIPY}],[13.4,{x:1880,y:HIPY}]],
+    lean:[[0,4],[1.9,0],[2.3,0],[2.8,-24],[3.3,-24],[3.9,-4],[5.1,-4],[5.9,-17],[8.6,-17],[9.3,-3],[11.6,-3],[12,4]],
+    handA:[[0,{x:1770,y:600}],[1.9,{x:1455,y:600}],[2.3,{x:1450,y:595}],[2.8,{x:1466,y:648}],[3.2,{x:1466,y:640}],[3.9,{x:1446,y:438}],[4.7,{x:1370,y:448}],[5.1,{x:1356,y:452}],[5.9,{x:1250,y:430}],[6.9,{x:1222,y:494}],[7.2,{x:1240,y:520}],[7.6,{x:1322,y:552}],[8.2,{x:1212,y:494}],[8.6,{x:1212,y:505}],[9.3,{x:1395,y:600}],[11.6,{x:1420,y:605}],[13.4,{x:1820,y:605}]],
+    handB:[[0,{x:1915,y:605}],[1.9,{x:1595,y:605}],[2.8,{x:1580,y:640}],[3.3,{x:1580,y:640}],[3.9,{x:1560,y:438}],[4.7,{x:1556,y:445}],[5.1,{x:1540,y:610}],[9.3,{x:1525,y:600}],[11.6,{x:1545,y:605}],[13.4,{x:1945,y:605}]]
+  };
+  function feet(hip,t){
+    const walking=(t<1.9)||(t>5.1&&t<5.9)||(t>9.3&&t<9.9)||(t>11.6&&t<13.4);
+    const ph=t*2*Math.PI*1.25, st=walking?.09*H:0;
+    return [{x:hip.x-.06*H+Math.sin(ph)*st,y:FY-(walking?Math.max(0,Math.cos(ph))*.03*H:0)},{x:hip.x+.06*H-Math.sin(ph)*st,y:FY-(walking?Math.max(0,-Math.cos(ph))*.03*H:0)}];
+  }
+
+  /* ---------- scene state ---------- */
+  const rec=$("lg-rec"), spin=$("lg-spin"), slv=$("lg-sleeve"), guy=$("lg-guy");
+  let seq=-1, seqT0=0, recOn=false, spinA=0, spinV=0, armA=A_REST, armLift=0, lastNow=performance.now();
+  const svgEl=$("lg-svg"), armEl=$("lg-arm");
+  function recLayer(front){ if(front){ if(svgEl.lastElementChild!==rec) svgEl.appendChild(rec); } else if(rec.nextElementSibling!==armEl) svgEl.insertBefore(rec,armEl); }
+  function setRec(x,y,r,q,o){ rec.setAttribute("transform",`translate(${x} ${y}) scale(${r/150} ${r/150*q})`); rec.setAttribute("opacity",o); }
+  function drawArm(){
+    const h=armHead(armA,armLift);
+    for(const id of ["lg-tube","lg-tube-hi"]){ const l=$(id); l.setAttribute("x1",PIV.x); l.setAttribute("y1",PIV.y-2); l.setAttribute("x2",h.x); l.setAttribute("y2",h.y); }
+    $("lg-head").setAttribute("transform",`translate(${h.x} ${h.y}) rotate(${armA*180/Math.PI+180})`);
+  }
+
+  function pick(i){
+    const r=REC[i]; if(!r||r.soon) return;
+    closeCrate(); $("lg-tag").hidden=true;
+    cur=r; audio.pause(); playing=false; ui();
+    audio.src=r.audio||""; if(r.audio) audio.load();
+    initCrackle();
+    seq=0; seqT0=performance.now()-(still?12.9e3:0);
+    $("lg-state").textContent="Cueing up"; $("lg-title").textContent=r.title; $("lg-note").textContent=""; $("lg-ctrl").hidden=true;
+    spot();
+  }
+  function spot(){
+    const box=$("lg-spot"); box.innerHTML="";
+    if(!cur||!cur.spotify) return;
+    const m=cur.spotify.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(track|album|artist)\/([A-Za-z0-9]+)/);
+    if(m){ const f=document.createElement("iframe"); f.src=`https://open.spotify.com/embed/${m[1]}/${m[2]}?theme=0`; f.allow="autoplay; clipboard-write; encrypted-media"; f.loading="lazy"; f.title="Spotify player"; box.appendChild(f); }
+    else { box.innerHTML=`<a href="${cur.spotify.replace(/"/g,"&quot;")}" target="_blank" rel="noopener">Open in Spotify ↗</a>`; }
+  }
+
+  function needleDown(){
+    crackle(true);
+    if(cur.spotify){ $("lg-state").textContent="On the platter"; $("lg-note").textContent="Press play on Spotify below."; return; }
+    if(cur.audio){ audio.play().then(()=>{playing=true;ui();}).catch(()=>{playing=false;ui();}); $("lg-ctrl").hidden=false; $("lg-note").textContent=""; }
+    else { playing=true; $("lg-state").textContent="Now spinning"; $("lg-note").textContent="The track lands here soon. Follow for the drop."; }
+  }
+  function ui(){
+    $("lg-pp").classList.toggle("playing",playing); $("lg-pp").setAttribute("aria-label",playing?"Pause":"Play");
+    if(cur&&cur.audio) $("lg-state").textContent=playing?"Now spinning":"Paused";
+  }
+  function toggle(){
+    if(!recOn||!cur) { openCrate(); return; }
+    if(cur.audio){ if(audio.paused){ audio.play().then(()=>{playing=true;ui();crackle(true);}).catch(()=>{}); } else { audio.pause(); playing=false; ui(); crackle(false);} }
+    else { playing=!playing; crackle(playing); }
+  }
+  $("lg-pp").addEventListener("click",toggle); $("lg-deck-hot").addEventListener("click",toggle);
+  audio.addEventListener("ended",()=>{playing=false;ui();crackle(true);});
+  const fmt=s=>isFinite(s)?Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0"):"0:00";
+
+  /* ---------- vinyl crackle (WebAudio, no file) ---------- */
+  let AC=null, crG=null;
+  function initCrackle(){
+    try{
+      if(AC) { AC.resume(); return; }
+      AC=new (window.AudioContext||window.webkitAudioContext)();
+      const n=AC.sampleRate*4, b=AC.createBuffer(1,n,AC.sampleRate), d=b.getChannelData(0);
+      for(let i=0;i<n;i++){ d[i]=(Math.random()*2-1)*.012; if(Math.random()<.0009) d[i]+=(Math.random()*2-1)*.7; }
+      const src=AC.createBufferSource(); src.buffer=b; src.loop=true;
+      const hp=AC.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=900;
+      crG=AC.createGain(); crG.gain.value=0; src.connect(hp).connect(crG).connect(AC.destination); src.start();
+    }catch(e){AC=null;}
+  }
+  function crackle(on){ if(crG&&AC) crG.gain.setTargetAtTime(on?.35:0,AC.currentTime,.15); }
+
+  /* ---------- frame loop ---------- */
+  let looping=false;
+  function loop(){ if(looping) return; looping=true; requestAnimationFrame(tick); }
+  function tick(now){
+    const dt=Math.min(.05,(now-lastNow)/1000); lastNow=now;
+    if(seq===0){
+      const t=(now-seqT0)/1000;
+      const hip=track(K.hip,t), lean=track(K.lean,t), hA=track(K.handA,t), hB=track(K.handB,t);
+      const [fA,fB]=feet(hip,t);
+      const bob=(t<1.9||(t>11.6))?Math.abs(Math.sin(t*2*Math.PI*1.25))*-8:0;
+      const nod=(t>9.3&&t<11.6)?Math.max(0,Math.sin((t-9.3)*Math.PI*2*1.1))*10:0;
+      guy.setAttribute("opacity",t<0.1?0:t>13.3?0:1);
+      drawGuy({hip:{x:hip.x,y:hip.y+bob},lean,handA:hA,handB:hB,footA:fA,footB:fB,nod});
+      // sleeve: rises out of the crate in hand A, then held in both hands, then dropped back
+      if(t>2.8&&t<5.3){
+        let sx,sy,o=1;
+        if(t<3.9){ sx=hA.x+20; sy=hA.y-8; }
+        else if(t<4.7){ sx=(hA.x+hB.x)/2+track([[3.9,0],[4.7,70]],t); sy=Math.min(hA.y,hB.y)-14; }
+        else { sx=hB.x-10; sy=track([[4.7,hB.y-14],[5.1,640],[5.3,700]],t); o=track([[4.7,1],[5.3,0]],t); }
+        slv.setAttribute("transform",`translate(${sx} ${sy})`); slv.setAttribute("opacity",o);
+      } else slv.setAttribute("opacity",0);
+      // record: slides out of the sleeve (face-on), carried, tilted flat onto the platter
+      if(t>=3.95&&t<6.9){
+        let r,q,x,y;
+        if(t<4.7){ r=80; q=1; x=hA.x+track([[3.95,120],[4.7,8]],t); y=hA.y+80; }
+        else { const u=sm(Math.min(1,(t-4.7)/2.2)); r=80+(PLAT.rx-80)*u; q=1+(PLAT.q-1)*sm(Math.max(0,(t-5.4)/1.5)); x=hA.x-r*(.2+.75*u); y=hA.y+r*(1-u)*.9; }
+        recLayer(true); setRec(x,y,r,q,1);
+      } else if(t>=6.9){ recLayer(false); recOn=true; setRec(PLAT.x,PLAT.y,PLAT.rx,PLAT.q,1); }
+      else setRec(0,0,1,1,0);
+      // tonearm follows hand A between 7.6 and 8.6
+      if(t>=7.6&&t<8.6){ armA=A_REST+(A_OUT-A_REST)*sm(Math.min(1,(t-7.6)/.6)); armLift=t<8.2?8:8*(1-sm((t-8.2)/.4)); }
+      else if(t<7.6){ armA=A_REST; armLift=0; }
+      if(t>=7.3) spinV+=(200-spinV)*Math.min(1,dt*1.6);
+      if(t>=8.6){ seq=1; needleDown(); }
+      if(t>=13.4) guy.setAttribute("opacity",0);
+    } else if(seq===1){
+      const t=(now-seqT0)/1000;
+      if(t<13.5){ const hip=track(K.hip,t), lean=track(K.lean,t), hA=track(K.handA,t), hB=track(K.handB,t); const [fA,fB]=feet(hip,t);
+        const nod=(t>9.3&&t<11.6)?Math.max(0,Math.sin((t-9.3)*Math.PI*2*1.1))*10:0;
+        const bob=t>11.6?Math.abs(Math.sin(t*2*Math.PI*1.25))*-8:0;
+        drawGuy({hip:{x:hip.x,y:hip.y+bob},lean,handA:hA,handB:hB,footA:fA,footB:fB,nod}); guy.setAttribute("opacity",t>13.3?0:1); }
+      else guy.setAttribute("opacity",0);
+      const going=cur&&(cur.audio?!audio.paused:(cur.spotify?true:playing!==false));
+      spinV+=((going?200:0)-spinV)*Math.min(1,dt*1.8);
+      if(cur&&cur.audio&&audio.duration){ const p=audio.currentTime/audio.duration; armA=A_OUT+(A_IN-A_OUT)*p; $("lg-prog").style.width=(p*100)+"%"; $("lg-time").textContent=fmt(audio.currentTime); }
+      armLift=going?0:6;
+    }
+    spinA=(spinA+spinV*dt)%360; spin.setAttribute("transform",`rotate(${spinA})`);
+    drawArm();
+    if(L.classList.contains("on")||anim) requestAnimationFrame(tick); else looping=false;
+  }
+  frame(); drawArm();
+})();
+</script>
+
 </main>
 
 <section class="backstage" id="backstage" hidden aria-label="Backstage">
@@ -386,7 +786,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     $("stage").style.backgroundImage=`url("${(c.images&&c.images.hero)||"img/rooftop-band.webp"}")`;
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
-    $("hero-song").textContent=f.title; $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
+    $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
     $("m-meta").textContent=[f.title,f.status,f.length].filter(Boolean).join(" · "); $("m-next").textContent=m.next||"";
     const art=$("m-art"); if(f.cover){art.src=f.cover;art.hidden=false;}else art.hidden=true;
     const links=Object.keys(PLAT).filter(k=>m.links[k]);
