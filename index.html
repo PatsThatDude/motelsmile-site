@@ -340,6 +340,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     </div>
   </div>
   <div class="lg-hero" id="lg-hero"></div>
+  <video class="lg-glide" id="lg-glide-back" muted playsinline preload="auto" aria-hidden="true"><source src="img/glide-back.webm?v=1" type="video/webm"><source src="img/glide-back.mp4?v=1" type="video/mp4"></video>
   <video class="lg-glide" id="lg-glide" muted playsinline preload="auto" aria-hidden="true"><source src="img/glide.webm?v=1" type="video/webm"><source src="img/glide.mp4?v=1" type="video/mp4"></video>
   <div class="lg-wl" id="wl-sky"></div><div class="lg-wl" id="hero-g"></div><div class="lg-wl" id="wl-mid"></div><div class="lg-wl" id="hero-f"></div><div class="lg-wl" id="wl-fore"></div>
   <div class="lg-ui">
@@ -538,11 +539,21 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   }
   function leave(){
     closeCrate();
-    if(still){ L.classList.remove("on"); L.setAttribute("aria-hidden","true"); stg.removeAttribute("aria-hidden"); return; }
-    const hb=heroBox(), cx=innerWidth/2, cy=innerHeight/2;
-    hero.style.display="block";
-    run(520,t=>{ const e=out(t), hs=hb.s*(.86+.14*e); T(hero,cx+(hb.ox-cx)*(hs/hb.s),cy+(hb.oy-cy)*(hs/hb.s),hs); hero.style.opacity=String(cl(t*1.5)); },
-      ()=>{ hero.style.display="none"; L.classList.remove("on"); L.setAttribute("aria-hidden","true"); stg.removeAttribute("aria-hidden"); cam.style.opacity="1"; });
+    const end=()=>{ vb.style.display="none"; vb.pause(); hero.style.display="none"; L.classList.remove("on","moving"); L.setAttribute("aria-hidden","true"); stg.removeAttribute("aria-hidden"); cam.style.opacity="1"; cam.style.transform=""; frame(); };
+    if(still){ end(); return; }
+    // reverse of the way in: the record player eases back and dissolves into the walk, which plays backwards to the stage
+    const vb=$("lg-glide-back"), M1={s:S,ox:OX,oy:OY}, soft=t=>t*t*(3-2*t);
+    vb.style.objectPosition=(stg.style.backgroundPosition||"50% 42%"); vb.currentTime=0; vb.style.opacity="0"; vb.style.display="block";
+    const pr=vb.play(); if(pr&&pr.catch) pr.catch(()=>{});
+    vb.pause(); let started=false;
+    $("lg-panel").style.opacity="0";
+    run(600,t=>{ const e=soft(t), k=1+.08*e, sx=innerWidth/2, sy=innerHeight/2;
+      cam.style.transform=`translate(${sx-(sx-M1.ox)*k}px,${sy-(sy-M1.oy)*k}px) scale(${M1.s*k})`;
+      cam.style.opacity=String(1-e); vb.style.opacity=String(e);
+      if(!started&&t>.35){ started=true; vb.play().catch(()=>{}); } },
+      ()=>{ cam.style.opacity="0"; if(!started) vb.play().catch(()=>{});
+        const fin=()=>{ vb.onended=null; end(); $("lg-panel").style.opacity=""; };
+        vb.onended=fin; setTimeout(()=>{ if(vb.style.display!=="none") fin(); },2500); });
   }
   $("lg-back").addEventListener("click",e=>{e.preventDefault(); if(location.hash==="#lounge") history.back(); else leave();});
   addEventListener("popstate",()=>{ if(location.hash==="#lounge") enter(); else if(L.classList.contains("on")) leave(); });
