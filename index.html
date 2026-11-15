@@ -197,21 +197,21 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .lg-hero{z-index:3;background:url(img/rooftop-band.webp) 0 0/1672px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
 .lg-bg{left:0;top:0;width:1672px;height:941px}
-.lg-front{left:786px;top:499px;width:886px;height:442px;pointer-events:none}
+.lg-front{left:775px;top:486px;width:809px;height:410px;pointer-events:none}
 .lg-cam svg{position:absolute;left:0;top:0;width:1672px;height:941px;overflow:visible;pointer-events:none}
 .lg-hot{all:unset;position:absolute;cursor:pointer;border-radius:10px;z-index:4}
 .lg-hot:focus-visible{outline:4px solid var(--cyan);outline-offset:4px}
-.lg-hot.crate{left:1340px;top:575px;width:332px;height:366px}
-.lg-hot.deck{left:905px;top:450px;width:440px;height:105px}
-.lg-tag{position:absolute;left:1372px;top:470px;z-index:4;font-family:var(--tube);font-size:30px;color:#fff;padding:8px 22px;border:3px solid var(--pink);border-radius:40px;background:rgba(5,6,10,.6);box-shadow:0 0 14px var(--pink);text-shadow:0 0 10px var(--pink);pointer-events:none;animation:lgpulse 2.2s ease-in-out infinite;white-space:nowrap}
+.lg-hot.crate{left:1218px;top:495px;width:362px;height:400px}
+.lg-hot.deck{left:870px;top:425px;width:380px;height:75px}
+.lg-tag{position:absolute;left:1268px;top:418px;z-index:4;font-family:var(--tube);font-size:30px;color:#fff;padding:8px 22px;border:3px solid var(--pink);border-radius:40px;background:rgba(5,6,10,.6);box-shadow:0 0 14px var(--pink);text-shadow:0 0 10px var(--pink);pointer-events:none;animation:lgpulse 2.2s ease-in-out infinite;white-space:nowrap}
 .lg-tag[hidden]{display:none}
 @keyframes lgpulse{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-8px);opacity:.75}}
 /* front-of-console player: sits on the speaker grille */
-.lg-panel{transition:opacity .3s;position:absolute;left:836px;top:598px;width:414px;height:214px;z-index:4;transform:rotate(1.6deg);transform-origin:0 0;padding:22px 26px;background:rgba(5,6,10,.5);border:1.5px solid rgba(255,61,127,.35);border-radius:6px;box-shadow:inset 0 0 40px rgba(0,0,0,.6);backdrop-filter:blur(2px);display:flex;flex-direction:column;gap:10px;font-family:var(--mono);color:var(--fog)}
-.lg-panel small{font-size:15px;letter-spacing:.25em;text-transform:uppercase;color:var(--pink)}
-.lg-panel b{font-family:var(--tube);font-weight:400;font-size:40px;line-height:1.05;color:#fff;text-shadow:0 0 10px var(--pink)}
-.lg-panel .row{display:flex;align-items:center;gap:14px;font-size:17px}
-.lg-pp{all:unset;cursor:pointer;width:46px;height:46px;border-radius:50%;border:2.5px solid var(--pink);display:grid;place-items:center;box-shadow:0 0 10px var(--pink);flex:none}
+.lg-panel{transition:opacity .3s;position:absolute;left:822px;top:546px;width:336px;height:166px;z-index:4;padding:15px 20px;background:rgba(5,6,10,.5);border:1.5px solid rgba(255,61,127,.35);border-radius:6px;box-shadow:inset 0 0 40px rgba(0,0,0,.6);backdrop-filter:blur(2px);display:flex;flex-direction:column;gap:7px;font-family:var(--mono);color:var(--fog)}
+.lg-panel small{font-size:12px;letter-spacing:.25em;text-transform:uppercase;color:var(--pink)}
+.lg-panel b{font-family:var(--tube);font-weight:400;font-size:30px;line-height:1.05;color:#fff;text-shadow:0 0 10px var(--pink)}
+.lg-panel .row{display:flex;align-items:center;gap:12px;font-size:14px}
+.lg-pp{all:unset;cursor:pointer;width:38px;height:38px;border-radius:50%;border:2.5px solid var(--pink);display:grid;place-items:center;box-shadow:0 0 10px var(--pink);flex:none}
 .lg-pp:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
 .lg-pp i{display:block;width:0;height:0;border-left:15px solid #fff;border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:4px}
 .lg-pp.playing i{width:14px;height:17px;border:0;margin:0;background:linear-gradient(90deg,#fff 0 35%,transparent 35% 65%,#fff 65%)}
@@ -270,7 +270,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   .lg-panel{position:absolute;pointer-events:auto;left:12px;right:12px;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;height:auto;transform:none;background:var(--glass);border-color:var(--line);padding:14px 16px;gap:8px}
   .lg-panel small{font-size:11px}.lg-panel b{font-size:24px}.lg-panel .row{font-size:13px}
   .lg-pp{width:40px;height:40px}
-  .lg-tag{font-size:40px;left:1360px;top:480px}
+  .lg-tag{font-size:40px;left:1250px;top:400px}
 }
 @media (prefers-reduced-motion:reduce){.lg-tag{animation:none}.lg-dig,.dig-sl{transition:none}}
 </style>
@@ -284,6 +284,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
         <radialGradient id="lg-vinyl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1a1a20"/><stop offset=".36" stop-color="#0c0c10"/><stop offset=".37" stop-color="#16161c"/><stop offset="1" stop-color="#08080b"/></radialGradient>
         <filter id="lg-rim" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5"/></filter>
       </defs>
+      <g id="lg-world" transform="matrix(.87 0 0 .87 77.4 29.7)">
       <g id="lg-rec" opacity="0">
         <g id="lg-spin">
           <circle r="150" fill="url(#lg-vinyl)"/>
@@ -306,6 +307,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
         <g id="lg-guy-body" stroke="#07070b" fill="#07070b" stroke-linecap="round" stroke-linejoin="round"></g>
       </g>
       <g id="lg-sleeve" opacity="0"><rect x="-88" y="0" width="176" height="176" rx="3" fill="#0b0b12" stroke="#ff3d7f" stroke-opacity=".6" stroke-width="2"/><image href="img/smile-logo.webp" x="-48" y="26" width="96" height="96"/><text x="0" y="158" text-anchor="middle" font-family="Yellowtail, cursive" font-size="26" fill="#fff">Don't Mind It</text></g>
+      </g>
     </svg>
     <img class="lg-front" src="img/lounge-front.webp" alt="" width="886" height="442">
     <svg aria-hidden="true"><g id="lg-hold"></g></svg>
@@ -470,9 +472,9 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     const pan=$("lg-panel"), ui=document.querySelector(".lg-ui");
     if(portrait()){ if(pan.parentNode!==ui) ui.insertBefore(pan,ui.firstChild); } else if(pan.parentNode!==cam) cam.appendChild(pan);
     if(portrait()){ // phones: show the console + crate side, letterboxed over a blurred fill
-      S=w/880; OX=-792*S; OY=Math.max(60,(h-H0*S)/2-90);
+      S=w/830; OX=-765*S; OY=Math.max(60,(h-H0*S)/2-110);
     }else{ // keep the console and the whole crate in frame; crop sky first
-      S=Math.max(w/W0,h/H0); OX=(w-W0*S)*0.9; OY=(h-H0*S)*0.9;
+      S=Math.max(w/W0,h/H0); OX=(w-W0*S)*0.75; OY=(h-H0*S)*0.7;
     }
     if(!anim) cam.style.transform=`translate(${OX}px,${OY}px) scale(${S})`;
   }
@@ -480,7 +482,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 
   /* ---------- transition: stage -> pull back to the wide lounge -> push in on the record player ---------- */
   const wide=$("lg-wide");
-  const WC={x:1093,y:491,w:273}, CC={x:1102,y:537,w:625}; // console centre + width in the wide shot / the close-up
+  const WC={x:1136,y:544,w:272}, CC={x:1026,y:493,w:492}; // console centre + width in the wide shot / the close-up
   let anim=null;
   function heroBox(){
     const w=stg.clientWidth,h=stg.clientHeight,s=Math.max(w/W0,h/H0);
@@ -501,11 +503,13 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     if(still){ hero.style.display="none"; wide.style.opacity="0"; cam.style.opacity="1"; frame(); return; }
     const hb=heroBox(), wb=wideBox(), cx=innerWidth/2, cy=innerHeight/2;
     hero.style.display="block"; hero.style.opacity="1"; wide.style.opacity="0"; cam.style.opacity="0"; $("lg-panel").style.opacity="0";
-    // A: the camera pulls back off the stage and the wide lounge comes in
-    run(650,t=>{
-      const e=out(t), hs=hb.s*(1-.22*e);
-      T(hero,cx+(hb.ox-cx)*(hs/hb.s),cy+(hb.oy-cy)*(hs/hb.s),hs); hero.style.opacity=String(1-cl(t*1.6-.3));
-      const ws=wb.s*(1.18-.18*e); T(wide,cx+(wb.ox-cx)*(ws/wb.s),cy+(wb.oy-cy)*(ws/wb.s),ws); wide.style.opacity=String(cl(t*1.8));
+    // A: matched pull-back on the drum kit: stage -> wide lounge
+    const DH={x:1045,y:585,r:63}, DW={x:737,y:540,r:43};
+    const ax0=hb.ox+DH.x*hb.s, ay0=hb.oy+DH.y*hb.s, ax1=wb.ox+DW.x*wb.s, ay1=wb.oy+DW.y*wb.s, ws0=hb.s*DH.r/DW.r;
+    run(900,t=>{
+      const e=io(t), ws=ws0*Math.pow(wb.s/ws0,e), ax=ax0+(ax1-ax0)*e, ay=ay0+(ay1-ay0)*e, hs=ws*DW.r/DH.r;
+      T(wide,ax-DW.x*ws,ay-DW.y*ws,ws); wide.style.opacity=String(cl(t*2.2));
+      T(hero,ax-DH.x*hs,ay-DH.y*hs,hs); hero.style.opacity=String(1-cl(t*2-.25));
     },()=>{ hero.style.display="none";
       // B: a beat on the full lounge, then C: push in on the record player and land on the close-up
       setTimeout(()=>{
@@ -536,8 +540,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     if($("dig").classList.contains("open")) return;
     crFrame(); show(); setMode("crate");
     if(!still&&!anim){ // push the camera into the crate, then cut into the crate shot
-      const cx=OX+1505*S, cy=OY+765*S;
-      run(420,t=>{ const s=S*(1+1.3*io(t)); T(cam,cx-1505*s,cy-765*s,s); },()=>{ frame(); });
+      const cx=OX+1400*S, cy=OY+700*S;
+      run(420,t=>{ const s=S*(1+1.6*io(t)); T(cam,cx-1400*s,cy-700*s,s); },()=>{ frame(); });
       setTimeout(()=>{ $("dig").classList.add("open"); },160);
     } else $("dig").classList.add("open");
     $("dig").setAttribute("aria-hidden","false");
@@ -597,15 +601,15 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
       return typeof a==="number"?a+(b-a)*u:{x:a.x+(b.x-a.x)*u,y:a.y+(b.y-a.y)*u}; } }
     return keys[keys.length-1][1];
   }
-  const PIV={x:1300,y:470}, ARM_L=97, PLAT={x:1072,y:498,rx:150,q:.137};
+  const PIV={x:1283.4,y:471.6}, ARM_L=120, PLAT={x:1072,y:498,rx:150,q:.108};
   const angTo=pt=>Math.atan2(pt.y-PIV.y,pt.x-PIV.x);
-  const A_REST=angTo({x:1322,y:562}), A_OUT=angTo({x:1212,y:511}), A_IN=angTo({x:1150,y:508});
+  const A_REST=angTo({x:1265,y:527}), A_OUT=angTo({x:1215,y:506}), A_IN=angTo({x:1124,y:494});
   const armHead=(a,lift)=>({x:PIV.x+Math.cos(a)*ARM_L,y:PIV.y+Math.sin(a)*ARM_L-(lift||0)});
   const X=1525, X2=1445, HIPY=FY-.5*H+4;
   const K={
     hip:[[0,{x:1860,y:HIPY}],[1.9,{x:X,y:HIPY}],[2.3,{x:X,y:HIPY}],[2.8,{x:X-6,y:HIPY+46}],[3.3,{x:X-6,y:HIPY+46}],[3.9,{x:X,y:HIPY}],[5.1,{x:X,y:HIPY}],[5.9,{x:X2,y:HIPY}],[9.2,{x:X2,y:HIPY}],[9.9,{x:1480,y:HIPY}],[11.6,{x:1480,y:HIPY}],[13.4,{x:1880,y:HIPY}]],
     lean:[[0,4],[1.9,0],[2.3,0],[2.8,-24],[3.3,-24],[3.9,-4],[5.1,-4],[5.9,-17],[8.6,-17],[9.3,-3],[11.6,-3],[12,4]],
-    handA:[[0,{x:1770,y:600}],[1.9,{x:1455,y:600}],[2.3,{x:1450,y:595}],[2.8,{x:1466,y:648}],[3.2,{x:1466,y:640}],[3.9,{x:1446,y:438}],[4.7,{x:1370,y:448}],[5.1,{x:1356,y:452}],[5.9,{x:1250,y:430}],[6.9,{x:1222,y:494}],[7.2,{x:1240,y:520}],[7.6,{x:1322,y:552}],[8.2,{x:1212,y:494}],[8.6,{x:1212,y:505}],[9.3,{x:1395,y:600}],[11.6,{x:1420,y:605}],[13.4,{x:1820,y:605}]],
+    handA:[[0,{x:1770,y:600}],[1.9,{x:1455,y:600}],[2.3,{x:1450,y:595}],[2.8,{x:1466,y:648}],[3.2,{x:1466,y:640}],[3.9,{x:1446,y:438}],[4.7,{x:1370,y:448}],[5.1,{x:1356,y:452}],[5.9,{x:1250,y:430}],[6.9,{x:1222,y:494}],[7.2,{x:1240,y:520}],[7.6,{x:1265,y:527}],[8.2,{x:1215,y:497}],[8.6,{x:1215,y:506}],[9.3,{x:1395,y:600}],[11.6,{x:1420,y:605}],[13.4,{x:1820,y:605}]],
     handB:[[0,{x:1915,y:605}],[1.9,{x:1595,y:605}],[2.8,{x:1580,y:640}],[3.3,{x:1580,y:640}],[3.9,{x:1560,y:438}],[4.7,{x:1556,y:445}],[5.1,{x:1540,y:610}],[9.3,{x:1525,y:600}],[11.6,{x:1545,y:605}],[13.4,{x:1945,y:605}]]
   };
   function feet(hip,t){
@@ -617,7 +621,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   /* ---------- scene state ---------- */
   const rec=$("lg-rec"), spin=$("lg-spin"), slv=$("lg-sleeve"), guy=$("lg-guy");
   let seq=-1, seqT0=0, recOn=false, spinA=0, spinV=0, armA=A_REST, armLift=0, lastNow=performance.now();
-  const svgEl=$("lg-svg"), armEl=$("lg-arm");
+  const svgEl=$("lg-world"), armEl=$("lg-arm");
   function recLayer(front){ if(front){ if(svgEl.lastElementChild!==rec) svgEl.appendChild(rec); } else if(rec.nextElementSibling!==armEl) svgEl.insertBefore(rec,armEl); }
   function setRec(x,y,r,q,o){ rec.setAttribute("transform",`translate(${x} ${y}) scale(${r/150} ${r/150*q})`); rec.setAttribute("opacity",o); }
   function drawArm(){
