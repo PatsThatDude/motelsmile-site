@@ -489,7 +489,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     const bp=(stg.style.backgroundPosition||"50% 42%").split(" ").map(v=>parseFloat(v)/100);
     return {s,ox:(w-W0*s)*bp[0],oy:(h-H0*s)*(isNaN(bp[1])?0.42:bp[1])};
   }
-  function wideBox(){ const w=innerWidth,h=innerHeight,s=Math.max(w/W0,h/H0); const fx=portrait()?.62:.5; return {s,ox:(w-W0*s)*fx,oy:(h-H0*s)*.6}; }
+  function wideBox(){ const w=innerWidth,h=innerHeight,s=Math.max(w/W0,h/H0); const fx=portrait()?.8:.5; return {s,ox:(w-W0*s)*fx,oy:(h-H0*s)*.6}; }
   const io=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2, out=t=>1-Math.pow(1-t,3);
   const T=(el,x,y,s)=>{el.style.transform=`translate(${x}px,${y}px) scale(${s})`;};
   const cl=(v)=>Math.max(0,Math.min(1,v));
@@ -502,24 +502,37 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     loop();
     if(still){ hero.style.display="none"; wide.style.opacity="0"; cam.style.opacity="1"; frame(); return; }
     const hb=heroBox(), wb=wideBox(), cx=innerWidth/2, cy=innerHeight/2;
-    hero.style.display="block"; hero.style.opacity="1"; wide.style.opacity="0"; cam.style.opacity="0"; $("lg-panel").style.opacity="0";
-    // A: matched pull-back on the drum kit: stage -> wide lounge
-    const DH={x:1045,y:585,r:63}, DW={x:737,y:540,r:43};
-    const ax0=hb.ox+DH.x*hb.s, ay0=hb.oy+DH.y*hb.s, ax1=wb.ox+DW.x*wb.s, ay1=wb.oy+DW.y*wb.s, ws0=hb.s*DH.r/DW.r;
-    run(900,t=>{
-      const e=io(t), ws=ws0*Math.pow(wb.s/ws0,e), ax=ax0+(ax1-ax0)*e, ay=ay0+(ay1-ay0)*e, hs=ws*DW.r/DH.r;
-      T(wide,ax-DW.x*ws,ay-DW.y*ws,ws); wide.style.opacity=String(cl(t*2.2));
-      T(hero,ax-DH.x*hs,ay-DH.y*hs,hs); hero.style.opacity=String(1-cl(t*2-.25));
-    },()=>{ hero.style.display="none";
-      // B: a beat on the full lounge, then C: push in on the record player and land on the close-up
+    hero.style.display="block"; hero.style.opacity="1"; wide.style.opacity="0"; cam.style.opacity="0"; $("lg-panel").style.transition="none"; $("lg-panel").style.opacity="0";
+    // Shots are locked to each other where the eye looks: stage<->wide on the skyline, wide<->record player on the console.
+    // Leftover parallax (stage sliding against the skyline) reads as a real camera move; a short blur covers the hand-off.
+    const HW={s:.785,tx:190,ty:61};                 // hero point -> wide point (skyline match)
+    const WM={s:CC.w/WC.w}; WM.tx=CC.x-WM.s*WC.x; WM.ty=CC.y-WM.s*WC.y;  // wide point -> record-player point (console match)
+    const pose=(el,P)=>{el.style.transform=`translate(${P.ox}px,${P.oy}px) scale(${P.s})`;};
+    const blur=(el,v)=>{el.style.filter=v>.05?`blur(${v.toFixed(2)}px)`:"";};
+    // wide pose that puts the hero exactly where it is now
+    const W0={s:hb.s/HW.s}; W0.ox=hb.ox-W0.s*HW.tx; W0.oy=hb.oy-W0.s*HW.ty;
+    const W1={s:wb.s,ox:wb.ox,oy:wb.oy};
+    const lerpPose=(A,B,e,ax,ay)=>{ // scale geometrically, keep the anchor point (screen of image point ax,ay) moving in a straight line
+      const s=A.s*Math.pow(B.s/A.s,e), sxA=A.ox+ax*A.s, syA=A.oy+ay*A.s, sxB=B.ox+ax*B.s, syB=B.oy+ay*B.s;
+      const sx=sxA+(sxB-sxA)*e, sy=syA+(syB-syA)*e; return {s,ox:sx-ax*s,oy:sy-ay*s}; };
+    // A: pull back off the stage into the wide lounge (0.85s)
+    run(850,t=>{
+      const e=io(t), W=lerpPose(W0,W1,e,780,300);
+      pose(wide,W); pose(hero,{s:W.s*HW.s,ox:W.ox+W.s*HW.tx,oy:W.oy+W.s*HW.ty});
+      const x=cl((t-.18)/.45); wide.style.opacity=String(x); hero.style.opacity=String(1-cl((t-.3)/.4));
+      const bl=Math.sin(Math.PI*x)*3; blur(hero,bl); blur(wide,bl);
+    },()=>{ hero.style.display="none"; blur(hero,0); blur(wide,0);
+      // B: a beat on the whole lounge, then C: push in on the record player (0.9s)
       setTimeout(()=>{
-        const sx0=wb.ox+WC.x*wb.s, sy0=wb.oy+WC.y*wb.s, tx=OX+CC.x*S, ty=OY+CC.y*S, sf=CC.w*S/WC.w;
-        run(820,t=>{
-          const e=io(t), ws=wb.s*Math.pow(sf/wb.s,e), px=sx0+(tx-sx0)*e, py=sy0+(ty-sy0)*e;
-          T(wide,px-WC.x*ws,py-WC.y*ws,ws); wide.style.opacity=String(1-cl((t-.55)/.4));
-          const c=cl((t-.5)/.45), cs=S*(1.06-.06*c); T(cam,tx-CC.x*cs,ty-CC.y*cs,cs); cam.style.opacity=String(c);
-        },()=>{ wide.style.opacity="0"; cam.style.opacity="1"; $("lg-panel").style.opacity=""; frame(); });
-      },380);
+        const M1={s:S,ox:OX,oy:OY};                                   // record player at rest
+        const Wend={s:M1.s*WM.s}; Wend.ox=M1.ox+M1.s*WM.tx; Wend.oy=M1.oy+M1.s*WM.ty; // wide pose locked to it
+        run(900,t=>{
+          const e=io(t), W=lerpPose(W1,Wend,e,WC.x,WC.y);
+          pose(wide,W); pose(cam,{s:W.s/WM.s,ox:W.ox-W.s*WM.tx/WM.s,oy:W.oy-W.s*WM.ty/WM.s});
+          const x=cl((t-.42)/.38); cam.style.opacity=String(x); wide.style.opacity=String(1-cl((t-.55)/.35));
+          const bl=Math.sin(Math.PI*x)*2.5; blur(wide,bl); blur(cam,bl);
+        },()=>{ wide.style.opacity="0"; blur(wide,0); blur(cam,0); cam.style.opacity="1"; $("lg-panel").style.transition=""; $("lg-panel").style.opacity=""; frame(); });
+      },420);
     });
   }
   function leave(){
