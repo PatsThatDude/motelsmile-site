@@ -228,11 +228,11 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 #wl-sky{z-index:3;background-image:url(img/lounge-wide-plate.webp?v=8)}#hero-g{z-index:4;background-image:url(img/hero-ground.webp?v=9)}#hero-f{z-index:6;background-image:url(img/hero-fore.webp?v=9)}
 #wl-mid{z-index:5;background-image:url(img/lounge-wide-mid.webp?v=8)}#wl-fore{z-index:7;background-image:url(img/lounge-wide-fore.webp?v=8)}
 .lg-cam .lg-lay{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0}
-.lg-dig{pointer-events:auto;position:absolute;inset:0;z-index:9;overflow:hidden;background:#05060a;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
+.lg-dig{pointer-events:auto;position:absolute;inset:0;z-index:9;overflow:hidden;background:transparent;opacity:0;visibility:hidden;transition:opacity .2s,visibility 0s .2s}
 .lg-dig.open{opacity:1;visibility:visible;transition:opacity .35s}
 .cr-box{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0}
 .cr-box>img,.cr-layer{position:absolute;left:0;top:0;width:1672px;height:941px;display:block;user-select:none;-webkit-user-drag:none}
-.cr-front{left:505px!important;top:389px!important;width:763px!important;height:552px!important;pointer-events:none;z-index:6}
+.cr-front{left:869px!important;top:610px!important;width:367px!important;height:256px!important;pointer-events:none;z-index:6}
 .cr-art{position:absolute;left:0;top:0;width:1000px;height:1000px;transform-origin:0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:150px;gap:20px;pointer-events:none}
 .cr-art img{width:380px;filter:drop-shadow(0 0 30px rgba(255,61,127,.7))}
 .cr-art em{font-family:var(--script);font-style:normal;font-size:118px;line-height:1;color:#fff;text-shadow:0 0 24px var(--pink)}
@@ -271,7 +271,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .dig-row[disabled]{cursor:default;color:var(--fog)}.dig-row[disabled] em{color:var(--fog)}
 .dig-row:not([disabled]):hover{background:rgba(255,61,127,.12)}
 @media (max-width:760px){.dig-head h3{visibility:hidden}.dig-foot{flex-wrap:wrap;justify-content:center;border-radius:18px;width:calc(100% - 24px);padding:10px 12px;row-gap:8px}.dig-foot b{order:-1;flex:1 0 100%;text-align:center;font-size:18px}}
-.cr-fill{position:absolute;inset:-40px;background:url(img/crate.webp?v=7) 50% 50%/cover;filter:blur(24px) brightness(.4)}
+.cr-fill{position:absolute;inset:-40px;background:url(img/lounge.webp?v=7) 50% 50%/cover;filter:blur(24px) brightness(.4)}
 @media (max-width:760px) and (orientation:portrait){
   .lg-panel{position:absolute;pointer-events:auto;left:12px;right:12px;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;height:auto;transform:none;background:var(--glass);border-color:var(--line);padding:14px 16px;gap:8px}
   .lg-panel small{font-size:11px}.lg-panel b{font-size:24px}.lg-panel .row{font-size:13px}
@@ -338,15 +338,15 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     <div class="lg-dig" id="dig" data-mode="crate" role="dialog" aria-label="Record crate" aria-hidden="true">
       <div class="cr-fill"></div>
       <div class="cr-box" id="cr-box">
-        <img src="img/crate.webp?v=7" alt="Looking down into the record crate" width="1672" height="941">
+        <img src="img/lounge.webp?v=7" alt="Looking down into the record crate" width="1672" height="941">
         <div class="cr-layer" id="cr-artclip"><div class="cr-art" id="cr-art"></div></div>
         <div class="cr-layer cr-shade" id="cr-shade"></div>
-        <img class="cr-layer cr-tex" id="cr-tex" src="img/crate.webp?v=7" alt="">
+        <img class="cr-layer cr-tex" id="cr-tex" src="img/lounge.webp?v=7" alt="">
         <div class="cr-layer" id="cr-tapes" style="pointer-events:none"></div>
         <div class="cr-hot" id="cr-hot" aria-hidden="true"></div>
         <div class="cr-layer" id="cr-lean" style="pointer-events:none;z-index:5"></div>
         <div class="cr-layer cr-clone" id="cr-clone" hidden></div>
-        <img class="cr-front" src="img/crate-front.webp?v=7" alt="">
+        <img class="cr-front" src="img/lounge-rim.webp?v=1" alt="">
       </div>
       <div class="cr-ui">
         <div class="dig-head"><button class="dig-x" id="dig-x">← Record player</button><h3>The crate</h3><div class="dig-seg"><button id="dig-m-crate" aria-pressed="true">Crate</button><button id="dig-m-list" aria-pressed="false">List</button></div></div>
@@ -380,8 +380,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   loadC().then(c=>{REC=records(c);drawCrate();});
   /* ---------- the crate: flip through real sleeves in the crate photo ---------- */
   // front sleeve corners (full square, bottom runs under the crate rim) + the tape strips on the sleeves behind it
-  const SLV=[[638,362],[1092,402],[1072,702],[612,664]];
-  const TAPES=[[846,391,137,32],[868,360,108,25],[896,324,108,23],[916,298,106,21],[938,271,104,19],[953,247,102,18],[977,227,100,17],[996,205,98,16]];
+  const SLV=[[965,583],[1178,578],[1180,792],[967,800]];
+  const TAPES=[[1044,586,60,17],[1031,563,54,13],[1018,546,51,12],[1010,531,48,11],[1003,517,46,10],[995,505,44,9],[986,494,42,8],[980,485,40,7]];
   const clipPoly="polygon("+SLV.map(p=>p[0]+"px "+p[1]+"px").join(",")+")";
   function homog(w,h,q){ // matrix3d mapping a w x h box onto quad q
     const [x0,y0]=q[0],[x1,y1]=q[1],[x2,y2]=q[2],[x3,y3]=q[3];
@@ -403,7 +403,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   // tape labels
   const tapeEls=TAPES.map((t,k)=>{
     const el=document.createElement("div"); el.className="cr-tape";
-    Object.assign(el.style,{left:(t[0]-t[2]/2)+"px",top:(t[1]-t[3]/2)+"px",width:t[2]+"px",height:t[3]+"px",fontSize:(t[3]*.6)+"px",transform:`rotate(${4-k*.3}deg)`});
+    Object.assign(el.style,{left:(t[0]-t[2]/2)+"px",top:(t[1]-t[3]/2)+"px",width:t[2]+"px",height:t[3]+"px",fontSize:(t[3]*.62)+"px",transform:`rotate(${-1-k*.2}deg)`});
     el.innerHTML="<span></span>"; el.addEventListener("click",()=>flipTo(sel+k)); $("cr-tapes").appendChild(el); return el;
   });
   function paintTapes(off){
@@ -430,22 +430,22 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   // the clone is a copy of the front sleeve (photo + art + its tape) that tips forward out of the way
   function makeClone(i){
     const c=$("cr-clone"); c.innerHTML=""; c.style.clipPath=clipPoly;
-    const bg=document.createElement("img"); bg.src="img/crate.webp?v=7"; bg.className="cr-layer"; c.appendChild(bg);
+    const bg=document.createElement("img"); bg.src="img/lounge.webp?v=7"; bg.className="cr-layer"; c.appendChild(bg);
     const ac=document.createElement("div"); ac.className="cr-layer"; const a=document.createElement("div"); a.style.transform=ART_T; paintArt(a,REC[i]); ac.appendChild(a); c.appendChild(ac);
     const sh=document.createElement("div"); sh.className="cr-layer cr-shade"; c.appendChild(sh);
-    const tx=document.createElement("img"); tx.src="img/crate.webp?v=7"; tx.className="cr-layer cr-tex"; c.appendChild(tx);
+    const tx=document.createElement("img"); tx.src="img/lounge.webp?v=7"; tx.className="cr-layer cr-tex"; c.appendChild(tx);
     const t=tapeEls[0].cloneNode(true); t.style.pointerEvents="none"; c.appendChild(t);
-    c.style.transformOrigin="850px 648px"; c.hidden=false; return c;
+    c.style.transformOrigin="1073px 690px"; c.hidden=false; return c;
   }
   // Real crate flipping: each record tips forward on its bottom edge and stays leaning on the ones before it.
   function sleeveEl(i){
     const c=document.createElement("div"); c.className="cr-layer cr-lean"; c.style.clipPath=clipPoly;
-    const bg=document.createElement("img"); bg.src="img/crate.webp?v=7"; bg.className="cr-layer"; c.appendChild(bg);
+    const bg=document.createElement("img"); bg.src="img/lounge.webp?v=7"; bg.className="cr-layer"; c.appendChild(bg);
     const ac=document.createElement("div"); ac.className="cr-layer"; const a=document.createElement("div"); a.style.transform=ART_T; paintArt(a,REC[i]); ac.appendChild(a); c.appendChild(ac);
     const sh=document.createElement("div"); sh.className="cr-layer cr-shade"; c.appendChild(sh);
-    const tx=document.createElement("img"); tx.src="img/crate.webp?v=7"; tx.className="cr-layer cr-tex"; c.appendChild(tx);
+    const tx=document.createElement("img"); tx.src="img/lounge.webp?v=7"; tx.className="cr-layer cr-tex"; c.appendChild(tx);
     const t=tapeEls[0].cloneNode(true); t.firstChild.textContent=REC[i]?REC[i].title:""; t.style.pointerEvents="none"; c.appendChild(t);
-    c.style.transformOrigin="850px 648px"; return c;
+    c.style.transformOrigin="1073px 690px"; return c;
   }
   const LEAN=k=>`perspective(2600px) rotateX(${-(73+k*4)}deg) translateY(${k*3}px) scaleX(.97)`;
   const LEANF=k=>`brightness(${(.72-k*.13).toFixed(2)})`;
@@ -492,13 +492,11 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   // pulling the chosen sleeve up out of the crate, then back to the record player
   function choose(i){
     const go=()=>{ const c=makeClone(sel); paintArt($("cr-art"),REC[sel+1]); paintTapes(1); c.style.transition="none"; c.style.transform="none"; c.getBoundingClientRect();
-      c.style.transition="transform .5s cubic-bezier(.4,0,.2,1), opacity .5s ease-in .15s"; c.style.transform="translateY(-360px) scale(1.04)"; c.style.opacity="0";
+      c.style.transition="transform .5s cubic-bezier(.4,0,.2,1), opacity .5s ease-in .15s"; c.style.transform="translateY(-170px) scale(1.04)"; c.style.opacity="0";
       setTimeout(()=>{ c.hidden=true; closeCrate(); setTimeout(()=>pick(i),still?0:380); }, still?0:520); };
     setMode("crate"); if(i===sel) go(); else flipTo(i).then(go);
   }
-  function crFrame(){ const w=innerWidth,h=innerHeight; let s,ox,oy;
-    if(w/h<1.2){ s=Math.min(w/780,h/680); ox=w/2-880*s; oy=h/2-520*s; } else { s=Math.max(w/W0,h/H0); ox=(w-W0*s)*.5; oy=(h-H0*s)*.45; }
-    $("cr-box").style.transform=`translate(${ox}px,${oy}px) scale(${s})`; }
+  function crFrame(){ $("cr-box").style.transform=`translate(${OX}px,${OY}px) scale(${S})`; }
   addEventListener("resize",crFrame);
 
   /* ---------- framing: the 1672x941 scene box is scaled to cover the screen ---------- */
@@ -577,11 +575,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   function openCrate(){
     if($("dig").classList.contains("open")) return;
     crFrame(); show(); rebuildLean(); setMode("crate");
-    if(!still&&!anim){ // push the camera into the crate, then cut into the crate shot
-      const cx=OX+1047*S, cy=OY+670*S;
-      run(420,t=>{ const s=S*(1+1.6*io(t)); T(cam,cx-1047*s,cy-670*s,s); },()=>{ frame(); });
-      setTimeout(()=>{ $("dig").classList.add("open"); },160);
-    } else $("dig").classList.add("open");
+    $("dig").classList.add("open");
     $("dig").setAttribute("aria-hidden","false");
     setTimeout(()=>$("dig-go").focus({preventScroll:true}),400);
   }
