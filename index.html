@@ -539,31 +539,45 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     if(still){ hero.style.display="none"; WL.forEach(e=>e.style.opacity="0"); cam.style.opacity="1"; frame(); return; }
     const hb=heroBox(), wb=wideBox(), cx=innerWidth/2, cy=innerHeight/2;
     hero.style.display="block"; hero.style.opacity="1"; WL.forEach(e=>e.style.opacity="0"); cam.style.opacity="0"; $("lg-panel").style.transition="none"; $("lg-panel").style.opacity="0";
-    // Gentle version: one image at a time, slow push, soft dip through dark between shots. No blur, no double images.
+    // Swoop: one continuous camera move. The shot swaps with a hard cut at the fastest point of the move,
+    // lined up on what the eye is tracking (skyline on the swing left, the record player on the push in). No fades.
     const pose=(el,P)=>{el.style.transform=`translate(${P.ox}px,${P.oy}px) scale(${P.s})`;};
-    const zoomAbout=(P,k,ax,ay)=>{const sx=P.ox+ax*P.s, sy=P.oy+ay*P.s, s=P.s*k; return {s,ox:sx-ax*s,oy:sy-ay*s};};
-    const soft=t=>t*t*(3-2*t);
+    const via=(pB,T)=>({s:pB.s*T.s,ox:pB.ox+pB.s*T.tx,oy:pB.oy+pB.s*T.ty});
+    const inv=(pA,T)=>{const s=pA.s/T.s; return {s,ox:pA.ox-s*T.tx,oy:pA.oy-s*T.ty};};
+    const lerpPose=(A,B,e,ax,ay)=>{ const s=A.s*Math.pow(B.s/A.s,e), sxA=A.ox+ax*A.s, syA=A.oy+ay*A.s, sxB=B.ox+ax*B.s, syB=B.oy+ay*B.s;
+      return {s,ox:sxA+(sxB-sxA)*e-ax*s,oy:syA+(syB-syA)*e-ay*s}; };
+    const sw=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;          // slow start, fast middle, soft landing
+    const cover=P=>{ const vw=innerWidth,vh=innerHeight, need=Math.max(vw/W0,vh/H0,1e-6); let {s,ox,oy}=P;
+      if(s<need){ const k=need/s, cx=vw/2, cy=vh/2; ox=cx-(cx-ox)*k; oy=cy-(cy-oy)*k; s=need; }
+      ox=Math.min(0,Math.max(vw-W0*s,ox)); oy=Math.min(0,Math.max(vh-H0*s,oy)); return {s,ox,oy}; };
+    const mblur=(el,v)=>{el.style.filter=v>.3?`blur(${v.toFixed(1)}px)`:"";};
+    const A_SKY={s:.961,tx:-32.9,ty:-50.8}, C_FORE={s:2.27,tx:-1465,ty:-567};
     const [wSky,hG,wMid,wFore]=WL, HF2=$("hero-f");
     [hG,wMid,wFore,HF2].forEach(el=>el.style.opacity="0");
     hero.style.backgroundImage="url(img/rooftop-lounge.webp?v=9)";
     wSky.style.backgroundImage="url(img/lounge-wide.webp?v=7)";
     $("pl-sky").src="img/lounge.webp?v=7"; $("pl-mid").style.display="none"; $("pl-fore").style.display="none";
-    const K1={s:wb.s,ox:wb.ox,oy:wb.oy}, M1={s:S,ox:OX,oy:OY}; L.classList.add("moving");
-    // 1. ease toward the lounge corner of the stage shot, fade down
-    run(900,t=>{ const e=soft(t); pose(hero,zoomAbout(hb,1+.18*e,640,540)); hero.style.opacity=String(1-soft(cl((t-.55)/.45))); },()=>{
-      hero.style.display="none";
-      // 2. the lounge fades up while settling
-      run(650,t=>{ const e=soft(t); pose(wSky,zoomAbout(K1,1.06-.06*e,913,470)); wSky.style.opacity=String(e); },()=>{
-        setTimeout(()=>{
-          // 3. ease toward the record player, fade down
-          run(850,t=>{ const e=soft(t); pose(wSky,zoomAbout(K1,1+.2*e,913,470)); wSky.style.opacity=String(1-soft(cl((t-.55)/.45))); },()=>{
-            wSky.style.opacity="0";
-            // 4. record player fades up while settling
-            run(600,t=>{ const e=soft(t); pose(cam,zoomAbout(M1,1.05-.05*e,610,500)); cam.style.opacity=String(e); },()=>{
-              cam.style.opacity="1"; L.classList.remove("moving"); $("lg-panel").style.transition=""; $("lg-panel").style.opacity=""; frame(); });
-          });
-        },600*(window.__TS||1));
-      });
+    hero.style.opacity="1"; wSky.style.opacity="0";
+    const K1={s:wb.s,ox:wb.ox,oy:wb.oy}, M1={s:S,ox:OX,oy:OY}, W0=inv(hb,A_SKY), vw=innerWidth;
+    // 1. swing left along the roof to the lounge (cut on the skyline at full speed)
+    let cut=false, prev=null;
+    run(1150,t=>{
+      const e=sw(t), P=lerpPose(W0,K1,e,800,250), arc=Math.sin(Math.PI*e);
+      P.ox+=arc*vw*.32; P.s*=1+.12*arc;                        // swoop out to the left and back in
+      if(!cut&&e>=.5){ cut=true; hero.style.display="none"; wSky.style.opacity="1"; }
+      const el=cut?wSky:hero; pose(el,cover(cut?P:via(P,A_SKY)));
+      const v=prev?Math.abs(P.ox-prev)/vw*60:0; prev=P.ox; mblur(el,Math.min(5,v*.9));
+    },()=>{ mblur(wSky,0); pose(wSky,K1);
+      setTimeout(()=>{
+        // 2. push in on the record player (cut on the record player at full speed)
+        const Wend=via(M1,C_FORE); let cut2=false, ps=null;
+        run(1050,t=>{
+          const e=sw(t), P=lerpPose(K1,Wend,e,913,470);
+          if(!cut2&&e>=.5){ cut2=true; wSky.style.opacity="0"; cam.style.opacity="1"; }
+          if(cut2) pose(cam,inv(P,C_FORE)); else pose(wSky,cover(P));
+          const v=ps?Math.abs(Math.log(P.s/ps))*60:0; ps=P.s; mblur(cut2?cam:wSky,Math.min(4,v*2.2));
+        },()=>{ mblur(cam,0); mblur(wSky,0); cam.style.opacity="1"; $("lg-panel").style.transition=""; $("lg-panel").style.opacity=""; frame(); });
+      },450*(window.__TS||1));
     });
   }
   function leave(){
