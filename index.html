@@ -221,6 +221,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .lg-panel a{color:var(--cyan);font-size:16px}
 .lg-panel iframe{border:0;border-radius:10px;width:100%;height:80px}
 /* screen UI */
+.lg-glide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:7;display:none;pointer-events:none}
 .lg-ui{position:absolute;inset:0;z-index:9;pointer-events:none}
 .lg-back{pointer-events:auto;position:absolute;left:max(16px,env(safe-area-inset-left,0px));top:14px}
 .lg-wl{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;background:0 0/1672px 941px no-repeat;opacity:0;pointer-events:none;will-change:transform,opacity}
@@ -330,6 +331,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     </div>
   </div>
   <div class="lg-hero" id="lg-hero"></div>
+  <video class="lg-glide" id="lg-glide" muted playsinline preload="auto" aria-hidden="true"><source src="img/glide.webm?v=1" type="video/webm"><source src="img/glide.mp4?v=1" type="video/mp4"></video>
   <div class="lg-wl" id="wl-sky"></div><div class="lg-wl" id="hero-g"></div><div class="lg-wl" id="wl-mid"></div><div class="lg-wl" id="hero-f"></div><div class="lg-wl" id="wl-fore"></div>
   <div class="lg-ui">
     <a class="pill lg-back" style="--c:var(--cyan)" href="#" id="lg-back">← Back to the stage</a>
@@ -539,46 +541,24 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     if(still){ hero.style.display="none"; WL.forEach(e=>e.style.opacity="0"); cam.style.opacity="1"; frame(); return; }
     const hb=heroBox(), wb=wideBox(), cx=innerWidth/2, cy=innerHeight/2;
     hero.style.display="block"; hero.style.opacity="1"; WL.forEach(e=>e.style.opacity="0"); cam.style.opacity="0"; $("lg-panel").style.transition="none"; $("lg-panel").style.opacity="0";
-    // Swoop: one continuous camera move. The shot swaps with a hard cut at the fastest point of the move,
-    // lined up on what the eye is tracking (skyline on the swing left, the record player on the push in). No fades.
-    const pose=(el,P)=>{el.style.transform=`translate(${P.ox}px,${P.oy}px) scale(${P.s})`;};
-    const via=(pB,T)=>({s:pB.s*T.s,ox:pB.ox+pB.s*T.tx,oy:pB.oy+pB.s*T.ty});
-    const inv=(pA,T)=>{const s=pA.s/T.s; return {s,ox:pA.ox-s*T.tx,oy:pA.oy-s*T.ty};};
-    const lerpPose=(A,B,e,ax,ay)=>{ const s=A.s*Math.pow(B.s/A.s,e), sxA=A.ox+ax*A.s, syA=A.oy+ay*A.s, sxB=B.ox+ax*B.s, syB=B.oy+ay*B.s;
-      return {s,ox:sxA+(sxB-sxA)*e-ax*s,oy:syA+(syB-syA)*e-ay*s}; };
-    const sw=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;          // slow start, fast middle, soft landing
-    const cover=P=>{ const vw=innerWidth,vh=innerHeight, need=Math.max(vw/W0,vh/H0,1e-6); let {s,ox,oy}=P;
-      if(s<need){ const k=need/s, cx=vw/2, cy=vh/2; ox=cx-(cx-ox)*k; oy=cy-(cy-oy)*k; s=need; }
-      ox=Math.min(0,Math.max(vw-W0*s,ox)); oy=Math.min(0,Math.max(vh-H0*s,oy)); return {s,ox,oy}; };
-    const mblur=(el,v)=>{el.style.filter=v>.3?`blur(${v.toFixed(1)}px)`:"";};
-    const A_SKY={s:.961,tx:-32.9,ty:-50.8}, C_FORE={s:2.27,tx:-1465,ty:-567};
-    const [wSky,hG,wMid,wFore]=WL, HF2=$("hero-f");
-    [hG,wMid,wFore,HF2].forEach(el=>el.style.opacity="0");
-    hero.style.backgroundImage="url(img/rooftop-lounge.webp?v=9)";
-    wSky.style.backgroundImage="url(img/lounge-wide.webp?v=7)";
+    // Glide: a pre-rendered 3D walk from the stage toward the lounge (one image + depth). As the walk starts to
+    // stretch, it dissolves into the record player shot, which opens up with a gentle settle.
+    const v=$("lg-glide"), soft=t=>t*t*(3-2*t);
+    const [wSky,hG,wMid,wFore]=WL, HF2=$("hero-f"); [wSky,hG,wMid,wFore,HF2].forEach(el=>el.style.opacity="0");
+    hero.style.display="none";
     $("pl-sky").src="img/lounge.webp?v=7"; $("pl-mid").style.display="none"; $("pl-fore").style.display="none";
-    hero.style.opacity="1"; wSky.style.opacity="0";
-    const K1={s:wb.s,ox:wb.ox,oy:wb.oy}, M1={s:S,ox:OX,oy:OY}, W0=inv(hb,A_SKY), vw=innerWidth;
-    // 1. swing left along the roof to the lounge (cut on the skyline at full speed)
-    let cut=false, prev=null;
-    run(1150,t=>{
-      const e=sw(t), P=lerpPose(W0,K1,e,800,250), arc=Math.sin(Math.PI*e);
-      P.ox+=arc*vw*.32; P.s*=1+.12*arc;                        // swoop out to the left and back in
-      if(!cut&&e>=.5){ cut=true; hero.style.display="none"; wSky.style.opacity="1"; }
-      const el=cut?wSky:hero; pose(el,cover(cut?P:via(P,A_SKY)));
-      const v=prev?Math.abs(P.ox-prev)/vw*60:0; prev=P.ox; mblur(el,Math.min(5,v*.9));
-    },()=>{ mblur(wSky,0); pose(wSky,K1);
-      setTimeout(()=>{
-        // 2. push in on the record player (cut on the record player at full speed)
-        const Wend=via(M1,C_FORE); let cut2=false, ps=null;
-        run(1050,t=>{
-          const e=sw(t), P=lerpPose(K1,Wend,e,913,470);
-          if(!cut2&&e>=.5){ cut2=true; wSky.style.opacity="0"; cam.style.opacity="1"; }
-          if(cut2) pose(cam,inv(P,C_FORE)); else pose(wSky,cover(P));
-          const v=ps?Math.abs(Math.log(P.s/ps))*60:0; ps=P.s; mblur(cut2?cam:wSky,Math.min(4,v*2.2));
-        },()=>{ mblur(cam,0); mblur(wSky,0); cam.style.opacity="1"; $("lg-panel").style.transition=""; $("lg-panel").style.opacity=""; frame(); });
-      },450*(window.__TS||1));
-    });
+    const M1={s:S,ox:OX,oy:OY};
+    const bp=(stg.style.backgroundPosition||"50% 42%").split(" "); v.style.objectPosition=bp.join(" ");
+    v.style.opacity="1"; v.style.display="block"; cam.style.opacity="0";
+    let done=false;
+    const settle=()=>{ if(done) return; done=true;
+      run(900,t=>{ const e=soft(t), k=1.08-.08*e, sx=innerWidth/2, sy=innerHeight/2;
+        cam.style.transform=`translate(${sx-(sx-M1.ox)*k}px,${sy-(sy-M1.oy)*k}px) scale(${M1.s*k})`;
+        cam.style.opacity=String(e); v.style.opacity=String(1-e); },
+      ()=>{ v.style.display="none"; v.pause(); cam.style.opacity="1"; $("lg-panel").style.transition=""; $("lg-panel").style.opacity=""; frame(); }); };
+    const watch=()=>{ if(done) return; if(v.duration&&v.currentTime>=v.duration*.58) settle(); else requestAnimationFrame(watch); };
+    v.currentTime=0; const pr=v.play(); if(pr&&pr.catch) pr.catch(()=>settle());
+    requestAnimationFrame(watch); v.onended=settle; setTimeout(()=>{ if(!done&&v.currentTime<.05) settle(); },1500);
   }
   function leave(){
     closeCrate();
