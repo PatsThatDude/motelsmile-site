@@ -193,7 +193,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 /* Lounge: a second rooftop scene. "Listen in the lounge" pulls the camera back from the stage to the record player. */
 .lounge{position:fixed;inset:0;z-index:40;overflow:hidden;background:#05060a;opacity:0;pointer-events:none}
 .lounge.on{opacity:1;pointer-events:auto}
-.lg-fill{position:absolute;inset:-40px;background:url(img/lounge.webp?v=7) 62% 50%/cover;filter:blur(22px) brightness(.45)}
+.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/lounge.webp?v=7) 62% 50%/cover;filter:blur(22px) brightness(.45)}
 .lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
 .lg-cam{z-index:8}.lg-hero{z-index:2;background:url(img/rooftop-plate.webp?v=9) 0 0/1672px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
@@ -539,42 +539,31 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     if(still){ hero.style.display="none"; WL.forEach(e=>e.style.opacity="0"); cam.style.opacity="1"; frame(); return; }
     const hb=heroBox(), wb=wideBox(), cx=innerWidth/2, cy=innerHeight/2;
     hero.style.display="block"; hero.style.opacity="1"; WL.forEach(e=>e.style.opacity="0"); cam.style.opacity="0"; $("lg-panel").style.transition="none"; $("lg-panel").style.opacity="0";
-    // Parallax moves. Each shot is cut into depth layers (sky / rooftop / near furniture); every layer moves by its own
-    // measured match between shots, so near things travel further than the skyline — a real camera move, not a zoom.
+    // Gentle version: one image at a time, slow push, soft dip through dark between shots. No blur, no double images.
     const pose=(el,P)=>{el.style.transform=`translate(${P.ox}px,${P.oy}px) scale(${P.s})`;};
-    const blur=(els,v)=>els.forEach(el=>{el.style.filter=v>.05?`blur(${v.toFixed(2)}px)`:"";});
-    const via=(pB,T)=>({s:pB.s*T.s,ox:pB.ox+pB.s*T.tx,oy:pB.oy+pB.s*T.ty});      // pose of A, given pose of B and A->B map
-    const inv=(pA,T)=>{const s=pA.s/T.s; return {s,ox:pA.ox-s*T.tx,oy:pA.oy-s*T.ty};}; // pose of B, given pose of A
-    const lerpPose=(A,B,e,ax,ay)=>{ const s=A.s*Math.pow(B.s/A.s,e), sxA=A.ox+ax*A.s, syA=A.oy+ay*A.s, sxB=B.ox+ax*B.s, syB=B.oy+ay*B.s;
-      const sx=sxA+(sxB-sxA)*e, sy=syA+(syB-syA)*e; return {s,ox:sx-ax*s,oy:sy-ay*s}; };
-    const rel=(P,C)=>`translate(${(P.ox-C.ox)/C.s}px,${(P.oy-C.oy)/C.s}px) scale(${P.s/C.s})`;
-    // measured: stage -> couch shot
-    const A_SKY={s:.961,tx:-32.9,ty:-50.8}, A_GND={s:1.072,tx:423.4,ty:-147.3}, A_FORE={s:2.03,tx:-340,ty:-610};
-    // measured: couch shot -> record player shot
-    const C_SKY={s:1.107,tx:-82.5,ty:-87.6}, C_MID={s:.924,tx:-17,ty:36.4}, C_FORE={s:2.27,tx:-1465,ty:-567};
-    const [wSky,hG,wMid,wFore]=WL, pSky=$("pl-sky"), pMid=$("pl-mid");
-    const K1={s:wb.s,ox:wb.ox,oy:wb.oy};
-    const sky0=inv(hb,A_SKY), gnd0=inv(hb,A_GND), fore0=inv(hb,A_FORE), hF=$("hero-f");
-    // A: truck left along the back wall from the stage to the couch (1s)
-    run(1000,t=>{
-      const e=io(t), S1=lerpPose(sky0,K1,e,800,250), G1=lerpPose(gnd0,K1,e,1300,500), F1=lerpPose(fore0,K1,e,913,470);
-      pose(wSky,S1); pose(wMid,G1); pose(wFore,F1); pose(hero,via(S1,A_SKY)); pose(hG,via(G1,A_GND)); pose(hF,via(F1,A_FORE));
-      const x=cl((t-.2)/.45); [wSky,wMid,wFore].forEach(el=>el.style.opacity=String(x)); const hx=1-cl((t-.62)/.25); hG.style.opacity=String(hx); hF.style.opacity=String(hx); hero.style.opacity=String(hx);
-      blur([hero,hG,hF,wSky,wMid,wFore],Math.sin(Math.PI*x)*2.2);
-    },()=>{ hero.style.display="none"; hG.style.opacity="0"; hF.style.opacity="0"; blur([hero,hG,hF,wSky,wMid,wFore],0); pose(wSky,K1); pose(wMid,K1); pose(wFore,K1);
-      // B: a beat on the lounge, then C: walk up to the record player (1.1s)
-      setTimeout(()=>{
-        const M1={s:S,ox:OX,oy:OY}, eSky=via(M1,C_SKY), eMid=via(M1,C_MID), eFore=via(M1,C_FORE);
-        run(1100,t=>{
-          const e=io(t);
-          const Ps=lerpPose(K1,eSky,e,800,250), Pm=lerpPose(K1,eMid,e,1400,480), Pf=lerpPose(K1,eFore,e,WC.x,WC.y);
-          pose(wSky,Ps); pose(wMid,Pm); pose(wFore,Pf);
-          const cs=inv(Pf,C_FORE); pose(cam,cs); pSky.style.transform=rel(inv(Ps,C_SKY),cs); pMid.style.transform=rel(inv(Pm,C_MID),cs);
-          const x=cl((t-.4)/.3); cam.style.opacity=String(x); [wSky,wMid,wFore].forEach(el=>el.style.opacity=String(1-cl((t-.7)/.2)));
-          blur([wSky,wMid,wFore,cam],Math.sin(Math.PI*x)*1.8);
-        },()=>{ WL.forEach(el=>el.style.opacity="0"); blur([wSky,wMid,wFore,cam],0); pSky.style.transform=""; pMid.style.transform="";
-          cam.style.opacity="1"; $("lg-panel").style.transition=""; $("lg-panel").style.opacity=""; frame(); });
-      },550*(window.__TS||1));
+    const zoomAbout=(P,k,ax,ay)=>{const sx=P.ox+ax*P.s, sy=P.oy+ay*P.s, s=P.s*k; return {s,ox:sx-ax*s,oy:sy-ay*s};};
+    const soft=t=>t*t*(3-2*t);
+    const [wSky,hG,wMid,wFore]=WL, HF2=$("hero-f");
+    [hG,wMid,wFore,HF2].forEach(el=>el.style.opacity="0");
+    hero.style.backgroundImage="url(img/rooftop-lounge.webp?v=9)";
+    wSky.style.backgroundImage="url(img/lounge-wide.webp?v=7)";
+    $("pl-sky").src="img/lounge.webp?v=7"; $("pl-mid").style.display="none"; $("pl-fore").style.display="none";
+    const K1={s:wb.s,ox:wb.ox,oy:wb.oy}, M1={s:S,ox:OX,oy:OY}; L.classList.add("moving");
+    // 1. ease toward the lounge corner of the stage shot, fade down
+    run(900,t=>{ const e=soft(t); pose(hero,zoomAbout(hb,1+.18*e,640,540)); hero.style.opacity=String(1-soft(cl((t-.55)/.45))); },()=>{
+      hero.style.display="none";
+      // 2. the lounge fades up while settling
+      run(650,t=>{ const e=soft(t); pose(wSky,zoomAbout(K1,1.06-.06*e,913,470)); wSky.style.opacity=String(e); },()=>{
+        setTimeout(()=>{
+          // 3. ease toward the record player, fade down
+          run(850,t=>{ const e=soft(t); pose(wSky,zoomAbout(K1,1+.2*e,913,470)); wSky.style.opacity=String(1-soft(cl((t-.55)/.45))); },()=>{
+            wSky.style.opacity="0";
+            // 4. record player fades up while settling
+            run(600,t=>{ const e=soft(t); pose(cam,zoomAbout(M1,1.05-.05*e,610,500)); cam.style.opacity=String(e); },()=>{
+              cam.style.opacity="1"; L.classList.remove("moving"); $("lg-panel").style.transition=""; $("lg-panel").style.opacity=""; frame(); });
+          });
+        },600*(window.__TS||1));
+      });
     });
   }
   function leave(){
