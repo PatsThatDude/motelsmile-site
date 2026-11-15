@@ -87,7 +87,7 @@
     }
   ],
   "images": {
-    "hero": "img/rooftop-band.webp",
+    "hero": "img/rooftop-lounge.webp?v=9",
     "listen": "img/midtown.webp",
     "live": "img/el.webp",
     "watch": "img/fire.webp",
@@ -133,7 +133,7 @@
     },
     {
       "what": "Rooftop hero",
-      "who": "Generated image, song tags added",
+      "who": "Generated image, song tags + flyer painted in",
       "url": "#"
     }
   ],
