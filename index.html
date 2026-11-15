@@ -228,7 +228,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 #wl-sky{z-index:3;background-image:url(img/lounge-wide-plate.webp?v=8)}#hero-g{z-index:4;background-image:url(img/hero-ground.webp?v=9)}#hero-f{z-index:6;background-image:url(img/hero-fore.webp?v=9)}
 #wl-mid{z-index:5;background-image:url(img/lounge-wide-mid.webp?v=8)}#wl-fore{z-index:7;background-image:url(img/lounge-wide-fore.webp?v=8)}
 .lg-cam .lg-lay{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0}
-.lg-dig{pointer-events:auto;position:absolute;inset:0;z-index:9;overflow:hidden;background:transparent;opacity:0;visibility:hidden;transition:opacity .2s,visibility 0s .2s}
+.lg-dig{pointer-events:auto;position:absolute;inset:0;z-index:9;overflow:hidden;background:transparent;opacity:0;visibility:hidden;transition:opacity .12s,visibility 0s .12s}
+.lg-dig .cr-fill{display:none}
 .lg-dig.open{opacity:1;visibility:visible;transition:opacity .35s}
 .cr-box{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0}
 .cr-box>img,.cr-layer{position:absolute;left:0;top:0;width:1672px;height:941px;display:block;user-select:none;-webkit-user-drag:none}
@@ -496,7 +497,11 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
       setTimeout(()=>{ c.hidden=true; closeCrate(); setTimeout(()=>pick(i),still?0:380); }, still?0:520); };
     setMode("crate"); if(i===sel) go(); else flipTo(i).then(go);
   }
-  function crFrame(){ $("cr-box").style.transform=`translate(${OX}px,${OY}px) scale(${S})`; }
+  // leaning in over the crate: the same picture, zoomed so the crate fills the view
+  function crPose(){ const vw=innerWidth,vh=innerHeight, port=vw<vh;
+    const s=port?Math.min(vw*.95/330,(vh-230)/300):Math.min(vw*.5/330,(vh-170)/300);
+    return {s,ox:vw/2-1068*s,oy:(port?vh*.42:vh*.46)-650*s}; }
+  function crFrame(){ const P=crPose(); $("cr-box").style.transform=`translate(${P.ox}px,${P.oy}px) scale(${P.s})`; }
   addEventListener("resize",crFrame);
 
   /* ---------- framing: the 1672x941 scene box is scaled to cover the screen ---------- */
@@ -572,14 +577,21 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   if(location.hash==="#lounge") setTimeout(enter,300);
 
   /* ---------- crate ---------- */
+  const zoomCam=(A,B,ms,done)=>{ const ax=1068,ay=650, sm=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+    run(ms,t=>{ const e=sm(t), s=A.s*Math.pow(B.s/A.s,e), sxA=A.ox+ax*A.s, syA=A.oy+ay*A.s, sxB=B.ox+ax*B.s, syB=B.oy+ay*B.s;
+      cam.style.transform=`translate(${sxA+(sxB-sxA)*e-ax*s}px,${syA+(syB-syA)*e-ay*s}px) scale(${s})`; },done); };
+  let crOpen=false;
   function openCrate(){
-    if($("dig").classList.contains("open")) return;
+    if(crOpen||anim) return; crOpen=true;
     crFrame(); show(); rebuildLean(); setMode("crate");
-    $("dig").classList.add("open");
-    $("dig").setAttribute("aria-hidden","false");
-    setTimeout(()=>$("dig-go").focus({preventScroll:true}),400);
+    $("lg-panel").style.opacity="0"; $("lg-tag").hidden=true;
+    const go=()=>{ $("dig").classList.add("open"); $("dig").setAttribute("aria-hidden","false"); setTimeout(()=>$("dig-go").focus({preventScroll:true}),250); };
+    if(still) go(); else zoomCam({s:S,ox:OX,oy:OY},crPose(),750,go);
   }
-  function closeCrate(){ setTimeout(show,400); $("dig").classList.remove("open"); $("dig").setAttribute("aria-hidden","true"); }
+  function closeCrate(){ if(!crOpen) return; crOpen=false; setTimeout(show,400);
+    $("dig").classList.remove("open"); $("dig").setAttribute("aria-hidden","true");
+    const back=()=>{ $("lg-panel").style.opacity=""; frame(); };
+    if(still) back(); else zoomCam(crPose(),{s:S,ox:OX,oy:OY},650,back); }
   $("lg-crate-hot").addEventListener("click",openCrate);
   $("dig-x").addEventListener("click",closeCrate);
   addEventListener("keydown",e=>{ if(!L.classList.contains("on")) return;
