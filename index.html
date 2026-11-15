@@ -242,6 +242,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .cr-tape.fade{opacity:0}
 .cr-hot{position:absolute;cursor:pointer;z-index:5}
 .cr-clone{z-index:7;pointer-events:none;will-change:transform,opacity}
+.cr-lean{pointer-events:none;will-change:transform}
 .cr-ui{position:absolute;inset:0;pointer-events:none;z-index:10}
 .cr-ui>*{pointer-events:auto}
 .dig-head{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:12px;padding:14px max(16px,env(safe-area-inset-right,0px)) 14px max(16px,env(safe-area-inset-left,0px));background:linear-gradient(180deg,rgba(5,6,10,.75),rgba(5,6,10,0))}
@@ -335,6 +336,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
         <img class="cr-layer cr-tex" id="cr-tex" src="img/crate.webp" alt="">
         <div class="cr-layer" id="cr-tapes" style="pointer-events:none"></div>
         <div class="cr-hot" id="cr-hot" aria-hidden="true"></div>
+        <div class="cr-layer" id="cr-lean" style="pointer-events:none;z-index:5"></div>
         <div class="cr-layer cr-clone" id="cr-clone" hidden></div>
         <img class="cr-front" src="img/crate-front.webp" alt="">
       </div>
@@ -407,7 +409,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
       b.innerHTML=`<span></span><em>${r.soon?"Coming soon":"Play ▸"}</em>`; b.querySelector("span").textContent=r.title;
       b.addEventListener("click",()=>choose(i)); ls.appendChild(b);
     });
-    sel=Math.max(0,REC.findIndex(r=>!r.soon)); show();
+    sel=Math.max(0,REC.findIndex(r=>!r.soon)); show(); rebuildLean();
   }
   let sel=0, flipping=false, queue=0;
   function show(){
@@ -427,16 +429,43 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     const t=tapeEls[0].cloneNode(true); t.style.pointerEvents="none"; c.appendChild(t);
     c.style.transformOrigin="800px 800px"; c.hidden=false; return c;
   }
-  const TIP="perspective(1500px) rotateX(-64deg) translateY(40px)";
+  // Real crate flipping: each record tips forward on its bottom edge and stays leaning on the ones before it.
+  function sleeveEl(i){
+    const c=document.createElement("div"); c.className="cr-layer cr-lean"; c.style.clipPath=clipPoly;
+    const bg=document.createElement("img"); bg.src="img/crate.webp"; bg.className="cr-layer"; c.appendChild(bg);
+    const ac=document.createElement("div"); ac.className="cr-layer"; const a=document.createElement("div"); a.style.transform=ART_T; paintArt(a,REC[i]); ac.appendChild(a); c.appendChild(ac);
+    const sh=document.createElement("div"); sh.className="cr-layer cr-shade"; c.appendChild(sh);
+    const tx=document.createElement("img"); tx.src="img/crate.webp"; tx.className="cr-layer cr-tex"; c.appendChild(tx);
+    const t=tapeEls[0].cloneNode(true); t.firstChild.textContent=REC[i]?REC[i].title:""; t.style.pointerEvents="none"; c.appendChild(t);
+    c.style.transformOrigin="800px 805px"; return c;
+  }
+  const LEAN=k=>`perspective(2600px) rotateX(${-(73+k*4)}deg) translateY(${k*3}px) scaleX(.97)`;
+  const LEANF=k=>`brightness(${(.72-k*.13).toFixed(2)})`;
+  const UP="perspective(2600px) rotateX(0deg) translateY(0px) scaleX(1)";
+  const leanBox=()=>$("cr-lean");
+  function leaners(){ return [...leanBox().children]; }      // bottom of the pile first, top (most recent) last
+  function settle(ms){ const L=leaners(), n=L.length;
+    L.forEach((el,j)=>{ const k=n-1-j; el.animate([{transform:el.style.transform||LEAN(k),filter:el.style.filter||LEANF(k)},{transform:LEAN(k),filter:LEANF(k)}],{duration:ms,easing:"ease-out"}); el.style.transform=LEAN(k); el.style.filter=LEANF(k); }); }
+  function rebuildLean(){ leanBox().innerHTML=""; for(let k=Math.min(3,sel);k>=1;k--){ const el=sleeveEl(sel-k); el.style.transform=LEAN(k-1); el.style.filter=LEANF(k-1); leanBox().appendChild(el); } }
   function flip(dir,fast){
     const to=sel+dir; if(to<0||to>=REC.length) return Promise.resolve();
-    flipping=true; const ms=still?1:(fast?170:380);
-    let c;
-    if(dir>0){ c=makeClone(sel); sel=to; show(); c.style.transition="none"; c.style.transform="none"; c.style.opacity="1"; c.getBoundingClientRect();
-      c.style.transition=`transform ${ms}ms cubic-bezier(.4,0,.7,1), opacity ${ms}ms ease-in`; c.style.transform=TIP; c.style.opacity="0"; }
-    else { c=makeClone(to); c.style.transition="none"; c.style.transform=TIP; c.style.opacity="0"; c.getBoundingClientRect();
-      c.style.transition=`transform ${ms}ms cubic-bezier(.2,.6,.3,1), opacity ${ms*.6}ms ease-out`; c.style.transform="none"; c.style.opacity="1"; }
-    return new Promise(res=>setTimeout(()=>{ if(dir<0){ sel=to; show(); } c.hidden=true; flipping=false; res(); },ms+20));
+    flipping=true; const ms=still?1:(fast?200:520);
+    if(dir>0){
+      const el=sleeveEl(sel); el.style.transform=UP; el.style.filter="brightness(1)"; leanBox().appendChild(el);
+      sel=to; show();
+      // the older ones sink a little further as this one lands on them
+      const L=leaners(), n=L.length; L.forEach((o,j)=>{ if(o===el) return; const k=n-1-j; o.animate([{transform:o.style.transform,filter:o.style.filter},{transform:LEAN(k),filter:LEANF(k)}],{duration:ms*.6,delay:ms*.45,easing:"ease-out",fill:"forwards"}); o.style.transform=LEAN(k); o.style.filter=LEANF(k); });
+      el.animate([{transform:UP,filter:"brightness(1)"},{transform:`perspective(2600px) rotateX(-10deg) translateY(-16px) scaleX(1)`,filter:"brightness(1)",offset:.2},{transform:LEAN(0),filter:LEANF(0),offset:.78},{transform:`perspective(2600px) rotateX(-69deg) translateY(0px) scaleX(.97)`,offset:.9},{transform:LEAN(0),filter:LEANF(0)}],{duration:ms,easing:"cubic-bezier(.45,0,.3,1)"});
+      el.style.transform=LEAN(0); el.style.filter=LEANF(0);
+      return new Promise(res=>setTimeout(()=>{ leaners().slice(0,-3).forEach(o=>o.remove()); flipping=false; res(); },ms+30));
+    } else {
+      let el=leaners().pop(); if(!el){ el=sleeveEl(to); el.style.transform=LEAN(0); el.style.filter=LEANF(0); leanBox().appendChild(el); }
+      el.animate([{transform:el.style.transform,filter:el.style.filter},{transform:`perspective(2600px) rotateX(-8deg) translateY(-12px) scaleX(1)`,filter:"brightness(1)",offset:.75},{transform:UP,filter:"brightness(1)"}],{duration:ms,easing:"cubic-bezier(.3,0,.25,1)"});
+      el.style.transform=UP; el.style.filter="brightness(1)";
+      return new Promise(res=>setTimeout(()=>{ sel=to; show(); el.remove();
+        if(sel>=3&&leaners().length<3){ const d=sleeveEl(sel-3); leanBox().prepend(d); }
+        settle(still?1:220); flipping=false; res(); },ms+20));
+    }
   }
   async function flipTo(i){
     i=Math.max(0,Math.min(REC.length-1,i)); if(flipping||i===sel) return;
@@ -542,7 +571,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   /* ---------- crate ---------- */
   function openCrate(){
     if($("dig").classList.contains("open")) return;
-    crFrame(); show(); setMode("crate");
+    crFrame(); show(); rebuildLean(); setMode("crate");
     if(!still&&!anim){ // push the camera into the crate, then cut into the crate shot
       const cx=OX+1400*S, cy=OY+700*S;
       run(420,t=>{ const s=S*(1+1.6*io(t)); T(cam,cx-1400*s,cy-700*s,s); },()=>{ frame(); });
