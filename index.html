@@ -192,7 +192,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 /* Lounge: a second rooftop scene. "Listen in the lounge" pulls the camera back from the stage to the record player. */
 .lounge{position:fixed;inset:0;z-index:40;overflow:hidden;background:#05060a;opacity:0;pointer-events:none}
 .lounge.on{opacity:1;pointer-events:auto}
-.lg-fill{position:absolute;inset:-40px;background:url(img/lounge.webp) 62% 50%/cover;filter:blur(22px) brightness(.45)}
+.lg-fill{position:absolute;inset:-40px;background:url(img/lounge.webp?v=5) 62% 50%/cover;filter:blur(22px) brightness(.45)}
 .lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
 .lg-hero{z-index:3;background:url(img/rooftop-band.webp) 0 0/1672px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
@@ -222,7 +222,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 /* screen UI */
 .lg-ui{position:absolute;inset:0;z-index:6;pointer-events:none}
 .lg-back{pointer-events:auto;position:absolute;left:max(16px,env(safe-area-inset-left,0px));top:14px}
-.lg-wide{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;z-index:2;opacity:0;pointer-events:none;background:url(img/lounge-wide.webp) 0 0/1672px 941px;will-change:transform,opacity}
+.lg-wide{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;z-index:2;opacity:0;pointer-events:none;background:url(img/lounge-wide.webp?v=5) 0 0/1672px 941px;will-change:transform,opacity}
 .lg-dig{pointer-events:auto;position:absolute;inset:0;z-index:9;overflow:hidden;background:#05060a;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
 .lg-dig.open{opacity:1;visibility:visible;transition:opacity .35s}
 .cr-box{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0}
@@ -266,7 +266,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .dig-row[disabled]{cursor:default;color:var(--fog)}.dig-row[disabled] em{color:var(--fog)}
 .dig-row:not([disabled]):hover{background:rgba(255,61,127,.12)}
 @media (max-width:760px){.dig-head h3{visibility:hidden}.dig-foot{flex-wrap:wrap;justify-content:center;border-radius:18px;width:calc(100% - 24px);padding:10px 12px;row-gap:8px}.dig-foot b{order:-1;flex:1 0 100%;text-align:center;font-size:18px}}
-.cr-fill{position:absolute;inset:-40px;background:url(img/crate.webp) 50% 50%/cover;filter:blur(24px) brightness(.4)}
+.cr-fill{position:absolute;inset:-40px;background:url(img/crate.webp?v=5) 50% 50%/cover;filter:blur(24px) brightness(.4)}
 @media (max-width:760px) and (orientation:portrait){
   .lg-panel{position:absolute;pointer-events:auto;left:12px;right:12px;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;height:auto;transform:none;background:var(--glass);border-color:var(--line);padding:14px 16px;gap:8px}
   .lg-panel small{font-size:11px}.lg-panel b{font-size:24px}.lg-panel .row{font-size:13px}
@@ -279,7 +279,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 <section class="lounge" id="lounge" aria-label="The lounge" aria-hidden="true">
   <div class="lg-fill"></div>
   <div class="lg-cam" id="lg-cam">
-    <img class="lg-bg" src="img/lounge.webp" alt="Rooftop lounge: a record player and a crate of records, the stage across the roof" width="1672" height="941">
+    <img class="lg-bg" src="img/lounge.webp?v=5" alt="Rooftop lounge: a record player and a crate of records, the stage across the roof" width="1672" height="941">
     <svg id="lg-svg" viewBox="0 0 1672 941" aria-hidden="true">
       <defs>
         <radialGradient id="lg-vinyl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1a1a20"/><stop offset=".36" stop-color="#0c0c10"/><stop offset=".37" stop-color="#16161c"/><stop offset="1" stop-color="#08080b"/></radialGradient>
@@ -310,7 +310,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
       <g id="lg-sleeve" opacity="0"><rect x="-88" y="0" width="176" height="176" rx="3" fill="#0b0b12" stroke="#ff3d7f" stroke-opacity=".6" stroke-width="2"/><image href="img/smile-logo.webp" x="-48" y="26" width="96" height="96"/><text x="0" y="158" text-anchor="middle" font-family="Yellowtail, cursive" font-size="26" fill="#fff">Don't Mind It</text></g>
       </g>
     </svg>
-    <img class="lg-front" src="img/lounge-front.webp" alt="" width="886" height="442">
+    <img class="lg-front" src="img/lounge-front.webp?v=5" alt="" width="886" height="442">
     <svg aria-hidden="true"><g id="lg-hold"></g></svg>
     <button class="lg-hot crate" id="lg-crate-hot" aria-label="Flip through the records"></button>
     <button class="lg-hot deck" id="lg-deck-hot" aria-label="Play or pause the record"></button>
@@ -330,15 +330,15 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     <div class="lg-dig" id="dig" data-mode="crate" role="dialog" aria-label="Record crate" aria-hidden="true">
       <div class="cr-fill"></div>
       <div class="cr-box" id="cr-box">
-        <img src="img/crate.webp" alt="Looking down into the record crate" width="1672" height="941">
+        <img src="img/crate.webp?v=5" alt="Looking down into the record crate" width="1672" height="941">
         <div class="cr-layer" id="cr-artclip"><div class="cr-art" id="cr-art"></div></div>
         <div class="cr-layer cr-shade" id="cr-shade"></div>
-        <img class="cr-layer cr-tex" id="cr-tex" src="img/crate.webp" alt="">
+        <img class="cr-layer cr-tex" id="cr-tex" src="img/crate.webp?v=5" alt="">
         <div class="cr-layer" id="cr-tapes" style="pointer-events:none"></div>
         <div class="cr-hot" id="cr-hot" aria-hidden="true"></div>
         <div class="cr-layer" id="cr-lean" style="pointer-events:none;z-index:5"></div>
         <div class="cr-layer cr-clone" id="cr-clone" hidden></div>
-        <img class="cr-front" src="img/crate-front.webp" alt="">
+        <img class="cr-front" src="img/crate-front.webp?v=5" alt="">
       </div>
       <div class="cr-ui">
         <div class="dig-head"><button class="dig-x" id="dig-x">← Record player</button><h3>The crate</h3><div class="dig-seg"><button id="dig-m-crate" aria-pressed="true">Crate</button><button id="dig-m-list" aria-pressed="false">List</button></div></div>
@@ -422,20 +422,20 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   // the clone is a copy of the front sleeve (photo + art + its tape) that tips forward out of the way
   function makeClone(i){
     const c=$("cr-clone"); c.innerHTML=""; c.style.clipPath=clipPoly;
-    const bg=document.createElement("img"); bg.src="img/crate.webp"; bg.className="cr-layer"; c.appendChild(bg);
+    const bg=document.createElement("img"); bg.src="img/crate.webp?v=5"; bg.className="cr-layer"; c.appendChild(bg);
     const ac=document.createElement("div"); ac.className="cr-layer"; const a=document.createElement("div"); a.style.transform=ART_T; paintArt(a,REC[i]); ac.appendChild(a); c.appendChild(ac);
     const sh=document.createElement("div"); sh.className="cr-layer cr-shade"; c.appendChild(sh);
-    const tx=document.createElement("img"); tx.src="img/crate.webp"; tx.className="cr-layer cr-tex"; c.appendChild(tx);
+    const tx=document.createElement("img"); tx.src="img/crate.webp?v=5"; tx.className="cr-layer cr-tex"; c.appendChild(tx);
     const t=tapeEls[0].cloneNode(true); t.style.pointerEvents="none"; c.appendChild(t);
     c.style.transformOrigin="850px 648px"; c.hidden=false; return c;
   }
   // Real crate flipping: each record tips forward on its bottom edge and stays leaning on the ones before it.
   function sleeveEl(i){
     const c=document.createElement("div"); c.className="cr-layer cr-lean"; c.style.clipPath=clipPoly;
-    const bg=document.createElement("img"); bg.src="img/crate.webp"; bg.className="cr-layer"; c.appendChild(bg);
+    const bg=document.createElement("img"); bg.src="img/crate.webp?v=5"; bg.className="cr-layer"; c.appendChild(bg);
     const ac=document.createElement("div"); ac.className="cr-layer"; const a=document.createElement("div"); a.style.transform=ART_T; paintArt(a,REC[i]); ac.appendChild(a); c.appendChild(ac);
     const sh=document.createElement("div"); sh.className="cr-layer cr-shade"; c.appendChild(sh);
-    const tx=document.createElement("img"); tx.src="img/crate.webp"; tx.className="cr-layer cr-tex"; c.appendChild(tx);
+    const tx=document.createElement("img"); tx.src="img/crate.webp?v=5"; tx.className="cr-layer cr-tex"; c.appendChild(tx);
     const t=tapeEls[0].cloneNode(true); t.firstChild.textContent=REC[i]?REC[i].title:""; t.style.pointerEvents="none"; c.appendChild(t);
     c.style.transformOrigin="850px 648px"; return c;
   }
