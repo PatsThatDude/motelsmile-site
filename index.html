@@ -227,9 +227,9 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .lg-dig.open{opacity:1;visibility:visible;transition:opacity .35s}
 .cr-box{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0}
 .cr-box>img,.cr-layer{position:absolute;left:0;top:0;width:1672px;height:941px;display:block;user-select:none;-webkit-user-drag:none}
-.cr-front{left:211px!important;top:674px!important;width:1095px!important;height:267px!important;pointer-events:none;z-index:6}
+.cr-front{left:505px!important;top:389px!important;width:763px!important;height:552px!important;pointer-events:none;z-index:6}
 .cr-art{position:absolute;left:0;top:0;width:1000px;height:1000px;transform-origin:0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:150px;gap:20px;pointer-events:none}
-.cr-art img{width:360px;filter:drop-shadow(0 0 30px rgba(255,61,127,.7))}
+.cr-art img{width:380px;filter:drop-shadow(0 0 30px rgba(255,61,127,.7))}
 .cr-art em{font-family:var(--script);font-style:normal;font-size:118px;line-height:1;color:#fff;text-shadow:0 0 24px var(--pink)}
 .cr-art small{font-family:var(--mono);font-size:30px;letter-spacing:.4em;text-transform:uppercase;color:#ffc2da}
 .cr-art.soon{padding-top:250px}
@@ -372,8 +372,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   loadC().then(c=>{REC=records(c);drawCrate();});
   /* ---------- the crate: flip through real sleeves in the crate photo ---------- */
   // front sleeve corners (full square, bottom runs under the crate rim) + the tape strips on the sleeves behind it
-  const SLV=[[440,298],[1246,358],[1201,866],[393,762]];
-  const TAPES=[[816,348,257,56],[849,293,198,46],[890,225,196,44],[916,181,188,38],[945,139,185,36],[966,97,177,34],[990,63,170,28],[1027,30,155,28]];
+  const SLV=[[638,362],[1092,402],[1072,702],[612,664]];
+  const TAPES=[[846,391,137,32],[868,360,108,25],[896,324,108,23],[916,298,106,21],[938,271,104,19],[953,247,102,18],[977,227,100,17],[996,205,98,16]];
   const clipPoly="polygon("+SLV.map(p=>p[0]+"px "+p[1]+"px").join(",")+")";
   function homog(w,h,q){ // matrix3d mapping a w x h box onto quad q
     const [x0,y0]=q[0],[x1,y1]=q[1],[x2,y2]=q[2],[x3,y3]=q[3];
@@ -395,7 +395,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   // tape labels
   const tapeEls=TAPES.map((t,k)=>{
     const el=document.createElement("div"); el.className="cr-tape";
-    Object.assign(el.style,{left:(t[0]-t[2]/2)+"px",top:(t[1]-t[3]/2)+"px",width:t[2]+"px",height:t[3]+"px",fontSize:(t[3]*.5)+"px",transform:`rotate(${2.6-k*.15}deg)`});
+    Object.assign(el.style,{left:(t[0]-t[2]/2)+"px",top:(t[1]-t[3]/2)+"px",width:t[2]+"px",height:t[3]+"px",fontSize:(t[3]*.6)+"px",transform:`rotate(${4-k*.3}deg)`});
     el.innerHTML="<span></span>"; el.addEventListener("click",()=>flipTo(sel+k)); $("cr-tapes").appendChild(el); return el;
   });
   function paintTapes(off){
@@ -427,7 +427,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     const sh=document.createElement("div"); sh.className="cr-layer cr-shade"; c.appendChild(sh);
     const tx=document.createElement("img"); tx.src="img/crate.webp"; tx.className="cr-layer cr-tex"; c.appendChild(tx);
     const t=tapeEls[0].cloneNode(true); t.style.pointerEvents="none"; c.appendChild(t);
-    c.style.transformOrigin="800px 800px"; c.hidden=false; return c;
+    c.style.transformOrigin="850px 648px"; c.hidden=false; return c;
   }
   // Real crate flipping: each record tips forward on its bottom edge and stays leaning on the ones before it.
   function sleeveEl(i){
@@ -437,7 +437,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     const sh=document.createElement("div"); sh.className="cr-layer cr-shade"; c.appendChild(sh);
     const tx=document.createElement("img"); tx.src="img/crate.webp"; tx.className="cr-layer cr-tex"; c.appendChild(tx);
     const t=tapeEls[0].cloneNode(true); t.firstChild.textContent=REC[i]?REC[i].title:""; t.style.pointerEvents="none"; c.appendChild(t);
-    c.style.transformOrigin="800px 805px"; return c;
+    c.style.transformOrigin="850px 648px"; return c;
   }
   const LEAN=k=>`perspective(2600px) rotateX(${-(73+k*4)}deg) translateY(${k*3}px) scaleX(.97)`;
   const LEANF=k=>`brightness(${(.72-k*.13).toFixed(2)})`;
@@ -484,12 +484,12 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   // pulling the chosen sleeve up out of the crate, then back to the record player
   function choose(i){
     const go=()=>{ const c=makeClone(sel); paintArt($("cr-art"),REC[sel+1]); paintTapes(1); c.style.transition="none"; c.style.transform="none"; c.getBoundingClientRect();
-      c.style.transition="transform .5s cubic-bezier(.4,0,.2,1), opacity .5s ease-in .15s"; c.style.transform="translateY(-520px) scale(1.04)"; c.style.opacity="0";
+      c.style.transition="transform .5s cubic-bezier(.4,0,.2,1), opacity .5s ease-in .15s"; c.style.transform="translateY(-360px) scale(1.04)"; c.style.opacity="0";
       setTimeout(()=>{ c.hidden=true; closeCrate(); setTimeout(()=>pick(i),still?0:380); }, still?0:520); };
     setMode("crate"); if(i===sel) go(); else flipTo(i).then(go);
   }
   function crFrame(){ const w=innerWidth,h=innerHeight; let s,ox,oy;
-    if(w/h<1.2){ s=Math.min(w/900,h/700); ox=w/2-820*s; oy=h/2-500*s; } else { s=Math.max(w/W0,h/H0); ox=(w-W0*s)*.5; oy=(h-H0*s)*.45; }
+    if(w/h<1.2){ s=Math.min(w/780,h/680); ox=w/2-880*s; oy=h/2-520*s; } else { s=Math.max(w/W0,h/H0); ox=(w-W0*s)*.5; oy=(h-H0*s)*.45; }
     $("cr-box").style.transform=`translate(${ox}px,${oy}px) scale(${s})`; }
   addEventListener("resize",crFrame);
 
