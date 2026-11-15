@@ -515,25 +515,16 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     const lerpPose=(A,B,e,ax,ay)=>{ // scale geometrically, keep the anchor point (screen of image point ax,ay) moving in a straight line
       const s=A.s*Math.pow(B.s/A.s,e), sxA=A.ox+ax*A.s, syA=A.oy+ay*A.s, sxB=B.ox+ax*B.s, syB=B.oy+ay*B.s;
       const sx=sxA+(sxB-sxA)*e, sy=syA+(syB-syA)*e; return {s,ox:sx-ax*s,oy:sy-ay*s}; };
-    // A: pull back off the stage into the wide lounge (0.85s)
-    run(850,t=>{
-      const e=io(t), W=lerpPose(W0,W1,e,780,300);
-      pose(wide,W); pose(hero,{s:W.s*HW.s,ox:W.ox+W.s*HW.tx,oy:W.oy+W.s*HW.ty});
-      const x=cl((t-.18)/.45); wide.style.opacity=String(x); hero.style.opacity=String(1-cl((t-.3)/.4));
-      const bl=Math.sin(Math.PI*x)*3; blur(hero,bl); blur(wide,bl);
-    },()=>{ hero.style.display="none"; blur(hero,0); blur(wide,0);
-      // B: a beat on the whole lounge, then C: push in on the record player (0.9s)
-      setTimeout(()=>{
-        const M1={s:S,ox:OX,oy:OY};                                   // record player at rest
-        const Wend={s:M1.s*WM.s}; Wend.ox=M1.ox+M1.s*WM.tx; Wend.oy=M1.oy+M1.s*WM.ty; // wide pose locked to it
-        run(900,t=>{
-          const e=io(t), W=lerpPose(W1,Wend,e,WC.x,WC.y);
-          pose(wide,W); pose(cam,{s:W.s/WM.s,ox:W.ox-W.s*WM.tx/WM.s,oy:W.oy-W.s*WM.ty/WM.s});
-          const x=cl((t-.42)/.38); cam.style.opacity=String(x); wide.style.opacity=String(1-cl((t-.55)/.35));
-          const bl=Math.sin(Math.PI*x)*2.5; blur(wide,bl); blur(cam,bl);
-        },()=>{ wide.style.opacity="0"; blur(wide,0); blur(cam,0); cam.style.opacity="1"; $("lg-panel").style.transition=""; $("lg-panel").style.opacity=""; frame(); });
-      },420);
-    });
+    // One move: stage -> record player, locked on the skyline (ESB / One WTC line up in both shots).
+    const HM={s:.945,tx:52,ty:-50};                 // stage-shot point -> record-player-shot point
+    const M0={s:hb.s/HM.s}; M0.ox=hb.ox-M0.s*HM.tx; M0.oy=hb.oy-M0.s*HM.ty;  // record-player pose that matches the stage as it sits now
+    const M1={s:S,ox:OX,oy:OY};
+    run(1050,t=>{
+      const e=io(t), C=lerpPose(M0,M1,e,1026,493);
+      pose(cam,C); pose(hero,{s:C.s*HM.s,ox:C.ox+C.s*HM.tx,oy:C.oy+C.s*HM.ty});
+      const x=cl((t-.15)/.5); cam.style.opacity=String(x); hero.style.opacity=String(1-cl((t-.3)/.4));
+      const bl=Math.sin(Math.PI*x)*2.5; blur(hero,bl); blur(cam,bl);
+    },()=>{ hero.style.display="none"; blur(hero,0); blur(cam,0); cam.style.opacity="1"; $("lg-panel").style.transition=""; $("lg-panel").style.opacity=""; frame(); });
   }
   function leave(){
     closeCrate();
