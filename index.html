@@ -192,22 +192,22 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 /* Lounge: a second rooftop scene. "Listen in the lounge" pulls the camera back from the stage to the record player. */
 .lounge{position:fixed;inset:0;z-index:40;overflow:hidden;background:#05060a;opacity:0;pointer-events:none}
 .lounge.on{opacity:1;pointer-events:auto}
-.lg-fill{position:absolute;inset:-40px;background:url(img/lounge.webp?v=5) 62% 50%/cover;filter:blur(22px) brightness(.45)}
+.lg-fill{position:absolute;inset:-40px;background:url(img/lounge.webp?v=6) 62% 50%/cover;filter:blur(22px) brightness(.45)}
 .lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
 .lg-hero{z-index:3;background:url(img/rooftop-band.webp) 0 0/1672px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
 .lg-bg{left:0;top:0;width:1672px;height:941px}
-.lg-front{left:775px;top:486px;width:809px;height:410px;pointer-events:none}
+.lg-front{left:341px;top:489px;width:886px;height:405px;pointer-events:none}
 .lg-cam svg{position:absolute;left:0;top:0;width:1672px;height:941px;overflow:visible;pointer-events:none}
 .lg-hot{all:unset;position:absolute;cursor:pointer;border-radius:10px;z-index:4}
 .lg-hot:focus-visible{outline:4px solid var(--cyan);outline-offset:4px}
-.lg-hot.crate{left:1218px;top:495px;width:362px;height:400px}
-.lg-hot.deck{left:870px;top:425px;width:380px;height:75px}
-.lg-tag{position:absolute;left:1268px;top:418px;z-index:4;font-family:var(--tube);font-size:30px;color:#fff;padding:8px 22px;border:3px solid var(--pink);border-radius:40px;background:rgba(5,6,10,.6);box-shadow:0 0 14px var(--pink);text-shadow:0 0 10px var(--pink);pointer-events:none;animation:lgpulse 2.2s ease-in-out infinite;white-space:nowrap}
+.lg-hot.crate{left:873px;top:488px;width:352px;height:365px}
+.lg-hot.deck{left:400px;top:440px;width:420px;height:70px}
+.lg-tag{position:absolute;left:920px;top:420px;z-index:4;font-family:var(--tube);font-size:30px;color:#fff;padding:8px 22px;border:3px solid var(--pink);border-radius:40px;background:rgba(5,6,10,.6);box-shadow:0 0 14px var(--pink);text-shadow:0 0 10px var(--pink);pointer-events:none;animation:lgpulse 2.2s ease-in-out infinite;white-space:nowrap}
 .lg-tag[hidden]{display:none}
 @keyframes lgpulse{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-8px);opacity:.75}}
 /* front-of-console player: sits on the speaker grille */
-.lg-panel{transition:opacity .3s;position:absolute;left:822px;top:546px;width:336px;height:166px;z-index:4;padding:15px 20px;background:rgba(5,6,10,.5);border:1.5px solid rgba(255,61,127,.35);border-radius:6px;box-shadow:inset 0 0 40px rgba(0,0,0,.6);backdrop-filter:blur(2px);display:flex;flex-direction:column;gap:7px;font-family:var(--mono);color:var(--fog)}
+.lg-panel{transition:opacity .3s;position:absolute;left:472px;top:562px;width:362px;height:186px;z-index:4;padding:18px 22px;background:rgba(5,6,10,.5);border:1.5px solid rgba(255,61,127,.35);border-radius:6px;box-shadow:inset 0 0 40px rgba(0,0,0,.6);backdrop-filter:blur(2px);display:flex;flex-direction:column;gap:7px;font-family:var(--mono);color:var(--fog)}
 .lg-panel small{font-size:12px;letter-spacing:.25em;text-transform:uppercase;color:var(--pink)}
 .lg-panel b{font-family:var(--tube);font-weight:400;font-size:30px;line-height:1.05;color:#fff;text-shadow:0 0 10px var(--pink)}
 .lg-panel .row{display:flex;align-items:center;gap:12px;font-size:14px}
@@ -222,7 +222,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 /* screen UI */
 .lg-ui{position:absolute;inset:0;z-index:6;pointer-events:none}
 .lg-back{pointer-events:auto;position:absolute;left:max(16px,env(safe-area-inset-left,0px));top:14px}
-.lg-wide{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;z-index:2;opacity:0;pointer-events:none;background:url(img/lounge-wide.webp?v=5) 0 0/1672px 941px;will-change:transform,opacity}
+.lg-wide{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;z-index:2;opacity:0;pointer-events:none;background:url(img/lounge-wide.webp?v=6) 0 0/1672px 941px;will-change:transform,opacity}
 .lg-dig{pointer-events:auto;position:absolute;inset:0;z-index:9;overflow:hidden;background:#05060a;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
 .lg-dig.open{opacity:1;visibility:visible;transition:opacity .35s}
 .cr-box{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0}
@@ -271,7 +271,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   .lg-panel{position:absolute;pointer-events:auto;left:12px;right:12px;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;height:auto;transform:none;background:var(--glass);border-color:var(--line);padding:14px 16px;gap:8px}
   .lg-panel small{font-size:11px}.lg-panel b{font-size:24px}.lg-panel .row{font-size:13px}
   .lg-pp{width:40px;height:40px}
-  .lg-tag{font-size:40px;left:1250px;top:400px}
+  .lg-tag{font-size:40px;left:900px;top:400px}
 }
 @media (prefers-reduced-motion:reduce){.lg-tag{animation:none}.lg-dig,.dig-sl{transition:none}}
 </style>
@@ -279,13 +279,13 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 <section class="lounge" id="lounge" aria-label="The lounge" aria-hidden="true">
   <div class="lg-fill"></div>
   <div class="lg-cam" id="lg-cam">
-    <img class="lg-bg" src="img/lounge.webp?v=5" alt="Rooftop lounge: a record player and a crate of records, the stage across the roof" width="1672" height="941">
+    <img class="lg-bg" src="img/lounge.webp?v=6" alt="Rooftop lounge: a record player and a crate of records, the stage across the roof" width="1672" height="941">
     <svg id="lg-svg" viewBox="0 0 1672 941" aria-hidden="true">
       <defs>
         <radialGradient id="lg-vinyl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1a1a20"/><stop offset=".36" stop-color="#0c0c10"/><stop offset=".37" stop-color="#16161c"/><stop offset="1" stop-color="#08080b"/></radialGradient>
         <filter id="lg-rim" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5"/></filter>
       </defs>
-      <g id="lg-world" transform="matrix(.87 0 0 .87 77.4 29.7)">
+      <g id="lg-world" transform="matrix(1 0 0 1 -507 -23)">
       <g id="lg-rec" opacity="0">
         <g id="lg-spin">
           <circle r="150" fill="url(#lg-vinyl)"/>
@@ -310,7 +310,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
       <g id="lg-sleeve" opacity="0"><rect x="-88" y="0" width="176" height="176" rx="3" fill="#0b0b12" stroke="#ff3d7f" stroke-opacity=".6" stroke-width="2"/><image href="img/smile-logo.webp" x="-48" y="26" width="96" height="96"/><text x="0" y="158" text-anchor="middle" font-family="Yellowtail, cursive" font-size="26" fill="#fff">Don't Mind It</text></g>
       </g>
     </svg>
-    <img class="lg-front" src="img/lounge-front.webp?v=5" alt="" width="886" height="442">
+    <img class="lg-front" src="img/lounge-front.webp?v=6" alt="" width="886" height="442">
     <svg aria-hidden="true"><g id="lg-hold"></g></svg>
     <button class="lg-hot crate" id="lg-crate-hot" aria-label="Flip through the records"></button>
     <button class="lg-hot deck" id="lg-deck-hot" aria-label="Play or pause the record"></button>
@@ -501,9 +501,9 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     const pan=$("lg-panel"), ui=document.querySelector(".lg-ui");
     if(portrait()){ if(pan.parentNode!==ui) ui.insertBefore(pan,ui.firstChild); } else if(pan.parentNode!==cam) cam.appendChild(pan);
     if(portrait()){ // phones: show the console + crate side, letterboxed over a blurred fill
-      S=w/830; OX=-765*S; OY=Math.max(60,(h-H0*S)/2-110);
+      S=w/920; OX=-330*S; OY=Math.max(60,(h-H0*S)/2-110);
     }else{ // keep the console and the whole crate in frame; crop sky first
-      S=Math.max(w/W0,h/H0); OX=(w-W0*S)*0.75; OY=(h-H0*S)*0.7;
+      S=Math.max(w/W0,h/H0); OX=(w-W0*S)*0.45; OY=(h-H0*S)*0.7;
     }
     if(!anim) cam.style.transform=`translate(${OX}px,${OY}px) scale(${S})`;
   }
@@ -511,14 +511,14 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 
   /* ---------- transition: stage -> pull back to the wide lounge -> push in on the record player ---------- */
   const wide=$("lg-wide");
-  const WC={x:1136,y:544,w:272}, CC={x:1026,y:493,w:492}; // console centre + width in the wide shot / the close-up
+  const WC={x:913,y:470,w:234}, CC={x:610,y:501,w:520}; // console centre + width in the wide shot / the close-up
   let anim=null;
   function heroBox(){
     const w=stg.clientWidth,h=stg.clientHeight,s=Math.max(w/W0,h/H0);
     const bp=(stg.style.backgroundPosition||"50% 42%").split(" ").map(v=>parseFloat(v)/100);
     return {s,ox:(w-W0*s)*bp[0],oy:(h-H0*s)*(isNaN(bp[1])?0.42:bp[1])};
   }
-  function wideBox(){ const w=innerWidth,h=innerHeight,s=Math.max(w/W0,h/H0); const fx=portrait()?.8:.5; return {s,ox:(w-W0*s)*fx,oy:(h-H0*s)*.6}; }
+  function wideBox(){ const w=innerWidth,h=innerHeight,s=Math.max(w/W0,h/H0); const fx=portrait()?.55:.5; return {s,ox:(w-W0*s)*fx,oy:(h-H0*s)*.6}; }
   const io=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2, out=t=>1-Math.pow(1-t,3);
   const T=(el,x,y,s)=>{el.style.transform=`translate(${x}px,${y}px) scale(${s})`;};
   const cl=(v)=>Math.max(0,Math.min(1,v));
@@ -544,16 +544,28 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     const lerpPose=(A,B,e,ax,ay)=>{ // scale geometrically, keep the anchor point (screen of image point ax,ay) moving in a straight line
       const s=A.s*Math.pow(B.s/A.s,e), sxA=A.ox+ax*A.s, syA=A.oy+ay*A.s, sxB=B.ox+ax*B.s, syB=B.oy+ay*B.s;
       const sx=sxA+(sxB-sxA)*e, sy=syA+(syB-syA)*e; return {s,ox:sx-ax*s,oy:sy-ay*s}; };
-    // One move: stage -> record player, locked on the skyline (ESB / One WTC line up in both shots).
-    const HM={s:.945,tx:52,ty:-50};                 // stage-shot point -> record-player-shot point
-    const M0={s:hb.s/HM.s}; M0.ox=hb.ox-M0.s*HM.tx; M0.oy=hb.oy-M0.s*HM.ty;  // record-player pose that matches the stage as it sits now
-    const M1={s:S,ox:OX,oy:OY};
-    run(1050,t=>{
-      const e=io(t), C=lerpPose(M0,M1,e,1026,493);
-      pose(cam,C); pose(hero,{s:C.s*HM.s,ox:C.ox+C.s*HM.tx,oy:C.oy+C.s*HM.ty});
-      const x=cl((t-.15)/.5); cam.style.opacity=String(x); hero.style.opacity=String(1-cl((t-.3)/.4));
-      const bl=Math.sin(Math.PI*x)*2.5; blur(hero,bl); blur(cam,bl);
-    },()=>{ hero.style.display="none"; blur(hero,0); blur(cam,0); cam.style.opacity="1"; $("lg-panel").style.transition=""; $("lg-panel").style.opacity=""; frame(); });
+    // Stage -> couch shot (locked on the skyline: the camera trucks left along the wall, the stage slides away right)
+    // -> a beat -> record player (locked on the console). Shots agree on the layout: stairwell, couch, record player, crate, pallet, amp, drums.
+    const HK={s:.96,tx:-36,ty:-33};                         // stage point -> couch-shot point
+    const KP={s:CC.w/WC.w}; KP.tx=CC.x-KP.s*WC.x; KP.ty=CC.y-KP.s*WC.y;   // couch-shot point -> record-player point
+    const K0={s:hb.s/HK.s}; K0.ox=hb.ox-K0.s*HK.tx; K0.oy=hb.oy-K0.s*HK.ty;
+    const K1={s:wb.s,ox:wb.ox,oy:wb.oy};
+    run(950,t=>{
+      const e=io(t), W=lerpPose(K0,K1,e,800,300);
+      pose(wide,W); pose(hero,{s:W.s*HK.s,ox:W.ox+W.s*HK.tx,oy:W.oy+W.s*HK.ty});
+      const x=cl((t-.15)/.45); wide.style.opacity=String(x); hero.style.opacity=String(1-cl((t-.3)/.4));
+      const bl=Math.sin(Math.PI*x)*3; blur(hero,bl); blur(wide,bl);
+    },()=>{ hero.style.display="none"; blur(hero,0); blur(wide,0);
+      setTimeout(()=>{
+        const M1={s:S,ox:OX,oy:OY}, Wend={s:M1.s*KP.s}; Wend.ox=M1.ox+M1.s*KP.tx; Wend.oy=M1.oy+M1.s*KP.ty;
+        run(950,t=>{
+          const e=io(t), W=lerpPose(K1,Wend,e,WC.x,WC.y);
+          pose(wide,W); pose(cam,{s:W.s/KP.s,ox:W.ox-W.s*KP.tx/KP.s,oy:W.oy-W.s*KP.ty/KP.s});
+          const x=cl((t-.45)/.35); cam.style.opacity=String(x); wide.style.opacity=String(1-cl((t-.6)/.3));
+          const bl=Math.sin(Math.PI*x)*2; blur(wide,bl); blur(cam,bl);
+        },()=>{ wide.style.opacity="0"; blur(wide,0); blur(cam,0); cam.style.opacity="1"; $("lg-panel").style.transition=""; $("lg-panel").style.opacity=""; frame(); });
+      },700);
+    });
   }
   function leave(){
     closeCrate();
@@ -573,8 +585,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     if($("dig").classList.contains("open")) return;
     crFrame(); show(); rebuildLean(); setMode("crate");
     if(!still&&!anim){ // push the camera into the crate, then cut into the crate shot
-      const cx=OX+1400*S, cy=OY+700*S;
-      run(420,t=>{ const s=S*(1+1.6*io(t)); T(cam,cx-1400*s,cy-700*s,s); },()=>{ frame(); });
+      const cx=OX+1047*S, cy=OY+670*S;
+      run(420,t=>{ const s=S*(1+1.6*io(t)); T(cam,cx-1047*s,cy-670*s,s); },()=>{ frame(); });
       setTimeout(()=>{ $("dig").classList.add("open"); },160);
     } else $("dig").classList.add("open");
     $("dig").setAttribute("aria-hidden","false");
@@ -588,7 +600,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     else if(e.key==="Escape") $("lg-back").click(); });
 
   /* ---------- the guy: a neon-rimmed silhouette, 2-bone IK limbs ---------- */
-  const H=640, FY=872;
+  const H=640, FY=860;
   const LEN={torso:.30*H,neck:.045*H,head:.068*H,ua:.165*H,fa:.16*H,th:.25*H,sh:.25*H,shw:.115*H,hpw:.075*H};
   function ik(a,t,l1,l2,bend){
     let dx=t.x-a.x,dy=t.y-a.y,d=Math.hypot(dx,dy)||1; const m=Math.min(d,l1+l2-.5);
@@ -634,15 +646,15 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
       return typeof a==="number"?a+(b-a)*u:{x:a.x+(b.x-a.x)*u,y:a.y+(b.y-a.y)*u}; } }
     return keys[keys.length-1][1];
   }
-  const PIV={x:1283.4,y:471.6}, ARM_L=120, PLAT={x:1072,y:498,rx:150,q:.108};
+  const PIV={x:1219,y:473}, ARM_L=100, PLAT={x:1072,y:498,rx:145,q:.08};
   const angTo=pt=>Math.atan2(pt.y-PIV.y,pt.x-PIV.x);
-  const A_REST=angTo({x:1265,y:527}), A_OUT=angTo({x:1215,y:506}), A_IN=angTo({x:1124,y:494});
+  const A_REST=angTo({x:1297,y:523}), A_OUT=angTo({x:1124,y:502}), A_IN=angTo({x:1107,y:500});
   const armHead=(a,lift)=>({x:PIV.x+Math.cos(a)*ARM_L,y:PIV.y+Math.sin(a)*ARM_L-(lift||0)});
   const X=1525, X2=1445, HIPY=FY-.5*H+4;
   const K={
     hip:[[0,{x:1860,y:HIPY}],[1.9,{x:X,y:HIPY}],[2.3,{x:X,y:HIPY}],[2.8,{x:X-6,y:HIPY+46}],[3.3,{x:X-6,y:HIPY+46}],[3.9,{x:X,y:HIPY}],[5.1,{x:X,y:HIPY}],[5.9,{x:X2,y:HIPY}],[9.2,{x:X2,y:HIPY}],[9.9,{x:1480,y:HIPY}],[11.6,{x:1480,y:HIPY}],[13.4,{x:1880,y:HIPY}]],
     lean:[[0,4],[1.9,0],[2.3,0],[2.8,-24],[3.3,-24],[3.9,-4],[5.1,-4],[5.9,-17],[8.6,-17],[9.3,-3],[11.6,-3],[12,4]],
-    handA:[[0,{x:1770,y:600}],[1.9,{x:1455,y:600}],[2.3,{x:1450,y:595}],[2.8,{x:1466,y:648}],[3.2,{x:1466,y:640}],[3.9,{x:1446,y:438}],[4.7,{x:1370,y:448}],[5.1,{x:1356,y:452}],[5.9,{x:1250,y:430}],[6.9,{x:1222,y:494}],[7.2,{x:1240,y:520}],[7.6,{x:1265,y:527}],[8.2,{x:1215,y:497}],[8.6,{x:1215,y:506}],[9.3,{x:1395,y:600}],[11.6,{x:1420,y:605}],[13.4,{x:1820,y:605}]],
+    handA:[[0,{x:1770,y:600}],[1.9,{x:1455,y:600}],[2.3,{x:1450,y:595}],[2.8,{x:1466,y:648}],[3.2,{x:1466,y:640}],[3.9,{x:1446,y:438}],[4.7,{x:1370,y:448}],[5.1,{x:1356,y:452}],[5.9,{x:1250,y:430}],[6.9,{x:1222,y:494}],[7.2,{x:1240,y:520}],[7.6,{x:1297,y:523}],[8.2,{x:1124,y:494}],[8.6,{x:1124,y:502}],[9.3,{x:1395,y:600}],[11.6,{x:1420,y:605}],[13.4,{x:1820,y:605}]],
     handB:[[0,{x:1915,y:605}],[1.9,{x:1595,y:605}],[2.8,{x:1580,y:640}],[3.3,{x:1580,y:640}],[3.9,{x:1560,y:438}],[4.7,{x:1556,y:445}],[5.1,{x:1540,y:610}],[9.3,{x:1525,y:600}],[11.6,{x:1545,y:605}],[13.4,{x:1945,y:605}]]
   };
   function feet(hip,t){
