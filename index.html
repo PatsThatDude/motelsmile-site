@@ -1478,8 +1478,8 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     setPose(ZAP); place(ZAP); const end=performance.now()+1500; let on=false;
     while(performance.now()<end){ on=!on; neon(on); if(flash){ flash.style.transition="none"; flash.style.background="#ff4fd8"; flash.style.opacity=on&&Math.random()<.5?.16:0; } await wait(55); }
     zapping=false; pat.classList.remove("zz"); if(flash){ flash.style.opacity=0; flash.style.background=""; flash.style.transition=""; } neon(0);
-    setPose(FRIED); place(FRIED); sizzle(2.5); for(let i=0;i<14;i++){ puff(3); await wait(220); }
-    await wait(600); [pat,rf,sh].forEach(e=>{ e.style.transition="opacity .9s"; e.style.opacity=0; }); await wait(950);
+    setPose(FRIED); place(FRIED); sizzle(1.4); for(let i=0;i<7;i++){ puff(4); await wait(220); }
+    await wait(300); [pat,rf,sh].forEach(e=>{ e.style.transition="opacity .45s"; e.style.opacity=0; }); await wait(480);
     vis(false); [pat,rf,sh].forEach(e=>{ e.style.transition=""; e.style.opacity=""; });
     await wait(700+Math.random()*600); await appear(); busy=false; schedule(); }
   pat.addEventListener("click",zap);
