@@ -95,6 +95,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .sky{pointer-events:none}.sky .pills{pointer-events:auto}
 
 /* ---------- play layer: things on the roof you can poke ---------- */
+@media (max-width:760px){.stage{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}}
 #play{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;z-index:3;pointer-events:none}
 #play .pk,#lg-play .pk{appearance:none;-webkit-appearance:none;background-color:transparent;border:0;padding:0;margin:0;color:transparent;position:absolute;pointer-events:auto;cursor:pointer;border-radius:8px;-webkit-tap-highlight-color:transparent}
 #play .pk.img{background-image:url(img/rooftop-lounge.webp?v=10);background-size:1672px 941px;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%)}
@@ -1040,7 +1041,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   const IMG={w:1672,h:941}, FLY={x:252,y:467,w:41,h:61}, LNG={x:556,y:462,w:202,h:160};
   // tall phones use a vertical version of the roof; the main shot sits inside it at this scale/offset
   const MP={s:.9063,tx:-292.6,ty:393};
-  const tall=()=>matchMedia("(max-width:760px) and (orientation:portrait)").matches;
+  // phones now use the same wide roof as desktop (drag sideways to look around); vertical version retired
+  const tall=()=>false;
   window.MSBand=()=>{ const st=$("stage"), W=st.clientWidth,H=st.clientHeight; if(!tall()) return null; const s=Math.max(W/941,H/1672), ox=(W-941*s)*px, oy=(H-1672*s)*py; return {left:ox+s*MP.tx,top:oy+s*MP.ty,width:1672*s*MP.s,height:941*s*MP.s,px,py}; };
   const stage=$("stage"), fly=$("flyer");
   const phone=()=>matchMedia("(max-width:760px)").matches;
