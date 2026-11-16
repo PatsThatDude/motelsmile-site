@@ -91,6 +91,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   .top span{font-size:0}.top span .bs-link{font-size:11px}
 }
 .sky{pointer-events:none}.sky .pills{pointer-events:auto}
+.pan-hint{display:none;position:absolute;left:50%;transform:translateX(-50%);bottom:calc(var(--barh,120px) + 70px);z-index:3;font:12px var(--mono);letter-spacing:.15em;text-transform:uppercase;color:#fff;padding:6px 14px;border-radius:20px;background:rgba(5,6,10,.55);opacity:0;transition:opacity .5s;pointer-events:none;white-space:nowrap}
+@media (max-width:760px){.pan-hint{display:block}}
 .hot{position:absolute;z-index:2;display:block;border-radius:2px;cursor:pointer;transition:box-shadow .2s}
 .hot:hover,.hot:focus-visible{box-shadow:0 0 0 2px var(--blue),0 0 18px var(--blue);outline:none}
 
@@ -162,6 +164,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   <header class="top"><div><img src="img/smile-logo-96.webp" alt="" width="30" height="30">Motel Smile</div><span>New York Rock<a class="bs-link" id="bs-link" href="#backstage">Backstage</a></span></header>
 
   <a class="hot" id="flyer" href="#shows" data-open="shows" aria-label="Flyer on the door: next show TBA. Open shows"></a>
+  <div class="pan-hint" id="pan-hint" aria-hidden="true">⇠ swipe to look around ⇢</div>
   <a class="hot" id="lounge-hot" href="#lounge" data-lounge aria-label="The lounge: pick a record"></a>
 
   <div class="sky">
@@ -935,11 +938,23 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     const lh=$("lounge-hot"), L2=ox+LNG.x*s, T2=oy+LNG.y*s;
     Object.assign(lh.style,{left:L2+"px",top:T2+"px",width:LNG.w*s+"px",height:LNG.h*s+"px"}); lh.style.visibility=(L2+LNG.w*s<0||L2>W)?"hidden":"visible";
   }
-  // phones: the wide shot slowly pans door -> drum kit and back, so the flyer and the kit both get seen
-  let t0=performance.now();
+  // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
+  // One short drift on first load hints that it moves.
+  let cx=760, cxT=760, drag=null, hinted=false, t0=performance.now();
+  const span=()=>{ const W=stage.clientWidth,H=stage.clientHeight,s=Math.max(W/IMG.w,H/IMG.h); return {W,s,half:W/2/s}; };
+  const clampC=c=>{ const {half}=span(); return Math.max(half,Math.min(IMG.w-half,c)); };
+  const toPx=c=>{ const {W,s}=span(), iw=IMG.w*s; return iw<=W?0.5:Math.max(0,Math.min(1,(W/2-c*s)/(W-iw))); };
+  stage.style.touchAction="pan-y";
+  stage.addEventListener("pointerdown",e=>{ if(!phone()||e.target.closest(".sheet,.bar,.pill,button,.top")) return; drag={x:e.clientX,c:cxT,moved:false}; });
+  addEventListener("pointermove",e=>{ if(!drag) return; const dx=e.clientX-drag.x; if(Math.abs(dx)>6) drag.moved=true; cxT=clampC(drag.c-dx/span().s); hinted=true; });
+  addEventListener("pointerup",()=>{ drag=null; }); addEventListener("pointercancel",()=>{ drag=null; });
+  stage.addEventListener("click",e=>{ if(drag&&drag.moved){ e.preventDefault(); e.stopPropagation(); } },true);
   function tick(t){
-    if(phone()){ py=0.5; px=still?0.30:0.12+0.48*(0.5-0.5*Math.cos((t-t0)/26000*2*Math.PI)); }
-    else { px=0.5; py=0.42; }
+    if(phone()){
+      if(!hinted&&!still){ const k=(t-t0-1200)/2600; if(k>=0&&k<=1) cxT=clampC(760-360*Math.sin(Math.PI*k)); else if(k>1){ hinted=true; cxT=clampC(760); } }
+      cxT=clampC(cxT); cx+= (cxT-cx)*(drag?0.6:0.14); py=0.5; px=toPx(cx);
+      const h=$("pan-hint"); if(h) h.style.opacity=(!hinted&&t-t0>1000)?"1":"0";
+    } else { px=0.5; py=0.42; }
     place(); requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick); addEventListener("resize",place);
