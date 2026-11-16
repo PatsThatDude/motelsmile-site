@@ -1419,9 +1419,9 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
 /* ---------- Pat wanders the roof; tap = zap ---------- */
 (()=>{
   const V="?v=1", B=k=>({real:`img/band/p${k}-real.webp${V}`,neon:`img/band/p${k}-neon.webp${V}`,char:`img/band/p${k}-char.webp${V}`});
-  const AR={1:.5135,2:.5269,3:.5462,4:.5308,5:.6558,6:.8077,7:.5346,8:.4692,9:.5981}, F={1:1.05,6:.78,9:1.3};
+  const AR={1:.5135,2:.5269,3:.5462,4:.5308,5:.6558,6:.8077,7:.5346,8:.4692,9:.5981,10:.3962}, F={1:1.05,6:.78,9:1.3,10:1.05};
   const P=k=>Object.assign({k,ar:AR[k],f:F[k]||1},B(k));
-  const POSES=[1,2,3,4,5,6,7,8].map(P), ZAP=P(9);
+  const POSES=[1,2,3,4,5,6,7,8].map(P), ZAP=P(9), FRIED=P(10);
   // feet positions in main-shot coords (1672x941); height follows the floor's perspective
   const SPOTS=[[800,700],[1185,690],[720,715],[935,728]];
   const hFor=f=>1.25*(f-482.2);
@@ -1478,12 +1478,12 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     setPose(ZAP); place(ZAP); const end=performance.now()+1500; let on=false;
     while(performance.now()<end){ on=!on; neon(on); if(flash){ flash.style.transition="none"; flash.style.background="#ff4fd8"; flash.style.opacity=on&&Math.random()<.5?.16:0; } await wait(55); }
     zapping=false; pat.classList.remove("zz"); if(flash){ flash.style.opacity=0; flash.style.background=""; flash.style.transition=""; } neon(0);
-    setPose(pose,"char"); place(); sizzle(2.5); for(let i=0;i<14;i++){ puff(3); await wait(220); }
+    setPose(FRIED); place(FRIED); sizzle(2.5); for(let i=0;i<14;i++){ puff(3); await wait(220); }
     await wait(600); [pat,rf,sh].forEach(e=>{ e.style.transition="opacity .9s"; e.style.opacity=0; }); await wait(950);
     vis(false); [pat,rf,sh].forEach(e=>{ e.style.transition=""; e.style.opacity=""; });
     await wait(700+Math.random()*600); await appear(); busy=false; schedule(); }
   pat.addEventListener("click",zap);
-  [...POSES,ZAP].forEach(p=>["real","neon","char"].forEach(t=>{ const i=new Image(); i.src=p[t]; }));
+  [...POSES,ZAP,FRIED].forEach(p=>["real","neon"].forEach(t=>{ const i=new Image(); i.src=p[t]; }));
   cur=Math.floor(Math.random()*SPOTS.length); pose=POSES[Math.floor(Math.random()*POSES.length)];
   ir.onload=()=>{ ir.onload=null; vis(true); }; setPose(pose); place(); schedule();
 })();
