@@ -1018,6 +1018,14 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   </div>
 </section>
 
+<script>
+/* iPhone: Web Audio is muted by the ring/silent switch unless the page plays as media. On the first touch, switch the audio session to playback and play a tiny silent clip so every sound on the roof is heard. */
+(()=>{ let done=false; const un=()=>{ if(done) return; done=true;
+  try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
+  try{ const a=new Audio("data:audio/wav;base64,UklGRrQBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZABAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA"); a.setAttribute("playsinline",""); a.play().catch(()=>{}); }catch(e){}
+  ["pointerdown","touchend","click","keydown"].forEach(t=>removeEventListener(t,un,true)); };
+  ["pointerdown","touchend","click","keydown"].forEach(t=>addEventListener(t,un,true)); })();
+</script>
 <script data-page>
 (function(){
   // capture this page's own source parts BEFORE anything renders (used only for the html-publish fallback)
