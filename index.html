@@ -1432,7 +1432,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   // feet positions in main-shot coords (1672x941); height follows the floor's perspective (scaled to the drum kit)
   // far (back by the wall), mid (by the kit), close (foreground)
-  const SPOTS=[[740,640],[1420,628],[470,642], [800,665],[1195,668],[935,700],[1090,690], [430,800],[1290,812],[640,782]];
+  const SPOTS=[[740,640],[1445,630],[470,642], [800,665],[1195,668],[870,712],[1215,722], [430,800],[1290,812],[640,782]];
   const hFor=f=>1.48*(f-420);
   const MEMBERS=[], taken=()=>MEMBERS.map(m=>m.spot);
   function freeSpot(self){ const busy=taken().filter((s,i)=>MEMBERS[i]!==self && s>=0);
