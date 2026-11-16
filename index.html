@@ -1424,7 +1424,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const POSES=[1,2,3,4,5,6,7,8].map(P), ZAP=P(9), FRIED=P(10);
   // feet positions in main-shot coords (1672x941); height follows the floor's perspective
   const SPOTS=[[800,665],[1195,668],[935,700],[1090,690]];
-  const hFor=f=>1.70*(f-420);
+  const hFor=f=>1.48*(f-420);
   const $=id=>document.getElementById(id);
   const pat=$("pat"); if(!pat) return;
   const inner=pat.querySelector(".in"), ir=pat.querySelector(".r"), inn=pat.querySelector(".n"), rf=$("pat-rf"), rfr=rf.querySelector("img"), sh=$("pat-sh"), cv=$("pat-fx"), cx=cv.getContext("2d");
