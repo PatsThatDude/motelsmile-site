@@ -139,7 +139,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .bm-rf img{position:absolute;inset:0;width:100%;height:100%}
 .bm-sh{position:absolute;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.65),transparent 70%);pointer-events:none;visibility:hidden}
 #pat-fx{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:200}
-.bm.zz{animation:patsh .09s infinite}@keyframes patsh{0%{translate:4px -2px}50%{translate:-4px 3px}100%{translate:2px 2px}}
+.bm.zz{animation:patsh .09s infinite}.bm.zj{animation:jordj .16s infinite}@keyframes jordj{0%{translate:0 0;rotate:-3deg}50%{translate:0 -14px;rotate:3deg}100%{translate:0 0;rotate:-3deg}}@keyframes patsh{0%{translate:4px -2px}50%{translate:-4px 3px}100%{translate:2px 2px}}
 .flash{position:absolute;inset:0;z-index:4;pointer-events:none;background:#fff;opacity:0}
 .flash.go{animation:flash .5s ease-out}
 @keyframes flash{0%{opacity:.18}20%{opacity:0}35%{opacity:.12}100%{opacity:0}}
@@ -1436,14 +1436,15 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     const ok=SPOTS.map((s,i)=>i).filter(i=>i!==self.spot && busy.every(j=>Math.abs(SPOTS[j][0]-SPOTS[i][0])>200));
     return ok.length?ok[Math.floor(Math.random()*ok.length)]:self.spot; }
   // shared fx: bolts + smoke on one canvas inside #play
-  let smoke=[], raf=0;
-  function bolt(R){ cx.strokeStyle=Math.random()<.5?"#ff6ae6":"#bdf6ff"; cx.lineWidth=2+Math.random()*3; cx.shadowColor="#ff3fd0"; cx.shadowBlur=14;
+  let smoke=[], sparks=[], raf=0;
+  function bolt(R,c){ c=c||["#ff6ae6","#bdf6ff","#ff3fd0"]; cx.strokeStyle=Math.random()<.5?c[0]:c[1]; cx.lineWidth=2+Math.random()*3; cx.shadowColor=c[2]; cx.shadowBlur=14;
     cx.beginPath(); let x=R.x+Math.random()*R.w, y=R.y+Math.random()*R.h*.8; cx.moveTo(x,y);
     for(let i=0;i<6;i++){ x+=(Math.random()-.5)*R.w*.9; y+=(Math.random()-.5)*R.h*.25; cx.lineTo(x,y); } cx.stroke(); cx.shadowBlur=0; }
-  function loop(){ cx.clearRect(0,0,1672,941); const z=MEMBERS.filter(m=>m.zapping); z.forEach(m=>{ const R=m.rect(); for(let i=0;i<3;i++) bolt(R); });
+  function loop(){ cx.clearRect(0,0,1672,941); const z=MEMBERS.filter(m=>m.zapping); z.forEach(m=>{ const R=m.rect(); for(let i=0;i<3;i++) bolt(R,m.bolts); if(m.sparky) for(let i=0;i<4;i++) sparks.push({x:R.x+R.w*Math.random(),y:R.y+R.h*Math.random()*.6,vx:(Math.random()-.5)*7,vy:-Math.random()*6,t:0}); });
+    for(const s of sparks){ s.t++; s.x+=s.vx; s.y+=s.vy; s.vy+=.45; cx.fillStyle=s.t<8?"#fff7c2":"#ffb02e"; cx.globalAlpha=Math.max(0,1-s.t/40); cx.fillRect(s.x,s.y,3,3); } cx.globalAlpha=1; sparks=sparks.filter(s=>s.t<40);
     for(const p of smoke){ p.t++; p.x+=p.vx+Math.sin(p.t/12)*.4; p.y+=p.vy; p.r+=.5; const a=Math.max(0,p.a*(1-p.t/p.life));
       const g=cx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r); g.addColorStop(0,`rgba(150,140,150,${a})`); g.addColorStop(1,"rgba(150,140,150,0)"); cx.fillStyle=g; cx.beginPath(); cx.arc(p.x,p.y,p.r,0,7); cx.fill(); }
-    smoke=smoke.filter(p=>p.t<p.life); raf=(z.length||smoke.length)?requestAnimationFrame(loop):0; }
+    smoke=smoke.filter(p=>p.t<p.life); raf=(z.length||smoke.length||sparks.length)?requestAnimationFrame(loop):0; }
   const kick=()=>{ if(!raf) raf=requestAnimationFrame(loop); };
   let AC=null; const ac=()=>{ try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume(); }catch(e){} return AC; };
   function buzz(dur){ const a=ac(); if(!a) return; const t=a.currentTime, g=a.createGain(); g.gain.value=0; g.connect(a.destination);
@@ -1451,6 +1452,11 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     for(let k=0;k<dur*25;k++) g.gain.setValueAtTime(Math.random()<.7?.16+Math.random()*.12:0,t+k/25); g.gain.setValueAtTime(0,t+dur);
     const b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate), c=b.getChannelData(0); for(let i=0;i<c.length;i++) c[i]=Math.random()<.02?(Math.random()*2-1):0;
     const n=a.createBufferSource(); n.buffer=b; const ng=a.createGain(); ng.gain.value=.45; n.connect(ng).connect(a.destination); n.start(t); }
+  function chordZap(dur){ const a=ac(); if(!a) return; const t=a.currentTime, d=a.createWaveShaper(), c=new Float32Array(512); for(let i=0;i<512;i++){ const x=i/256-1; c[i]=Math.tanh(6*x); } d.curve=c;
+    const g=a.createGain(); g.gain.value=0; d.connect(g).connect(a.destination);
+    [82.4,123.5,164.8].forEach(f=>{ const o=a.createOscillator(); o.type="sawtooth"; o.frequency.setValueAtTime(f,t); o.frequency.exponentialRampToValueAtTime(f*.55,t+dur); o.connect(d); o.start(t); o.stop(t+dur); });
+    for(let k=0;k<dur*20;k++) g.gain.setValueAtTime(Math.random()<.75?.12+Math.random()*.08:.02,t+k/20); g.gain.setValueAtTime(0,t+dur);
+    const q=a.createOscillator(), qg=a.createGain(); q.type="square"; q.frequency.setValueAtTime(900,t); q.frequency.exponentialRampToValueAtTime(2600,t+dur); qg.gain.setValueAtTime(0,t); qg.gain.linearRampToValueAtTime(.05,t+.3); qg.gain.linearRampToValueAtTime(0,t+dur); q.connect(qg).connect(a.destination); q.start(t); q.stop(t+dur); }
   function sizzle(dur){ const a=ac(); if(!a) return; const t=a.currentTime, b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate), c=b.getChannelData(0);
     for(let i=0;i<c.length;i++) c[i]=(Math.random()*2-1)*(1-i/c.length);
     const n=a.createBufferSource(); n.buffer=b; const f=a.createBiquadFilter(); f.type="highpass"; f.frequency.value=3000; const g=a.createGain(); g.gain.value=.07; n.connect(f).connect(g).connect(a.destination); n.start(t); }
@@ -1464,7 +1470,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     el.innerHTML='<div class="in"><img class="r" alt=""><img class="n" alt=""></div>';
     [sh,rf,el].forEach(n=>play.insertBefore(n,cv));
     const inner=el.querySelector(".in"), ir=el.querySelector(".r"), inn=el.querySelector(".n"), rfr=rf.querySelector("img");
-    const m={spot:-1,zapping:false,busy:false,pose:null,rect:()=>({x:el.offsetLeft,y:el.offsetTop,w:el.offsetWidth,h:el.offsetHeight})};
+    const m={spot:-1,zapping:false,busy:false,pose:null,bolts:cfg.bolts,sparky:!!cfg.sparky,rect:()=>({x:el.offsetLeft,y:el.offsetTop,w:el.offsetWidth,h:el.offsetHeight})};
     let wT=null;
     function setPose(p){ ir.src=p.real; rfr.src=p.real; inn.src=p.neon;
       const px=20/(520*p.ar)*100, py=20/520*100; Object.assign(inn.style,{left:-px+"%",top:-py+"%",width:100+2*px+"%",height:100+2*py+"%"}); }
@@ -1487,10 +1493,10 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       neon(1); rf.style.opacity=.15; await wait(500);
       for(let i=0;i<2;i++){ neon(0); await wait(40); neon(1); await wait(40); } neon(0); rf.style.opacity=""; } })();
     function puff(n){ const R=m.rect(); for(let i=0;i<n;i++) smoke.push({x:R.x+R.w*(.3+Math.random()*.4),y:R.y+R.h*(.02+Math.random()*.25),vx:(Math.random()-.5)*.6,vy:-(0.8+Math.random()*1.2),r:5+Math.random()*6,a:.45,t:0,life:90+Math.random()*60}); kick(); }
-    async function zap(e){ e&&e.stopPropagation(); if(m.busy) return; m.busy=true; clearTimeout(wT); buzz(1.5); m.zapping=true; kick(); el.classList.add("zz");
+    async function zap(e){ e&&e.stopPropagation(); if(m.busy) return; m.busy=true; clearTimeout(wT); (cfg.sound==="chord"?chordZap:buzz)(1.5); m.zapping=true; kick(); el.classList.add(cfg.anim||"zz");
       setPose(ZAP); place(ZAP); const end=performance.now()+1500; let on=false;
-      while(performance.now()<end){ on=!on; neon(on); if(flash){ flash.style.transition="none"; flash.style.background="#ff4fd8"; flash.style.opacity=on&&Math.random()<.5?.16:0; } await wait(55); }
-      m.zapping=false; el.classList.remove("zz"); if(flash){ flash.style.opacity=0; flash.style.background=""; flash.style.transition=""; } neon(0);
+      while(performance.now()<end){ on=!on; neon(on); if(flash){ flash.style.transition="none"; flash.style.background=cfg.flash||"#ff4fd8"; flash.style.opacity=on&&Math.random()<.5?.16:0; } await wait(55); }
+      m.zapping=false; el.classList.remove(cfg.anim||"zz"); if(flash){ flash.style.opacity=0; flash.style.background=""; flash.style.transition=""; } neon(0);
       setPose(FRIED); place(FRIED); sizzle(1.4); for(let i=0;i<7;i++){ puff(4); await wait(220); }
       await wait(300); [el,rf,sh].forEach(e=>{ e.style.transition="opacity .45s"; e.style.opacity=0; }); await wait(480);
       vis(false); [el,rf,sh].forEach(e=>{ e.style.transition=""; e.style.opacity=""; });
@@ -1505,7 +1511,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   Member({name:"Pat",pre:"p",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,
     ar:{1:.5135,2:.5269,3:.5462,4:.5308,5:.6558,6:.8077,7:.5346,8:.4692,9:.5981,10:.3962},f:{1:1.05,6:.78,9:1.3,10:1.05}});
   // Jordan: shots v3, made from his character master sheet
-  Member({name:"Jordan",pre:"jj",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:5500,scale:.97,
+  Member({name:"Jordan",pre:"jj",sound:"chord",anim:"zj",sparky:true,flash:"#37e0ff",bolts:["#7ff3ff","#fff6a0","#22c8ff"],poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:5500,scale:.97,
     ar:{1:0.6404,2:0.6635,3:0.5712,4:0.5865,5:0.5096,6:0.5,7:0.5308,8:0.4615,9:0.6538,10:0.5173},f:{2:.9,3:.97,9:1.36}});
 })();
 </script>
