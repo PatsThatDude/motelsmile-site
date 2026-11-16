@@ -1521,8 +1521,8 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     function puff(n){ const R=m.rect(); for(let i=0;i<n;i++) smoke.push({x:R.x+R.w*(.3+Math.random()*.4),y:R.y+R.h*(.02+Math.random()*.25),vx:(Math.random()-.5)*.6,vy:-(0.8+Math.random()*1.2),r:5+Math.random()*6,a:.45,t:0,life:90+Math.random()*60}); kick(); }
     async function zap(e){ e&&e.stopPropagation(); if(m.busy) return; m.busy=true; clearTimeout(wT); (cfg.sound==="chord"?guitarZap:bassZap)(1.5); m.zapping=true; kick(); el.classList.add(cfg.anim||"zz");
       setPose(ZAP); place(ZAP); const end=performance.now()+1500; let on=false;
-      while(performance.now()<end){ on=!on; neon(on); if(flash){ flash.style.transition="none"; flash.style.background=cfg.flash||"#ff4fd8"; flash.style.opacity=on&&Math.random()<.5?.16:0; } await wait(55); }
-      m.zapping=false; el.classList.remove(cfg.anim||"zz"); if(flash){ flash.style.opacity=0; flash.style.background=""; flash.style.transition=""; } neon(0);
+      while(performance.now()<end){ on=!on; neon(on); await wait(55); }
+      m.zapping=false; el.classList.remove(cfg.anim||"zz"); neon(0);
       setPose(FRIED); place(FRIED); sizzle(1.4); for(let i=0;i<7;i++){ puff(4); await wait(220); }
       await wait(300); [el,rf,sh].forEach(e=>{ e.style.transition="opacity .45s"; e.style.opacity=0; }); await wait(480);
       vis(false); [el,rf,sh].forEach(e=>{ e.style.transition=""; e.style.opacity=""; });
