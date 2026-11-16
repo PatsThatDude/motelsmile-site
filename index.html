@@ -24,6 +24,7 @@ body{margin:0;background:var(--ink);color:var(--white);font-family:var(--mono);f
 a{color:inherit}
 :focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
 
+.stage.tall{background-image:url(img/rooftop-phone.webp?v=1)!important}
 .stage{position:relative;height:100%;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;background:#0a0b12 center 42%/cover no-repeat}
 .stage::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,6,10,.55) 0%,rgba(5,6,10,0) 18%,rgba(5,6,10,0) 62%,rgba(5,6,10,.7) 100%)}
 .top,.sky,.bar{position:relative;z-index:1}
@@ -614,12 +615,20 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     const bp=(stg.style.backgroundPosition||"50% 42%").split(" "); v.style.objectPosition=bp.join(" ");
     v.style.opacity="1"; v.style.display="block"; cam.style.opacity="0";
     let done=false;
-    const settle=()=>{ if(done) return; done=true;
+    let settle=()=>{ if(done) return; done=true;
       run(900,t=>{ const e=soft(t), k=1.08-.08*e, sx=innerWidth/2, sy=innerHeight/2;
         cam.style.transform=`translate(${sx-(sx-M1.ox)*k}px,${sy-(sy-M1.oy)*k}px) scale(${M1.s*k})`;
         cam.style.opacity=String(e); v.style.opacity=String(1-e); },
       ()=>{ v.style.display="none"; v.pause(); cam.style.opacity="1"; $("lg-panel").style.transition=""; $("lg-panel").style.opacity=""; frame(); }); };
     const watch=()=>{ if(done) return; if(v.duration&&v.currentTime>=v.duration*.58) settle(); else requestAnimationFrame(watch); };
+    const band=window.MSBand&&window.MSBand();
+    if(band){ L.style.background=`#05060a url(img/rooftop-phone.webp?v=1) ${band.px*100}% ${band.py*100}%/cover no-repeat`; $("lounge").querySelector(".lg-fill").style.opacity="0";
+      Object.assign(v.style,{inset:"auto",objectFit:"fill",left:band.left+"px",top:band.top+"px",width:band.width+"px",height:band.height+"px"});
+      const Hh=innerHeight, Ww=Hh*1672/941, to={left:innerWidth/2-Ww*.45,top:0,width:Ww,height:Hh};
+      run(800,t=>{ const e=soft(t); for(const k of ["left","top","width","height"]) v.style[k]=(band[k]+(to[k]-band[k])*e)+"px"; },()=>{});
+      const restore=()=>{ L.style.background=""; $("lounge").querySelector(".lg-fill").style.opacity=""; Object.assign(v.style,{inset:"",objectFit:"",left:"",top:"",width:"",height:""}); };
+      const os=settle; settle=()=>{ os(); setTimeout(restore,950); };
+    }
     v.currentTime=0; const pr=v.play(); if(pr&&pr.catch) pr.catch(()=>settle());
     requestAnimationFrame(watch); v.onended=settle; setTimeout(()=>{ if(!done&&v.currentTime<.05) settle(); },1500);
   }
@@ -638,7 +647,13 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
       cam.style.opacity=String(1-e); vb.style.opacity=String(e);
       if(!started&&t>.35){ started=true; vb.play().catch(()=>{}); } },
       ()=>{ cam.style.opacity="0"; if(!started) vb.play().catch(()=>{});
-        const fin=()=>{ vb.onended=null; end(); $("lg-panel").style.opacity=""; };
+        const fin=()=>{ vb.onended=null; const band=window.MSBand&&window.MSBand();
+          if(band&&vb.style.display!=="none"){ L.style.background=`#05060a url(img/rooftop-phone.webp?v=1) ${band.px*100}% ${band.py*100}%/cover no-repeat`; $("lounge").querySelector(".lg-fill").style.opacity="0";
+            const r=vb.getBoundingClientRect(), Hh=innerHeight, Ww=Hh*1672/941, fr={left:innerWidth/2-Ww*.45,top:0,width:Ww,height:Hh};
+            Object.assign(vb.style,{objectFit:"fill",inset:"auto"});
+            run(650,t=>{ const e=soft(t); for(const k of ["left","top","width","height"]) vb.style[k]=(fr[k]+(band[k]-fr[k])*e)+"px"; },
+              ()=>{ L.style.background=""; $("lounge").querySelector(".lg-fill").style.opacity=""; Object.assign(vb.style,{inset:"",objectFit:"",left:"",top:"",width:"",height:""}); end(); $("lg-panel").style.opacity=""; });
+          } else { end(); $("lg-panel").style.opacity=""; } };
         vb.onended=fin; setTimeout(()=>{ if(vb.style.display!=="none") fin(); },2500); });
   }
   $("lg-back").addEventListener("click",e=>{e.preventDefault(); if(location.hash==="#lounge") history.back(); else leave();});
@@ -1006,13 +1021,20 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   const PLAT={spotify:"Spotify",apple:"Apple Music",youtube:"YouTube",bandcamp:"Bandcamp"};
   // flyer hotspot: follows the flyer painted on the door, whatever the crop
   const IMG={w:1672,h:941}, FLY={x:252,y:467,w:41,h:61}, LNG={x:556,y:462,w:202,h:160};
+  // tall phones use a vertical version of the roof; the main shot sits inside it at this scale/offset
+  const MP={s:.9063,tx:-292.6,ty:393};
+  const tall=()=>matchMedia("(max-width:760px) and (orientation:portrait)").matches;
+  window.MSBand=()=>{ const st=$("stage"), W=st.clientWidth,H=st.clientHeight; if(!tall()) return null; const s=Math.max(W/941,H/1672), ox=(W-941*s)*px, oy=(H-1672*s)*py; return {left:ox+s*MP.tx,top:oy+s*MP.ty,width:1672*s*MP.s,height:941*s*MP.s,px,py}; };
   const stage=$("stage"), fly=$("flyer");
   const phone=()=>matchMedia("(max-width:760px)").matches;
   const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
   let px=0.5, py=0.42;
   function place(){
-    const W=stage.clientWidth,H=stage.clientHeight, s=Math.max(W/IMG.w,H/IMG.h);
-    const iw=IMG.w*s, ih=IMG.h*s, ox=(W-iw)*px, oy=(H-ih)*py;
+    const TL=tall(); stage.classList.toggle("tall",TL); IMG.w=TL?941:1672; IMG.h=TL?1672:941;
+    const W=stage.clientWidth,H=stage.clientHeight, s0=Math.max(W/IMG.w,H/IMG.h);
+    const ox0=(W-IMG.w*s0)*px, oy0=(H-IMG.h*s0)*py;
+    // everything below is placed in main-shot coordinates
+    const s=TL?s0*MP.s:s0, ox=TL?ox0+s0*MP.tx:ox0, oy=TL?oy0+s0*MP.ty:oy0;
     stage.style.backgroundPosition=`${(px*100).toFixed(2)}% ${(py*100).toFixed(2)}%`;
     const L=ox+FLY.x*s, T=oy+FLY.y*s;
     Object.assign(fly.style,{left:L+"px",top:T+"px",width:FLY.w*s+"px",height:FLY.h*s+"px"});
@@ -1102,10 +1124,12 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   stage.addEventListener("click",e=>{ if(drag&&drag.moved){ e.preventDefault(); e.stopPropagation(); } },true);
   function tick(t){
     if(phone()){
+      if(tall()){ hinted=true; if(Math.abs(cxT-470)>500) cxT=470; }
       if(!hinted&&!still){ const k=(t-t0-1200)/2600; if(k>=0&&k<=1) cxT=clampC(760-360*Math.sin(Math.PI*k)); else if(k>1){ hinted=true; cxT=clampC(760); } }
       cxT=clampC(cxT); cx+= (cxT-cx)*(drag?0.6:0.14); py=0.5; px=toPx(cx);
       const h=$("pan-hint"); if(h) h.style.opacity=(!hinted&&t-t0>1000)?"1":"0";
     } else { px=0.5; py=0.42; }
+    if(tall()) py=0.5;
     place(); requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick); addEventListener("resize",place);
