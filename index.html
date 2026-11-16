@@ -1442,7 +1442,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const neon=on=>{ inn.style.opacity=on?1:0; ir.style.opacity=on?0:1; };
   async function flicker(n){ for(let i=0;i<n;i++){ neon(1); await wait(40+Math.random()*60); neon(0); await wait(30+Math.random()*80); } }
   async function appear(){ let n; do{ n=Math.floor(Math.random()*SPOTS.length); }while(n===cur); cur=n;
-    let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===pose); pose=np; flip=Math.random()<.5;
+    let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===pose); pose=np; flip=false;
     setPose(pose); place(); await wait(80); neon(1); vis(true); await wait(90); await flicker(5); }
   async function teleport(){ if(busy||document.hidden) return; busy=true;
     await flicker(4); neon(1); await wait(120); vis(false); neon(0);
