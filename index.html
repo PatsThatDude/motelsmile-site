@@ -1452,6 +1452,29 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     for(let k=0;k<dur*25;k++) g.gain.setValueAtTime(Math.random()<.7?.16+Math.random()*.12:0,t+k/25); g.gain.setValueAtTime(0,t+dur);
     const b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate), c=b.getChannelData(0); for(let i=0;i<c.length;i++) c[i]=Math.random()<.02?(Math.random()*2-1):0;
     const n=a.createBufferSource(); n.buffer=b; const ng=a.createGain(); ng.gain.value=.45; n.connect(ng).connect(a.destination); n.start(t); }
+  // plucked string (Karplus-Strong) mixed into a buffer
+  function ks(buf,sr,t0,f,dur,bright){ const n=Math.max(2,Math.round(sr/f)), d=new Float32Array(n); for(let i=0;i<n;i++) d[i]=(Math.random()*2-1)*(bright||1);
+    let p=0; const s=Math.floor(t0*sr), e=Math.min(buf.length,s+Math.floor(dur*sr)); for(let i=s;i<e;i++){ const a=d[p], b=d[(p+1)%n]; d[p]=.996*.5*(a+b); buf[i]+=a; p=(p+1)%n; } }
+  function shaper(a,k){ const w=a.createWaveShaper(), c=new Float32Array(512); for(let i=0;i<512;i++){ const x=i/256-1; c[i]=Math.tanh(k*x); } w.curve=c; return w; }
+  // Pat: stuttering bass notes + a singer's yelp
+  function bassZap(dur){ const a=ac(); if(!a) return; const t=a.currentTime, sr=a.sampleRate, b=a.createBuffer(1,Math.ceil(sr*(dur+.4)),sr), d=b.getChannelData(0);
+    for(let k=0,tt=0;tt<dur;k++,tt+=.11+Math.random()*.06) ks(d,sr,tt,[41.2,55,41.2,61.7][k%4]*(1-tt*.08),.35,1);
+    const src=a.createBufferSource(); src.buffer=b; const lp=a.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=1400; const g=a.createGain(); g.gain.value=.55;
+    src.connect(lp).connect(shaper(a,2.5)).connect(g).connect(a.destination); src.start(t);
+    const o=a.createOscillator(), vib=a.createOscillator(), vg=a.createGain(), vg2=a.createGain(); o.type="sawtooth";
+    o.frequency.setValueAtTime(196,t); o.frequency.exponentialRampToValueAtTime(392,t+.25); o.frequency.setValueAtTime(392,t+.25); o.frequency.exponentialRampToValueAtTime(330,t+dur*.6); o.frequency.exponentialRampToValueAtTime(150,t+dur);
+    vib.frequency.value=9; vg.gain.value=22; vib.connect(vg).connect(o.frequency);
+    vg2.gain.setValueAtTime(0,t); vg2.gain.linearRampToValueAtTime(.5,t+.08); vg2.gain.setValueAtTime(.5,t+dur*.8); vg2.gain.linearRampToValueAtTime(0,t+dur);
+    [[800,.9],[1150,.6],[2900,.25]].forEach(([f,gn])=>{ const bp=a.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=f; bp.Q.value=9; const fg=a.createGain(); fg.gain.value=gn*.5; o.connect(bp).connect(fg).connect(vg2); });
+    vg2.connect(a.destination); o.start(t); vib.start(t); o.stop(t+dur); vib.stop(t+dur); }
+  // Jordan: stuttering distorted power-chord strums + feedback squeal
+  function guitarZap(dur){ const a=ac(); if(!a) return; const t=a.currentTime, sr=a.sampleRate, b=a.createBuffer(1,Math.ceil(sr*(dur+.4)),sr), d=b.getChannelData(0);
+    for(let tt=0;tt<dur;tt+=.09+Math.random()*.07){ const bend=1-tt*.06; [82.4,123.5,164.8,246.9].forEach((f,i)=>ks(d,sr,tt+i*.008,f*bend,.3,.7)); }
+    const src=a.createBufferSource(); src.buffer=b; const hp=a.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=90; const lp=a.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=4200; const g=a.createGain(); g.gain.value=.22;
+    src.connect(hp).connect(shaper(a,9)).connect(lp).connect(g).connect(a.destination); src.start(t);
+    const q=a.createOscillator(), qv=a.createOscillator(), qvg=a.createGain(), qg=a.createGain(); q.type="sine"; q.frequency.setValueAtTime(1318,t); q.frequency.exponentialRampToValueAtTime(1975,t+dur);
+    qv.frequency.value=6; qvg.gain.value=18; qv.connect(qvg).connect(q.frequency);
+    qg.gain.setValueAtTime(0,t); qg.gain.linearRampToValueAtTime(.06,t+.4); qg.gain.linearRampToValueAtTime(0,t+dur); q.connect(qg).connect(a.destination); q.start(t); qv.start(t); q.stop(t+dur); qv.stop(t+dur); }
   function chordZap(dur){ const a=ac(); if(!a) return; const t=a.currentTime, d=a.createWaveShaper(), c=new Float32Array(512); for(let i=0;i<512;i++){ const x=i/256-1; c[i]=Math.tanh(6*x); } d.curve=c;
     const g=a.createGain(); g.gain.value=0; d.connect(g).connect(a.destination);
     [82.4,123.5,164.8].forEach(f=>{ const o=a.createOscillator(); o.type="sawtooth"; o.frequency.setValueAtTime(f,t); o.frequency.exponentialRampToValueAtTime(f*.55,t+dur); o.connect(d); o.start(t); o.stop(t+dur); });
@@ -1493,7 +1516,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       neon(1); rf.style.opacity=.15; await wait(500);
       for(let i=0;i<2;i++){ neon(0); await wait(40); neon(1); await wait(40); } neon(0); rf.style.opacity=""; } })();
     function puff(n){ const R=m.rect(); for(let i=0;i<n;i++) smoke.push({x:R.x+R.w*(.3+Math.random()*.4),y:R.y+R.h*(.02+Math.random()*.25),vx:(Math.random()-.5)*.6,vy:-(0.8+Math.random()*1.2),r:5+Math.random()*6,a:.45,t:0,life:90+Math.random()*60}); kick(); }
-    async function zap(e){ e&&e.stopPropagation(); if(m.busy) return; m.busy=true; clearTimeout(wT); (cfg.sound==="chord"?chordZap:buzz)(1.5); m.zapping=true; kick(); el.classList.add(cfg.anim||"zz");
+    async function zap(e){ e&&e.stopPropagation(); if(m.busy) return; m.busy=true; clearTimeout(wT); (cfg.sound==="chord"?guitarZap:bassZap)(1.5); m.zapping=true; kick(); el.classList.add(cfg.anim||"zz");
       setPose(ZAP); place(ZAP); const end=performance.now()+1500; let on=false;
       while(performance.now()<end){ on=!on; neon(on); if(flash){ flash.style.transition="none"; flash.style.background=cfg.flash||"#ff4fd8"; flash.style.opacity=on&&Math.random()<.5?.16:0; } await wait(55); }
       m.zapping=false; el.classList.remove(cfg.anim||"zz"); if(flash){ flash.style.opacity=0; flash.style.background=""; flash.style.transition=""; } neon(0);
