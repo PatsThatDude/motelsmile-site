@@ -95,10 +95,10 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 
 /* ---------- play layer: things on the roof you can poke ---------- */
 #play{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;z-index:3;pointer-events:none}
-#play .pk{appearance:none;-webkit-appearance:none;background-color:transparent;border:0;padding:0;margin:0;color:transparent;position:absolute;pointer-events:auto;cursor:pointer;border-radius:8px;-webkit-tap-highlight-color:transparent}
+#play .pk,#lg-play .pk{appearance:none;-webkit-appearance:none;background-color:transparent;border:0;padding:0;margin:0;color:transparent;position:absolute;pointer-events:auto;cursor:pointer;border-radius:8px;-webkit-tap-highlight-color:transparent}
 #play .pk.img{background-image:url(img/rooftop-lounge.webp?v=10);background-size:1672px 941px;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%)}
-#play .pk:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
-@media (hover:hover){#play .pk:hover{filter:brightness(1.25) drop-shadow(0 0 6px rgba(255,61,127,.6))}}
+#play .pk:focus-visible,#lg-play .pk:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+@media (hover:hover){#play .pk:hover,#lg-play .pk:hover{filter:brightness(1.25) drop-shadow(0 0 6px rgba(255,61,127,.6))}}
 .lt-glow{position:absolute;left:1206px;top:432px;width:80px;height:80px;border-radius:50%;pointer-events:none;
   background:radial-gradient(circle,rgba(255,190,90,.55) 0,rgba(255,150,60,.22) 30%,rgba(255,120,40,0) 70%);mix-blend-mode:screen;animation:flick 2.3s infinite steps(1)}
 .lt-flame{position:absolute;left:1243px;top:466px;width:6px;height:9px;border-radius:50% 50% 45% 45%;pointer-events:none;
@@ -107,9 +107,9 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 @keyframes flick2{0%{transform:scale(1,1)}40%{transform:scale(.9,1.15) translateX(.4px)}100%{transform:scale(1.05,.9) translateX(-.4px)}}
 .lt-out{position:absolute;left:1228px;top:450px;width:36px;height:44px;pointer-events:none;background:radial-gradient(ellipse 40% 42% at 50% 55%,rgba(14,10,18,.82) 0,rgba(14,10,18,.55) 45%,rgba(14,10,18,0) 100%);opacity:0;transition:opacity .2s}
 .lt-warm{position:absolute;left:1180px;top:440px;width:132px;height:90px;pointer-events:none;background:radial-gradient(ellipse 50% 50% at 50% 45%,rgba(255,170,80,.18),rgba(255,170,80,0) 70%);mix-blend-mode:screen;transition:opacity .2s}
-#play.dark .lt-warm{opacity:0}
-#play.dark .lt-glow,#play.dark .lt-flame{opacity:0;animation:none;transition:opacity .15s}
-#play.dark .lt-out{opacity:1}
+.dark .lt-warm{opacity:0}
+.dark .lt-glow,.dark .lt-flame{opacity:0;animation:none;transition:opacity .15s}
+.dark .lt-out{opacity:1}
 .smoke{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(220,220,230,.5);filter:blur(2px);pointer-events:none;animation:smoke 1.6s ease-out forwards}
 @keyframes smoke{to{transform:translate(4px,-38px) scale(4);opacity:0}}
 .pg-gone{position:absolute;left:258px;top:160px;width:84px;height:76px;background:url(img/pigeon-gone.webp?v=1) 0 0/84px 76px;opacity:0;pointer-events:none;transition:opacity .08s}
@@ -256,7 +256,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .lounge{position:fixed;inset:0;z-index:40;overflow:hidden;background:#05060a;opacity:0;pointer-events:none}
 .lounge.on{opacity:1;pointer-events:auto}
 .lounge:not(.on),.lounge:not(.on) *{pointer-events:none!important}
-.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/lounge.webp?v=7) 62% 50%/cover;filter:blur(22px) brightness(.45)}
+.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/lounge.webp?v=11) 62% 50%/cover;filter:blur(22px) brightness(.45)}
 .lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
 .lg-cam{z-index:8}.lg-hero{z-index:2;background:url(img/rooftop-lounge.webp?v=10) 0 0/1672px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
@@ -264,6 +264,11 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .lg-front{left:341px;top:489px;width:886px;height:405px;pointer-events:none}
 .lg-cam svg{position:absolute;left:0;top:0;width:1672px;height:941px;overflow:visible;pointer-events:none}
 .lg-hot{all:unset;position:absolute;cursor:pointer;border-radius:10px;z-index:4}
+.lg-swipe{display:none;position:absolute;right:14px;top:22px;font:11px var(--mono);letter-spacing:.15em;text-transform:uppercase;color:#fff;opacity:.7;pointer-events:none}
+@media (max-width:760px) and (orientation:portrait){.lg-swipe{display:block}}
+.lounge{touch-action:pan-y}
+#lg-play{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:3}
+#lp-kick.kick{filter:drop-shadow(0 0 14px rgba(255,61,127,.9));background:radial-gradient(circle,rgba(255,61,127,.25),transparent 70%)}
 .lg-hot:focus-visible{outline:4px solid var(--cyan);outline-offset:4px}
 .lg-hot.crate{left:873px;top:488px;width:352px;height:365px}
 .lg-hot.deck{left:400px;top:440px;width:420px;height:70px}
@@ -343,7 +348,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .dig-row[disabled]{cursor:default;color:var(--fog)}.dig-row[disabled] em{color:var(--fog)}
 .dig-row:not([disabled]):hover{background:rgba(255,61,127,.12)}
 @media (max-width:760px){.dig-head h3{visibility:hidden}.dig-foot{flex-wrap:wrap;justify-content:center;border-radius:18px;width:calc(100% - 24px);padding:10px 12px;row-gap:8px}.dig-foot b{order:-1;flex:1 0 100%;text-align:center;font-size:18px}}
-.cr-fill{position:absolute;inset:-40px;background:url(img/lounge.webp?v=7) 50% 50%/cover;filter:blur(24px) brightness(.4)}
+.cr-fill{position:absolute;inset:-40px;background:url(img/lounge.webp?v=11) 50% 50%/cover;filter:blur(24px) brightness(.4)}
 @media (max-width:760px) and (orientation:portrait){
   .lg-panel{position:absolute;pointer-events:auto;left:12px;right:12px;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;height:auto;transform:none;background:var(--glass);border-color:var(--line);padding:14px 16px;gap:8px}
   .lg-panel small{font-size:11px}.lg-panel b{font-size:24px}.lg-panel .row{font-size:13px}
@@ -389,6 +394,16 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
       <g id="lg-sleeve" opacity="0"><rect x="-88" y="0" width="176" height="176" rx="3" fill="#0b0b12" stroke="#ff3d7f" stroke-opacity=".6" stroke-width="2"/><image href="img/smile-logo.webp" x="-48" y="26" width="96" height="96"/><text x="0" y="158" text-anchor="middle" font-family="Yellowtail, cursive" font-size="26" fill="#fff">Don't Mind It</text></g>
       </g>
     </svg>
+    <div id="lg-play">
+      <div class="lgp-set" id="lgp-set" style="position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;transform:matrix(1.004,0,0,1.004,371.3,-146.7);pointer-events:none"><div class="lt-warm"></div><div class="lt-glow"></div><div class="lt-flame"></div><div class="lt-out"></div></div>
+      <button class="pk" id="lp-lantern" style="left:1600px;top:290px;width:44px;height:62px" aria-label="Candle lantern"></button>
+      <button class="pk" id="lp-kick" style="left:1345px;top:370px;width:140px;height:140px;border-radius:50%" aria-label="Kick drum"></button>
+      <button class="pk" id="lp-cym1" style="left:1218px;top:278px;width:108px;height:32px" aria-label="Cymbal"></button>
+      <button class="pk" id="lp-cym2" style="left:1455px;top:283px;width:104px;height:32px" aria-label="Cymbal"></button>
+      <button class="pk" id="lp-amp" style="left:1104px;top:364px;width:118px;height:128px" aria-label="Amp"></button>
+      <button class="pk" id="lp-cooler" style="left:1626px;top:420px;width:46px;height:86px" aria-label="Cooler"></button>
+      <button class="pk" id="lp-tag" style="left:1588px;top:356px;width:84px;height:66px" aria-label="Graffiti tag"></button>
+    </div>
     <img class="lg-front" src="img/lounge-front.webp?v=7" alt="" width="886" height="442">
     <svg aria-hidden="true"><g id="lg-hold"></g></svg>
     <button class="lg-hot crate" id="lg-crate-hot" aria-label="Pick a record"></button>
@@ -408,6 +423,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   <div class="lg-wl" id="wl-sky"></div><div class="lg-wl" id="hero-g"></div><div class="lg-wl" id="wl-mid"></div><div class="lg-wl" id="hero-f"></div><div class="lg-wl" id="wl-fore"></div>
   <div class="lg-ui">
     <a class="pill lg-back" style="--c:var(--cyan)" href="#" id="lg-back">← Back to the stage</a>
+    <div class="lg-swipe" aria-hidden="true">swipe ⇢ stage</div>
     <div class="lg-dig" id="dig" data-mode="crate" role="dialog" aria-label="Record crate" aria-hidden="true">
       <div class="cr-fill"></div>
       <div class="cr-mx"><div class="cr-my"><div class="cr-box" id="cr-box">
@@ -544,12 +560,19 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   /* ---------- framing: the 1672x941 scene box is scaled to cover the screen ---------- */
   let S=1,OX=0,OY=0;
   const portrait=()=>innerWidth<=760&&innerHeight>innerWidth;
+  // phones: drag sideways in the lounge to look over at the stage (0 = record player, 422 = drums + cooler)
+  let lgPan=0, lgDrag=null;
+  L.addEventListener("pointerdown",e=>{ if(!portrait()||e.target.closest("a,.lg-panel,.lg-dig,.lg-back")) return; lgDrag={x:e.clientX,p:lgPan,moved:false}; });
+  L.addEventListener("click",e=>{ if(lgMoved){ e.preventDefault(); e.stopPropagation(); lgMoved=false; } },true);
+  let lgMoved=false;
+  addEventListener("pointermove",e=>{ if(!lgDrag) return; const dx=e.clientX-lgDrag.x; if(Math.abs(dx)>6){ lgDrag.moved=true; lgMoved=true; } lgPan=Math.max(0,Math.min(422,lgDrag.p-dx/S)); frame(); });
+  addEventListener("pointerup",()=>{ if(lgDrag&&!lgDrag.moved) lgMoved=false; lgDrag=null; }); addEventListener("pointercancel",()=>{ lgDrag=null; });
   function frame(){
     const w=innerWidth,h=innerHeight;
     const pan=$("lg-panel"), ui=document.querySelector(".lg-ui");
     if(portrait()){ if(pan.parentNode!==ui) ui.insertBefore(pan,ui.firstChild); } else if(pan.parentNode!==cam) cam.appendChild(pan);
     if(portrait()){ // phones: show the console + crate side, letterboxed over a blurred fill
-      S=w/920; OX=-330*S; OY=Math.max(60,(h-H0*S)/2-110);
+      S=w/920; OX=-(330+lgPan)*S; OY=Math.max(60,(h-H0*S)/2-110);
     }else{ // keep the console and the whole crate in frame; crop sky first
       S=Math.max(w/W0,h/H0); OX=(w-W0*S)*0.45; OY=(h-H0*S)*0.7;
     }
@@ -574,7 +597,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   function run(ms,f,done){ ms*=(window.__TS||1); const t0=performance.now(); function st(now){ const t=cl((now-t0)/ms); f(t); if(t<1) anim=requestAnimationFrame(st); else {anim=null;done&&done();} } anim=requestAnimationFrame(st); }
   function enter(){
     if(L.classList.contains("on")) return;
-    frame(); closeCrate();
+    lgPan=0; frame(); closeCrate();
     L.classList.add("on"); L.setAttribute("aria-hidden","false"); stg.setAttribute("aria-hidden","true");
     if(location.hash!=="#lounge") history.pushState(null,"","#lounge");
     loop();
@@ -586,7 +609,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     const v=$("lg-glide"), soft=t=>t*t*(3-2*t);
     const [wSky,hG,wMid,wFore]=WL, HF2=$("hero-f"); [wSky,hG,wMid,wFore,HF2].forEach(el=>el.style.opacity="0");
     hero.style.display="none";
-    $("pl-sky").src="img/lounge.webp?v=7"; $("pl-mid").style.display="none"; $("pl-fore").style.display="none";
+    $("pl-sky").src="img/lounge.webp?v=11"; $("pl-mid").style.display="none"; $("pl-fore").style.display="none";
     const M1={s:S,ox:OX,oy:OY};
     const bp=(stg.style.backgroundPosition||"50% 42%").split(" "); v.style.objectPosition=bp.join(" ");
     v.style.opacity="1"; v.style.display="block"; cam.style.opacity="0";
@@ -1015,16 +1038,19 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
       const s=noise(.5), f=a.createBiquadFilter(), g=a.createGain(); f.type="bandpass"; f.frequency.value=900; env(g,t+.6,.01,.25,.4); s.connect(f).connect(g).connect(a.destination); s.start(t+.6); };
     const puff=()=>{ const a=ac(); if(!a) return; const t=a.currentTime, s=noise(.4), f=a.createBiquadFilter(), g=a.createGain(); f.type="lowpass"; f.frequency.value=700; env(g,t,.02,.3,.3); s.connect(f).connect(g).connect(a.destination); s.start(t); };
     const clink=()=>{ const a=ac(); if(!a) return; const t=a.currentTime; [2400,3100].forEach((fr,i)=>{ const o=a.createOscillator(), g=a.createGain(); o.frequency.value=fr; env(g,t+i*.05,.002,.08,.25); o.connect(g).connect(a.destination); o.start(t+i*.05); o.stop(t+.4); }); };
-    const say=(el,txt)=>{ const r=el.getBoundingClientRect(), st=$("stage").getBoundingClientRect(); const b=document.createElement("div"); b.className="bubble"; b.textContent=txt;
-      b.style.left=Math.max(120,Math.min(innerWidth-120,r.left+r.width/2-st.left))+"px"; b.style.top=Math.max(70,r.top-st.top)+"px"; $("stage").appendChild(b); setTimeout(()=>b.remove(),2900); };
+    const host=el=>el.closest(".lounge")||$("stage");
+    const say=(el,txt)=>{ const hs=host(el), r=el.getBoundingClientRect(), st=hs.getBoundingClientRect(); const b=document.createElement("div"); b.className="bubble"; b.style.zIndex=20; b.textContent=txt;
+      b.style.left=Math.max(120,Math.min(innerWidth-120,r.left+r.width/2-st.left))+"px"; b.style.top=Math.max(70,r.top-st.top)+"px"; hs.appendChild(b); setTimeout(()=>b.remove(),2900); };
+    const flashIn=el=>bump(host(el).querySelector(".flash")||$("flash"),"go");
     const pick=a=>a[Math.floor(Math.random()*a.length)];
     const bump=(el,cls)=>{ el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
     const on=(id,fn)=>$(id).addEventListener("click",e=>{ e.stopPropagation(); fn(e.currentTarget); });
     // lantern: blow it out, it relights
-    let lit=true;
-    on("pk-lantern",el=>{ if(!lit) return; lit=false; puff(); play.classList.add("dark");
-      for(let i=0;i<3;i++){ const s=document.createElement("div"); s.className="smoke"; s.style.left=(1243+i*2)+"px"; s.style.top="462px"; s.style.animationDelay=(i*.18)+"s"; play.appendChild(s); setTimeout(()=>s.remove(),2200); }
-      setTimeout(()=>{ play.classList.remove("dark"); lit=true; },3200); });
+    const blowOut=set=>{ if(set.classList.contains("dark")) return; puff(); set.classList.add("dark");
+      for(let i=0;i<3;i++){ const s=document.createElement("div"); s.className="smoke"; s.style.left=(1243+i*2)+"px"; s.style.top="462px"; s.style.animationDelay=(i*.18)+"s"; set.appendChild(s); setTimeout(()=>s.remove(),2200); }
+      setTimeout(()=>set.classList.remove("dark"),3200); };
+    on("pk-lantern",()=>blowOut(play));
+    window.MSPlay={kick,crash,feedback,clink,puff,say,bump,pick,blowOut,flashIn};
     // pigeon: coos, then takes off; comes back later
     let flown=false;
     on("pk-pigeon",el=>{ if(flown) return; coo(); setTimeout(()=>{ flown=true; play.classList.add("flown"); el.style.pointerEvents="none"; },650);
@@ -1032,22 +1058,36 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     // drums + amp
     on("pk-kick",el=>{ kick(); bump(el,"kick"); });
     on("pk-cym1",()=>crash()); on("pk-cym2",()=>crash());
-    on("pk-amp",el=>{ feedback(); bump($("flash"),"go"); say(el,pick(["Who left this on?","Turn it to 11.","EEEEEEEEE","Unplug it! Unplug it!"])); });
+    const AMP=["Who left this on?","Turn it to 11.","EEEEEEEEE","Unplug it! Unplug it!"], COOL=["Empty. Classic.","One left. It's warm.","Ice, no drinks.","Band only.","Someone ate the last slice and left the box."];
+    window.MSPlay.AMP=AMP; window.MSPlay.COOL=COOL;
+    on("pk-amp",el=>{ feedback(); flashIn(el); say(el,pick(AMP)); });
     on("pk-gnome",el=>{ bump(el,"wob"); say(el,pick(["Don't mind me.","Five more minutes.","I'm the roadie.","Wake me up for the encore.","Who invited the gnome?"])); });
-    on("pk-cooler",el=>{ clink(); say(el,pick(["Empty. Classic.","One left. It's warm.","Ice, no drinks.","Band only.","Someone ate the last slice and left the box."])); });
+    on("pk-cooler",el=>{ clink(); say(el,pick(COOL)); });
     // neon sign: kill a letter, it buzzes back
     document.querySelectorAll(".sign span span").forEach(s=>s.addEventListener("click",e=>{ e.stopPropagation(); s.classList.add("dead"); puff(); setTimeout(()=>s.classList.remove("dead"),2500+Math.random()*2500); }));
     // tag hunt: 17 song titles hidden in the graffiti
     const KEY="ms-tags"; let found=[]; try{ found=JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){}
     const hunt=$("hunt"), box=$("tags");
     const showHunt=()=>{ hunt.textContent=`Tags found ${found.length}/${TAGS.length}`; hunt.classList.toggle("on",found.length>0); };
-    TAGS.forEach(([name,x,y,w,h])=>{ const b=document.createElement("button"); b.className="pk"; b.setAttribute("aria-label","Graffiti tag");
-      Object.assign(b.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); box.appendChild(b);
-      b.addEventListener("click",e=>{ e.stopPropagation(); const g=document.createElement("div"); g.className="tag-found"; Object.assign(g.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); box.appendChild(g); setTimeout(()=>g.remove(),1500);
+    const hitTag=(name,b,where,x,y,w,h)=>{ const g=document.createElement("div"); g.className="tag-found"; Object.assign(g.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); where.appendChild(g); setTimeout(()=>g.remove(),1500);
         const isNew=!found.includes(name); if(isNew){ found.push(name); try{ localStorage.setItem(KEY,JSON.stringify(found)); }catch(e){} }
         say(b,isNew?`Found: "${name}"`:`"${name}" (already found)`); showHunt();
-        if(isNew&&found.length===TAGS.length) setTimeout(()=>say(b,"All 17 found. You know the whole catalog. Respect."),3000); }); });
+        if(isNew&&found.length===TAGS.length) setTimeout(()=>say(b,"All 17 found. You know the whole catalog. Respect."),3000); };
+    window.MSPlay.hitTag=hitTag;
+    TAGS.forEach(([name,x,y,w,h])=>{ const b=document.createElement("button"); b.className="pk"; b.setAttribute("aria-label","Graffiti tag");
+      Object.assign(b.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); box.appendChild(b);
+      b.addEventListener("click",e=>{ e.stopPropagation(); hitTag(name,b,box,x,y,w,h); }); });
     showHunt();
+  })();
+
+  /* lounge view: same roof, same toys */
+  (()=>{ const P=window.MSPlay; if(!P) return; const on=(id,fn)=>$(id).addEventListener("click",e=>{ e.stopPropagation(); fn(e.currentTarget); });
+    on("lp-lantern",()=>P.blowOut($("lgp-set")));
+    on("lp-kick",el=>{ P.kick(); P.bump(el,"kick"); });
+    on("lp-cym1",()=>P.crash()); on("lp-cym2",()=>P.crash());
+    on("lp-amp",el=>{ P.feedback(); P.say(el,P.pick(P.AMP)); });
+    on("lp-cooler",el=>{ P.clink(); P.say(el,P.pick(P.COOL)); });
+    on("lp-tag",el=>P.hitTag("I Know What You Need",el,$("lg-play"),1588,356,84,66));
   })();
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
