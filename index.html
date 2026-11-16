@@ -1441,14 +1441,14 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const vis=v=>[pat,rf,sh].forEach(e=>e.style.visibility=v?"visible":"hidden");
   const neon=on=>{ inn.style.opacity=on?1:0; ir.style.opacity=on?0:1; };
   async function flicker(n){ for(let i=0;i<n;i++){ neon(1); await wait(40+Math.random()*60); neon(0); await wait(30+Math.random()*80); } }
+  async function appear(){ let n; do{ n=Math.floor(Math.random()*SPOTS.length); }while(n===cur); cur=n;
+    let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===pose); pose=np; flip=Math.random()<.5;
+    setPose(pose); place(); await wait(80); neon(1); vis(true); await wait(90); await flicker(5); }
   async function teleport(){ if(busy||document.hidden) return; busy=true;
     await flicker(4); neon(1); await wait(120); vis(false); neon(0);
-    await wait(500+Math.random()*700);
-    let n; do{ n=Math.floor(Math.random()*SPOTS.length); }while(n===cur); cur=n;
-    let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===pose); pose=np; flip=Math.random()<.5;
-    setPose(pose); place(); await wait(80); neon(1); vis(true); await wait(90); await flicker(5); busy=false; }
-  function schedule(){ clearTimeout(wT); if(still) return; wT=setTimeout(async()=>{ await teleport(); schedule(); },13500+Math.random()*12000); }
-  if(!still) (async()=>{ while(true){ await wait(2500+Math.random()*4500); if(busy||document.hidden) continue;
+    await wait(500+Math.random()*700); await appear(); busy=false; }
+  function schedule(){ clearTimeout(wT); if(still) return; wT=setTimeout(async()=>{ await teleport(); schedule(); },11000); }
+  if(!still) (async()=>{ while(true){ await wait(3000+Math.random()*1000); if(busy||document.hidden) continue;
     for(let i=0;i<2;i++){ neon(1); await wait(45); neon(0); await wait(45); } if(busy) continue;
     neon(1); rf.style.opacity=.15; await wait(500);
     for(let i=0;i<2;i++){ neon(0); await wait(40); neon(1); await wait(40); } neon(0); rf.style.opacity=""; } })();
@@ -1479,8 +1479,9 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     while(performance.now()<end){ on=!on; neon(on); if(flash){ flash.style.transition="none"; flash.style.background="#ff4fd8"; flash.style.opacity=on&&Math.random()<.5?.16:0; } await wait(55); }
     zapping=false; pat.classList.remove("zz"); if(flash){ flash.style.opacity=0; flash.style.background=""; flash.style.transition=""; } neon(0);
     setPose(pose,"char"); place(); sizzle(2.5); for(let i=0;i<14;i++){ puff(3); await wait(220); }
-    await wait(1200); ir.style.transition="opacity .6s"; ir.style.opacity=.3; await wait(300); setPose(pose); ir.style.opacity=1; await wait(700); ir.style.transition="";
-    busy=false; schedule(); }
+    await wait(600); [pat,rf,sh].forEach(e=>{ e.style.transition="opacity .9s"; e.style.opacity=0; }); await wait(950);
+    vis(false); [pat,rf,sh].forEach(e=>{ e.style.transition=""; e.style.opacity=""; });
+    await wait(700+Math.random()*600); await appear(); busy=false; schedule(); }
   pat.addEventListener("click",zap);
   [...POSES,ZAP].forEach(p=>["real","neon","char"].forEach(t=>{ const i=new Image(); i.src=p[t]; }));
   cur=Math.floor(Math.random()*SPOTS.length); pose=POSES[Math.floor(Math.random()*POSES.length)];
