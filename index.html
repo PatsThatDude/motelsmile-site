@@ -24,7 +24,7 @@ body{margin:0;background:var(--ink);color:var(--white);font-family:var(--mono);f
 a{color:inherit}
 :focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
 
-.stage{position:relative;height:100%;display:grid;grid-template-rows:auto 1fr auto;background:#0a0b12 center 42%/cover no-repeat}
+.stage{position:relative;height:100%;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;background:#0a0b12 center 42%/cover no-repeat}
 .stage::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,6,10,.55) 0%,rgba(5,6,10,0) 18%,rgba(5,6,10,0) 62%,rgba(5,6,10,.7) 100%)}
 .top,.sky,.bar{position:relative;z-index:1}
 
@@ -91,6 +91,47 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   .top span{font-size:0}.top span .bs-link{font-size:11px}
 }
 .sky{pointer-events:none}.sky .pills{pointer-events:auto}
+
+/* ---------- play layer: things on the roof you can poke ---------- */
+#play{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;z-index:3;pointer-events:none}
+#play .pk{appearance:none;-webkit-appearance:none;background-color:transparent;border:0;padding:0;margin:0;color:transparent;position:absolute;pointer-events:auto;cursor:pointer;border-radius:8px;-webkit-tap-highlight-color:transparent}
+#play .pk.img{background-image:url(img/rooftop-lounge.webp?v=10);background-size:1672px 941px;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%)}
+#play .pk:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+@media (hover:hover){#play .pk:hover{filter:brightness(1.25) drop-shadow(0 0 6px rgba(255,61,127,.6))}}
+.lt-glow{position:absolute;left:1206px;top:432px;width:80px;height:80px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,190,90,.55) 0,rgba(255,150,60,.22) 30%,rgba(255,120,40,0) 70%);mix-blend-mode:screen;animation:flick 2.3s infinite steps(1)}
+.lt-flame{position:absolute;left:1243px;top:466px;width:6px;height:9px;border-radius:50% 50% 45% 45%;pointer-events:none;
+  background:radial-gradient(circle at 50% 70%,#fff6d0,#ffb347 55%,rgba(255,120,0,0) 75%);mix-blend-mode:screen;animation:flick2 .9s infinite alternate}
+@keyframes flick{0%{opacity:.9}11%{opacity:.75}23%{opacity:1}37%{opacity:.82}52%{opacity:.95}64%{opacity:.7}79%{opacity:1}91%{opacity:.85}}
+@keyframes flick2{0%{transform:scale(1,1)}40%{transform:scale(.9,1.15) translateX(.4px)}100%{transform:scale(1.05,.9) translateX(-.4px)}}
+.lt-out{position:absolute;left:1238px;top:458px;width:16px;height:26px;border-radius:40%;pointer-events:none;background:rgba(10,8,14,.78);opacity:0;transition:opacity .15s}
+#play.dark .lt-glow,#play.dark .lt-flame{opacity:0;animation:none;transition:opacity .15s}
+#play.dark .lt-out{opacity:1}
+.smoke{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(220,220,230,.5);filter:blur(2px);pointer-events:none;animation:smoke 1.6s ease-out forwards}
+@keyframes smoke{to{transform:translate(4px,-38px) scale(4);opacity:0}}
+.pg-gone{position:absolute;left:258px;top:160px;width:84px;height:76px;background:url(img/pigeon-gone.webp?v=1) 0 0/84px 76px;opacity:0;pointer-events:none;transition:opacity .08s}
+.pg-fly{position:absolute;left:258px;top:160px;width:84px;height:76px;background:url(img/pigeon.webp?v=1) 0 0/84px 76px;pointer-events:none;opacity:0;
+  -webkit-mask-image:radial-gradient(ellipse 45% 40% at 55% 45%,#000 60%,transparent 80%);mask-image:radial-gradient(ellipse 45% 40% at 55% 45%,#000 60%,transparent 80%)}
+#play.flown .pg-gone{opacity:1}
+#play.flown .pg-fly{animation:fly 1.4s cubic-bezier(.3,0,.7,1) forwards}
+@keyframes fly{0%{opacity:1;transform:none}15%{transform:translate(6px,-10px) rotate(-8deg)}100%{opacity:0;transform:translate(420px,-260px) rotate(-20deg) scale(.4)}}
+.bubble{position:absolute;z-index:6;max-width:220px;padding:8px 12px;border-radius:14px;background:rgba(5,6,10,.85);border:1.5px solid var(--pink);color:#fff;font:13px/1.35 var(--mono);box-shadow:0 0 10px rgba(255,61,127,.4);pointer-events:none;transform:translate(-50%,-110%);animation:bub 2.8s ease forwards}
+@keyframes bub{0%{opacity:0;transform:translate(-50%,-95%)}8%{opacity:1;transform:translate(-50%,-110%)}85%{opacity:1}100%{opacity:0}}
+.kick{animation:kick .22s ease-out}
+#pk-kick.kick{filter:drop-shadow(0 0 14px rgba(255,61,127,.9))}
+@keyframes kick{0%{transform:scale(1)}30%{transform:scale(1.06)}100%{transform:scale(1)}}
+.wob{animation:wob .6s ease}
+@keyframes wob{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg)}55%{transform:rotate(7deg)}80%{transform:rotate(-3deg)}}
+.tag-found{position:absolute;pointer-events:none;border-radius:6px;box-shadow:0 0 0 2px rgba(93,255,158,.0);animation:found 1.4s ease-out}
+@keyframes found{0%{box-shadow:0 0 0 2px rgba(93,255,158,.9),0 0 24px rgba(93,255,158,.8)}100%{box-shadow:0 0 0 2px rgba(93,255,158,0),0 0 24px rgba(93,255,158,0)}}
+.hunt{position:absolute;right:max(16px,env(safe-area-inset-right,0px));top:46px;z-index:3;font:11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--green);padding:5px 10px;border:1px solid rgba(93,255,158,.4);border-radius:20px;background:rgba(5,6,10,.55);opacity:0;transition:opacity .4s;pointer-events:none}
+.hunt.on{opacity:1}
+.sign .dead{opacity:.12!important;text-shadow:none!important;animation:none!important}
+.sign span span{cursor:pointer;pointer-events:auto}
+.flash{position:absolute;inset:0;z-index:4;pointer-events:none;background:#fff;opacity:0}
+.flash.go{animation:flash .5s ease-out}
+@keyframes flash{0%{opacity:.18}20%{opacity:0}35%{opacity:.12}100%{opacity:0}}
+
 .pan-hint{display:none;position:absolute;left:50%;transform:translateX(-50%);bottom:calc(var(--barh,120px) + 70px);z-index:3;font:12px var(--mono);letter-spacing:.15em;text-transform:uppercase;color:#fff;padding:6px 14px;border-radius:20px;background:rgba(5,6,10,.55);opacity:0;transition:opacity .5s;pointer-events:none;white-space:nowrap}
 @media (max-width:760px){.pan-hint{display:block}}
 .hot{position:absolute;z-index:2;display:block;border-radius:2px;cursor:pointer;transition:box-shadow .2s}
@@ -164,6 +205,21 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   <header class="top"><div><img src="img/smile-logo-96.webp" alt="" width="30" height="30">Motel Smile</div><span>New York Rock<a class="bs-link" id="bs-link" href="#backstage">Backstage</a></span></header>
 
   <a class="hot" id="flyer" href="#shows" data-open="shows" aria-label="Flyer on the door: next show TBA. Open shows"></a>
+  <div id="play" aria-label="Things on the roof">
+    <div class="lt-glow"></div><div class="lt-flame"></div><div class="lt-out"></div>
+    <div class="pg-gone"></div><div class="pg-fly"></div>
+    <button class="pk" id="pk-lantern" style="left:1226px;top:438px;width:40px;height:58px" aria-label="Candle lantern"></button>
+    <button class="pk" id="pk-pigeon" style="left:262px;top:166px;width:76px;height:64px" aria-label="Pigeon"></button>
+    <button class="pk img" id="pk-kick" style="left:982px;top:522px;width:126px;height:126px;border-radius:50%;background-position:-982px -522px" aria-label="Kick drum"></button>
+    <button class="pk" id="pk-cym1" style="left:872px;top:440px;width:96px;height:30px" aria-label="Cymbal"></button>
+    <button class="pk" id="pk-cym2" style="left:1098px;top:436px;width:96px;height:30px" aria-label="Cymbal"></button>
+    <button class="pk" id="pk-amp" style="left:818px;top:510px;width:74px;height:96px" aria-label="Amp"></button>
+    <button class="pk img" id="pk-gnome" style="left:236px;top:562px;width:112px;height:98px;background-position:-236px -562px;transform-origin:50% 90%" aria-label="Garden gnome"></button>
+    <button class="pk" id="pk-cooler" style="left:1252px;top:568px;width:130px;height:84px" aria-label="Cooler"></button>
+    <div id="tags"></div>
+  </div>
+  <div class="flash" id="flash"></div>
+  <div class="hunt" id="hunt"></div>
   <div class="pan-hint" id="pan-hint" aria-hidden="true">⇠ swipe to look around ⇢</div>
   <a class="hot" id="lounge-hot" href="#lounge" data-lounge aria-label="The lounge: pick a record"></a>
 
@@ -199,7 +255,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .lounge:not(.on),.lounge:not(.on) *{pointer-events:none!important}
 .lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/lounge.webp?v=7) 62% 50%/cover;filter:blur(22px) brightness(.45)}
 .lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
-.lg-cam{z-index:8}.lg-hero{z-index:2;background:url(img/rooftop-plate.webp?v=9) 0 0/1672px 941px;pointer-events:none}
+.lg-cam{z-index:8}.lg-hero{z-index:2;background:url(img/rooftop-lounge.webp?v=10) 0 0/1672px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
 .lg-bg{left:0;top:0;width:1672px;height:941px}
 .lg-front{left:341px;top:489px;width:886px;height:405px;pointer-events:none}
@@ -344,8 +400,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     </div>
   </div>
   <div class="lg-hero" id="lg-hero"></div>
-  <video class="lg-glide" id="lg-glide-back" muted playsinline preload="auto" aria-hidden="true"><source src="img/glide-back.webm?v=1" type="video/webm"><source src="img/glide-back.mp4?v=1" type="video/mp4"></video>
-  <video class="lg-glide" id="lg-glide" muted playsinline preload="auto" aria-hidden="true"><source src="img/glide.webm?v=1" type="video/webm"><source src="img/glide.mp4?v=1" type="video/mp4"></video>
+  <video class="lg-glide" id="lg-glide-back" muted playsinline preload="auto" aria-hidden="true"><source src="img/glide-back.webm?v=2" type="video/webm"><source src="img/glide-back.mp4?v=2" type="video/mp4"></video>
+  <video class="lg-glide" id="lg-glide" muted playsinline preload="auto" aria-hidden="true"><source src="img/glide.webm?v=2" type="video/webm"><source src="img/glide.mp4?v=2" type="video/mp4"></video>
   <div class="lg-wl" id="wl-sky"></div><div class="lg-wl" id="hero-g"></div><div class="lg-wl" id="wl-mid"></div><div class="lg-wl" id="hero-f"></div><div class="lg-wl" id="wl-fore"></div>
   <div class="lg-ui">
     <a class="pill lg-back" style="--c:var(--cyan)" href="#" id="lg-back">← Back to the stage</a>
@@ -937,7 +993,59 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     fly.style.visibility=(L+FLY.w*s<0||L>W)?"hidden":"visible";
     const lh=$("lounge-hot"), L2=ox+LNG.x*s, T2=oy+LNG.y*s;
     Object.assign(lh.style,{left:L2+"px",top:T2+"px",width:LNG.w*s+"px",height:LNG.h*s+"px"}); lh.style.visibility=(L2+LNG.w*s<0||L2>W)?"hidden":"visible";
+    $("play").style.transform=`translate(${ox}px,${oy}px) scale(${s})`;
   }
+
+  /* ---------- play: the roof reacts ---------- */
+  (()=>{
+    const TAGS=[["Down", 6, 242, 81, 48], ["Thread", 6, 297, 81, 39], ["Gnocchi", 6, 347, 81, 35], ["Don't Mind It", 8, 388, 76, 86], ["Get Back", 170, 312, 57, 47], ["Dirty Little Liar", 170, 367, 57, 60], ["Better Free", 172, 436, 55, 46], ["Just Sayin", 249, 347, 44, 48], ["Watch Your Tone", 17, 518, 175, 85], ["I Know What You Need", 1214, 503, 124, 65], ["What's Missing", 5, 654, 59, 44], ["Mean", 679, 503, 61, 30], ["Fences", 1350, 509, 81, 54], ["Never Ever Be", 1470, 541, 107, 55], ["Been Wrong", 1585, 543, 75, 47], ["Matter Of Time", 1505, 724, 113, 64], ["Sometimes", 1622, 728, 43, 51]], play=$("play");
+    let AC=null; const ac=()=>{ try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume(); }catch(e){} return AC; };
+    const noise=(dur)=>{ const a=ac(); if(!a) return null; const b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; const s=a.createBufferSource(); s.buffer=b; return s; };
+    const env=(g,t,a,peak,rel)=>{ g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(peak,t+a); g.gain.exponentialRampToValueAtTime(.0001,t+a+rel); };
+    const kick=()=>{ const a=ac(); if(!a) return; const t=a.currentTime, o=a.createOscillator(), g=a.createGain(); o.frequency.setValueAtTime(140,t); o.frequency.exponentialRampToValueAtTime(42,t+.18); env(g,t,.003,.9,.35); o.connect(g).connect(a.destination); o.start(t); o.stop(t+.45); };
+    const crash=()=>{ const a=ac(); if(!a) return; const t=a.currentTime, s=noise(2), f=a.createBiquadFilter(), g=a.createGain(); f.type="highpass"; f.frequency.value=5000; env(g,t,.002,.35,1.6); s.connect(f).connect(g).connect(a.destination); s.start(t); };
+    const feedback=()=>{ const a=ac(); if(!a) return; const t=a.currentTime, o=a.createOscillator(), o2=a.createOscillator(), g=a.createGain(), d=a.createWaveShaper();
+      const c=new Float32Array(256); for(let i=0;i<256;i++){ const x=i/128-1; c[i]=Math.tanh(4*x); } d.curve=c;
+      o.type="sawtooth"; o.frequency.setValueAtTime(880,t); o.frequency.linearRampToValueAtTime(1320,t+1.1); o2.frequency.value=6; const lg=a.createGain(); lg.gain.value=12; o2.connect(lg).connect(o.frequency);
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.09,t+.5); g.gain.linearRampToValueAtTime(0,t+1.3); o.connect(d).connect(g).connect(a.destination); o.start(t); o2.start(t); o.stop(t+1.35); o2.stop(t+1.35); };
+    const coo=()=>{ const a=ac(); if(!a) return; const t=a.currentTime; [0,.28].forEach(dt=>{ const o=a.createOscillator(), g=a.createGain(); o.frequency.setValueAtTime(420,t+dt); o.frequency.linearRampToValueAtTime(330,t+dt+.22); env(g,t+dt,.03,.12,.22); o.connect(g).connect(a.destination); o.start(t+dt); o.stop(t+dt+.3); });
+      const s=noise(.5), f=a.createBiquadFilter(), g=a.createGain(); f.type="bandpass"; f.frequency.value=900; env(g,t+.6,.01,.25,.4); s.connect(f).connect(g).connect(a.destination); s.start(t+.6); };
+    const puff=()=>{ const a=ac(); if(!a) return; const t=a.currentTime, s=noise(.4), f=a.createBiquadFilter(), g=a.createGain(); f.type="lowpass"; f.frequency.value=700; env(g,t,.02,.3,.3); s.connect(f).connect(g).connect(a.destination); s.start(t); };
+    const clink=()=>{ const a=ac(); if(!a) return; const t=a.currentTime; [2400,3100].forEach((fr,i)=>{ const o=a.createOscillator(), g=a.createGain(); o.frequency.value=fr; env(g,t+i*.05,.002,.08,.25); o.connect(g).connect(a.destination); o.start(t+i*.05); o.stop(t+.4); }); };
+    const say=(el,txt)=>{ const r=el.getBoundingClientRect(), st=$("stage").getBoundingClientRect(); const b=document.createElement("div"); b.className="bubble"; b.textContent=txt;
+      b.style.left=Math.max(120,Math.min(innerWidth-120,r.left+r.width/2-st.left))+"px"; b.style.top=Math.max(70,r.top-st.top)+"px"; $("stage").appendChild(b); setTimeout(()=>b.remove(),2900); };
+    const pick=a=>a[Math.floor(Math.random()*a.length)];
+    const bump=(el,cls)=>{ el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+    const on=(id,fn)=>$(id).addEventListener("click",e=>{ e.stopPropagation(); fn(e.currentTarget); });
+    // lantern: blow it out, it relights
+    let lit=true;
+    on("pk-lantern",el=>{ if(!lit) return; lit=false; puff(); play.classList.add("dark");
+      for(let i=0;i<3;i++){ const s=document.createElement("div"); s.className="smoke"; s.style.left=(1243+i*2)+"px"; s.style.top="462px"; s.style.animationDelay=(i*.18)+"s"; play.appendChild(s); setTimeout(()=>s.remove(),2200); }
+      setTimeout(()=>{ play.classList.remove("dark"); lit=true; },3200); });
+    // pigeon: coos, then takes off; comes back later
+    let flown=false;
+    on("pk-pigeon",el=>{ if(flown) return; coo(); setTimeout(()=>{ flown=true; play.classList.add("flown"); el.style.pointerEvents="none"; },650);
+      setTimeout(()=>{ play.classList.remove("flown"); el.style.pointerEvents=""; flown=false; },24000); });
+    // drums + amp
+    on("pk-kick",el=>{ kick(); bump(el,"kick"); });
+    on("pk-cym1",()=>crash()); on("pk-cym2",()=>crash());
+    on("pk-amp",el=>{ feedback(); bump($("flash"),"go"); say(el,pick(["Who left this on?","Turn it to 11.","EEEEEEEEE","Unplug it! Unplug it!"])); });
+    on("pk-gnome",el=>{ bump(el,"wob"); say(el,pick(["Don't mind me.","Five more minutes.","I'm the roadie.","Wake me up for the encore.","Who invited the gnome?"])); });
+    on("pk-cooler",el=>{ clink(); say(el,pick(["Empty. Classic.","One left. It's warm.","Ice, no drinks.","Band only.","Someone ate the last slice and left the box."])); });
+    // neon sign: kill a letter, it buzzes back
+    document.querySelectorAll(".sign span span").forEach(s=>s.addEventListener("click",e=>{ e.stopPropagation(); s.classList.add("dead"); puff(); setTimeout(()=>s.classList.remove("dead"),2500+Math.random()*2500); }));
+    // tag hunt: 17 song titles hidden in the graffiti
+    const KEY="ms-tags"; let found=[]; try{ found=JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){}
+    const hunt=$("hunt"), box=$("tags");
+    const showHunt=()=>{ hunt.textContent=`Tags found ${found.length}/${TAGS.length}`; hunt.classList.toggle("on",found.length>0); };
+    TAGS.forEach(([name,x,y,w,h])=>{ const b=document.createElement("button"); b.className="pk"; b.setAttribute("aria-label","Graffiti tag");
+      Object.assign(b.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); box.appendChild(b);
+      b.addEventListener("click",e=>{ e.stopPropagation(); const g=document.createElement("div"); g.className="tag-found"; Object.assign(g.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); box.appendChild(g); setTimeout(()=>g.remove(),1500);
+        const isNew=!found.includes(name); if(isNew){ found.push(name); try{ localStorage.setItem(KEY,JSON.stringify(found)); }catch(e){} }
+        say(b,isNew?`Found: "${name}"`:`"${name}" (already found)`); showHunt();
+        if(isNew&&found.length===TAGS.length) setTimeout(()=>say(b,"All 17 found. You know the whole catalog. Respect."),3000); }); });
+    showHunt();
+  })();
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
   let cx=760, cxT=760, drag=null, hinted=false, t0=performance.now();
@@ -973,7 +1081,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   let signupBound=false;
   function render(c){
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${(c.images&&c.images.hero)||"img/rooftop-lounge.webp?v=9"}")`;
+    $("stage").style.backgroundImage=`url("${(c.images&&c.images.hero)||"img/rooftop-lounge.webp?v=10"}")`;
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
