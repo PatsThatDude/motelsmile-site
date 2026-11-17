@@ -216,6 +216,20 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 <body>
 
 
+<script>
+/* ?debug: on-screen log for sound problems */
+(()=>{ if(!/[?&]debug/.test(location.search)) return;
+  const box=document.createElement("pre"); box.style.cssText="position:fixed;left:8px;bottom:8px;right:8px;max-height:40vh;overflow:auto;z-index:99999;background:rgba(0,0,0,.85);color:#7f7;font:11px monospace;padding:8px;margin:0;white-space:pre-wrap;pointer-events:none";
+  const L=t=>{ box.textContent+=t+"\n"; box.scrollTop=1e9; }; window.__dbg=L;
+  addEventListener("DOMContentLoaded",()=>document.body.appendChild(box));
+  addEventListener("error",e=>L("ERROR "+e.message+" @"+(e.lineno||"")+":"+(e.colno||"")));
+  addEventListener("unhandledrejection",e=>L("REJECT "+(e.reason&&e.reason.message||e.reason)));
+  L(navigator.userAgent);
+  addEventListener("click",e=>{ const c=window.MSAC&&window.MSAC(); L("click "+(e.target.id||e.target.className||e.target.tagName)+" | MSAC "+(typeof window.MSAC)+" | ctx "+(c?c.state+" t="+c.currentTime.toFixed(2):"none")); },true);
+  const C=window.AudioContext||window.webkitAudioContext;
+  if(C){ const os=C.prototype.createOscillator; C.prototype.createOscillator=function(){ L("osc made, ctx "+this.state); return os.call(this); }; }
+})();
+</script>
 <main class="stage" id="stage">
   <header class="top"><div><img src="img/smile-logo-96.webp" alt="" width="30" height="30">Motel Smile</div><span>New York Rock<a class="bs-link" id="bs-link" href="#backstage">Backstage</a></span></header>
 
