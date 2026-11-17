@@ -26,8 +26,8 @@
   S(366,250,366,H+40,{e:.3});                           // plunger lane wall
   S(366,250,400,214,{e:.4,oneway:true});                // one-way gate back into the lane
   // outlanes / inlanes
-  S(0,560,22,575); S(22,575,22,600); S(22,600,112,652); // left guide to flipper
-  S(366,560,344,575); S(344,575,344,600); S(344,600,254,652);
+  S(0,560,22,575); S(22,575,22,600); S(22,600,106.5,646); // left guide to flipper
+  S(366,560,344,575); S(344,575,344,600); S(344,600,259.5,646);
   S(46,520,46,590,{e:.3}); S(320,520,320,590,{e:.3});   // inlane posts
   // slingshots (kick faces)
   S(70,500,70,560); S(70,560,110,590); S(70,500,110,590,{kick:520,kind:"sling",id:"L"});
@@ -38,12 +38,12 @@
   const BUMP=[{x:140,y:205,r:24,t:0},{x:236,y:205,r:24,t:0},{x:188,y:285,r:24,t:0}];
   const TGT=[{x:96,y:380,ch:"F"},{x:96,y:412,ch:"I"},{x:96,y:444,ch:"R"},{x:96,y:476,ch:"E"}].map(t=>Object.assign(t,{down:false,w:8,h:26}));
   const SPIN={x:300,y:330,a:0,v:0};
-  const FL=[{px:112,py:652,len:66,side:1,ang:0,up:false,w:0},{px:254,py:652,len:66,side:-1,ang:0,up:false,w:0}];
-  const REST=.48, UP=-.42, FSPD=28;
+  const FL=[{px:110,py:652,len:64,side:1,ang:0,up:false,w:0},{px:256,py:652,len:64,side:-1,ang:0,up:false,w:0}];
+  const REST=.53, UP=-.42, FSPD=28;
 
   /* ---------- state ---------- */
   let cv,cx,box,ui,raf=0,last=0,open=false,best=0;
-  let ball,balls,score,mult,state,plunge,charge,save,msg,msgT,shake,fireT,litLanes;
+  let stuckT=0,ball,balls,score,mult,state,plunge,charge,save,msg,msgT,shake,fireT,litLanes;
   function reset(){ score=0; balls=3; mult=1; litLanes=0; TGT.forEach(t=>t.down=false); LANES.forEach(l=>l.lit=false); newBall(); state="ready"; }
   function newBall(){ ball={x:383,y:690,vx:0,vy:0,inLane:true}; charge=0; plunge=false; save=0; }
   function say(s,t){ msg=s; msgT=t||1.6; }
@@ -76,6 +76,7 @@
     ball.vy+=G*dt; ball.x+=ball.vx*dt; ball.y+=ball.vy*dt;
     const sp=Math.hypot(ball.vx,ball.vy); if(sp>1500){ ball.vx*=1500/sp; ball.vy*=1500/sp; }
     if(ball.inLane&&ball.y<250) ball.inLane=false;
+    if(!ball.inLane&&ball.x>366&&ball.y>600){ ball.inLane=true; ball.x=383; }
     for(const s of segs) collideSeg(s);
     for(const f of FL) collideFlip(f);
     for(const b of BUMP){ let nx=ball.x-b.x, ny=ball.y-b.y, d=Math.hypot(nx,ny); if(d<b.r+R&&d>0){ nx/=d; ny/=d; ball.x=b.x+nx*(b.r+R); ball.y=b.y+ny*(b.r+R);
@@ -95,6 +96,9 @@
     if(state!=="play") { for(const f of FL){ const tgt=f.up?UP:REST; f.ang+=Math.sign(tgt-f.ang)*Math.min(Math.abs(tgt-f.ang),FSPD*dt);} return; }
     const n=10, h=dt/n; for(let i=0;i<n;i++) step(h);
     BUMP.forEach(b=>b.t=Math.max(0,b.t-dt)); segs.forEach(s=>s.t&&(s.t=Math.max(0,s.t-dt)));
+    // ball search: if the ball sits still (and you're not cradling it) for 2.5s, give it a nudge
+    const still_=Math.hypot(ball.vx,ball.vy)<20&&!ball.inLane&&!FL[0].up&&!FL[1].up; stuckT=still_?(stuckT||0)+dt:0;
+    if(stuckT>2.5){ stuckT=0; ball.vy=-260; ball.vx=(ball.x<183?1:-1)*120; SFX.sling(); }
     if(save>0) save-=dt; msgT-=dt; shake=Math.max(0,(shake||0)-dt*20); fireT=Math.max(0,(fireT||0)-dt);
     if(SPIN.v>0){ const before=Math.floor(SPIN.a/Math.PI); SPIN.a+=SPIN.v*dt*6; SPIN.v=Math.max(0,SPIN.v-dt*6); if(Math.floor(SPIN.a/Math.PI)>before){ add(25); tone(2000,.03,"square",.04); } }
   }
@@ -201,5 +205,5 @@
   }
   function openG(){ if(!box) build(); open=true; box.classList.add("on"); size(); reset(); msgT=0; last=0; if(!raf) raf=requestAnimationFrame(loop); }
   function close(){ open=false; box&&box.classList.remove("on"); FL.forEach(f=>f.up=false); if(box&&box.dataset.from) box.dataset.from=""; }
-  window.MSPinball={open:openG,close,isOpen:()=>open,_dbg:()=>({ball,score,state,balls,charge})};
+  window.MSPinball={open:openG,close,isOpen:()=>open,_dbg:()=>({ball,score,state,balls,charge}),_sim:(t,hold)=>{ state="play"; for(const f of FL) f.up=false; if(hold!=null) FL[hold].up=true; for(let i=0;i<t*60;i++) update(1/60); return [ball.x,ball.y,ball.vx,ball.vy]; }};
 })();
