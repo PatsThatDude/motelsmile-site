@@ -98,25 +98,27 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 @media (max-width:760px){.stage{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}}
 #play{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;z-index:3;pointer-events:none}
 #play .pk,#lg-play .pk{appearance:none;-webkit-appearance:none;background-color:transparent;border:0;padding:0;margin:0;color:transparent;position:absolute;pointer-events:auto;cursor:pointer;border-radius:8px;-webkit-tap-highlight-color:transparent}
-#play .pk.img{background-image:url(img/rooftop-lounge.webp?v=11);background-size:1672px 941px;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%)}
+#play .pk.img{background-image:url(img/roof-main.webp?v=1);background-size:1672px 941px;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%)}
+#roof-fx{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:60}
+#roof-glass{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:60;opacity:0;background:#ff3fd0;-webkit-mask:url(img/roof-glass.webp?v=1) 0 0/1672px 941px;mask:url(img/roof-glass.webp?v=1) 0 0/1672px 941px;mix-blend-mode:screen}
+#play a.pk{display:block}
 #play .pk:focus-visible,#lg-play .pk:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
 @media (hover:hover){#play .pk:hover,#lg-play .pk:hover{filter:brightness(1.25) drop-shadow(0 0 6px rgba(255,61,127,.6))}}
-.lt-glow{position:absolute;left:1206px;top:432px;width:80px;height:80px;border-radius:50%;pointer-events:none;
+.lt-glow{position:absolute;left:203px;top:252px;width:80px;height:80px;border-radius:50%;pointer-events:none;
   background:radial-gradient(circle,rgba(255,190,90,.55) 0,rgba(255,150,60,.22) 30%,rgba(255,120,40,0) 70%);mix-blend-mode:screen;animation:flick 2.3s infinite steps(1)}
-.lt-flame{position:absolute;left:1243px;top:466px;width:6px;height:9px;border-radius:50% 50% 45% 45%;pointer-events:none;
+.lt-flame{display:none;position:absolute;left:1243px;top:466px;width:6px;height:9px;border-radius:50% 50% 45% 45%;pointer-events:none;
   background:radial-gradient(circle at 50% 70%,#fff6d0,#ffb347 55%,rgba(255,120,0,0) 75%);mix-blend-mode:screen;animation:flick2 .9s infinite alternate}
 @keyframes flick{0%{opacity:.9}11%{opacity:.75}23%{opacity:1}37%{opacity:.82}52%{opacity:.95}64%{opacity:.7}79%{opacity:1}91%{opacity:.85}}
 @keyframes flick2{0%{transform:scale(1,1)}40%{transform:scale(.9,1.15) translateX(.4px)}100%{transform:scale(1.05,.9) translateX(-.4px)}}
-.lt-out{position:absolute;left:1228px;top:450px;width:36px;height:44px;pointer-events:none;background:radial-gradient(ellipse 40% 42% at 50% 55%,rgba(14,10,18,.82) 0,rgba(14,10,18,.55) 45%,rgba(14,10,18,0) 100%);opacity:0;transition:opacity .2s}
-.lt-warm{position:absolute;left:1180px;top:440px;width:132px;height:90px;pointer-events:none;background:radial-gradient(ellipse 50% 50% at 50% 45%,rgba(255,170,80,.18),rgba(255,170,80,0) 70%);mix-blend-mode:screen;transition:opacity .2s}
+.lt-out{position:absolute;left:220px;top:266px;width:46px;height:50px;pointer-events:none;background:radial-gradient(ellipse 40% 42% at 50% 55%,rgba(14,10,18,.82) 0,rgba(14,10,18,.55) 45%,rgba(14,10,18,0) 100%);opacity:0;transition:opacity .2s}
+.lt-warm{position:absolute;left:176px;top:244px;width:134px;height:96px;pointer-events:none;background:radial-gradient(ellipse 50% 50% at 50% 45%,rgba(255,170,80,.18),rgba(255,170,80,0) 70%);mix-blend-mode:screen;transition:opacity .2s}
 .dark .lt-warm{opacity:0}
 .dark .lt-glow,.dark .lt-flame{opacity:0;animation:none;transition:opacity .15s}
 .dark .lt-out{opacity:1}
 .smoke{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(220,220,230,.5);filter:blur(2px);pointer-events:none;animation:smoke 1.6s ease-out forwards}
 @keyframes smoke{to{transform:translate(4px,-38px) scale(4);opacity:0}}
-.pg-gone{position:absolute;left:258px;top:160px;width:84px;height:76px;background:url(img/pigeon-gone.webp?v=1) 0 0/84px 76px;opacity:0;pointer-events:none;transition:opacity .08s}
-.pg-fly{position:absolute;left:258px;top:160px;width:84px;height:76px;background:url(img/pigeon.webp?v=1) 0 0/84px 76px;pointer-events:none;opacity:0;
-  -webkit-mask-image:radial-gradient(ellipse 45% 40% at 55% 45%,#000 60%,transparent 80%);mask-image:radial-gradient(ellipse 45% 40% at 55% 45%,#000 60%,transparent 80%)}
+.pg-gone{position:absolute;left:255px;top:155px;width:84px;height:76px;background:url(img/pigeon2-gone.webp?v=1) 0 0/84px 76px;opacity:0;pointer-events:none;transition:opacity .08s}
+.pg-fly{position:absolute;left:255px;top:155px;width:84px;height:76px;background:url(img/pigeon2.webp?v=1) 0 0/84px 76px;pointer-events:none;opacity:0}
 #play.flown .pg-gone{opacity:1}
 #play.flown .pg-fly{animation:fly 1.4s cubic-bezier(.3,0,.7,1) forwards}
 @keyframes fly{0%{opacity:1;transform:none}15%{transform:translate(6px,-10px) rotate(-8deg)}100%{opacity:0;transform:translate(420px,-260px) rotate(-20deg) scale(.4)}}
@@ -221,15 +223,18 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   <div id="play" aria-label="Things on the roof">
     <div class="lt-warm"></div><div class="lt-glow"></div><div class="lt-flame"></div><div class="lt-out"></div>
     <div class="pg-gone"></div><div class="pg-fly"></div>
-    <button class="pk" id="pk-lantern" style="left:1226px;top:438px;width:40px;height:58px" aria-label="Candle lantern"></button>
-    <button class="pk" id="pk-pigeon" style="left:262px;top:166px;width:76px;height:64px" aria-label="Pigeon"></button>
-    <button class="pk img" id="pk-kick" style="left:982px;top:522px;width:126px;height:126px;border-radius:50%;background-position:-982px -522px" aria-label="Kick drum"></button>
-    <button class="pk" id="pk-cym1" style="left:872px;top:440px;width:96px;height:30px" aria-label="Cymbal"></button>
-    <button class="pk" id="pk-cym2" style="left:1098px;top:436px;width:96px;height:30px" aria-label="Cymbal"></button>
-    <button class="pk" id="pk-amp" style="left:818px;top:510px;width:74px;height:96px" aria-label="Amp"></button>
-    <button class="pk img" id="pk-gnome" style="left:236px;top:562px;width:112px;height:98px;background-position:-236px -562px;transform-origin:50% 90%" aria-label="Garden gnome"></button>
-    <img id="cooler-fg" src="img/cooler-fg.webp?v=1" alt="" style="position:absolute;left:1254px;top:544px;width:140px;height:99px;z-index:74;pointer-events:none">
-    <button class="pk" id="pk-cooler" style="left:1252px;top:544px;width:142px;height:100px;z-index:75" aria-label="Cooler"></button>
+    <button class="pk" id="pk-lantern" style="left:220px;top:266px;width:46px;height:52px" aria-label="Wall lamp"></button>
+    <button class="pk" id="pk-pigeon" style="left:258px;top:158px;width:80px;height:68px" aria-label="Pigeon"></button>
+    <button class="pk img" id="pk-kick" style="left:960px;top:518px;width:120px;height:120px;border-radius:50%;background-position:-960px -518px" aria-label="Kick drum"></button>
+    <button class="pk" id="pk-cym1" style="left:872px;top:440px;width:90px;height:26px" aria-label="Cymbal"></button>
+    <button class="pk" id="pk-cym2" style="left:1080px;top:436px;width:90px;height:26px" aria-label="Cymbal"></button>
+    <button class="pk" id="pk-amp" style="left:805px;top:500px;width:72px;height:92px" aria-label="Amp"></button>
+    <button class="pk img" id="pk-gnome" style="left:248px;top:560px;width:100px;height:90px;background-position:-248px -560px;transform-origin:50% 90%" aria-label="Garden gnome"></button>
+    <button class="pk" id="pk-cooler" style="left:1225px;top:550px;width:140px;height:90px" aria-label="Cooler"></button>
+    <div id="roof-glass" aria-hidden="true"></div>
+    <canvas id="roof-fx" width="1672" height="941" aria-hidden="true"></canvas>
+    <a class="pk" id="pk-floor" href="#lounge" data-lounge style="left:1170px;top:680px;width:260px;height:115px;clip-path:polygon(3% 10%,96% 5%,64% 83%,57% 96%,3% 14%)" aria-label="Dance floor: go to the Smile Lounge"></a>
+    <a class="pk" id="pk-arcade" href="#arcade" data-arcade style="left:335px;top:318px;width:128px;height:245px" aria-label="Arcade: go to the game corner"></a>
     <canvas id="pat-fx" width="1672" height="941"></canvas>
     <div id="tags"></div>
   </div>
@@ -242,6 +247,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     <h1 class="sign" aria-label="Motel Smile"><span class="w"><span class="b f1">M</span><span class="p">o</span><span class="b f2">t</span><span class="p f3">e</span><span class="p">l</span></span> <span class="w"><span class="p">S</span><span class="p">m</span><span class="p">i</span><span class="p f4">l</span><span class="p">e</span></span></h1>
     <div class="pills">
       <a class="pill" style="--c:var(--pink)" data-lounge href="#lounge"><span class="tri" aria-hidden="true"></span>Listen in the lounge</a>
+      <a class="pill" style="--c:var(--green)" data-arcade href="#arcade">Play games</a>
       <a class="pill" style="--c:var(--cyan)" data-open="shows" href="#shows">Live music</a>
     </div>
   </div>
@@ -268,27 +274,31 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .lounge{position:fixed;inset:0;z-index:40;overflow:hidden;background:#05060a;opacity:0;pointer-events:none}
 .lounge.on{opacity:1;pointer-events:auto}
 .lounge:not(.on),.lounge:not(.on) *{pointer-events:none!important}
-.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/lounge.webp?v=12) 62% 50%/cover;filter:blur(22px) brightness(.45)}
+.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=1) 40% 50%/cover;filter:blur(22px) brightness(.45)}
 .lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
-.lg-cam{z-index:8}.lg-hero{z-index:2;background:url(img/rooftop-lounge.webp?v=11) 0 0/1672px 941px;pointer-events:none}
+.lg-cam{z-index:8}.lg-hero{z-index:2;background:url(img/roof-main.webp?v=1) 0 0/1672px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
 .lg-bg{left:0;top:0;width:1672px;height:941px}
 .lg-front{left:341px;top:489px;width:886px;height:405px;pointer-events:none}
 .lg-cam svg{position:absolute;left:0;top:0;width:1672px;height:941px;overflow:visible;pointer-events:none}
 .lg-hot{all:unset;position:absolute;cursor:pointer;border-radius:10px;z-index:4}
-.lg-swipe{display:none;position:absolute;right:14px;top:22px;font:11px var(--mono);letter-spacing:.15em;text-transform:uppercase;color:#fff;opacity:.7;pointer-events:none}
+.lg-swipe{display:none;position:absolute;right:14px;top:64px;font:11px var(--mono);letter-spacing:.15em;text-transform:uppercase;color:#fff;opacity:.7;pointer-events:none}
 @media (max-width:760px) and (orientation:portrait){.lg-swipe{display:block}}
 .lounge{touch-action:pan-y}
 #lg-play{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:3}
 #lp-kick.kick{filter:drop-shadow(0 0 14px rgba(255,61,127,.9));background:radial-gradient(circle,rgba(255,61,127,.25),transparent 70%)}
 .lg-hot:focus-visible{outline:4px solid var(--cyan);outline-offset:4px}
-.lg-hot.crate{left:873px;top:488px;width:352px;height:365px}
-.lg-hot.deck{left:400px;top:440px;width:420px;height:70px}
-.lg-tag{position:absolute;left:920px;top:420px;z-index:4;font-family:var(--tube);font-size:30px;color:#fff;padding:8px 22px;border:3px solid var(--pink);border-radius:40px;background:rgba(5,6,10,.6);box-shadow:0 0 14px var(--pink);text-shadow:0 0 10px var(--pink);pointer-events:none;animation:lgpulse 2.2s ease-in-out infinite;white-space:nowrap}
+.lg-hot.crate{left:624px;top:578px;width:124px;height:114px}
+.lg-hot.deck{left:394px;top:460px;width:232px;height:250px}
+.lg-hot.lever{left:1436px;top:470px;width:180px;height:238px}
+#lg-svg{display:none}
+#pl-on{opacity:0;transition:opacity .18s}
+#lg-fx{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:2}
+.lg-tag{position:absolute;left:575px;top:505px;z-index:4;font-family:var(--tube);font-size:30px;color:#fff;padding:8px 22px;border:3px solid var(--pink);border-radius:40px;background:rgba(5,6,10,.6);box-shadow:0 0 14px var(--pink);text-shadow:0 0 10px var(--pink);pointer-events:none;animation:lgpulse 2.2s ease-in-out infinite;white-space:nowrap}
 .lg-tag[hidden]{display:none}
 @keyframes lgpulse{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-8px);opacity:.75}}
 /* front-of-console player: sits on the speaker grille */
-.lg-panel{transition:opacity .3s;position:absolute;left:472px;top:562px;width:362px;height:186px;z-index:4;padding:18px 22px;background:rgba(5,6,10,.5);border:1.5px solid rgba(255,61,127,.35);border-radius:6px;box-shadow:inset 0 0 40px rgba(0,0,0,.6);backdrop-filter:blur(2px);display:flex;flex-direction:column;gap:7px;font-family:var(--mono);color:var(--fog)}
+.lg-panel{transition:opacity .3s;position:absolute;left:250px;top:722px;width:362px;height:186px;z-index:4;padding:18px 22px;background:rgba(5,6,10,.5);border:1.5px solid rgba(255,61,127,.35);border-radius:6px;box-shadow:inset 0 0 40px rgba(0,0,0,.6);backdrop-filter:blur(2px);display:flex;flex-direction:column;gap:7px;font-family:var(--mono);color:var(--fog)}
 .lg-panel small{font-size:12px;letter-spacing:.25em;text-transform:uppercase;color:var(--pink)}
 .lg-panel b{font-family:var(--tube);font-weight:400;font-size:30px;line-height:1.05;color:#fff;text-shadow:0 0 10px var(--pink)}
 .lg-panel .row{display:flex;align-items:center;gap:12px;font-size:14px}
@@ -360,22 +370,22 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .dig-row[disabled]{cursor:default;color:var(--fog)}.dig-row[disabled] em{color:var(--fog)}
 .dig-row:not([disabled]):hover{background:rgba(255,61,127,.12)}
 @media (max-width:760px){.dig-head h3{visibility:hidden}.dig-foot{flex-wrap:wrap;justify-content:center;border-radius:18px;width:calc(100% - 24px);padding:10px 12px;row-gap:8px}.dig-foot b{order:-1;flex:1 0 100%;text-align:center;font-size:18px}}
-.cr-fill{position:absolute;inset:-40px;background:url(img/lounge.webp?v=12) 50% 50%/cover;filter:blur(24px) brightness(.4)}
+.cr-fill{position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=1) 40% 50%/cover;filter:blur(24px) brightness(.4)}
 @media (max-width:760px) and (orientation:portrait){
   .lg-panel{position:absolute;pointer-events:auto;left:12px;right:12px;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;height:auto;transform:none;background:var(--glass);border-color:var(--line);padding:14px 16px;gap:8px}
   .lg-panel small{font-size:11px}.lg-panel b{font-size:24px}.lg-panel .row{font-size:13px}
   .lg-pp{width:40px;height:40px}
-  .lg-tag{font-size:40px;left:900px;top:400px}
+  .lg-tag{font-size:30px;left:575px;top:505px}
 }
 @media (prefers-reduced-motion:reduce){.lg-tag{animation:none}.lg-dig,.dig-sl{transition:none}}
 </style>
 
-<section class="lounge" id="lounge" aria-label="The lounge" aria-hidden="true">
+<section class="lounge" id="lounge" aria-label="The Smile Lounge" aria-hidden="true">
   <div class="lg-fill"></div>
   <div class="lg-cam" id="lg-cam">
-    <img class="lg-bg lg-lay" id="pl-sky" src="img/lounge-plate.webp?v=8" alt="Rooftop lounge: a record player and a crate of records, the stage across the roof" width="1672" height="941">
-    <img class="lg-lay" id="pl-mid" src="img/lounge-mid.webp?v=8" alt="" width="1672" height="941">
-    <img class="lg-lay" id="pl-fore" src="img/lounge-fore.webp?v=8" alt="" width="1672" height="941">
+    <img class="lg-bg lg-lay" id="pl-sky" src="img/smile-lounge.webp?v=1" alt="The Smile Lounge: a record player, a crate of records, a red couch and a dance floor on the roof" width="1672" height="941">
+    <img class="lg-bg lg-lay" id="pl-on" src="img/smile-lounge-on.webp?v=1" alt="" width="1672" height="941">
+    <canvas id="lg-fx" width="1672" height="941" aria-hidden="true"></canvas>
     <svg id="lg-svg" viewBox="0 0 1672 941" aria-hidden="true">
       <defs>
         <radialGradient id="lg-vinyl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1a1a20"/><stop offset=".36" stop-color="#0c0c10"/><stop offset=".37" stop-color="#16161c"/><stop offset="1" stop-color="#08080b"/></radialGradient>
@@ -406,20 +416,10 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
       <g id="lg-sleeve" opacity="0"><rect x="-88" y="0" width="176" height="176" rx="3" fill="#0b0b12" stroke="#ff3d7f" stroke-opacity=".6" stroke-width="2"/><image href="img/smile-logo.webp" x="-48" y="26" width="96" height="96"/><text x="0" y="158" text-anchor="middle" font-family="Yellowtail, cursive" font-size="26" fill="#fff">Don't Mind It</text></g>
       </g>
     </svg>
-    <div id="lg-play">
-      <div class="lgp-set" id="lgp-set" style="position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;transform:matrix(1.004,0,0,1.004,371.3,-146.7);pointer-events:none"><div class="lt-warm"></div><div class="lt-glow"></div><div class="lt-flame"></div><div class="lt-out"></div></div>
-      <button class="pk" id="lp-lantern" style="left:1600px;top:290px;width:44px;height:62px" aria-label="Candle lantern"></button>
-      <button class="pk" id="lp-kick" style="left:1345px;top:370px;width:140px;height:140px;border-radius:50%" aria-label="Kick drum"></button>
-      <button class="pk" id="lp-cym1" style="left:1218px;top:278px;width:108px;height:32px" aria-label="Cymbal"></button>
-      <button class="pk" id="lp-cym2" style="left:1455px;top:283px;width:104px;height:32px" aria-label="Cymbal"></button>
-      <button class="pk" id="lp-amp" style="left:1104px;top:364px;width:118px;height:128px" aria-label="Amp"></button>
-      <button class="pk" id="lp-cooler" style="left:1626px;top:420px;width:46px;height:86px" aria-label="Cooler"></button>
-      <button class="pk" id="lp-tag" style="left:1588px;top:356px;width:84px;height:66px" aria-label="Graffiti tag"></button>
-    </div>
-    <img class="lg-front" src="img/lounge-front.webp?v=7" alt="" width="886" height="442">
     <svg aria-hidden="true"><g id="lg-hold"></g></svg>
     <button class="lg-hot crate" id="lg-crate-hot" aria-label="Pick a record"></button>
     <button class="lg-hot deck" id="lg-deck-hot" aria-label="Play or pause the record"></button>
+    <button class="lg-hot lever" id="lg-lever" aria-label="Dance floor power: off" aria-pressed="false"></button>
     <div class="lg-tag" id="lg-tag">Pick a record ↓</div>
     <div class="lg-panel" id="lg-panel" aria-live="polite">
       <small id="lg-state">The lounge</small>
@@ -430,12 +430,9 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     </div>
   </div>
   <div class="lg-hero" id="lg-hero"></div>
-  <video class="lg-glide" id="lg-glide-back" muted playsinline preload="auto" aria-hidden="true"><source src="img/glide-back.webm?v=2" type="video/webm"><source src="img/glide-back.mp4?v=2" type="video/mp4"></video>
-  <video class="lg-glide" id="lg-glide" muted playsinline preload="auto" aria-hidden="true"><source src="img/glide.webm?v=2" type="video/webm"><source src="img/glide.mp4?v=2" type="video/mp4"></video>
-  <div class="lg-wl" id="wl-sky"></div><div class="lg-wl" id="hero-g"></div><div class="lg-wl" id="wl-mid"></div><div class="lg-wl" id="hero-f"></div><div class="lg-wl" id="wl-fore"></div>
   <div class="lg-ui">
-    <a class="pill lg-back" style="--c:var(--cyan)" href="#" id="lg-back">← Back to the stage</a>
-    <div class="lg-swipe" aria-hidden="true">swipe ⇢ stage</div>
+    <a class="pill lg-back" style="--c:var(--cyan)" href="#" id="lg-back">← Back to the roof</a>
+    <div class="lg-swipe" aria-hidden="true">⇠ swipe ⇢</div>
     <div class="lg-dig" id="dig" data-mode="crate" role="dialog" aria-label="Record crate" aria-hidden="true">
       <div class="cr-fill"></div>
       <div class="cr-mx"><div class="cr-my"><div class="cr-box" id="cr-box">
@@ -577,16 +574,17 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   L.addEventListener("pointerdown",e=>{ if(!portrait()||e.target.closest("a,.lg-panel,.lg-dig,.lg-back")) return; lgDrag={x:e.clientX,p:lgPan,moved:false}; });
   L.addEventListener("click",e=>{ if(lgMoved){ e.preventDefault(); e.stopPropagation(); lgMoved=false; } },true);
   let lgMoved=false;
-  addEventListener("pointermove",e=>{ if(!lgDrag) return; const dx=e.clientX-lgDrag.x; if(Math.abs(dx)>6){ lgDrag.moved=true; lgMoved=true; } lgPan=Math.max(0,Math.min(422,lgDrag.p-dx/S)); frame(); });
+  const panMax=()=>Math.max(0,W0-innerWidth/S);
+  addEventListener("pointermove",e=>{ if(!lgDrag) return; const dx=e.clientX-lgDrag.x; if(Math.abs(dx)>6){ lgDrag.moved=true; lgMoved=true; } lgPan=Math.max(0,Math.min(panMax(),lgDrag.p-dx/S)); frame(); });
   addEventListener("pointerup",()=>{ if(lgDrag&&!lgDrag.moved) lgMoved=false; lgDrag=null; }); addEventListener("pointercancel",()=>{ lgDrag=null; });
   function frame(){
     const w=innerWidth,h=innerHeight;
     const pan=$("lg-panel"), ui=document.querySelector(".lg-ui");
     if(portrait()){ if(pan.parentNode!==ui) ui.insertBefore(pan,ui.firstChild); } else if(pan.parentNode!==cam) cam.appendChild(pan);
-    if(portrait()){ // phones: show the console + crate side, letterboxed over a blurred fill
-      S=w/920; OX=-(330+lgPan)*S; OY=Math.max(60,(h-H0*S)/2-110);
-    }else{ // keep the console and the whole crate in frame; crop sky first
-      S=Math.max(w/W0,h/H0); OX=(w-W0*S)*0.45; OY=(h-H0*S)*0.7;
+    if(portrait()){ // phones: full height, drag sideways across the lounge
+      S=Math.max(w/W0,h/H0); lgPan=Math.max(0,Math.min(Math.max(0,W0-w/S),lgPan)); OX=-lgPan*S; OY=(h-H0*S)*0.6;
+    }else{ // cover; crop sky first
+      S=Math.max(w/W0,h/H0); OX=(w-W0*S)*0.4; OY=(h-H0*S)*0.75;
     }
     if(!anim) cam.style.transform=`translate(${OX}px,${OY}px) scale(${S})`;
   }
@@ -607,65 +605,32 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   const T=(el,x,y,s)=>{el.style.transform=`translate(${x}px,${y}px) scale(${s})`;};
   const cl=(v)=>Math.max(0,Math.min(1,v));
   function run(ms,f,done){ ms*=(window.__TS||1); const t0=performance.now(); function st(now){ const t=cl((now-t0)/ms); f(t); if(t<1) anim=requestAnimationFrame(st); else {anim=null;done&&done();} } anim=requestAnimationFrame(st); }
+  const soft=t=>t*t*(3-2*t);
+  const FOCUS={x:1290,y:735};   // the dance floor peek on the main roof
+  function heroAt(hb,k){ const sx=hb.ox+FOCUS.x*hb.s, sy=hb.oy+FOCUS.y*hb.s; hero.style.transform=`translate(${sx-(sx-hb.ox)*k}px,${sy-(sy-hb.oy)*k}px) scale(${hb.s*k})`; }
+  function camAt(M,k){ const sx=innerWidth/2, sy=innerHeight/2; cam.style.transform=`translate(${sx-(sx-M.ox)*k}px,${sy-(sy-M.oy)*k}px) scale(${M.s*k})`; }
   function enter(){
     if(L.classList.contains("on")) return;
-    lgPan=0; frame(); closeCrate();
+    closeCrate(); lgPan=0; frame(); lgPan=Math.max(0,520-innerWidth/S/2); frame();
     L.classList.add("on"); L.setAttribute("aria-hidden","false"); stg.setAttribute("aria-hidden","true");
     if(location.hash!=="#lounge") history.pushState(null,"","#lounge");
-    loop();
-    if(still){ hero.style.display="none"; WL.forEach(e=>e.style.opacity="0"); cam.style.opacity="1"; frame(); return; }
-    const hb=heroBox(), wb=wideBox(), cx=innerWidth/2, cy=innerHeight/2;
-    hero.style.display="block"; hero.style.opacity="1"; WL.forEach(e=>e.style.opacity="0"); cam.style.opacity="0"; $("lg-panel").style.transition="none"; $("lg-panel").style.opacity="0";
-    // Glide: a pre-rendered 3D walk from the stage toward the lounge (one image + depth). As the walk starts to
-    // stretch, it dissolves into the record player shot, which opens up with a gentle settle.
-    const v=$("lg-glide"), soft=t=>t*t*(3-2*t);
-    const [wSky,hG,wMid,wFore]=WL, HF2=$("hero-f"); [wSky,hG,wMid,wFore,HF2].forEach(el=>el.style.opacity="0");
-    hero.style.display="none";
-    $("pl-sky").src="img/lounge.webp?v=12"; $("pl-mid").style.display="none"; $("pl-fore").style.display="none";
-    const M1={s:S,ox:OX,oy:OY};
-    const bp=(stg.style.backgroundPosition||"50% 42%").split(" "); v.style.objectPosition=bp.join(" ");
-    v.style.opacity="1"; v.style.display="block"; cam.style.opacity="0";
-    let done=false;
-    let settle=()=>{ if(done) return; done=true;
-      run(900,t=>{ const e=soft(t), k=1.08-.08*e, sx=innerWidth/2, sy=innerHeight/2;
-        cam.style.transform=`translate(${sx-(sx-M1.ox)*k}px,${sy-(sy-M1.oy)*k}px) scale(${M1.s*k})`;
-        cam.style.opacity=String(e); v.style.opacity=String(1-e); },
-      ()=>{ v.style.display="none"; v.pause(); cam.style.opacity="1"; $("lg-panel").style.transition=""; $("lg-panel").style.opacity=""; frame(); }); };
-    const watch=()=>{ if(done) return; if(v.duration&&v.currentTime>=v.duration*.58) settle(); else requestAnimationFrame(watch); };
-    const band=window.MSBand&&window.MSBand();
-    if(band){ L.style.background=`#05060a url(img/rooftop-phone.webp?v=1) ${band.px*100}% ${band.py*100}%/cover no-repeat`; $("lounge").querySelector(".lg-fill").style.opacity="0";
-      Object.assign(v.style,{inset:"auto",objectFit:"fill",left:band.left+"px",top:band.top+"px",width:band.width+"px",height:band.height+"px"});
-      const Hh=innerHeight, Ww=Hh*1672/941, to={left:innerWidth/2-Ww*.45,top:0,width:Ww,height:Hh};
-      run(800,t=>{ const e=soft(t); for(const k of ["left","top","width","height"]) v.style[k]=(band[k]+(to[k]-band[k])*e)+"px"; },()=>{});
-      const restore=()=>{ L.style.background=""; $("lounge").querySelector(".lg-fill").style.opacity=""; Object.assign(v.style,{inset:"",objectFit:"",left:"",top:"",width:"",height:""}); };
-      const os=settle; settle=()=>{ os(); setTimeout(restore,950); };
-    }
-    v.currentTime=0; const pr=v.play(); if(pr&&pr.catch) pr.catch(()=>settle());
-    requestAnimationFrame(watch); v.onended=settle; setTimeout(()=>{ if(!done&&v.currentTime<.05) settle(); },1500);
+    loop(); window.MSMuffle&&window.MSMuffle(false); window.dispatchEvent(new Event("ms-view"));
+    if(still){ hero.style.display="none"; cam.style.opacity="1"; frame(); return; }
+    const hb=heroBox(), M1={s:S,ox:OX,oy:OY};
+    hero.style.display="block"; hero.style.opacity="1"; heroAt(hb,1); cam.style.opacity="0"; $("lg-panel").style.opacity="0";
+    run(950,t=>{ const e=io(t); heroAt(hb,1+1.8*e); hero.style.opacity=String(1-cl((t-.45)/.5));
+      const c=cl((t-.4)/.6); cam.style.opacity=String(c); camAt(M1,1.12-.12*soft(c)); },
+      ()=>{ hero.style.display="none"; cam.style.opacity="1"; $("lg-panel").style.opacity=""; frame(); });
   }
   function leave(){
     closeCrate();
-    const end=()=>{ vb.style.display="none"; vb.pause(); hero.style.display="none"; L.classList.remove("on","moving"); L.setAttribute("aria-hidden","true"); stg.removeAttribute("aria-hidden"); cam.style.opacity="1"; cam.style.transform=""; frame(); };
+    const end=()=>{ hero.style.display="none"; L.classList.remove("on","moving"); L.setAttribute("aria-hidden","true"); stg.removeAttribute("aria-hidden"); cam.style.opacity="1"; cam.style.transform=""; window.MSMuffle&&window.MSMuffle(true); window.dispatchEvent(new Event("ms-view")); frame(); };
     if(still){ end(); return; }
-    // reverse of the way in: the record player eases back and dissolves into the walk, which plays backwards to the stage
-    const vb=$("lg-glide-back"), M1={s:S,ox:OX,oy:OY}, soft=t=>t*t*(3-2*t);
-    vb.style.objectPosition=(stg.style.backgroundPosition||"50% 42%"); vb.currentTime=0; vb.style.opacity="0"; vb.style.display="block";
-    const pr=vb.play(); if(pr&&pr.catch) pr.catch(()=>{});
-    vb.pause(); let started=false;
-    $("lg-panel").style.opacity="0";
-    run(600,t=>{ const e=soft(t), k=1+.08*e, sx=innerWidth/2, sy=innerHeight/2;
-      cam.style.transform=`translate(${sx-(sx-M1.ox)*k}px,${sy-(sy-M1.oy)*k}px) scale(${M1.s*k})`;
-      cam.style.opacity=String(1-e); vb.style.opacity=String(e);
-      if(!started&&t>.35){ started=true; vb.play().catch(()=>{}); } },
-      ()=>{ cam.style.opacity="0"; if(!started) vb.play().catch(()=>{});
-        const fin=()=>{ vb.onended=null; const band=window.MSBand&&window.MSBand();
-          if(band&&vb.style.display!=="none"){ L.style.background=`#05060a url(img/rooftop-phone.webp?v=1) ${band.px*100}% ${band.py*100}%/cover no-repeat`; $("lounge").querySelector(".lg-fill").style.opacity="0";
-            const r=vb.getBoundingClientRect(), Hh=innerHeight, Ww=Hh*1672/941, fr={left:innerWidth/2-Ww*.45,top:0,width:Ww,height:Hh};
-            Object.assign(vb.style,{objectFit:"fill",inset:"auto"});
-            run(650,t=>{ const e=soft(t); for(const k of ["left","top","width","height"]) vb.style[k]=(fr[k]+(band[k]-fr[k])*e)+"px"; },
-              ()=>{ L.style.background=""; $("lounge").querySelector(".lg-fill").style.opacity=""; Object.assign(vb.style,{inset:"",objectFit:"",left:"",top:"",width:"",height:""}); end(); $("lg-panel").style.opacity=""; });
-          } else { end(); $("lg-panel").style.opacity=""; } };
-        vb.onended=fin; setTimeout(()=>{ if(vb.style.display!=="none") fin(); },2500); });
+    const hb=heroBox(), M1={s:S,ox:OX,oy:OY};
+    hero.style.display="block"; hero.style.opacity="0"; heroAt(hb,2.8); $("lg-panel").style.opacity="0";
+    run(800,t=>{ const e=io(t); camAt(M1,1+.12*e); cam.style.opacity=String(1-cl(t/.6));
+      hero.style.opacity=String(cl((t-.2)/.5)); heroAt(hb,2.8-1.8*e); },
+      ()=>{ end(); $("lg-panel").style.opacity=""; });
   }
   $("lg-back").addEventListener("click",e=>{e.preventDefault(); if(location.hash==="#lounge") history.back(); else leave();});
   addEventListener("popstate",()=>{ if(location.hash==="#lounge") enter(); else if(L.classList.contains("on")) leave(); });
@@ -772,7 +737,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     cur=r; audio.pause(); playing=false; ui();
     audio.src=r.audio||""; if(r.audio) audio.load();
     initCrackle();
-    seq=0; seqT0=performance.now()-(still?12.9e3:0);
+    seq=0; seqT0=performance.now()-8.55e3;
     $("lg-state").textContent="Cueing up"; $("lg-title").textContent=r.title; $("lg-note").textContent=""; $("lg-ctrl").hidden=true;
     spot();
   }
@@ -814,6 +779,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
       const src=AC.createBufferSource(); src.buffer=b; src.loop=true;
       const hp=AC.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=900;
       crG=AC.createGain(); crG.gain.value=0; src.connect(hp).connect(crG).connect(AC.destination); src.start();
+      try{ const ms=AC.createMediaElementSource(audio), lp=AC.createBiquadFilter(), vg=AC.createGain(); lp.type="lowpass"; lp.frequency.value=20000; ms.connect(lp).connect(vg).connect(AC.destination);
+        window.MSMuffle=m=>{ lp.frequency.setTargetAtTime(m?650:20000,AC.currentTime,.25); vg.gain.setTargetAtTime(m?.5:1,AC.currentTime,.25); }; }catch(e){}
     }catch(e){AC=null;}
   }
   function crackle(on){ if(crG&&AC) crG.gain.setTargetAtTime(on?.35:0,AC.currentTime,.15); }
@@ -869,9 +836,166 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     drawArm();
     if(L.classList.contains("on")||anim) requestAnimationFrame(tick); else looping=false;
   }
+  window.MSLgPlaying=()=>!!cur&&(cur.audio?!audio.paused:(cur.spotify?true:playing!==false));
+  window.MSLgOn=()=>L.classList.contains("on");
   frame(); drawArm();
 })();
 </script>
+
+<style>
+/* Game corner: a second hidden spot behind the shack */
+.arcade{position:fixed;inset:0;z-index:41;overflow:hidden;background:#05060a;opacity:0;pointer-events:none}
+.arcade.on{opacity:1;pointer-events:auto}
+.arcade:not(.on),.arcade:not(.on) *{pointer-events:none!important}
+.ac-fill{position:absolute;inset:-40px;background:url(img/game-corner.webp?v=1) 30% 50%/cover;filter:blur(22px) brightness(.45)}
+.ac-cam,.ac-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
+.ac-cam{z-index:8}.ac-hero{z-index:2;background:url(img/roof-main.webp?v=1) 0 0/1672px 941px;pointer-events:none;display:none}
+.ac-cam>img{position:absolute;left:0;top:0;width:1672px;height:941px;user-select:none;-webkit-user-drag:none}
+.ac-hot{all:unset;position:absolute;cursor:pointer;border-radius:10px;z-index:3}
+.ac-hot:focus-visible{outline:4px solid var(--cyan);outline-offset:4px}
+@media (hover:hover){.ac-hot:hover{box-shadow:0 0 0 2px rgba(255,61,127,.6),0 0 24px rgba(255,61,127,.45)}}
+.ac-ui{position:absolute;inset:0;z-index:9;pointer-events:none}
+.ac-ui .lg-back{pointer-events:auto}
+.ac-swipe{display:none;position:absolute;right:14px;top:64px;font:11px var(--mono);letter-spacing:.15em;text-transform:uppercase;color:#fff;opacity:.7;pointer-events:none}
+@media (max-width:760px) and (orientation:portrait){.ac-swipe{display:block}}
+.ac-sign{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));font:12px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:#fff;padding:8px 16px;border-radius:20px;background:rgba(5,6,10,.6);border:1px solid var(--line);pointer-events:none;white-space:nowrap}
+</style>
+<section class="arcade" id="arcade" aria-label="The game corner" aria-hidden="true">
+  <div class="ac-fill"></div>
+  <div class="ac-hero" id="ac-hero"></div>
+  <div class="ac-cam" id="ac-cam">
+    <img src="img/game-corner.webp?v=1" alt="The game corner behind the shack: three arcade cabinets, a pinball machine, an old TV with a console and two beanbags" width="1672" height="941">
+    <button class="ac-hot" data-game="Rocket Runner" style="left:107px;top:227px;width:200px;height:520px" aria-label="Rocket Runner arcade cabinet"></button>
+    <button class="ac-hot" data-game="Night Striker" style="left:310px;top:247px;width:150px;height:470px" aria-label="Night Striker arcade cabinet"></button>
+    <button class="ac-hot" data-game="Pixel Outlaw" style="left:462px;top:267px;width:170px;height:425px" aria-label="Pixel Outlaw arcade cabinet"></button>
+    <button class="ac-hot" data-game="Fireball" style="left:660px;top:300px;width:240px;height:367px" aria-label="Fireball pinball machine"></button>
+    <button class="ac-hot" data-game="the TV" style="left:1300px;top:400px;width:190px;height:260px" aria-label="Old TV and console"></button>
+  </div>
+  <div class="ac-ui">
+    <a class="pill lg-back" style="--c:var(--cyan)" href="#" id="ac-back">← Back to the roof</a>
+    <div class="ac-swipe" aria-hidden="true">⇠ swipe ⇢</div>
+    <div class="ac-sign">Game corner · games coming soon</div>
+  </div>
+</section>
+<script>
+(()=>{
+  const $=id=>document.getElementById(id), W0=1672,H0=941, still=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  const A=$("arcade"), cam=$("ac-cam"), hero=$("ac-hero"), stg=$("stage");
+  const FOCUS={x:400,y:430};
+  let S=1,OX=0,OY=0,pan=0,anim=null;
+  const portrait=()=>innerWidth<=760&&innerHeight>innerWidth;
+  function frame(){ const w=innerWidth,h=innerHeight; S=Math.max(w/W0,h/H0);
+    if(portrait()){ pan=Math.max(0,Math.min(Math.max(0,W0-w/S),pan)); OX=-pan*S; OY=(h-H0*S)*.55; } else { OX=(w-W0*S)*.35; OY=(h-H0*S)*.6; }
+    if(!anim) cam.style.transform=`translate(${OX}px,${OY}px) scale(${S})`; }
+  addEventListener("resize",()=>{ if(A.classList.contains("on")) frame(); });
+  let drag=null, moved=false;
+  A.addEventListener("pointerdown",e=>{ if(!portrait()||e.target.closest(".lg-back")) return; drag={x:e.clientX,p:pan}; moved=false; });
+  addEventListener("pointermove",e=>{ if(!drag) return; const dx=e.clientX-drag.x; if(Math.abs(dx)>6) moved=true; pan=drag.p-dx/S; frame(); });
+  addEventListener("pointerup",()=>{ drag=null; }); addEventListener("pointercancel",()=>{ drag=null; });
+  A.addEventListener("click",e=>{ if(moved){ e.preventDefault(); e.stopPropagation(); moved=false; } },true);
+  const cl=v=>Math.max(0,Math.min(1,v)), io=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2, soft=t=>t*t*(3-2*t);
+  function run(ms,f,done){ const t0=performance.now(); function st(now){ const t=cl((now-t0)/ms); f(t); if(t<1) anim=requestAnimationFrame(st); else { anim=null; done&&done(); } } anim=requestAnimationFrame(st); }
+  function heroBox(){ const w=stg.clientWidth,h=stg.clientHeight,s=Math.max(w/W0,h/H0); const bp=(stg.style.backgroundPosition||"50% 42%").split(" ").map(v=>parseFloat(v)/100); return {s,ox:(w-W0*s)*bp[0],oy:(h-H0*s)*(isNaN(bp[1])?.42:bp[1])}; }
+  function heroAt(hb,k){ const sx=hb.ox+FOCUS.x*hb.s, sy=hb.oy+FOCUS.y*hb.s; hero.style.transform=`translate(${sx-(sx-hb.ox)*k}px,${sy-(sy-hb.oy)*k}px) scale(${hb.s*k})`; }
+  function camAt(M,k){ const sx=innerWidth/2, sy=innerHeight/2; cam.style.transform=`translate(${sx-(sx-M.ox)*k}px,${sy-(sy-M.oy)*k}px) scale(${M.s*k})`; }
+  function enter(){ if(A.classList.contains("on")) return;
+    pan=0; frame(); pan=Math.max(0,420-innerWidth/S/2); frame();
+    A.classList.add("on"); A.setAttribute("aria-hidden","false"); stg.setAttribute("aria-hidden","true");
+    if(location.hash!=="#arcade") history.pushState(null,"","#arcade");
+    window.dispatchEvent(new Event("ms-view"));
+    if(still){ cam.style.opacity="1"; return; }
+    const hb=heroBox(), M1={s:S,ox:OX,oy:OY}; hero.style.display="block"; hero.style.opacity="1"; heroAt(hb,1); cam.style.opacity="0";
+    run(900,t=>{ const e=io(t); heroAt(hb,1+1.8*e); hero.style.opacity=String(1-cl((t-.45)/.5)); const c=cl((t-.4)/.6); cam.style.opacity=String(c); camAt(M1,1.12-.12*soft(c)); },
+      ()=>{ hero.style.display="none"; cam.style.opacity="1"; frame(); }); }
+  function leave(){
+    const end=()=>{ hero.style.display="none"; A.classList.remove("on"); A.setAttribute("aria-hidden","true"); stg.removeAttribute("aria-hidden"); cam.style.opacity="1"; window.dispatchEvent(new Event("ms-view")); frame(); };
+    if(still){ end(); return; }
+    const hb=heroBox(), M1={s:S,ox:OX,oy:OY}; hero.style.display="block"; hero.style.opacity="0"; heroAt(hb,2.8);
+    run(750,t=>{ const e=io(t); camAt(M1,1+.12*e); cam.style.opacity=String(1-cl(t/.6)); hero.style.opacity=String(cl((t-.2)/.5)); heroAt(hb,2.8-1.8*e); }, end); }
+  $("ac-back").addEventListener("click",e=>{ e.preventDefault(); if(location.hash==="#arcade") history.back(); else leave(); });
+  addEventListener("popstate",()=>{ if(location.hash==="#arcade") enter(); else if(A.classList.contains("on")) leave(); });
+  document.querySelectorAll("[data-arcade]").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); e.stopImmediatePropagation(); enter(); },true));
+  addEventListener("keydown",e=>{ if(A.classList.contains("on")&&e.key==="Escape") $("ac-back").click(); });
+  if(location.hash==="#arcade") setTimeout(enter,300);
+  // machines: power-on blip + a line
+  let AC=null; const ac=()=>{ try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume(); }catch(e){} return AC; };
+  function blip(){ const a=ac(); if(!a) return; const t=a.currentTime; [523,659,784,1046].forEach((f,i)=>{ const o=a.createOscillator(), g=a.createGain(); o.type="square"; o.frequency.value=f; g.gain.setValueAtTime(0,t+i*.07); g.gain.linearRampToValueAtTime(.05,t+i*.07+.01); g.gain.exponentialRampToValueAtTime(.0001,t+i*.07+.12); o.connect(g).connect(a.destination); o.start(t+i*.07); o.stop(t+i*.07+.14); }); }
+  const LINES=["is warming up. Coming soon.","needs a quarter. Coming soon.","is getting rewired. Coming soon.","high score: Jacob. Game coming soon."];
+  cam.querySelectorAll(".ac-hot").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation(); blip();
+    const r=b.getBoundingClientRect(), d=document.createElement("div"); d.className="bubble"; d.style.zIndex=20; d.style.position="fixed";
+    d.textContent=b.dataset.game+" "+LINES[Math.floor(Math.random()*LINES.length)];
+    d.style.left=Math.max(120,Math.min(innerWidth-120,r.left+r.width/2))+"px"; d.style.top=Math.max(80,r.top+30)+"px"; A.appendChild(d); setTimeout(()=>d.remove(),2900); }));
+  frame();
+})();
+</script>
+
+<script>
+/* ---------- the dance floor: lever in the Smile Lounge, glow + beams carry over to the main roof ---------- */
+(()=>{
+  const $=id=>document.getElementById(id), still=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  const LT=[[[675.7, 766.2], [834.2, 751.2], [881.0, 776.1], [714.8, 794.5], 0, 0], [[834.2, 751.2], [970.1, 738.3], [1022.1, 760.5], [881.0, 776.1], 1, 0], [[970.1, 738.3], [1088.0, 727.1], [1143.4, 747.0], [1022.1, 760.5], 2, 0], [[1088.0, 727.1], [1191.2, 717.3], [1248.8, 735.4], [1143.4, 747.0], 3, 0], [[1191.2, 717.3], [1282.3, 708.6], [1341.1, 725.2], [1248.8, 735.4], 4, 0], [[1282.3, 708.6], [1363.4, 700.9], [1422.8, 716.1], [1341.1, 725.2], 5, 0], [[1363.4, 700.9], [1435.9, 694.0], [1495.5, 708.1], [1422.8, 716.1], 6, 0], [[714.8, 794.5], [881.0, 776.1], [934.9, 804.7], [760.2, 827.4], 0, 1], [[881.0, 776.1], [1022.1, 760.5], [1081.4, 785.7], [934.9, 804.7], 1, 1], [[1022.1, 760.5], [1143.4, 747.0], [1205.9, 769.6], [1081.4, 785.7], 2, 1], [[1143.4, 747.0], [1248.8, 735.4], [1313.2, 755.6], [1205.9, 769.6], 3, 1], [[1248.8, 735.4], [1341.1, 725.2], [1406.4, 743.5], [1313.2, 755.6], 4, 1], [[1341.1, 725.2], [1422.8, 716.1], [1488.3, 732.9], [1406.4, 743.5], 5, 1], [[1422.8, 716.1], [1495.5, 708.1], [1560.8, 723.5], [1488.3, 732.9], 6, 1], [[760.2, 827.4], [934.9, 804.7], [997.5, 838.0], [813.8, 866.1], 0, 2], [[934.9, 804.7], [1081.4, 785.7], [1149.3, 814.7], [997.5, 838.0], 1, 2], [[1081.4, 785.7], [1205.9, 769.6], [1276.9, 795.1], [1149.3, 814.7], 2, 2], [[1205.9, 769.6], [1313.2, 755.6], [1385.6, 778.4], [1276.9, 795.1], 3, 2], [[1313.2, 755.6], [1406.4, 743.5], [1479.4, 764.1], [1385.6, 778.4], 4, 2], [[1406.4, 743.5], [1488.3, 732.9], [1561.1, 751.5], [1479.4, 764.1], 5, 2], [[1488.3, 732.9], [1560.8, 723.5], [1632.9, 740.5], [1561.1, 751.5], 6, 2], [[813.8, 866.1], [997.5, 838.0], [1071.1, 877.1], [877.9, 912.5], 0, 3], [[997.5, 838.0], [1149.3, 814.7], [1228.1, 848.3], [1071.1, 877.1], 1, 3], [[1149.3, 814.7], [1276.9, 795.1], [1358.3, 824.4], [1228.1, 848.3], 2, 3], [[1276.9, 795.1], [1385.6, 778.4], [1467.9, 804.3], [1358.3, 824.4], 3, 3], [[1385.6, 778.4], [1479.4, 764.1], [1561.4, 787.1], [1467.9, 804.3], 4, 3], [[1479.4, 764.1], [1561.1, 751.5], [1642.3, 772.3], [1561.4, 787.1], 5, 3], [[1561.1, 751.5], [1632.9, 740.5], [1712.8, 759.4], [1642.3, 772.3], 6, 3], [[877.9, 912.5], [1071.1, 877.1], [1158.9, 923.7], [955.9, 969.0], 0, 4], [[1071.1, 877.1], [1228.1, 848.3], [1320.6, 887.7], [1158.9, 923.7], 1, 4], [[1228.1, 848.3], [1358.3, 824.4], [1452.4, 858.3], [1320.6, 887.7], 2, 4], [[1358.3, 824.4], [1467.9, 804.3], [1561.9, 833.9], [1452.4, 858.3], 3, 4], [[1467.9, 804.3], [1561.4, 787.1], [1654.4, 813.3], [1561.9, 833.9], 4, 4], [[1561.4, 787.1], [1642.3, 772.3], [1733.4, 795.7], [1654.4, 813.3], 5, 4], [[1642.3, 772.3], [1712.8, 759.4], [1801.8, 780.4], [1733.4, 795.7], 6, 4], [[955.9, 969.0], [1158.9, 923.7], [1265.4, 980.3], [1052.9, 1039.2], 0, 5], [[1158.9, 923.7], [1320.6, 887.7], [1430.5, 934.6], [1265.4, 980.3], 1, 5], [[1320.6, 887.7], [1452.4, 858.3], [1562.5, 898.0], [1430.5, 934.6], 2, 5], [[1452.4, 858.3], [1561.9, 833.9], [1670.5, 868.1], [1562.5, 898.0], 3, 5], [[1561.9, 833.9], [1654.4, 813.3], [1760.5, 843.1], [1670.5, 868.1], 4, 5], [[1654.4, 813.3], [1733.4, 795.7], [1836.6, 822.1], [1760.5, 843.1], 5, 5], [[1733.4, 795.7], [1801.8, 780.4], [1901.7, 804.0], [1836.6, 822.1], 6, 5], [[1052.9, 1039.2], [1265.4, 980.3], [1397.3, 1050.4], [1176.8, 1128.9], 0, 6], [[1265.4, 980.3], [1430.5, 934.6], [1563.5, 991.2], [1397.3, 1050.4], 1, 6], [[1430.5, 934.6], [1562.5, 898.0], [1693.2, 945.0], [1563.5, 991.2], 2, 6], [[1562.5, 898.0], [1670.5, 868.1], [1797.4, 908.0], [1693.2, 945.0], 3, 6], [[1670.5, 868.1], [1760.5, 843.1], [1882.8, 877.5], [1797.4, 908.0], 4, 6], [[1760.5, 843.1], [1836.6, 822.1], [1954.1, 852.1], [1882.8, 877.5], 5, 6], [[1836.6, 822.1], [1901.7, 804.0], [2014.6, 830.6], [1954.1, 852.1], 6, 6], [[1176.8, 1128.9], [1397.3, 1050.4], [1564.9, 1139.5], [1340.7, 1247.6], 0, 7], [[1397.3, 1050.4], [1563.5, 991.2], [1727.5, 1061.2], [1564.9, 1139.5], 1, 7], [[1563.5, 991.2], [1693.2, 945.0], [1850.8, 1001.8], [1727.5, 1061.2], 2, 7], [[1693.2, 945.0], [1797.4, 908.0], [1947.5, 955.2], [1850.8, 1001.8], 3, 7], [[1797.4, 908.0], [1882.8, 877.5], [2025.4, 917.7], [1947.5, 955.2], 4, 7], [[1882.8, 877.5], [1954.1, 852.1], [2089.4, 886.8], [2025.4, 917.7], 5, 7], [[1954.1, 852.1], [2014.6, 830.6], [2143.1, 860.9], [2089.4, 886.8], 6, 7]], MT=[[[1274.2, 756.2], [1372.6, 756.2], [1425.3, 784.3], [1317.2, 784.3], 0, 0], [[1238.2, 732.7], [1328.5, 732.7], [1372.6, 756.2], [1274.2, 756.2], 0, 1], [[1207.7, 712.8], [1291.2, 712.8], [1328.5, 732.7], [1238.2, 732.7], 0, 2], [[1181.5, 695.6], [1259.1, 695.6], [1291.2, 712.8], [1207.7, 712.8], 0, 3], [[1372.6, 756.2], [1471.0, 756.2], [1533.3, 784.3], [1425.3, 784.3], 1, 0], [[1328.5, 732.7], [1418.8, 732.7], [1471.0, 756.2], [1372.6, 756.2], 1, 1], [[1291.2, 712.8], [1374.6, 712.8], [1418.8, 732.7], [1328.5, 732.7], 1, 2], [[1259.1, 695.6], [1336.6, 695.6], [1374.6, 712.8], [1291.2, 712.8], 1, 3], [[1471.0, 756.2], [1569.3, 756.2], [1641.4, 784.3], [1533.3, 784.3], 2, 0], [[1418.8, 732.7], [1509.1, 732.7], [1569.3, 756.2], [1471.0, 756.2], 2, 1], [[1374.6, 712.8], [1458.1, 712.8], [1509.1, 732.7], [1418.8, 732.7], 2, 2], [[1336.6, 695.6], [1414.2, 695.6], [1458.1, 712.8], [1374.6, 712.8], 2, 3], [[1569.3, 756.2], [1667.7, 756.2], [1749.4, 784.3], [1641.4, 784.3], 3, 0], [[1509.1, 732.7], [1599.4, 732.7], [1667.7, 756.2], [1569.3, 756.2], 3, 1], [[1458.1, 712.8], [1541.5, 712.8], [1599.4, 732.7], [1509.1, 732.7], 3, 2], [[1414.2, 695.6], [1491.8, 695.6], [1541.5, 712.8], [1458.1, 712.8], 3, 3], [[1667.7, 756.2], [1766.1, 756.2], [1857.4, 784.3], [1749.4, 784.3], 4, 0], [[1599.4, 732.7], [1689.7, 732.7], [1766.1, 756.2], [1667.7, 756.2], 4, 1], [[1541.5, 712.8], [1625.0, 712.8], [1689.7, 732.7], [1599.4, 732.7], 4, 2], [[1491.8, 695.6], [1569.3, 695.6], [1625.0, 712.8], [1541.5, 712.8], 4, 3]];
+  const lcv=$("lg-fx"), lx=lcv.getContext("2d"), mcv=$("roof-fx"), mx=mcv.getContext("2d"), glass=$("roof-glass"), plOn=$("pl-on"), lever=$("lg-lever");
+  const occ=new Image(); occ.src="img/roof-occ.webp?v=1";
+  const PAL=["#ff46c8","#46dcff","#ffaa46","#aa5aff"];
+  const tv={}; [...LT,...MT].forEach(q=>{ const k=q[4]+","+q[5]; if(!(k in tv)) tv[k]=.5+Math.random()*.5; });
+  let on=false; try{ on=localStorage.getItem("ms-floor")==="1"; }catch(e){}
+  // small canvas for a cheap glow (drawn small, scaled up)
+  const sm=document.createElement("canvas"); sm.width=209; sm.height=118; const sx=sm.getContext("2d");
+  let pat={}, step=-1, beatT=0, stut=null, nextStut=performance.now()+20000;
+  function newPattern(n){ pat={}; for(const q of LT){ const k=q[4]+","+q[5]; if(Math.random()<.42) pat[k]=PAL[(q[4]+q[5]*2+n)%4]; } }
+  function quad(ctx,q,s){ ctx.beginPath(); ctx.moveTo(q[0][0]*s,q[0][1]*s); for(let i=1;i<4;i++) ctx.lineTo(q[i][0]*s,q[i][1]*s); ctx.closePath(); }
+  function tiles(ctx,list,lvlOf,s){ for(const q of list){ const k=q[4]+","+q[5], c=lvlOf(k); if(!c) continue; ctx.globalAlpha=c[1]*tv[k]; ctx.fillStyle=c[0]; quad(ctx,q,s); ctx.fill(); } ctx.globalAlpha=1; }
+  function beams(ctx,cans,t,a0){ ctx.globalCompositeOperation="lighter";
+    for(const c of cans){ const a=Math.atan2(c.ty-c.y,c.tx-c.x)+c.sw*Math.sin(t*.0008+c.ph), L=c.len, sp=c.sp;
+      const ex=c.x+c.lo*Math.cos(a), ey=c.y+c.lo*Math.sin(a);
+      const g=ctx.createLinearGradient(ex,ey,ex+L*Math.cos(a),ey+L*Math.sin(a)); g.addColorStop(0,c.col+(a0*.42)+")"); g.addColorStop(1,c.col+"0)");
+      ctx.fillStyle=g; ctx.beginPath(); ctx.moveTo(ex,ey); ctx.lineTo(ex+L*Math.cos(a-sp),ey+L*Math.sin(a-sp)); ctx.lineTo(ex+L*Math.cos(a+sp),ey+L*Math.sin(a+sp)); ctx.closePath(); ctx.fill();
+      if(c.lens){ const r=ctx.createRadialGradient(ex,ey,0,ex,ey,22); r.addColorStop(0,"rgba(255,255,255,"+a0+")"); r.addColorStop(.3,c.col+(a0*.8)+")"); r.addColorStop(1,c.col+"0)"); ctx.fillStyle=r; ctx.beginPath(); ctx.arc(ex,ey,22,0,7); ctx.fill(); } } }
+  const LCANS=[{x:268,y:314,tx:1000,ty:860,lo:38,len:1100,sp:.1,sw:.16,ph:0,col:"rgba(255,90,210,",lens:true},{x:1046,y:312,tx:1300,ty:820,lo:38,len:1100,sp:.1,sw:.16,ph:1.7,col:"rgba(90,220,255,",lens:true}];
+  const MCANS=[{x:1470,y:545,tx:1470-400*Math.cos(.43),ty:545-900,lo:0,len:900,sp:.08,sw:.3,ph:0,col:"rgba(255,90,210,",lens:false},{x:1600,y:540,tx:1600+300,ty:-300,lo:0,len:900,sp:.08,sw:.3,ph:2.1,col:"rgba(90,220,255,",lens:false}];
+  function clunk(){ try{ const a=new (window.AudioContext||window.webkitAudioContext)(), t=a.currentTime, o=a.createOscillator(), g=a.createGain();
+    o.frequency.setValueAtTime(90,t); o.frequency.exponentialRampToValueAtTime(40,t+.18); g.gain.setValueAtTime(.6,t); g.gain.exponentialRampToValueAtTime(.001,t+.25); o.connect(g).connect(a.destination); o.start(t); o.stop(t+.3);
+    const n=a.createBuffer(1,a.sampleRate*.12,a.sampleRate), d=n.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);
+    const s=a.createBufferSource(), f=a.createBiquadFilter(), g2=a.createGain(); s.buffer=n; f.type="bandpass"; f.frequency.value=2200; g2.gain.value=.5; s.connect(f).connect(g2).connect(a.destination); s.start(t);
+    if(on){ const h=a.createOscillator(), hg=a.createGain(); h.frequency.value=120; hg.gain.setValueAtTime(0,t+.1); hg.gain.linearRampToValueAtTime(.05,t+.3); hg.gain.exponentialRampToValueAtTime(.0005,t+1.4); h.connect(hg).connect(a.destination); h.start(t+.1); h.stop(t+1.5); }
+    setTimeout(()=>a.close(),1800); }catch(e){} }
+  function setOn(v){ on=v; try{ localStorage.setItem("ms-floor",v?"1":"0"); }catch(e){} plOn.style.opacity=v?"1":"0";
+    lever.setAttribute("aria-pressed",v); lever.setAttribute("aria-label","Dance floor power: "+(v?"on":"off")); step=-1; kick(); }
+  lever.addEventListener("click",e=>{ e.stopPropagation(); setOn(!on); clunk(); });
+  const playing=()=>!!(window.MSLgPlaying&&window.MSLgPlaying());
+  let raf=0, last=0;
+  function draw(now){
+    raf=0; const inL=window.MSLgOn&&window.MSLgOn(), inA=$("arcade").classList.contains("on");
+    const P=playing(), beat=P?500:900;
+    // stutter: record on, floor off -> a quick sputter every 30-45s
+    let sputter=null;
+    if(!on&&P&&!still){ if(!stut&&now>nextStut){ stut={t0:now,tiles:LT.filter(()=>Math.random()<.06).map(q=>q[4]+","+q[5])}; nextStut=now+30000+Math.random()*15000; }
+      if(stut){ const e=now-stut.t0; if(e>520) stut=null; else if([0,1,0,1,1,0].some((v,i)=>v&&e>i*90&&e<i*90+70)) sputter=stut; } }
+    else if(!P){ stut=null; nextStut=Math.max(nextStut,now+20000); }
+    let lvl=null, amp=0;
+    if(on){ const n=Math.floor(now/beat); if(n!==step){ step=n; beatT=now; newPattern(n); } amp=still?.8:.55+.45*Math.exp(-(now-beatT)/(beat*.6)); lvl=k=>pat[k]?[pat[k],amp]:["#ff46c8",.05]; }
+    else if(sputter){ lvl=k=>sputter.tiles.includes(k)?[PAL[k.length%4],.55]:null; amp=.35; }
+    // lounge
+    lx.clearRect(0,0,1672,941);
+    if(inL&&lvl){ lx.globalCompositeOperation="lighter"; tiles(lx,LT,lvl,1);
+      sx.clearRect(0,0,209,118); sx.globalCompositeOperation="lighter"; tiles(sx,LT,lvl,.125); lx.globalAlpha=.85; lx.drawImage(sm,0,0,1672,941); lx.drawImage(sm,0,0,1672,941); lx.globalAlpha=1;
+      beams(lx,LCANS,now,on?.9:amp); lx.globalCompositeOperation="source-over"; }
+    // main roof
+    mx.clearRect(0,0,1672,941); glass.style.opacity="0";
+    if(!inL&&!inA&&lvl){ mx.globalCompositeOperation="lighter"; tiles(mx,MT,lvl,1);
+      if(occ.complete&&occ.naturalWidth){ mx.globalCompositeOperation="destination-out"; mx.drawImage(occ,0,0,1672,941); }
+      mx.globalCompositeOperation="lighter";
+      if(on){ beams(mx,MCANS,now,.55); const c=PAL[step%4]; glass.style.background=c; glass.style.opacity=String(.28+.3*amp);
+        const r=mx.createRadialGradient(1290,750,0,1290,750,200); r.addColorStop(0,c+"55"); r.addColorStop(1,c+"00"); mx.fillStyle=r; mx.beginPath(); mx.ellipse(1290,750,220,60,0,0,7); mx.fill(); }
+      mx.globalCompositeOperation="source-over"; }
+    if(on||P||stut) kick();
+  }
+  function kick(){ if(!raf) raf=requestAnimationFrame(draw); }
+  addEventListener("ms-view",kick); setInterval(kick,1000);
+  setOn(on);
+})();
+</script>
+
 
 </main>
 
@@ -1039,7 +1163,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   const ext=u=>`href="${esc(u)}" target="_blank" rel="noopener"`;
   const PLAT={spotify:"Spotify",apple:"Apple Music",youtube:"YouTube",bandcamp:"Bandcamp"};
   // flyer hotspot: follows the flyer painted on the door, whatever the crop
-  const IMG={w:1672,h:941}, FLY={x:252,y:467,w:41,h:61}, LNG={x:556,y:462,w:202,h:160};
+  const IMG={w:1672,h:941}, FLY={x:-900,y:0,w:41,h:61}, LNG={x:-900,y:0,w:10,h:10};
   // tall phones use a vertical version of the roof; the main shot sits inside it at this scale/offset
   const MP={s:.9063,tx:-292.6,ty:393};
   // phones now use the same wide roof as desktop (drag sideways to look around); vertical version retired
@@ -1066,7 +1190,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 
   /* ---------- play: the roof reacts ---------- */
   (()=>{
-    const TAGS=[["Down", 6, 242, 81, 48], ["Thread", 6, 297, 81, 39], ["Gnocchi", 6, 347, 81, 35], ["Don't Mind It", 8, 388, 76, 86], ["Get Back", 170, 312, 57, 47], ["Dirty Little Liar", 170, 367, 57, 60], ["Better Free", 172, 436, 55, 46], ["Just Sayin", 249, 347, 44, 48], ["Watch Your Tone", 17, 518, 175, 85], ["I Know What You Need", 1214, 503, 124, 65], ["What's Missing", 5, 654, 59, 44], ["Mean", 679, 503, 61, 30], ["Fences", 1350, 509, 81, 54], ["Never Ever Be", 1470, 541, 107, 55], ["Been Wrong", 1585, 543, 75, 47], ["Matter Of Time", 1505, 724, 113, 64], ["Sometimes", 1622, 728, 43, 51]], play=$("play");
+    const TAGS=[["Watch Your Tone", 48, 422, 104, 62], ["Never Ever Be", 1396, 532, 98, 58], ["Been Wrong", 1512, 528, 98, 60], ["Matter Of Time", 1358, 772, 108, 78], ["Sometimes", 1502, 792, 158, 62]], play=$("play");
     let AC=null; const ac=()=>{ try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume(); }catch(e){} return AC; };
     const noise=(dur)=>{ const a=ac(); if(!a) return null; const b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; const s=a.createBufferSource(); s.buffer=b; return s; };
     const env=(g,t,a,peak,rel)=>{ g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(peak,t+a); g.gain.exponentialRampToValueAtTime(.0001,t+a+rel); };
@@ -1089,7 +1213,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     const on=(id,fn)=>$(id).addEventListener("click",e=>{ e.stopPropagation(); fn(e.currentTarget); });
     // lantern: blow it out, it relights
     const blowOut=set=>{ if(set.classList.contains("dark")) return; puff(); set.classList.add("dark");
-      for(let i=0;i<3;i++){ const s=document.createElement("div"); s.className="smoke"; s.style.left=(1243+i*2)+"px"; s.style.top="462px"; s.style.animationDelay=(i*.18)+"s"; set.appendChild(s); setTimeout(()=>s.remove(),2200); }
+      for(let i=0;i<0;i++){ const s=document.createElement("div"); s.className="smoke"; s.style.left=(1243+i*2)+"px"; s.style.top="462px"; s.style.animationDelay=(i*.18)+"s"; set.appendChild(s); setTimeout(()=>s.remove(),2200); }
       setTimeout(()=>set.classList.remove("dark"),3200); };
     on("pk-lantern",()=>blowOut(play));
     window.MSPlay={kick,crash,feedback,clink,puff,say,bump,pick,blowOut,flashIn};
@@ -1110,11 +1234,12 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     // tag hunt: 17 song titles hidden in the graffiti
     const KEY="ms-tags"; let found=[]; try{ found=JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(e){}
     const hunt=$("hunt"), box=$("tags");
+    found=found.filter(n=>TAGS.some(t=>t[0]===n));
     const showHunt=()=>{ hunt.textContent=`Tags found ${found.length}/${TAGS.length}`; hunt.classList.toggle("on",found.length>0); };
     const hitTag=(name,b,where,x,y,w,h)=>{ const g=document.createElement("div"); g.className="tag-found"; Object.assign(g.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); where.appendChild(g); setTimeout(()=>g.remove(),1500);
         const isNew=!found.includes(name); if(isNew){ found.push(name); try{ localStorage.setItem(KEY,JSON.stringify(found)); }catch(e){} }
         say(b,isNew?`Found: "${name}"`:`"${name}" (already found)`); showHunt();
-        if(isNew&&found.length===TAGS.length) setTimeout(()=>say(b,"All 17 found. You know the whole catalog. Respect."),3000); };
+        if(isNew&&found.length===TAGS.length) setTimeout(()=>say(b,`All ${TAGS.length} found. Respect.`),3000); };
     window.MSPlay.hitTag=hitTag;
     TAGS.forEach(([name,x,y,w,h])=>{ const b=document.createElement("button"); b.className="pk"; b.setAttribute("aria-label","Graffiti tag");
       Object.assign(b.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); box.appendChild(b);
@@ -1122,15 +1247,6 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     showHunt();
   })();
 
-  /* lounge view: same roof, same toys */
-  (()=>{ const P=window.MSPlay; if(!P) return; const on=(id,fn)=>$(id).addEventListener("click",e=>{ e.stopPropagation(); fn(e.currentTarget); });
-    on("lp-lantern",()=>P.blowOut($("lgp-set")));
-    on("lp-kick",el=>{ P.kick(); P.bump(el,"kick"); });
-    on("lp-cym1",()=>P.crash()); on("lp-cym2",()=>P.crash());
-    on("lp-amp",el=>{ P.feedback(); P.say(el,P.pick(P.AMP)); });
-    on("lp-cooler",el=>{ P.clink(); P.say(el,P.pick(P.COOL)); });
-    on("lp-tag",el=>P.hitTag("I Know What You Need",el,$("lg-play"),1588,356,84,66));
-  })();
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
   let cx=760, cxT=760, drag=null, hinted=false, t0=performance.now();
@@ -1168,7 +1284,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   let signupBound=false;
   function render(c){
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${(c.images&&c.images.hero)||"img/rooftop-lounge.webp?v=11"}")`;
+    $("stage").style.backgroundImage=`url("${(c.images&&c.images.hero)||"img/roof-main.webp?v=1"}")`;
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
@@ -1433,7 +1549,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   // feet positions in main-shot coords (1672x941); height follows the floor's perspective (scaled to the drum kit)
   // far (back by the wall), mid (by the kit), close (foreground)
-  const SPOTS=[[740,640],[1445,630],[1330,615],[565,655], [800,665],[1195,668],[870,712],[1215,722], [430,800],[1290,812],[640,782]];
+  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830]];
   const hFor=f=>1.48*(f-420);
   const MEMBERS=[], taken=()=>MEMBERS.map(m=>m.spot);
   function freeSpot(self){ const busy=taken().filter((s,i)=>MEMBERS[i]!==self && s>=0);
