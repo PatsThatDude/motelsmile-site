@@ -1,6 +1,6 @@
 /* FIREBALL — Motel Smile pinball. Loaded on demand from the game corner. window.MSPinball.open() */
 (()=>{
-  const W=400,H=720,R=9,G=980;
+  const W=400,H=720,R=9,G=600, VMAX=950;
   const ac=()=>window.MSAC&&window.MSAC();
   function tone(f,d,type,vol,slide){ const a=ac(); if(!a) return; const t=a.currentTime, o=a.createOscillator(), g=a.createGain();
     o.type=type||"square"; o.frequency.setValueAtTime(f,t); if(slide) o.frequency.exponentialRampToValueAtTime(slide,t+d);
@@ -30,8 +30,8 @@
   S(366,560,344,575); S(344,575,344,600); S(344,600,259.5,646);
   S(46,520,46,590,{e:.3}); S(320,520,320,590,{e:.3});   // inlane posts
   // slingshots (kick faces)
-  S(70,500,70,560); S(70,560,110,590); S(70,500,110,590,{kick:520,kind:"sling",id:"L"});
-  S(296,500,296,560); S(296,560,256,590); S(256,590,296,500,{kick:520,kind:"sling",id:"R"});
+  S(70,500,70,560); S(70,560,110,590); S(70,500,110,590,{kick:330,kind:"sling",id:"L"});
+  S(296,500,296,560); S(296,560,256,590); S(256,590,296,500,{kick:330,kind:"sling",id:"R"});
   // top lanes posts
   [[110,60],[160,48],[210,48],[260,60]].forEach(([x,y])=>S(x,y,x,y+30,{e:.3}));
   const LANES=[{x:135,y:70,lit:false,ch:"M"},{x:185,y:62,lit:false,ch:"S"},{x:235,y:70,lit:false,ch:"★"}];
@@ -39,7 +39,7 @@
   const TGT=[{x:96,y:380,ch:"F"},{x:96,y:412,ch:"I"},{x:96,y:444,ch:"R"},{x:96,y:476,ch:"E"}].map(t=>Object.assign(t,{down:false,w:8,h:26}));
   const SPIN={x:300,y:330,a:0,v:0};
   const FL=[{px:110,py:652,len:64,side:1,ang:0,up:false,w:0},{px:256,py:652,len:64,side:-1,ang:0,up:false,w:0}];
-  const REST=.53, UP=-.42, FSPD=28;
+  const REST=.53, UP=-.42, FSPD=20;
 
   /* ---------- state ---------- */
   let cv,cx,box,ui,raf=0,last=0,open=false,best=0;
@@ -74,13 +74,13 @@
     for(const f of FL){ const tgt=f.up?UP:REST, prev=f.ang; f.ang+=Math.sign(tgt-f.ang)*Math.min(Math.abs(tgt-f.ang),FSPD*dt); f.w=(f.ang-prev)/dt; }
     if(ball.inLane){ if(plunge){ charge=Math.min(1,charge+dt*1.4); } ball.vx=0; if(ball.y>=690){ ball.y=690; if(!plunge&&ball.vy>=0) ball.vy=0; } }
     ball.vy+=G*dt; ball.x+=ball.vx*dt; ball.y+=ball.vy*dt;
-    const sp=Math.hypot(ball.vx,ball.vy); if(sp>1500){ ball.vx*=1500/sp; ball.vy*=1500/sp; }
+    const sp=Math.hypot(ball.vx,ball.vy); if(sp>VMAX){ ball.vx*=VMAX/sp; ball.vy*=VMAX/sp; }
     if(ball.inLane&&ball.y<250) ball.inLane=false;
     if(!ball.inLane&&ball.x>366&&ball.y>600){ ball.inLane=true; ball.x=383; }
     for(const s of segs) collideSeg(s);
     for(const f of FL) collideFlip(f);
     for(const b of BUMP){ let nx=ball.x-b.x, ny=ball.y-b.y, d=Math.hypot(nx,ny); if(d<b.r+R&&d>0){ nx/=d; ny/=d; ball.x=b.x+nx*(b.r+R); ball.y=b.y+ny*(b.r+R);
-      const vn=ball.vx*nx+ball.vy*ny; if(vn<0){ ball.vx-=2*vn*nx; ball.vy-=2*vn*ny; } ball.vx+=nx*380; ball.vy+=ny*380; b.t=.18; add(100); SFX.pop(); shake=2; } }
+      const vn=ball.vx*nx+ball.vy*ny; if(vn<0){ ball.vx-=2*vn*nx; ball.vy-=2*vn*ny; } ball.vx+=nx*240; ball.vy+=ny*240; b.t=.18; add(100); SFX.pop(); shake=2; } }
     for(const t of TGT){ if(t.down) continue; if(ball.x+R>t.x-t.w/2&&ball.x-R<t.x+t.w/2&&ball.y+R>t.y-t.h/2&&ball.y-R<t.y+t.h/2){
         t.down=true; ball.vx=Math.abs(ball.vx)*.6+120; add(500); SFX.target();
         if(TGT.every(t=>t.down)){ add(5000); mult=Math.min(5,mult+1); fireT=1.6; say("FIREBALL!  x"+mult,2); SFX.fire(); setTimeout(()=>TGT.forEach(t=>t.down=false),1200); } } }
@@ -179,7 +179,7 @@
   function press(side,v){
     if(state==="ready"&&v){ state="play"; SFX.jingle(); say("BALL 1",1.2); return; }
     if(state==="over"&&v){ reset(); state="play"; SFX.jingle(); return; }
-    if(side===1&&ball.inLane&&state==="play"){ if(v){ plunge=true; } else if(plunge){ plunge=false; ball.vy=-(650+charge*900); ball.y-=2; save=8; SFX.launch(); charge=0; } return; }
+    if(side===1&&ball.inLane&&state==="play"){ if(v){ plunge=true; } else if(plunge){ plunge=false; ball.vy=-(720+charge*280); ball.y-=2; save=8; SFX.launch(); charge=0; } return; }
     setFlip(side,v);
   }
   const keys={ArrowLeft:0,KeyZ:0,ShiftLeft:0,ArrowRight:1,KeyM:1,Slash:1,ShiftRight:1,Space:1,ArrowDown:1};
