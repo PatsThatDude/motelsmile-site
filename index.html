@@ -897,6 +897,11 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .ac-cam,.ac-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
 .ac-cam{z-index:8}.ac-hero{z-index:2;background:url(img/roof-main.webp?v=2) 0 0/1672px 941px;pointer-events:none;display:none}
 .ac-cam>img{position:absolute;left:0;top:0;width:1672px;height:941px;user-select:none;-webkit-user-drag:none}
+#pb{position:fixed;inset:0;z-index:95;background:#05060a;display:none;touch-action:none;user-select:none;-webkit-user-select:none}
+#pb.on{display:block}
+#pb canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.pb-x{all:unset;position:absolute;left:max(10px,env(safe-area-inset-left,0px));top:max(8px,env(safe-area-inset-top,0px));z-index:2;cursor:pointer;font:16px var(--mono,monospace);color:#fff;width:34px;height:34px;display:grid;place-items:center;border:1.5px solid var(--cyan,#46dcff);border-radius:30px;background:rgba(5,6,10,.6);box-shadow:0 0 8px var(--cyan,#46dcff)}
+.pb-x:focus-visible{outline:3px solid #fff}
 .ac-hot{all:unset;position:absolute;cursor:pointer;border-radius:10px;z-index:3}
 .ac-hot:focus-visible{outline:4px solid var(--cyan);outline-offset:4px}
 @media (hover:hover){.ac-hot:hover{box-shadow:0 0 0 2px rgba(255,61,127,.6),0 0 24px rgba(255,61,127,.45)}}
@@ -920,7 +925,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   <div class="ac-ui">
     <a class="pill lg-back" style="--c:var(--cyan)" href="#" id="ac-back">← Back to the roof</a>
     <div class="ac-swipe" aria-hidden="true">⇠ swipe ⇢</div>
-    <div class="ac-sign">Game corner · games coming soon</div>
+    <div class="ac-sign">Game corner · Fireball pinball is live · more games soon</div>
   </div>
 </section>
 <script>
@@ -961,13 +966,14 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   $("ac-back").addEventListener("click",e=>{ e.preventDefault(); if(location.hash==="#arcade") history.back(); else leave(); });
   addEventListener("popstate",()=>{ if(location.hash==="#arcade") enter(); else if(A.classList.contains("on")) leave(); });
   document.querySelectorAll("[data-arcade]").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); e.stopImmediatePropagation(); enter(); },true));
-  addEventListener("keydown",e=>{ if(A.classList.contains("on")&&e.key==="Escape") $("ac-back").click(); });
+  addEventListener("keydown",e=>{ if(A.classList.contains("on")&&e.key==="Escape"&&!(window.MSPinball&&window.MSPinball.isOpen())) $("ac-back").click(); });
   if(location.hash==="#arcade") setTimeout(enter,300);
   // machines: power-on blip + a line
   const ac=()=>window.MSAC&&window.MSAC();
   function blip(){ const a=ac(); if(!a) return; const t=a.currentTime; [523,659,784,1046].forEach((f,i)=>{ const o=a.createOscillator(), g=a.createGain(); o.type="square"; o.frequency.value=f; g.gain.setValueAtTime(0,t+i*.07); g.gain.linearRampToValueAtTime(.05,t+i*.07+.01); g.gain.exponentialRampToValueAtTime(.0001,t+i*.07+.12); o.connect(g).connect(a.destination); o.start(t+i*.07); o.stop(t+i*.07+.14); }); }
   const LINES=["is warming up. Coming soon.","needs a quarter. Coming soon.","is getting rewired. Coming soon.","high score: Jacob. Game coming soon."];
-  cam.querySelectorAll(".ac-hot").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation(); blip();
+  function pinball(){ if(window.MSPinball){ window.MSPinball.open(); return; } const sc=document.createElement("script"); sc.src="games/fireball.js?v=1"; sc.onload=()=>window.MSPinball&&window.MSPinball.open(); document.body.appendChild(sc); }
+  cam.querySelectorAll(".ac-hot").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation(); blip(); if(b.dataset.game==="Fireball"){ setTimeout(pinball,250); return; }
     const r=b.getBoundingClientRect(), d=document.createElement("div"); d.className="bubble"; d.style.zIndex=20; d.style.position="fixed";
     d.textContent=b.dataset.game+" "+LINES[Math.floor(Math.random()*LINES.length)];
     d.style.left=Math.max(120,Math.min(innerWidth-120,r.left+r.width/2))+"px"; d.style.top=Math.max(80,r.top+30)+"px"; A.appendChild(d); setTimeout(()=>d.remove(),2900); }));
