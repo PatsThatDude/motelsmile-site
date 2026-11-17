@@ -791,7 +791,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   function needleDown(){
     crackle(true);
     if(cur.spotify){ $("lg-state").textContent="On the platter"; $("lg-note").textContent="Press play on Spotify below."; return; }
-    if(cur.audio){ audio.play().then(()=>{playing=true;ui();}).catch(()=>{playing=false;ui();}); $("lg-ctrl").hidden=false; $("lg-note").textContent=""; }
+    if(cur.audio){ audio.play().then(()=>{playing=true;ui();crackle(false);}).catch(()=>{playing=false;ui();}); $("lg-ctrl").hidden=false; $("lg-note").textContent=""; }
     else { playing=true; $("lg-state").textContent="Now spinning"; $("lg-note").textContent="The track lands here soon. Follow for the drop."; }
   }
   function ui(){
@@ -800,11 +800,12 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   }
   function toggle(){
     if(!recOn||!cur) { openCrate(); return; }
-    if(cur.audio){ if(audio.paused){ audio.play().then(()=>{playing=true;ui();crackle(true);}).catch(()=>{}); } else { audio.pause(); playing=false; ui(); crackle(false);} }
+    if(cur.audio){ if(audio.paused){ audio.play().then(()=>{playing=true;ui();crackle(false);}).catch(()=>{}); } else { audio.pause(); playing=false; ui(); crackle(true);} }
     else { playing=!playing; crackle(playing); }
   }
   $("lg-pp").addEventListener("click",toggle); $("lg-deck-hot").addEventListener("click",toggle);
   audio.addEventListener("ended",()=>{playing=false;ui();crackle(true);});
+  audio.addEventListener("playing",()=>crackle(false));
   const fmt=s=>isFinite(s)?Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0"):"0:00";
 
   /* ---------- vinyl crackle (WebAudio, no file) ---------- */
