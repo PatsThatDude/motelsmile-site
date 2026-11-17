@@ -193,7 +193,7 @@
     }
   }
   const WORLD={segs,BUMP,TGT,FL,LANES,SPIN,tip,W,H,R,bg:()=>bg,get ball(){return ball},get charge(){return charge},get fireT(){return fireT||0},get shake(){return shake||0},get state(){return state},get save(){return save},get balls(){return balls},get score(){return score},get mult(){return mult},get best(){return best},get msg(){return msgT>0?msg:""}};
-  function load3D(){ if(load3D.done||window.MSPB3D_OFF) return; load3D.done=1; const m=document.createElement("script"); m.type="module"; m.src="games/fireball3d.js?v=3"; m.onload=()=>window.MSPB3D&&window.MSPB3D.init(box,WORLD); document.head.appendChild(m); }
+  function load3D(){ if(load3D.done||window.MSPB3D_OFF) return; load3D.done=1; const m=document.createElement("script"); m.type="module"; m.src="games/fireball3d.js?v=4"; m.onload=()=>window.MSPB3D&&window.MSPB3D.init(box,WORLD); document.head.appendChild(m); }
   function loop(t){ raf=0; if(!open) return; const dt=Math.min(.033,(t-(last||t))/1000); last=t; update(dt); draw(); raf=requestAnimationFrame(loop); }
 
   /* ---------- input ---------- */

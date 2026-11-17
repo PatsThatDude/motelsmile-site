@@ -206,8 +206,8 @@ function build(world) {
 function frameCamera() {
   const w = host.clientWidth, h = host.clientHeight, asp = w / h; phone = asp < .8;
   camera.aspect = asp;
-  if (phone) { camera.fov = 62; refs.camPos = new THREE.Vector3(0, 440, 720); refs.camLook = new THREE.Vector3(0, -40, -40); }
-  else { camera.fov = 46; refs.camPos = new THREE.Vector3(0, 440, 720); refs.camLook = new THREE.Vector3(0, -40, -15); }
+  if (phone) { camera.fov = 70; refs.camPos = new THREE.Vector3(0, 250, 560); refs.camLook = new THREE.Vector3(0, -30, -180); }
+  else { camera.fov = 60; refs.camPos = new THREE.Vector3(0, 250, 580); refs.camLook = new THREE.Vector3(0, -40, -120); }
   if (window.PB_CAM) { const o = window.PB_CAM; camera.fov = o.fov; refs.camPos = new THREE.Vector3(...o.pos); refs.camLook = new THREE.Vector3(...o.look); }
   const off = phone ? 0 : 0; camera.setViewOffset(w, h, 0, h * off, w, h);
   camera.position.copy(refs.camPos); camera.lookAt(refs.camLook); camera.updateProjectionMatrix();
