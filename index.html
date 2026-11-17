@@ -973,7 +973,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   const ac=()=>window.MSAC&&window.MSAC();
   function blip(){ const a=ac(); if(!a) return; const t=a.currentTime; [523,659,784,1046].forEach((f,i)=>{ const o=a.createOscillator(), g=a.createGain(); o.type="square"; o.frequency.value=f; g.gain.setValueAtTime(0,t+i*.07); g.gain.linearRampToValueAtTime(.05,t+i*.07+.01); g.gain.exponentialRampToValueAtTime(.0001,t+i*.07+.12); o.connect(g).connect(a.destination); o.start(t+i*.07); o.stop(t+i*.07+.14); }); }
   const LINES=["is warming up. Coming soon.","needs a quarter. Coming soon.","is getting rewired. Coming soon.","high score: Jacob. Game coming soon."];
-  function pinball(){ if(window.MSPinball){ window.MSPinball.open(); return; } const sc=document.createElement("script"); sc.src="games/fireball.js?v=8"; sc.onload=()=>window.MSPinball&&window.MSPinball.open(); document.body.appendChild(sc); }
+  function pinball(){ if(window.MSPinball){ window.MSPinball.open(); return; } const sc=document.createElement("script"); sc.src="games/fireball.js?v=9"; sc.onload=()=>window.MSPinball&&window.MSPinball.open(); document.body.appendChild(sc); }
   cam.querySelectorAll(".ac-hot").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation(); blip(); if(b.dataset.game==="Fireball"){ setTimeout(pinball,250); return; }
     const r=b.getBoundingClientRect(), d=document.createElement("div"); d.className="bubble"; d.style.zIndex=20; d.style.position="fixed";
     d.textContent=b.dataset.game+" "+LINES[Math.floor(Math.random()*LINES.length)];

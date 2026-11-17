@@ -69,8 +69,8 @@
   const ARC=[]; for(let i=0;i<=22;i++){ const t=Math.PI+Math.PI*i/22; ARC.push([200+200*Math.cos(t),205+190*Math.sin(t)]); }
   for(let i=0;i<ARC.length-1;i++) BASE.push(seg(ARC[i][0],ARC[i][1],ARC[i+1][0],ARC[i+1][1]));
   BASE.push(seg(0,205,0,560), seg(400,205,400,H+40), seg(366,250,366,H+40,{e:.3}), seg(366,250,400,214,{e:.4,oneway:true}),
-    seg(0,560,22,575), seg(22,575,22,600), seg(22,600,106.5,646), seg(366,560,344,575), seg(344,575,344,600), seg(344,600,259.5,646),
-    seg(46,520,46,590,{e:.3}), seg(320,520,320,590,{e:.3}),
+    seg(0,560,22,575), seg(22,575,22,586.5), seg(22,586.5,112.5,645.4,{e:0}), seg(366,560,344,575), seg(344,575,344,586.5), seg(344,586.5,253.5,645.4,{e:0}),
+    seg(46,520,46,570,{e:.3}), seg(320,520,320,570,{e:.3}),
     seg(70,500,70,560), seg(70,560,110,590), seg(70,500,110,590,{kick:330,kind:"sling",id:"L"}),
     seg(296,500,296,560), seg(296,560,256,590), seg(256,590,296,500,{kick:330,kind:"sling",id:"R"}));
   const RAMP_POSTS=()=>[seg(146,440,148,418,{e:.35,kind:"ramp"}), seg(194,440,192,418,{e:.35,kind:"ramp"})];
@@ -90,7 +90,7 @@
     segs:[...[[110,60],[160,48],[210,48],[260,60]].map(([x,y])=>seg(x,y,x,y+30,{e:.3})),...RAMP_POSTS()],
     bumps:[B("b1",140,205),B("b2",236,205),B("b3",188,285)],
     tgts:["F","R","E","E"].map((c,i)=>T("free"+i,96,380+i*32,8,26,{kind:"drop",label:c})),
-    jars:GIRLS.map((n,i)=>{ const p=[[188,145],[92,150],[290,160],[70,300],[112,250],[244,418],[300,402]][i]; return J("j"+i,p[0],p[1],{girl:n,r:14}); }),
+    jars:GIRLS.map((n,i)=>{ const p=[[188,145],[92,150],[290,160],[70,300],[112,250],[244,418],[300,402]][i]; return J("j"+i,p[0],p[1],{girl:n,r:16}); }),
     rolls:[RO("lane0",135,70,24,28,{label:"M"}),RO("lane1",185,62,24,28,{label:"S"}),RO("lane2",235,70,24,28,{label:"★"})],
     scoop:{x:24,y:258,r:14,lit:false,flash:0,label:"MOTEL"}, spin:{x:300,y:330,a:0,v:0}};
   const L2={id:2,name:"THE MOTEL HALLWAY",exit:"STAIRS UP",ramp:true,
@@ -99,7 +99,7 @@
     tgts:[T("d201",90,150,56,10,{kind:"door",label:"201",state:"locked"}),T("d202",276,150,56,10,{kind:"door",label:"202",state:"locked"}),
           T("d203",80,300,56,10,{kind:"door",label:"203",state:"locked"}),T("d204",286,300,56,10,{kind:"door",label:"204",state:"locked"}),
           T("k0",147,335,12,12,{kind:"key"}),T("k1",183,335,12,12,{kind:"key"}),T("k2",219,335,12,12,{kind:"key"})],
-    jars:["201","202","203","204"].map(n=>{ const d={"201":[90,136],"202":[276,136],"203":[80,286],"204":[286,286]}[n]; return J("r"+n,d[0],d[1],{need:2}); }),
+    jars:["201","202","203","204"].map(n=>{ const d={"201":[90,136],"202":[276,136],"203":[80,286],"204":[286,286]}[n]; return J("r"+n,d[0],d[1],{need:1,r:16}); }),
     rolls:[], scoop:{x:24,y:420,r:14,lit:false,flash:0,label:"GET BACK"}, spin:{x:300,y:392,a:0,v:0}};
   const TILES=[]; for(let r=0;r<4;r++) for(let c=0;c<4;c++) TILES.push(RO("t"+(r*4+c),143+c*30,220+r*40,30,40,{r,c}));
   const L3={id:3,name:"THE SMILE LOUNGE",exit:"BOSS",ramp:true,
@@ -112,7 +112,7 @@
   const L4={id:4,name:"GIANT GRACE",exit:"",ramp:false,
     segs:[],
     bumps:[B("gb0",96,440,22),B("gb1",270,440,22)],
-    tgts:[T("wristL",86,200,60,12,{kind:"weak"}),T("wristR",280,200,60,12,{kind:"weak"}),T("tooth",183,128,34,14,{kind:"weak"}),
+    tgts:[T("wristL",86,200,80,14,{kind:"weak"}),T("wristR",280,200,80,14,{kind:"weak"}),T("tooth",183,128,50,16,{kind:"weak"}),
           T("shoe",86,330,70,56,{kind:"shoe",on:false,e:.6})],
     jars:[], rolls:[], scoop:{x:24,y:258,r:14,lit:false,flash:0,label:"SHIELD"}, spin:null};
   const LEVELS={1:L1,2:L2,3:L3,4:L4};
@@ -160,10 +160,10 @@
 
   /* ---------- floor 1: rooftop ---------- */
   function raiseJar(reason,t,gold){ const c=L1.jars.filter(j=>!freed.has(j.girl)&&!j.up&&j.cool<=0); if(!c.length) return null;
-    const j=c[Math.floor(Math.random()*c.length)]; j.up=true; j.hits=0; j.need=3; j.max=t||14; j.timer=j.max; j.flash=.6; j.gold=!!gold; SFX.jarUp();
+    const j=c[Math.floor(Math.random()*c.length)]; j.up=true; j.hits=0; j.need=2; j.max=t||22; j.timer=j.max; j.flash=.6; j.gold=!!gold; SFX.jarUp();
     if(reason) say(j.girl+" — BREAK THE JAR!",1.8,reason); return j; }
   function L1jar(j){ L1S.noJar=0; progress(); j.hits++; j.flash=.35; shake=4; const k=j.gold?2:1;
-    if(j.hits<j.need){ add(10000*k); if(j.hits===1){ SFX.clink(); say(j.girl,1,"CRACK 1 OF 3"); } else { SFX.crack(); say(j.girl,1,"CRACK 2 OF 3"); } return; }
+    if(j.hits<j.need){ add(10000*k); SFX.crack(); say(j.girl,1,"CRACKED! ONE MORE"); return; }
     j.up=false; add(25000*k); SFX.shatter(); fireT=1.2; flash=.6;
     if(setFree(j.girl)){ const pts=75000+Math.round(25000*(j.timer/j.max)); add(pts,true); say(j.girl+" IS FREE!",2.4,freed.size+" OF 7 · +"+pts.toLocaleString()); }
     if(freed.size>=3&&!cleared[1]){ cleared[1]=true; add(100000,true); setTimeout(()=>{ say("STAIRS UP LIT!",2.6,"SHOOT THE RAMP TO CLIMB"); SFX.jackpot(); },1600); } }
@@ -177,7 +177,7 @@
     if(modeIs("getback")) add(20000);
     if(d.state==="locked"){ add(10000); SFX.locked(); say("LOCKED",1.2,"HIT THE KEY RACK"); return; }
     if(d.state==="unlocked"){ add(30000); SFX.door(); d.state="open"; d.on=false; const g=nextTrapped(); const j=L2.jars.find(j=>j.id==="r"+d.label);
-      if(g){ d.girl=g; Object.assign(j,{up:true,hits:0,need:2,girl:g,flash:.6,timer:999,max:999}); say("ROOM "+d.label,1.8,g+" IS INSIDE! HIT THE JAR"); SFX.jarUp(); }
+      if(g){ d.girl=g; Object.assign(j,{up:true,hits:0,need:1,girl:g,flash:.6,timer:999,max:999}); say("ROOM "+d.label,1.8,g+" IS INSIDE! HIT THE JAR"); SFX.jarUp(); }
       else { d.state="done"; say("ROOM "+d.label,1.4,"EMPTY · +30,000"); } } }
   function L2jar(j){ progress(); j.hits++; j.flash=.35; shake=4; add(25000);
     if(j.hits<j.need){ SFX.crack(); say(j.girl,1,"ONE MORE HIT"); return; }
@@ -258,8 +258,25 @@
     b.x+=nx*(R+rad-d); b.y+=ny*(R+rad-d);
     const omega=f.w*(f.side>0?1:-1), rx=qx-f.px, ry=qy-f.py, svx=-omega*ry, svy=omega*rx;
     const rvx=b.vx-svx, rvy=b.vy-svy, vn=rvx*nx+rvy*ny;
-    if(vn<0){ const e=.25; b.vx-=(1+e)*vn*nx; b.vy-=(1+e)*vn*ny; }
+    if(vn<0){ const e=Math.abs(f.w)>1?.25:.05; b.vx-=(1+e)*vn*nx; b.vy-=(1+e)*vn*ny;
+      if(Math.abs(f.w)>2&&(f.side>0?f.w<0:f.w<0)&&!tilted) aimAssist(b); }
   }
+  // ---- fun helpers: flipper shots bend toward whatever you should hit next; jars pull the ball in a little
+  function goals(){ const g=[], up=j=>j.up&&j.h>.5;
+    if(level===1){ L1.jars.forEach(j=>up(j)&&g.push([j.x,j.y])); if(cleared[1]) g.push([170,420]); }
+    if(level===2){ doors().forEach(d=>d.state==="unlocked"&&g.push([d.x,d.y+4])); L2.jars.forEach(j=>up(j)&&g.push([j.x,j.y]));
+      if(!g.length&&doors().some(d=>d.state==="locked")) L2.tgts.filter(t=>t.kind==="key").forEach(t=>g.push([t.x,t.y+4])); if(cleared[2]) g.push([170,420]); }
+    if(level===3){ if(cleared[3]) g.push([170,420]); else if(!L3S.setDone) L3.tgts.filter(t=>t.kind==="drop"&&!t.down).forEach(t=>g.push([t.x+6,t.y]));
+      else if(!L3S.rp) g.push([292,178]); else if(!L3S.power) g.push([338,300]); else if(L3S.dj) g.push([170,420]);
+      else { TILES.filter(t=>t.lit).forEach(t=>g.push([t.x,t.y])); L3.tgts.filter(t=>t.kind==="beat").forEach(t=>g.push([t.x+(t.x<183?6:-6),t.y])); } }
+    if(level===4) L4.tgts.filter(t=>t.kind==="weak"&&weakActive(t)).forEach(t=>g.push([t.x,t.y+8]));
+    return g; }
+  function aimAssist(b){ const now=performance.now(); if(b.aimT&&now-b.aimT<250) return; const sp=Math.hypot(b.vx,b.vy); if(sp<350||b.vy>-150) return;
+    const cur=Math.atan2(b.vy,b.vx); let best=null, bd=.5;
+    for(const [gx,gy] of goals()){ const d=Math.hypot(gx-b.x,gy-b.y), t=d/sp, ay=gy-.5*G*t*t, want=Math.atan2(ay-b.y,gx-b.x); let df=want-cur; df=Math.atan2(Math.sin(df),Math.cos(df)); if(Math.abs(df)<Math.abs(bd)) { bd=df; best=1; } }
+    if(!best) return; b.aimT=now; const a=cur+bd*.85; b.vx=Math.cos(a)*sp; b.vy=Math.sin(a)*sp; }
+  function magnet(b,dt){ for(const j of LV.jars){ if(!j.up||j.h<.6) continue; const dx=j.x-b.x, dy=j.y-b.y, d=Math.hypot(dx,dy); if(d<j.r+R+40&&d>j.r+R){ const k=520*dt*(1-(d-j.r-R)/40); b.vx+=dx/d*k; b.vy+=dy/d*k; } }
+    if(level===4) for(const t of L4.tgts){ if(t.kind!=="weak"||!weakActive(t)) continue; const dx=t.x-b.x, dy=t.y-b.y, d=Math.hypot(dx,dy); if(d<70&&d>15){ const k=420*dt*(1-d/70); b.vx+=dx/d*k; b.vy+=dy/d*k; } } }
   function rampPos(s){ const P=RAMP.path, n=P.length-1, f=Math.min(n-1e-6,s*n), i=Math.floor(f), u=f-i, a=P[i], c=P[i+1];
     return [a[0]+(c[0]-a[0])*u,a[1]+(c[1]-a[1])*u,a[2]+(c[2]-a[2])*u]; }
   function onTarget(t,b,imp){
@@ -271,11 +288,10 @@
         else say("RECORD FOUND!",1.2,L3S.records+" OF 3");
         if(L3S.records>=3&&!L3S.setDone){ L3S.setDone=true; add(100000+(modeIs("ikwyn")?120000:0),true); say("RECORDS COMPLETE",2,"HIT THE RECORD PLAYER"); SFX.jingle(); } }
       return; }
-    if(t.cool>0||imp<40) return; t.cool=.3; t.t=.25;
+    if(t.cool>0||imp<15) return; t.cool=.3; t.t=.25;
     if(k==="door"){ L2door(t); return; }
     if(k==="key"){ SFX.key(); add(15000); progress(); const n=modeIs("mot")?2:1;
-      const off=L2.tgts.filter(x=>x.kind==="key"&&!x.lit); t.lit=true; if(n===2&&off.length>1) off.find(x=>x!==t).lit=true;
-      if(L2.tgts.filter(x=>x.kind==="key").every(x=>x.lit)){ setTimeout(()=>L2.tgts.filter(x=>x.kind==="key").forEach(x=>x.lit=false),500); giveKey("KEY!"); } return; }
+      t.lit=true; setTimeout(()=>t.lit=false,600); for(let i=0;i<n;i++) giveKey(n===2?"DOUBLE KEY!":"KEY!"); return; }
     if(k==="prop"){ add(1000); SFX.sling(); return; }
     if(k==="rp"){ add(40000); SFX.record(); progress(); if(L3S.setDone&&!L3S.rp){ L3S.rp=true; say("NEEDLE DROP",2,"NOW THROW THE POWER LEVER →"); SFX.jingle(); } else if(!L3S.setDone) say("NO RECORDS YET",1.2,"HIT A · B · C"); return; }
     if(k==="act"){ add(50000); progress(); if(L3S.rp&&!L3S.power){ L3S.power=true; add(150000,true); SFX.power(); flash=1; L3hot(); L3S.hotT=10; L3S.noBeat=0; musScene();
@@ -293,7 +309,7 @@
       if(b.ramp.s>=1){ b.ramp=null; b.z=0; b.x=RAMP.exit[0]; b.y=RAMP.exit[1]; b.vx=-40; b.vy=160; rampMade(b); } return; }
     if(b.inLane){ if(b.auto){ b.vy=-(900); b.inLane=false; b.auto=false; SFX.launch(); }
       else { if(plunge) charge=Math.min(1,charge+dt*1.4); b.vx=0; if(b.y>=690){ b.y=690; if(!plunge&&b.vy>=0) b.vy=0; } } }
-    b.vy+=G*dt; b.x+=b.vx*dt; b.y+=b.vy*dt;
+    b.vy+=G*dt; if(!b.inLane&&!tilted) magnet(b,dt); b.x+=b.vx*dt; b.y+=b.vy*dt;
     const sp=Math.hypot(b.vx,b.vy); if(sp>VMAX){ b.vx*=VMAX/sp; b.vy*=VMAX/sp; }
     if(b.inLane&&b.y<250) b.inLane=false;
     if(!b.inLane&&b.x>366&&b.y>600){ b.inLane=true; b.x=383; }
@@ -304,7 +320,7 @@
       if(!tilted){ b.vx+=nx*240; b.vy+=ny*240; bp.t=.18; SFX.pop(); shake=2; bumpHit(bp); } } }
     for(const j of LV.jars){ if(!j.up||j.h<.6) continue; let nx=b.x-j.x, ny=b.y-j.y, d=Math.hypot(nx,ny);
       if(d<j.r+R&&d>0){ nx/=d; ny/=d; b.x=j.x+nx*(j.r+R); b.y=j.y+ny*(j.r+R); const vn=b.vx*nx+b.vy*ny;
-        if(vn<0){ b.vx-=1.6*vn*nx; b.vy-=1.6*vn*ny; if(-vn>70&&!tilted&&j.cool<=0){ j.cool=.25; if(level===1) L1jar(j); else L2jar(j); } } } }
+        if(vn<0){ b.vx-=1.6*vn*nx; b.vy-=1.6*vn*ny; if(-vn>25&&!tilted&&j.cool<=0){ j.cool=.25; if(level===1) L1jar(j); else L2jar(j); } } } }
     for(const t of LV.tgts){ if(!t.on||t.down) continue; const imp=collideRect(b,t); if(imp>0&&!tilted){ if(t.kind==="drop"){ b.vx=b.vx*.9; } onTarget(t,b,imp); } }
     for(const r of LV.rolls){ const inside=Math.abs(b.x-r.x)<r.w/2&&Math.abs(b.y-r.y)<r.h/2; if(inside&&!b._in[r.id]){ b._in[r.id]=1; onRoll(r,b); } else if(!inside) b._in[r.id]=0; }
     const sp_=LV.spin; if(sp_&&Math.abs(b.x-sp_.x)<14&&Math.abs(b.y-sp_.y)<6&&Math.abs(b.vy)>80){ sp_.v=Math.max(sp_.v,Math.abs(b.vy)/30); }
@@ -383,7 +399,7 @@
       if(j.up&&level===1){ j.timer-=dt; if(j.timer<=0){ j.up=false; j.cool=2; SFX.jarDown(); say(j.girl+" SANK",1.2,"WHAT'S MISSING"); } else if(j.timer<4&&Math.floor(j.timer*2)!==Math.floor((j.timer+dt)*2)) SFX.tick(); } }
     // floor rules
     if(level===1){ L1S.noJar+=dt; if(L1S.beenWrong>0){ L1S.beenWrong-=dt; save=Math.max(save,Math.min(L1S.beenWrong,20)); }
-      if(L1.jars.filter(j=>j.up).length<2){ L1S.autoT-=dt; if(L1S.autoT<=0){ L1S.autoT=4; if(L1S.noJar>20){ L1S.noJar=0; if(raiseJar(null,20,true)) say("WHAT'S MISSING?",2,"FIND THE GOLD JAR · x2"); } else raiseJar(null,18); } } }
+      if(L1.jars.filter(j=>j.up).length<3){ L1S.autoT-=dt; if(L1S.autoT<=0){ L1S.autoT=3; if(L1S.noJar>20){ L1S.noJar=0; if(raiseJar(null,24,true)) say("WHAT'S MISSING?",2,"FIND THE GOLD JAR · x2"); } else raiseJar(null,22); } } }
     if(level===2){ L2S.noKey+=dt; if(!cleared[2]){ L2S.motT-=dt; if(L2S.motT<=0&&!mode){ L2S.motT=999; startMode("mot","MATTER OF TIME!",30,"HURRY UP! · KEYS COUNT DOUBLE"); } }
       if(L2S.noKey>20&&!doors().some(d=>d.state==="unlocked")&&doors().some(d=>d.state==="locked")) giveKey("FRONT DESK!");
       if(L2S.spinX2>0) L2S.spinX2-=dt; }
