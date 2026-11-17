@@ -335,18 +335,18 @@ function buildChassis(n, world) {
     const ft = facadeTex(n); d.D.updateMatrixWorld(true); const fr = d.T.localToWorld(new THREE.Vector3(0, -40, 380)), bk = d.T.localToWorld(new THREE.Vector3(0, -40, -380));
     const top = Math.min(fr.y, bk.y), hgt = top + 600, dep = Math.abs(fr.z - bk.z), wid = 470 * d.s;
     const riser = new THREE.Mesh(new THREE.BoxGeometry(wid, hgt, dep), [MAT.black, MAT.black, MAT.black, MAT.black, std({ map: ft, emissive: 0xffffff, emissiveMap: ft, emissiveIntensity: .55, roughness: .7 }), MAT.black]);
-    riser.position.set(0, top - hgt / 2, (fr.z + bk.z) / 2); scene.add(riser);
+    riser.position.set(0, top - hgt / 2, (fr.z + bk.z) / 2); scene.add(riser); (refs.risers = refs.risers || []).push(riser);
   }
 }
 function buildTubes() {
   const mat = (col) => new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: .28, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide });
-  refs.up = {}; refs.down = {};
+  refs.up = {}; refs.down = {}; refs.tubes = []; const sadd = (m) => { scene.add(m); refs.tubes.push(m); return m; };
   for (let n = 1; n < 4; n++) {
     const up = new THREE.CatmullRomCurve3([toWorld(n, 342, 330, 66), toWorld(n, 430, 300, 150), toWorld(n, 452, -40, 160), toWorld(n + 1, 452, 640, 120), toWorld(n + 1, 420, 730, 40), toWorld(n + 1, 383, 712, 10)]); refs.up[n] = up;
-    scene.add(new THREE.Mesh(new THREE.TubeGeometry(up, 120, 11, 12), mat(CYAN)));
-    const rails = new THREE.Mesh(new THREE.TubeGeometry(up, 120, 1.6, 6), glow(CYAN, 1.8)); rails.position.y = -9; scene.add(rails);
+    sadd(new THREE.Mesh(new THREE.TubeGeometry(up, 120, 11, 12), mat(CYAN)));
+    const rails = new THREE.Mesh(new THREE.TubeGeometry(up, 120, 1.6, 6), glow(CYAN, 1.8)); rails.position.y = -9; sadd(rails);
     const dn = new THREE.CatmullRomCurve3([toWorld(n + 1, 183, 760, -20), toWorld(n + 1, -60, 760, -10), toWorld(n + 1, -70, 200, 40), toWorld(n, -70, 120, 200), toWorld(n, -40, 230, 170), toWorld(n, 60, 230, 110)]); refs.down[n] = dn;
-    scene.add(new THREE.Mesh(new THREE.TubeGeometry(dn, 120, 10, 10), mat(PINK)));
+    sadd(new THREE.Mesh(new THREE.TubeGeometry(dn, 120, 10, 10), mat(PINK)));
   }
   refs.transit = new THREE.Mesh(new THREE.SphereGeometry(9, 24, 16), MAT.ball); refs.transit.visible = false; scene.add(refs.transit);
   refs.transitL = new THREE.PointLight(0xffffff, 0, 300, 2); scene.add(refs.transitL);
@@ -365,13 +365,13 @@ function build(world) {
   loader.load("img/fireball-room.webp?v=1", (t) => { t.colorSpace = THREE.SRGBColorSpace; scene.background = t; });
   const pmrem = new THREE.PMREMGenerator(renderer); scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture; scene.environmentIntensity = .18;
   mats(); loadGirls();
-  MAT.flipW = std({ color: 0xfafafa, roughness: .35 }); MAT.flipP = std({ color: 0xff7aa6, emissive: PINK, emissiveIntensity: .9, roughness: .5 }); MAT.capM = std({ color: 0x222222, metalness: .8 });
+  MAT.flipW = std({ color: 0xfafafa, roughness: .35 }); MAT.flipWp = std({ color: 0xff8ec0, roughness: .18, metalness: .1, emissive: 0xff3d7f, emissiveIntensity: .35, envMapIntensity: 2 }); MAT.flipPp = std({ color: 0xd81b60, emissive: PINK, emissiveIntensity: .8, roughness: .3 }); MAT.flipP = std({ color: 0xff7aa6, emissive: PINK, emissiveIntensity: .9, roughness: .5 }); MAT.capM = std({ color: 0x222222, metalness: .8 });
   MAT.slingP = std({ color: 0xff5a9a, emissive: PINK, emissiveIntensity: .5, transparent: true, opacity: .75, side: THREE.DoubleSide, roughness: .2 });
   MAT.side = std({ color: 0xffffff, map: flameSideTex(), roughness: .55 }); MAT.bulb = new THREE.MeshBasicMaterial({ color: 0xffd9a0 });
   MAT.inner = std({ roughness: .55, metalness: .1, map: canvasTex(512, 64, (c, w, h) => { const g = c.createLinearGradient(0, h, 0, 0); g.addColorStop(0, "#2a0f1c"); g.addColorStop(1, "#4a1b2c"); c.fillStyle = g; c.fillRect(0, 0, w, h); c.fillStyle = "rgba(255,170,90,.18)"; c.fillRect(0, h * .55, w, 2); }) });
   MAT.glassTop = new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: .9, map: canvasTex(256, 512, (c, w, h) => { for (let i = 0; i < 5; i++) { const x = Math.random() * w, ww = 10 + Math.random() * 40; const g = c.createLinearGradient(x, 0, x + ww, 0);
       g.addColorStop(0, "rgba(255,255,255,0)"); g.addColorStop(.5, `rgba(255,235,245,${.05 + Math.random() * .08})`); g.addColorStop(1, "rgba(255,255,255,0)"); c.fillStyle = g; c.save(); c.translate(x, 0); c.transform(1, 0, -.35, 1, 0, 0); c.fillRect(0, 0, ww, h); c.restore(); } }) });
-  MAT.ball = std({ color: 0xffffff, metalness: 1, roughness: .06, envMapIntensity: 2.2 });
+  MAT.ball = std({ color: 0xffffff, metalness: 1, roughness: .06, envMapIntensity: 2.2 }); MAT.ballPlate = std({ color: 0xffffff, metalness: 1, roughness: .12, envMapIntensity: 4.5, emissive: 0x4a2a3a, emissiveIntensity: .6 });
   const apTex = canvasTex(1024, 220, (c, w, h) => {
     c.fillStyle = "#14060c"; c.fillRect(0, 0, w, h);
     const card = (x, cw, bgc, fn) => { c.save(); c.translate(x, 22); c.fillStyle = bgc; c.beginPath(); c.roundRect(0, 0, cw, h - 44, 14); c.fill(); fn(cw, h - 44); c.restore(); };
@@ -406,20 +406,52 @@ function setLevel(n) {
   const tint = { 1: [PINK, CYAN], 2: [AMBER, 0x9fe8ff], 3: [PINK, 0xa040ff], 4: [PINK, CYAN] }[n]; refs.pinkL.color.setHex(tint[0]); refs.cyanL.color.setHex(tint[1]);
   dmdKey = "";
 }
-function localCam(n) { // camera in deck-local units (same framing on every deck), boss floor pulled back
+function localCam(n, ph = phone) { // camera in deck-local units (same framing on every deck), boss floor pulled back
   let fov, pos, look;
-  const lu = window.PB_LU != null ? window.PB_LU : (phone ? 100 : 70); if (phone) { fov = 72; pos = [0, 250, 560]; look = [0, -30 + lu, -180]; } else { fov = 62; pos = [0, 250, 580]; look = [0, -40 + lu, -120]; }
-  if (n === 4) { const bo = window.PB_BOSSCAM || (phone ? { fov: 80, dy: 70, dz: 40 } : { fov: 72, dy: 90, dz: 60 }); fov = bo.fov; look[1] += bo.dy; pos[2] += bo.dz; pos[1] += bo.dy * .4; }
+  const lu = window.PB_LU != null ? window.PB_LU : (ph ? 100 : 70); if (ph) { fov = 72; pos = [0, 250, 560]; look = [0, -30 + lu, -180]; } else { fov = 62; pos = [0, 250, 580]; look = [0, -40 + lu, -120]; }
+  if (n === 4) { const bo = window.PB_BOSSCAM || (ph ? { fov: 80, dy: 70, dz: 40 } : { fov: 72, dy: 90, dz: 60 }); fov = bo.fov; look[1] += bo.dy; pos[2] += bo.dz; pos[1] += bo.dy * .4; }
   if (window.PB_CAM) { const o = window.PB_CAM; fov = o.fov; pos = o.pos.slice(); look = o.look.slice(); }
   return { fov, pos, look };
 }
-function deckCam(n) { const c = localCam(n), D = DECK[n].D; D.updateMatrixWorld(true);
+function deckCam(n, ph = phone) { const c = localCam(n, ph), D = DECK[n].D; D.updateMatrixWorld(true);
   return { fov: c.fov, pos: D.localToWorld(new THREE.Vector3(...c.pos)), look: D.localToWorld(new THREE.Vector3(...c.look)) }; }
 function frameCamera() {
   const w = host.clientWidth, h = host.clientHeight, asp = w / h; phone = asp < .8; camera.aspect = asp; camera.setViewOffset(w, h, 0, 0, w, h);
   const d = 10, vh = 2 * d * Math.tan(deckCam(curLevel || 1).fov * Math.PI / 360), vw = vh * asp, hw = Math.min(vw * .9, vh * .6); refs.hud.scale.set(hw, hw, 1); const hw2 = phone ? Math.min(vw * .8, vh * .5) : vh * .42; refs.hud.scale.set(hw2, hw2, 1); refs.hud.position.set(phone ? 0 : -vw / 2 + hw2 / 2 + vh * .02, vh / 2 - hw2 * .1 - vh * .015, -d);
-  refs.cam = deckCam(curLevel || 1); camera.fov = refs.cam.fov; camera.position.copy(refs.cam.pos); camera.lookAt(refs.cam.look); camera.updateProjectionMatrix();
+  refs.cam = deckCam(curLevel || 1); camera.fov = refs.cam.fov; camera.position.copy(refs.cam.pos); camera.lookAt(refs.cam.look);
+  if (window.PB_CAPTURE) { camera.aspect = w / h; const pc = window.PB_CAPTURE === 'plate' ? plateCamOf(curLevel || 1) : deckCam(curLevel || 1, true); camera.fov = pc.fov; camera.position.copy(pc.pos); camera.lookAt(pc.look); refs.capCam = pc; }
+  plateFit(w, h); camera.updateProjectionMatrix();
 }
+/* ---------- photo plates: a painted still of a deck; the game draws only what moves on top of it ---------- */
+const PLATES = window.PB_PLATES || { 1: { src: "img/pb/plate1.webp?v=2", aspect: 2 / 3, cam: { fov: 72.50, pos: [-4.79, 250.62, 566.28], look: [-13.97, 129.65, -21.33] } } };
+const plateOf = (n) => !window.PB_CAPTURE && !window.PB_NOPLATE && !refs.inTrans && PLATES[n] && PLATES[n].tex && PLATES[n].tex.image ? PLATES[n] : null;
+function apronTex(img) { return canvasTex(512, 96, (c, w, h) => { c.drawImage(img, 0, img.height - 40, img.width, 40, 0, 0, w, h); c.fillStyle = "rgba(8,3,8,.82)"; c.fillRect(0, 0, w, h);
+  const g = c.createLinearGradient(0, 0, 0, 22); g.addColorStop(0, "rgba(0,0,0,.9)"); g.addColorStop(1, "rgba(0,0,0,0)"); c.fillStyle = g; c.fillRect(0, 0, w, 22);
+  const ch = c.createLinearGradient(0, 30, 0, 52); ch.addColorStop(0, "#5a5a66"); ch.addColorStop(.45, "#f4f0f6"); ch.addColorStop(1, "#3a3a44"); c.fillStyle = ch; c.fillRect(0, 30, w, 22);
+  c.fillStyle = "rgba(255,61,127,.55)"; c.fillRect(0, 28, w, 2); c.fillStyle = "rgba(70,220,255,.4)"; c.fillRect(0, 53, w, 2); }); }
+function loadPlates() { for (const n in PLATES) { const P = PLATES[n]; P.tex = imgTex(P.src, (t) => { P.apron = apronTex(t.image); P.ready = true; if (host) frameCamera(); }); }
+  refs.apronQ = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ depthTest: false, depthWrite: false, toneMapped: false })); refs.apronQ.renderOrder = -10; refs.apronQ.frustumCulled = false; refs.apronQ.visible = false; camera.add(refs.apronQ); 
+  refs.plateQ = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ depthTest: false, depthWrite: false, toneMapped: false }));
+  refs.plateQ.renderOrder = -10; refs.plateQ.frustumCulled = false; refs.plateQ.visible = false; camera.add(refs.plateQ); }
+function plateCamOf(n) { const P = PLATES[n]; if (P && P.cam) return { fov: P.cam.fov, pos: new THREE.Vector3(...P.cam.pos), look: new THREE.Vector3(...P.cam.look) }; return deckCam(n, true); }
+function plateFit(w, h) { const P = plateOf(curLevel || 1) && PLATES[curLevel || 1].ready ? PLATES[curLevel || 1] : null; refs.plate = P;
+  camera.clearViewOffset(); if (!P) { camera.aspect = window.PB_CAPTURE ? camera.aspect : w / h; refs.plateQ.visible = false; return; }
+  // narrow screens: crop at most 6% off each side and sit the plate on the bottom edge (HUD lives in the gap above); wide screens: full height
+  const pa = P.aspect; let rw, rh; if (w / h < pa) { rw = Math.min(h * pa, w / .88); rh = rw / pa; } else { rh = h; rw = h * pa; }
+  const pad = Math.min(rh * .07, Math.max(0, h - rh) + rh * .07), rx = (w - rw) / 2, ry = h - rh - pad;
+  const c = plateCamOf(curLevel); camera.fov = c.fov; camera.aspect = pa; camera.setViewOffset(rw, rh, -rx, -ry, w, h);
+  const d = 4000, vh = 2 * d * Math.tan(c.fov * Math.PI / 360); refs.plateQ.scale.set(vh * pa, vh, 1); refs.plateQ.position.set(0, 0, -d); refs.plateQ.material.map = P.tex; refs.plateQ.material.needsUpdate = true;
+  const ah = vh * (pad / rh) * 1.02; refs.apronQ.scale.set(vh * pa * 1.4, ah, 1); refs.apronQ.position.set(0, -vh / 2 - ah / 2 + vh * .002, -d); refs.apronQ.material.map = P.apron; refs.apronQ.material.needsUpdate = true; }
+// on a plate deck the static 3D only writes depth (so the ball still hides behind posts and ramps)
+function markDynamic() { const dyn = (o) => { if (o) o.userData.dyn = true; }; refs.balls.forEach((r) => { dyn(r.m); dyn(r.s); });
+  for (const n of [1, 2, 3, 4]) { const D_ = DECK[n], R_ = LV3D[n]; D_.fl.forEach((f) => dyn(f.piv)); dyn(D_.plunger); R_.jars.forEach((j) => dyn(j.g));
+    if (!PLATES[n]) W0.LEVELS[n].tgts.forEach((t) => { if (t.kind === "drop" && R_.tgt[t.id]) dyn(R_.tgt[t.id]); }); if (R_.spin && !PLATES[n]) dyn(R_.spin); } }
+function plateMode(n, on) { const D_ = DECK[n]; if (D_.plateOn === on) return; D_.plateOn = on;
+  D_.D.traverse((o) => { if (!o.isMesh) return; let a = o, dy = false; while (a && a !== D_.D) { if (a.userData.dyn) { dy = true; break; } a = a.parent; } if (dy) return;
+    if (!o.userData.m0) { o.userData.m0 = o.material; const mk = (m) => { const c = m.clone(); c.colorWrite = false; return c; }; o.userData.m1 = Array.isArray(o.material) ? o.material.map(mk) : mk(o.material); }
+    o.material = on ? o.userData.m1 : o.userData.m0; o.renderOrder = on ? -5 : 0; });
+  for (const k of [1, 2, 3, 4]) if (k !== n) DECK[k].D.visible = !on; refs.tubes.forEach((m) => m.visible = !on); refs.risers.forEach((m) => m.visible = !on); }
+
 function init(box, world) {
   try {
     host = box.querySelector(".pb-3d"); W0 = world;
@@ -428,7 +460,7 @@ function init(box, world) {
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .9; renderer.outputColorSpace = THREE.SRGBColorSpace;
     host.appendChild(renderer.domElement);
     camera = new THREE.PerspectiveCamera(60, 1, 5, 9000);
-    build(world); setLevel(world.level);
+    build(world); loadPlates(); markDynamic(); setLevel(world.level);
     composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera));
     bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), .55, .4, .82); composer.addPass(bloom); composer.addPass(new OutputPass());
     resize(); api.ok = true;
@@ -442,12 +474,16 @@ function render(w) {
   const tr = w.trans && w.trans.kind !== "win" ? w.trans : null;
   if (w.level !== curLevel) { setLevel(w.level); }
   const n = curLevel, R_ = LV3D[n], L = w.LV, D = DECK[n], pulse = .5 + .5 * Math.sin(now / 140);
+  refs.inTrans = !!tr; const want = !!(plateOf(n) && PLATES[n].ready); if (want !== !!refs.wasPlate) { refs.wasPlate = want; frameCamera(); }
+  const PL = want ? refs.plate : null, plateA = PL ? 1 : 0;
+  plateMode(n, !!PL); refs.plateQ.visible = !!PL; refs.apronQ.visible = !!PL; if (bloom) bloom.strength = PL ? .25 : .55;
   // balls on the current deck (hidden while one rides a tube)
-  const B = (w.state === "play" || w.state === "ready") && !tr ? w.balls : [];
+  const B = (w.state === "play" || w.state === "ready") && !tr && !window.PB_CAPTURE ? w.balls : [];
   refs.balls.forEach((r, i) => { const b = B[i]; r.m.visible = r.s.visible = !!b && !b.dead; if (!b) return;
     r.m.position.set(tx(b.x), w.R + (b.z || 0), tz(b.y)); r.m.rotation.x += (b.vy || 0) * .0006; r.m.rotation.z -= (b.vx || 0) * .0006; r.s.position.set(tx(b.x) + 4, .4 + (b.z || 0), tz(b.y) + 6); });
-  const b0 = w.ball; refs.ballLight.position.set(tx(b0.x), w.R + 6, tz(b0.y)); refs.ballLight.intensity = w.fireT > 0 ? 2 + w.fireT * 4 : w.mb ? 1.5 : 0;
-  for (const r of D.fl) { const th = r.f.side > 0 ? r.f.ang : Math.PI - r.f.ang; r.piv.rotation.y = -th; }
+  const b0 = w.ball; refs.ballLight.position.set(tx(b0.x), w.R + 6, tz(b0.y)); refs.ballLight.intensity = w.fireT > 0 ? 2 + w.fireT * 4 : w.mb ? 1.5 : PL ? 1.1 : 0; refs.ballLight.color.setHex(PL ? 0xff7ab0 : AMBER);
+  for (const r of refs.balls) r.m.material = PL ? MAT.ballPlate : MAT.ball;
+  for (const r of D.fl) { const th = r.f.side > 0 ? r.f.ang : Math.PI - r.f.ang; r.piv.rotation.y = -th; r.piv.children[0].material = PL ? [MAT.flipWp, MAT.flipPp] : [MAT.flipW, MAT.flipP]; }
   for (const r of D.walls) r.m.emissiveIntensity = r.s.t > 0 ? 5 : (r.sling ? 1.4 : 1.6);
   D.plunger.position.z = tz(700 + w.charge * 28) + 30;
   for (const r of R_.bump) { const hot = r.b.t > 0;
@@ -500,8 +536,10 @@ function render(w) {
   else { refs.transit.visible = false; refs.transitL.intensity = 0; const c = deckCam(n); cp = c.pos.clone(); cl = c.look.clone(); fov = c.fov;
     if (n === 3 && w.whoa > 0) { const u = 1 - w.whoa / 3, ang = Math.sin(u * Math.PI) * .7; const d = cp.clone().sub(cl); d.applyAxisAngle(new THREE.Vector3(0, 1, 0), ang); d.y += Math.sin(u * Math.PI) * 120 * DECK[3].s; cp = cl.clone().add(d); } }
   // a little life: the view drifts with the ball like your head would
-  if (!tr && w.state === "play") { const s = DECK[n].s; cp.x += (b0.x - 183) * .05 * s; cl.x += (b0.x - 183) * .08 * s; cl.y -= (b0.y - 360) * .015 * s; }
-  const sk = w.shake || 0; if (camera.fov !== fov) { camera.fov = fov; camera.updateProjectionMatrix(); }
+  if (!tr && w.state === "play" && !PL) { const s = DECK[n].s; cp.x += (b0.x - 183) * .05 * s; cl.x += (b0.x - 183) * .08 * s; cl.y -= (b0.y - 360) * .015 * s; }
+  let sk = w.shake || 0; if (PL && plateA > 0) { host.style.transform = sk ? `translate(${(Math.random() - .5) * sk}px,${(Math.random() - .5) * sk}px)` : ""; sk = 0; fov = camera.fov; if (!tr) { const pc = plateCamOf(n); cp = pc.pos; cl = pc.look; } }
+  if (window.PB_CAPTURE) { refs.hud.visible = false; if (refs.capCam) { cp = refs.capCam.pos.clone(); cl = refs.capCam.look.clone(); fov = refs.capCam.fov; } }
+  if (camera.fov !== fov) { camera.fov = fov; camera.updateProjectionMatrix(); }
   camera.position.set(cp.x + (Math.random() - .5) * sk * 1.5, cp.y + (Math.random() - .5) * sk, cp.z); camera.lookAt(cl);
   dmdDraw(w, now);
   composer.render();

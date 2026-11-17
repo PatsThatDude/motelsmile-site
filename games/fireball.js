@@ -523,7 +523,7 @@
     get msg(){return msgT>0?msg:""}, get msg2(){return msgT>0?msg2:""}, get freed(){return freed}, get mb(){return mb}, get mode(){return mode?{name:mode.name,t:modeT}:null},
     get skill(){return skill>0?lanePhase%3:-1}, get flash(){return flash||0}, get tilted(){return tilted}, get trans(){return trans}, get dark(){return dark}, get whoa(){return whoaT},
     get L2S(){return L2S}, get L3S(){return L3S}, get BOSS(){return BOSS}, get won(){return won}, get rank(){return rank()}};
-  function load3D(){ if(load3D.done||window.MSPB3D_OFF) return; load3D.done=1; const m=document.createElement("script"); m.type="module"; m.src="games/fireball3d.js?v=7"; m.onload=()=>window.MSPB3D&&window.MSPB3D.init(box,WORLD); document.head.appendChild(m); }
+  function load3D(){ if(load3D.done||window.MSPB3D_OFF) return; load3D.done=1; const m=document.createElement("script"); m.type="module"; m.src="games/fireball3d.js?v=8"; m.onload=()=>window.MSPB3D&&window.MSPB3D.init(box,WORLD); document.head.appendChild(m); }
   function loop(t){ raf=0; if(!open) return; const dt=Math.min(.033,(t-(last||t))/1000); last=t; update(dt); draw(); raf=requestAnimationFrame(loop); }
 
   /* ---------- input ---------- */
