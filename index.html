@@ -772,8 +772,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   let AC=null, crG=null;
   function initCrackle(){
     try{
-      if(AC) { AC.resume(); return; }
-      AC=new (window.AudioContext||window.webkitAudioContext)();
+      if(AC) { window.MSAC(); return; }
+      AC=window.MSAC(); if(!AC) return;
       const n=AC.sampleRate*4, b=AC.createBuffer(1,n,AC.sampleRate), d=b.getChannelData(0);
       for(let i=0;i<n;i++){ d[i]=(Math.random()*2-1)*.012; if(Math.random()<.0009) d[i]+=(Math.random()*2-1)*.7; }
       const src=AC.createBufferSource(); src.buffer=b; src.loop=true;
@@ -918,7 +918,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   addEventListener("keydown",e=>{ if(A.classList.contains("on")&&e.key==="Escape") $("ac-back").click(); });
   if(location.hash==="#arcade") setTimeout(enter,300);
   // machines: power-on blip + a line
-  let AC=null; const ac=()=>{ try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume(); }catch(e){} return AC; };
+  const ac=()=>window.MSAC&&window.MSAC();
   function blip(){ const a=ac(); if(!a) return; const t=a.currentTime; [523,659,784,1046].forEach((f,i)=>{ const o=a.createOscillator(), g=a.createGain(); o.type="square"; o.frequency.value=f; g.gain.setValueAtTime(0,t+i*.07); g.gain.linearRampToValueAtTime(.05,t+i*.07+.01); g.gain.exponentialRampToValueAtTime(.0001,t+i*.07+.12); o.connect(g).connect(a.destination); o.start(t+i*.07); o.stop(t+i*.07+.14); }); }
   const LINES=["is warming up. Coming soon.","needs a quarter. Coming soon.","is getting rewired. Coming soon.","high score: Jacob. Game coming soon."];
   cam.querySelectorAll(".ac-hot").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation(); blip();
@@ -953,12 +953,12 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
       if(c.lens){ const r=ctx.createRadialGradient(ex,ey,0,ex,ey,22); r.addColorStop(0,"rgba(255,255,255,"+a0+")"); r.addColorStop(.3,c.col+(a0*.8)+")"); r.addColorStop(1,c.col+"0)"); ctx.fillStyle=r; ctx.beginPath(); ctx.arc(ex,ey,22,0,7); ctx.fill(); } } }
   const LCANS=[{x:268,y:314,tx:1000,ty:860,lo:38,len:1100,sp:.1,sw:.16,ph:0,col:"rgba(255,90,210,",lens:true},{x:1046,y:312,tx:1300,ty:820,lo:38,len:1100,sp:.1,sw:.16,ph:1.7,col:"rgba(90,220,255,",lens:true}];
   const MCANS=[{x:1470,y:545,tx:1470-400*Math.cos(.43),ty:545-900,lo:0,len:900,sp:.08,sw:.3,ph:0,col:"rgba(255,90,210,",lens:false},{x:1600,y:540,tx:1600+300,ty:-300,lo:0,len:900,sp:.08,sw:.3,ph:2.1,col:"rgba(90,220,255,",lens:false}];
-  function clunk(){ try{ const a=new (window.AudioContext||window.webkitAudioContext)(), t=a.currentTime, o=a.createOscillator(), g=a.createGain();
+  function clunk(){ try{ const a=window.MSAC(); if(!a) return; const t=a.currentTime, o=a.createOscillator(), g=a.createGain();
     o.frequency.setValueAtTime(90,t); o.frequency.exponentialRampToValueAtTime(40,t+.18); g.gain.setValueAtTime(.6,t); g.gain.exponentialRampToValueAtTime(.001,t+.25); o.connect(g).connect(a.destination); o.start(t); o.stop(t+.3);
     const n=a.createBuffer(1,a.sampleRate*.12,a.sampleRate), d=n.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);
     const s=a.createBufferSource(), f=a.createBiquadFilter(), g2=a.createGain(); s.buffer=n; f.type="bandpass"; f.frequency.value=2200; g2.gain.value=.5; s.connect(f).connect(g2).connect(a.destination); s.start(t);
     if(on){ const h=a.createOscillator(), hg=a.createGain(); h.frequency.value=120; hg.gain.setValueAtTime(0,t+.1); hg.gain.linearRampToValueAtTime(.05,t+.3); hg.gain.exponentialRampToValueAtTime(.0005,t+1.4); h.connect(hg).connect(a.destination); h.start(t+.1); h.stop(t+1.5); }
-    setTimeout(()=>a.close(),1800); }catch(e){} }
+    }catch(e){} }
   function setOn(v){ on=v; try{ localStorage.setItem("ms-floor",v?"1":"0"); }catch(e){} plOn.style.opacity=v?"1":"0";
     lever.setAttribute("aria-pressed",v); lever.setAttribute("aria-label","Dance floor power: "+(v?"on":"off")); step=-1; kick(); }
   lever.addEventListener("click",e=>{ e.stopPropagation(); setOn(!on); clunk(); });
@@ -1146,6 +1146,14 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 
 <script>
 /* iPhone: Web Audio is muted by the ring/silent switch unless the page plays as media. On the first touch, switch the audio session to playback and play a tiny silent clip so every sound on the roof is heard. */
+(()=>{
+  let CTX=null;
+  window.MSAC=()=>{ try{ if(!CTX){ const C=window.AudioContext||window.webkitAudioContext; if(!C) return null; CTX=new C(); }
+      if(CTX.state!=="running") CTX.resume().catch(()=>{}); }catch(e){} return CTX; };
+  const wake=()=>{ const c=window.MSAC(); if(!c) return; try{ const b=c.createBuffer(1,1,22050), s=c.createBufferSource(); s.buffer=b; s.connect(c.destination); s.start(0); }catch(e){} };
+  ["pointerdown","touchend","click","keydown"].forEach(t=>addEventListener(t,wake,true));
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&CTX&&CTX.state!=="running") CTX.resume().catch(()=>{}); });
+})();
 (()=>{ let done=false; const un=()=>{ if(done) return; done=true;
   try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
   try{ const a=new Audio("data:audio/wav;base64,UklGRrQBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZABAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA"); a.setAttribute("playsinline",""); a.play().catch(()=>{}); }catch(e){}
@@ -1191,7 +1199,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   /* ---------- play: the roof reacts ---------- */
   (()=>{
     const TAGS=[["Watch Your Tone", 48, 422, 104, 62], ["Never Ever Be", 1396, 532, 98, 58], ["Been Wrong", 1512, 528, 98, 60], ["Matter Of Time", 1358, 772, 108, 78], ["Sometimes", 1502, 792, 158, 62]], play=$("play");
-    let AC=null; const ac=()=>{ try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume(); }catch(e){} return AC; };
+    const ac=()=>window.MSAC&&window.MSAC();
     const noise=(dur)=>{ const a=ac(); if(!a) return null; const b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; const s=a.createBufferSource(); s.buffer=b; return s; };
     const env=(g,t,a,peak,rel)=>{ g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(peak,t+a); g.gain.exponentialRampToValueAtTime(.0001,t+a+rel); };
     const kick=()=>{ const a=ac(); if(!a) return; const t=a.currentTime, o=a.createOscillator(), g=a.createGain(); o.frequency.setValueAtTime(140,t); o.frequency.exponentialRampToValueAtTime(42,t+.18); env(g,t,.003,.9,.35); o.connect(g).connect(a.destination); o.start(t); o.stop(t+.45); };
@@ -1566,7 +1574,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       const g=cx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r); g.addColorStop(0,`rgba(150,140,150,${a})`); g.addColorStop(1,"rgba(150,140,150,0)"); cx.fillStyle=g; cx.beginPath(); cx.arc(p.x,p.y,p.r,0,7); cx.fill(); }
     smoke=smoke.filter(p=>p.t<p.life); raf=(z.length||smoke.length||sparks.length)?requestAnimationFrame(loop):0; }
   const kick=()=>{ if(!raf) raf=requestAnimationFrame(loop); };
-  let AC=null; const ac=()=>{ try{ if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended") AC.resume(); }catch(e){} return AC; };
+  const ac=()=>window.MSAC&&window.MSAC();
   function buzz(dur){ const a=ac(); if(!a) return; const t=a.currentTime, g=a.createGain(); g.gain.value=0; g.connect(a.destination);
     [55,110,165].forEach(f=>{ const o=a.createOscillator(); o.type="sawtooth"; o.frequency.value=f+Math.random()*3; o.connect(g); o.start(t); o.stop(t+dur); });
     for(let k=0;k<dur*25;k++) g.gain.setValueAtTime(Math.random()<.7?.16+Math.random()*.12:0,t+k/25); g.gain.setValueAtTime(0,t+dur);
