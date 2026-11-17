@@ -147,11 +147,12 @@
 
   /* ---------- transitions: climb up / fall down / win ---------- */
   function climb(){ const to=level+1; add(level===1?100000:level===2?200000:300000,true); SFX.climb(); musFilter(900,.9,level+1===3&&!L3S.power?1400:18000);
-    trans={kind:"climb",t:0,dur:1.6,to,swapped:false}; say(to===4?"GIANT GRACE":"CLIMBING",1.6,to===4?"FINAL FLOOR":LEVELS[to].name); }
+    trans={kind:"climb",t:0,dur:window.MSPB3D&&window.MSPB3D.ok?2.6:1.6,to,swapped:false}; say(to===4?"GIANT GRACE":"CLIMBING",1.6,to===4?"FINAL FLOOR":LEVELS[to].name); }
   function fall(){ const to=level-1; SFX.fall(); if(level===4){ SFX.laugh(); } musFilter(500,1.2,to===3&&!L3S.power?1400:18000);
-    trans={kind:"fall",t:0,dur:1.4,to,swapped:false}; say("GET BACK!",1.6,"DOWN TO "+LEVELS[to].name); }
+    trans={kind:"fall",t:0,dur:window.MSPB3D&&window.MSPB3D.ok?2.2:1.4,to,swapped:false}; say("GET BACK!",1.6,"DOWN TO "+LEVELS[to].name); }
   function arrive(){
     const n=trans.to; if(mode) endMode(); mb=false; mbT=0; setLevel(n); BALLS=[]; newBall(true); comboT=0;
+    if(trans.kind==="fall"){ Object.assign(BALLS[0],{x:60,y:230,vx:90,vy:40,inLane:false,auto:false}); }
     save=Math.max(save,trans.kind==="fall"&&trans.from===4?10:5); musScene();
     if(n===2) L2enter(); if(n===3) L3enter(); if(n===4) bossEnter(); if(n===1&&trans.kind==="climb") {}
     if(trans.kind==="fall"&&n===3&&trans.from===4) L3S.safe=10; }
@@ -498,9 +499,9 @@
     const py=700+charge*28; cx.fillStyle="#9aa0aa"; cx.fillRect(375,py,16,H-py);
     for(const b of BALLS){ cx.fillStyle="#d8dbe2"; cx.beginPath(); cx.arc(b.x,b.y,R*(1+(b.z||0)/120),0,7); cx.fill(); }
     cx.restore(); cx.setTransform(1,0,0,1,0,0); overlay(cw,ch); cx.setTransform(s,0,0,s,ox,oy); messages(); }
-  function overlay(cw,ch){ let a=0; if(trans&&trans.kind!=="win"){ const u=trans.t/trans.dur; a=u<.5?u*2:(1-u)*2; } if(dark>0) a=Math.max(a,Math.min(1,dark*1.2)*.85);
+  function overlay(cw,ch){ let a=0; const fly=window.MSPB3D&&window.MSPB3D.ok&&window.MSPB3D.flies; if(trans&&trans.kind!=="win"&&!fly){ const u=trans.t/trans.dur; a=u<.5?u*2:(1-u)*2; } if(dark>0) a=Math.max(a,Math.min(1,dark*1.2)*.85);
     if(a>0){ cx.fillStyle=`rgba(0,0,0,${Math.min(1,a)})`; cx.fillRect(0,0,cw,ch);
-      if(trans&&trans.kind!=="win"){ cx.textAlign="center"; cx.fillStyle=`rgba(255,${trans.kind==="climb"?211:120},${trans.kind==="climb"?106:160},${Math.min(1,a*1.4)})`; const s=Math.min(cw,ch)/12; cx.font=`italic 900 ${s}px 'Arial Black',Impact,sans-serif`;
+      if(trans&&trans.kind!=="win"&&!fly){ cx.textAlign="center"; cx.fillStyle=`rgba(255,${trans.kind==="climb"?211:120},${trans.kind==="climb"?106:160},${Math.min(1,a*1.4)})`; const s=Math.min(cw,ch)/12; cx.font=`italic 900 ${s}px 'Arial Black',Impact,sans-serif`;
         cx.fillText(trans.kind==="climb"?"▲ "+LEVELS[trans.to].name:"▼ "+LEVELS[trans.to].name,cw/2,ch/2); } }
     if(flash>0){ cx.fillStyle=`rgba(255,240,250,${Math.min(.35,flash*.3)})`; cx.fillRect(0,0,cw,ch); } }
   function messages(){
@@ -522,7 +523,7 @@
     get msg(){return msgT>0?msg:""}, get msg2(){return msgT>0?msg2:""}, get freed(){return freed}, get mb(){return mb}, get mode(){return mode?{name:mode.name,t:modeT}:null},
     get skill(){return skill>0?lanePhase%3:-1}, get flash(){return flash||0}, get tilted(){return tilted}, get trans(){return trans}, get dark(){return dark}, get whoa(){return whoaT},
     get L2S(){return L2S}, get L3S(){return L3S}, get BOSS(){return BOSS}, get won(){return won}, get rank(){return rank()}};
-  function load3D(){ if(load3D.done||window.MSPB3D_OFF) return; load3D.done=1; const m=document.createElement("script"); m.type="module"; m.src="games/fireball3d.js?v=6"; m.onload=()=>window.MSPB3D&&window.MSPB3D.init(box,WORLD); document.head.appendChild(m); }
+  function load3D(){ if(load3D.done||window.MSPB3D_OFF) return; load3D.done=1; const m=document.createElement("script"); m.type="module"; m.src="games/fireball3d.js?v=7"; m.onload=()=>window.MSPB3D&&window.MSPB3D.init(box,WORLD); document.head.appendChild(m); }
   function loop(t){ raf=0; if(!open) return; const dt=Math.min(.033,(t-(last||t))/1000); last=t; update(dt); draw(); raf=requestAnimationFrame(loop); }
 
   /* ---------- input ---------- */
