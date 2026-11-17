@@ -899,7 +899,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .ac-cam>img{position:absolute;left:0;top:0;width:1672px;height:941px;user-select:none;-webkit-user-drag:none}
 #pb{position:fixed;inset:0;z-index:95;background:#05060a;display:none;touch-action:none;user-select:none;-webkit-user-select:none}
 #pb.on{display:block}
-#pb canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#pb>canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;z-index:1}
+#pb .pb-3d{position:absolute;inset:0;z-index:0}#pb .pb-3d canvas{display:block;width:100%!important;height:100%!important}
 .pb-x{all:unset;position:absolute;left:max(10px,env(safe-area-inset-left,0px));top:max(8px,env(safe-area-inset-top,0px));z-index:2;cursor:pointer;font:16px var(--mono,monospace);color:#fff;width:34px;height:34px;display:grid;place-items:center;border:1.5px solid var(--cyan,#46dcff);border-radius:30px;background:rgba(5,6,10,.6);box-shadow:0 0 8px var(--cyan,#46dcff)}
 .pb-x:focus-visible{outline:3px solid #fff}
 .ac-hot{all:unset;position:absolute;cursor:pointer;border-radius:10px;z-index:3}
@@ -919,13 +920,13 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     <button class="ac-hot" data-game="Rocket Runner" style="left:107px;top:227px;width:200px;height:520px" aria-label="Rocket Runner arcade cabinet"></button>
     <button class="ac-hot" data-game="Night Striker" style="left:310px;top:247px;width:150px;height:470px" aria-label="Night Striker arcade cabinet"></button>
     <button class="ac-hot" data-game="Pixel Outlaw" style="left:462px;top:267px;width:170px;height:425px" aria-label="Pixel Outlaw arcade cabinet"></button>
-    <button class="ac-hot" data-game="Fireball" style="left:660px;top:300px;width:240px;height:367px" aria-label="Fireball pinball machine"></button>
+    <button class="ac-hot" data-game="Fireball" style="left:660px;top:300px;width:240px;height:367px" aria-label="Better Free pinball machine"></button>
     <button class="ac-hot" data-game="the TV" style="left:1300px;top:400px;width:190px;height:260px" aria-label="Old TV and console"></button>
   </div>
   <div class="ac-ui">
     <a class="pill lg-back" style="--c:var(--cyan)" href="#" id="ac-back">← Back to the roof</a>
     <div class="ac-swipe" aria-hidden="true">⇠ swipe ⇢</div>
-    <div class="ac-sign">Game corner · Fireball pinball is live · more games soon</div>
+    <div class="ac-sign">Game corner · Better Free pinball is live · more games soon</div>
   </div>
 </section>
 <script>
@@ -972,7 +973,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   const ac=()=>window.MSAC&&window.MSAC();
   function blip(){ const a=ac(); if(!a) return; const t=a.currentTime; [523,659,784,1046].forEach((f,i)=>{ const o=a.createOscillator(), g=a.createGain(); o.type="square"; o.frequency.value=f; g.gain.setValueAtTime(0,t+i*.07); g.gain.linearRampToValueAtTime(.05,t+i*.07+.01); g.gain.exponentialRampToValueAtTime(.0001,t+i*.07+.12); o.connect(g).connect(a.destination); o.start(t+i*.07); o.stop(t+i*.07+.14); }); }
   const LINES=["is warming up. Coming soon.","needs a quarter. Coming soon.","is getting rewired. Coming soon.","high score: Jacob. Game coming soon."];
-  function pinball(){ if(window.MSPinball){ window.MSPinball.open(); return; } const sc=document.createElement("script"); sc.src="games/fireball.js?v=3"; sc.onload=()=>window.MSPinball&&window.MSPinball.open(); document.body.appendChild(sc); }
+  function pinball(){ if(window.MSPinball){ window.MSPinball.open(); return; } const sc=document.createElement("script"); sc.src="games/fireball.js?v=5"; sc.onload=()=>window.MSPinball&&window.MSPinball.open(); document.body.appendChild(sc); }
   cam.querySelectorAll(".ac-hot").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation(); blip(); if(b.dataset.game==="Fireball"){ setTimeout(pinball,250); return; }
     const r=b.getBoundingClientRect(), d=document.createElement("div"); d.className="bubble"; d.style.zIndex=20; d.style.position="fixed";
     d.textContent=b.dataset.game+" "+LINES[Math.floor(Math.random()*LINES.length)];
