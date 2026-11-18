@@ -1819,8 +1819,8 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   function relight(els,gap){ els.forEach((e,i)=>setTimeout(()=>{ e.classList.remove("gone"); e.style.transform=""; e.style.opacity=""; e.classList.add("zapM"); buzz(.25); setTimeout(()=>e.classList.remove("zapM"),380); },i*(gap||170))); }
   const GAGS={
     // Jacob: hop up on the bass drum, whack the M; it buzzes and dies for a while
-    jacob:{ spot(){ const M=document.querySelector(".sign .w .b.f1"); let x=1020; if(M){ const r=rectIn(M), w=hFor(635)*1.29*.4269; x=Math.max(950,Math.min(1095,s2p(r.cx,0)[0]+.29*w)); } return {x,feet:522,floor:635,z:96}; },
-      async hit(R){ const M=document.querySelector(".sign .w .b.f1"); const [tx,ty]=p2s(R.L+R.w*.21,R.T);
+    jacob:{ ov:{pre:"jbs",frames:[1,2],x:877,y:47.1,w:305.1,h:592.8,z:74,tip:[.32,.003]}, spot(){ const M=document.querySelector(".sign .w .b.f1"); let x=1020; if(M){ const r=rectIn(M), w=hFor(635)*1.29*.4269; x=Math.max(950,Math.min(1095,s2p(r.cx,0)[0]+.29*w)); } return {x,feet:522,floor:635,z:96}; },
+      async hit(R){ const M=document.querySelector(".sign .w .b.f1"); const [tx,ty]=R.tip?p2s(R.L,R.T):p2s(R.L+R.w*.21,R.T);
         bonk(); let target=M?rectIn(M):{cx:tx,cy:ty}; burst(target.cx,target.y?target.y+target.h*.75:ty,40,["#ff6ae6","#fff","#bdf6ff"],5,.3); burst(tx,ty,12,["#ffd27a","#fff"],3,.3);
         if(!M) return; M.classList.add("zapM"); buzz(1.2); const t0=performance.now(); while(performance.now()-t0<1200){ if(Math.random()<.3) burst(target.cx,target.cy,6,["#ff6ae6","#fff"],3,.35); await wait(90); }
         M.classList.remove("zapM"); M.classList.add("gone"); burst(target.cx,target.cy,30,["#ff6ae6","#bdf6ff"],4,.35); setTimeout(()=>relight([M]),6500); } },
@@ -1892,22 +1892,30 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     m.gag=async()=>{ if(!GG||m.busy||gagOn) return false; m.busy=true; gagOn=true; clearTimeout(wT); play.style.zIndex=5;
       if(m.seated) await stand(); else { await flicker(3); vis(false); neon(0); } m.spot=-1;
       const s=GG.spot(); const at=p=>{ const h=hFor(s.floor)*p.f, w=h*p.ar, L=s.x-w/2, T=s.feet-h; Object.assign(el.style,{left:L+"px",top:T+"px",width:w+"px",height:h+"px",zIndex:s.z}); return {L,T,w,h}; };
-      setPose(GA); at(GA); await wait(60); el.style.visibility="visible"; neon(1); await wait(90); await flicker(3); neon(0);
-      await wait(700); setPose(GB); const R=at(GB);
+      let R, ov=null;
+      if(GG.ov){ const O=GG.ov; ov=document.createElement("div"); ov.className="bm-kit"; Object.assign(ov.style,{left:O.x+"px",top:O.y+"px",width:O.w+"px",height:O.h+"px",zIndex:O.z,visibility:"visible"});
+        const fr=O.frames.map(f=>{ const i=document.createElement("img"); i.alt=""; i.src=`img/band/${O.pre}${f}.webp?v=1`; ov.appendChild(i); return i; }); play.insertBefore(ov,cv);
+        const show=n=>fr.forEach((im,i)=>im.classList.toggle("cur",i===n));
+        show(0); await new Promise(r=>{ if(fr[0].complete) r(); else fr[0].onload=r; setTimeout(r,1500); });
+        for(let i=0;i<4;i++){ ov.style.opacity=.35; await wait(45); ov.style.opacity=1; await wait(55); }
+        await wait(700); show(1); R={L:O.x+O.w*O.tip[0],T:O.y+O.h*O.tip[1],w:0,h:0,tip:true};
+      } else { setPose(GA); at(GA); await wait(60); el.style.visibility="visible"; neon(1); await wait(90); await flicker(3); neon(0);
+        await wait(700); setPose(GB); R=at(GB); }
       try{ await GG.hit(R); }catch(err){}
-      await wait(700); await flicker(3); vis(false); neon(0); el.style.zIndex=""; play.style.zIndex=""; gagOn=false;
+      await wait(700); if(ov){ for(let i=0;i<3;i++){ ov.style.opacity=.35; await wait(45); ov.style.opacity=1; await wait(55); } ov.remove(); } else await flicker(3);
+      vis(false); neon(0); el.style.zIndex=""; play.style.zIndex=""; gagOn=false;
       await wait(500); await appear(); m.busy=false; schedule(); return true; };
     const neon=on=>{ inn.style.opacity=on?1:0; ir.style.opacity=on?0:1; };
     async function flicker(n){ for(let i=0;i<n;i++){ neon(1); await wait(40+Math.random()*60); neon(0); await wait(30+Math.random()*80); } }
     async function appear(){ if(S&&!m.wasSeated&&Math.random()<S.p){ m.wasSeated=true; return sit(); } m.wasSeated=false; m.spot=freeSpot(m);
       let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===m.pose&&POSES.length>1); m.pose=np;
       setPose(m.pose); place(); await wait(80); neon(1); vis(true); await wait(90); await flicker(5); }
-    async function teleport(){ if(m.busy||document.hidden) return; m.busy=true;
+    async function teleport(){ if(m.busy||document.hidden||gagOn) return; m.busy=true;
       if(m.seated){ await stand(); await wait(500+Math.random()*700); await appear(); m.busy=false; return; }
       await flicker(4); neon(1); await wait(120); vis(false); neon(0); const old=m.spot; m.spot=-1;
       await wait(500+Math.random()*700); m.spot=old; await appear(); m.busy=false; }
     function schedule(first){ clearTimeout(wT); if(still) return; wT=setTimeout(async()=>{ await teleport(); schedule(); },first||11000); }
-    if(!still) (async()=>{ await wait(cfg.offset||0); while(true){ await wait(3000+Math.random()*1000); if(m.busy||document.hidden) continue;
+    if(!still) (async()=>{ await wait(cfg.offset||0); while(true){ await wait(3000+Math.random()*1000); if(m.busy||document.hidden||gagOn) continue;
       for(let i=0;i<2;i++){ neon(1); await wait(45); neon(0); await wait(45); } if(m.busy) continue;
       neon(1); rf.style.opacity=.15; await wait(500);
       for(let i=0;i<2;i++){ neon(0); await wait(40); neon(1); await wait(40); } neon(0); rf.style.opacity=""; } })();
