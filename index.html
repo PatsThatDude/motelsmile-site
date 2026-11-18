@@ -1819,22 +1819,37 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   function relight(els,gap){ els.forEach((e,i)=>setTimeout(()=>{ e.classList.remove("gone"); e.style.transform=""; e.style.opacity=""; e.classList.add("zapM"); buzz(.25); setTimeout(()=>e.classList.remove("zapM"),380); },i*(gap||170))); }
   const GAGS={
     // Jacob: hop up on the bass drum, whack the M; it buzzes and dies for a while
-    jacob:{ ov:{z:96,shadow:{x:1016,y:519,w:60},occ:{f:"jbocc",x:955,y:470,w:145,h:130},frames:[{f:"jbxa",x:928,y:173.1,w:210.6,h:345.9},{f:"jbxb",x:976.3,y:154.1,w:169.6,h:354.9,tip:[.087,0],air:1}]},
-      // where the stick should land: a bit in from the left of the M, near its top
-      aim(F){ const M=document.querySelector(".sign .w .b.f1"); if(!M||M.classList.contains("gone")) return null; const r=M.getBoundingClientRect(), s=SR();
-        const [mx,my]=s2p(r.left-s.left+r.width*.3,r.top-s.top+r.height*.28), tx=F.x+F.w*F.tip[0], ty=F.y+F.h*F.tip[1];
-        return {mx,my,tx,ty,dx:mx-tx,reach:Math.abs(mx-tx)<=75&&my>ty-20&&my<ty+F.h*.35}; },
-      async hit(R){ const M=document.querySelector(".sign .w .b.f1"); const A=R.aim;
-        let cx,cy; if(A&&A.reach){ [cx,cy]=p2s(A.tx+R.dx,Math.max(A.ty+12,A.my)); }
-        else if(A){ // too far (phone layout): he flings the stick at the M
-          const [sx,sy]=p2s(A.tx+R.dx,A.ty), [ex,ey]=p2s(A.mx,A.my), k=k1(), st=document.createElement("div");
-          Object.assign(st.style,{position:"absolute",left:"0",top:"0",width:Math.max(4,6*k)+"px",height:Math.max(30,70*k)+"px",borderRadius:"3px",background:"linear-gradient(#f3d9a4,#c99a5a)",boxShadow:"0 0 4px rgba(0,0,0,.6)"}); fx.appendChild(st);
-          await tween(380,u=>{ const x=sx+(ex-sx)*u, y=sy+(ey-sy)*u-Math.sin(u*Math.PI)*60*k; st.style.transform=`translate(${x}px,${y}px) rotate(${u*720}deg)`; });
-          cx=ex; cy=ey; setTimeout(()=>{ let vy=-3,y=ey,r=720,x=ex; const t0=performance.now(); (function f(){ vy+=.5; y+=vy; x+=1.5; r+=12; st.style.transform=`translate(${x}px,${y}px) rotate(${r}deg)`; st.style.opacity=Math.max(0,1-(performance.now()-t0)/900); if(performance.now()-t0<900) requestAnimationFrame(f); else st.remove(); })(); },10);
-        } else { [cx,cy]=p2s(R.L,R.T); }
-        bonk(); burst(cx,cy,46,["#ff6ae6","#fff","#bdf6ff"],5.5,.3); burst(cx,cy,14,["#ffd27a","#fff"],3,.3);
-        if(!M) return; M.classList.add("zapM"); buzz(1.2); const t0=performance.now(); while(performance.now()-t0<1200){ if(Math.random()<.35){ const r=rectIn(M); burst(r.x+Math.random()*r.w,r.y+Math.random()*r.h,6,["#ff6ae6","#fff"],3,.35); } await wait(90); }
-        M.classList.remove("zapM"); M.classList.add("gone"); const r=rectIn(M); burst(r.cx,r.cy,30,["#ff6ae6","#bdf6ff"],4,.35); setTimeout(()=>relight([M]),6500); } },
+    jacob:{ ov:{z:96,shadow:{x:1016,y:519,w:60},occ:{f:"jbocc",x:955,y:470,w:145,h:130},frames:[{f:"jbxa",x:928,y:173.1,w:210.6,h:345.9},{f:"jbxs",x:927.4,y:168.1,w:219.1,h:340.9,tip:[.993,.001],air:1},{f:"jbxy",x:900.1,y:238.3,w:230.1,h:280.7}]},
+      // Jacob jabs his stick into the "o" of Motel, yanks it off and flings it at the arcade
+      O(){ return document.querySelector(".sign .w span:nth-child(2)"); },
+      aim(F){ const O=this.O(); if(!O||O.classList.contains("gone")) return null; const r=O.getBoundingClientRect(), s=SR();
+        const [mx,my]=s2p(r.left-s.left+r.width*.5,r.top-s.top+r.height*.45), tx=F.x+F.w*F.tip[0], ty=F.y+F.h*F.tip[1];
+        return {mx,my,tx,ty,dx:mx-tx,reach:Math.abs(mx-tx)<=75&&my>ty-30&&my<ty+F.h*.4}; },
+      async hit(R){ const O=this.O(); const A=R.aim, k=k1();
+        if(!O||O.classList.contains("gone")){ bonk(); return; }
+        const oc=()=>rectIn(O);
+        if(A&&!A.reach){ // out of reach (phone layout): he throws the stick into the o first
+          const [sx,sy]=p2s(A.tx+R.dx,A.ty), c=oc(), st=document.createElement("div");
+          Object.assign(st.style,{position:"absolute",left:"0",top:"0",width:Math.max(4,6*k)+"px",height:Math.max(30,70*k)+"px",borderRadius:"3px",background:"linear-gradient(#f3d9a4,#c99a5a)"}); fx.appendChild(st);
+          await tween(380,u=>{ const x=sx+(c.cx-sx)*u, y=sy+(c.cy-sy)*u-Math.sin(u*Math.PI)*60*k; st.style.transform=`translate(${x}px,${y}px) rotate(${u*720}deg)`; });
+          st.remove(); }
+        let c=oc(); bonk(); burst(c.cx,c.cy,36,["#ff6ae6","#fff","#bdf6ff"],5,.3);
+        O.classList.add("zapM"); buzz(.5); for(let i=0;i<5;i++){ burst(c.x+Math.random()*c.w,c.y+Math.random()*c.h,5,["#ff6ae6","#fff"],3,.35); await wait(90); }
+        O.classList.remove("zapM"); O.style.display="inline-block";
+        // the sign is rotated -5deg, so turn screen moves into the letter's own frame
+        const a5=5*Math.PI/180, loc=(x,y)=>[x*Math.cos(a5)-y*Math.sin(a5), x*Math.sin(a5)+y*Math.cos(a5)];
+        const c0=oc(), [hx,hy]=p2s(918,395), [ax,ay]=p2s(399,350);
+        // yank: he rips it down toward his hand…
+        if(R.show) R.show(2); crack();
+        await tween(170,u=>{ const e=u*u; const [lx,ly]=loc((hx-c0.cx)*.45*e,(hy-c0.cy)*.45*e); O.style.transform=`translate(${lx}px,${ly}px) rotate(${-40*e}deg)`; });
+        // …and flings it at the arcade
+        const sx=c0.cx+(hx-c0.cx)*.45, sy=c0.cy+(hy-c0.cy)*.45;
+        await tween(720,u=>{ const x=sx+(ax-sx)*u, y=sy+(ay-sy)*u-Math.sin(u*Math.PI)*140*k; const [lx,ly]=loc(x-c0.cx,y-c0.cy);
+          O.style.transform=`translate(${lx}px,${ly}px) rotate(${-40-900*u}deg) scale(${1-.3*u})`; if(Math.random()<.5) burst(x,y,2,["#ff6ae6","#bdf6ff"],1.2,.05); });
+        crash(); burst(ax,ay,60,["#ff6ae6","#fff","#ffd27a","#bdf6ff"],7,.3);
+        let x=ax,y=ay,vx=-2.5,vy=-5,r=-940; const t0=performance.now();
+        await new Promise(res=>{ (function f(){ vy+=.6; x+=vx; y+=vy; r-=10; const [lx,ly]=loc(x-c0.cx,y-c0.cy); O.style.transform=`translate(${lx}px,${ly}px) rotate(${r}deg) scale(.7)`; O.style.opacity=Math.max(0,1-(performance.now()-t0)/700); if(performance.now()-t0<700) requestAnimationFrame(f); else res(); })(); });
+        O.classList.add("gone"); O.style.transform=""; O.style.opacity=""; O.style.display=""; setTimeout(()=>relight([O]),7000); } },
     // Pat: up on the cooler, hurls the bass into SMILE; the whole word smashes and falls
     pat:{ spot(){ return {x:1296,feet:553,floor:635,z:96}; },
       async hit(R){ const W=document.querySelectorAll(".sign .w")[1]; const L=W?[...W.querySelectorAll("span")]:[];
@@ -1912,7 +1927,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       let R, ov=null;
       if(GG.ov){ const O=GG.ov, F=O.frames; ov=[];
         const fr=F.map(q=>{ const d=document.createElement("div"); d.className="bm-kit"; Object.assign(d.style,{left:q.x+"px",top:q.y+"px",width:q.w+"px",height:q.h+"px",zIndex:O.z,visibility:"visible",opacity:0});
-          const i=document.createElement("img"); i.alt=""; i.className="cur"; i.src=`img/band/${q.f}.webp?v=6`; d.appendChild(i); play.insertBefore(d,cv); ov.push(d); return {d,i}; });
+          const i=document.createElement("img"); i.alt=""; i.className="cur"; i.src=`img/band/${q.f}.webp?v=7`; d.appendChild(i); play.insertBefore(d,cv); ov.push(d); return {d,i}; });
         await Promise.all(fr.map(o=>new Promise(r=>{ if(o.i.complete) r(); else { o.i.onload=r; setTimeout(r,1500); } })));
         if(O.occ){ const q=O.occ, d=document.createElement("div"); d.className="bm-kit"; Object.assign(d.style,{left:q.x+"px",top:q.y+"px",width:q.w+"px",height:q.h+"px",zIndex:O.z+1,visibility:"visible"});
           const i=document.createElement("img"); i.alt=""; i.className="cur"; i.src=`img/band/${q.f}.webp?v=1`; d.appendChild(i); play.insertBefore(d,cv); ov.push(d); }
@@ -1922,8 +1937,9 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
         const A=GG.aim?GG.aim(F[1]):null, dx=A&&A.reach?Math.max(-75,Math.min(75,A.dx)):0;
         fr[1].d.style.transform=`translate(${dx}px,10px)`; fr[1].d.style.opacity=1; fr[0].d.style.opacity=0; if(shd){ shd.style.transform=`translateX(${dx*.6}px) scale(.7)`; shd.style.opacity=.45; }
         await tween(110,u=>{ fr[1].d.style.transform=`translate(${dx}px,${10-14*u}px)`; });
-        R={L:F[1].x+F[1].w*F[1].tip[0]+dx,T:F[1].y+F[1].h*F[1].tip[1]-4,w:0,h:0,tip:true,aim:A,dx};
-        GG._land=async()=>{ await tween(160,u=>{ fr[1].d.style.transform=`translate(${dx*(1-u)}px,${-4+4*u}px)`; }); fr[0].d.style.opacity=1; fr[1].d.style.opacity=0; if(shd){ shd.style.transform=""; shd.style.opacity=1; } };
+        let cur=1; const show=n=>{ cur=n; fr.forEach((o,i)=>{ o.d.style.opacity=i===n?1:0; if(i===n&&n!==1) o.d.style.transform=""; }); if(shd&&n!==1){ shd.style.transform=""; shd.style.opacity=1; } };
+        R={L:F[1].x+F[1].w*F[1].tip[0]+dx,T:F[1].y+F[1].h*F[1].tip[1]-4,w:0,h:0,tip:true,aim:A,dx,show};
+        GG._land=async()=>{ if(cur===1) await tween(160,u=>{ fr[1].d.style.transform=`translate(${dx*(1-u)}px,${-4+4*u}px)`; }); else await wait(250); show(0); };
       } else { setPose(GA); at(GA); await wait(60); el.style.visibility="visible"; neon(1); await wait(90); await flicker(3); neon(0);
         await wait(700); setPose(GB); R=at(GB); }
       try{ await GG.hit(R); }catch(err){}
