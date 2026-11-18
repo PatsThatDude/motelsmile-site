@@ -1819,7 +1819,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   function relight(els,gap){ els.forEach((e,i)=>setTimeout(()=>{ e.classList.remove("gone"); e.style.transform=""; e.style.opacity=""; e.classList.add("zapM"); buzz(.25); setTimeout(()=>e.classList.remove("zapM"),380); },i*(gap||170))); }
   const GAGS={
     // Jacob: hop up on the bass drum, whack the M; it buzzes and dies for a while
-    jacob:{ ov:{z:74,frames:[{f:"jbs1",x:877,y:47.1,w:305.1,h:592.8},{f:"jbs2j",x:930.6,y:47.1,w:238.1,h:472.2,tip:[.185,.003],air:1}]},
+    jacob:{ ov:{z:74,frames:[{f:"jbs1",x:890.4,y:67.6,w:291.7,h:572.3},{f:"jbs2j",x:924.3,y:40,w:220.7,h:462.8,tip:[.089,0],air:1}]},
       // where the stick should land: a bit in from the left of the M, near its top
       aim(F){ const M=document.querySelector(".sign .w .b.f1"); if(!M||M.classList.contains("gone")) return null; const r=M.getBoundingClientRect(), s=SR();
         const [mx,my]=s2p(r.left-s.left+r.width*.3,r.top-s.top+r.height*.28), tx=F.x+F.w*F.tip[0], ty=F.y+F.h*F.tip[1];
@@ -1864,7 +1864,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   };
   let gagOn=false;
   function Member(cfg){
-    const V="?v=1", P=k=>({k,ar:cfg.ar[k],f:(cfg.f[k]||1)*(cfg.scale||1),real:`img/band/${cfg.pre}${k}-real.webp${V}`,neon:`img/band/${cfg.pre}${k}-neon.webp${V}`});
+    const V=cfg.v||"?v=1", P=k=>({k,ar:cfg.ar[k],f:(cfg.f[k]||1)*(cfg.scale||1),real:`img/band/${cfg.pre}${k}-real.webp${V}`,neon:`img/band/${cfg.pre}${k}-neon.webp${V}`});
     const POSES=cfg.poses.map(P), ZAP=P(cfg.zap), FRIED=P(cfg.fried);
     const sh=document.createElement("div"); sh.className="bm-sh";
     const rf=document.createElement("div"); rf.className="bm-rf"; rf.innerHTML='<img alt="">';
@@ -1885,7 +1885,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     const S=cfg.seat; let kitEl=null, kimg=[];
     if(S){ kitEl=document.createElement("div"); kitEl.className="bm-kit"; kitEl.setAttribute("role","button"); kitEl.setAttribute("aria-label",cfg.name+" at the kit (tap to hear him play)");
       Object.assign(kitEl.style,{left:S.x+"px",top:S.y+"px",width:S.w+"px",height:S.h+"px",zIndex:S.z});
-      kimg=S.frames.map(f=>{ const i=document.createElement("img"); i.alt=""; i.src=`img/band/${S.pre}${f}.webp?v=2`; kitEl.appendChild(i); return i; });
+      kimg=S.frames.map(f=>{ const i=document.createElement("img"); i.alt=""; i.src=`img/band/${S.pre}${f}.webp?v=4`; kitEl.appendChild(i); return i; });
       play.insertBefore(kitEl,cv); }
     const frame=f=>kimg.forEach((im,i)=>im.classList.toggle("cur",S.frames[i]===f));
     const has=f=>S.frames.includes(f);
@@ -1912,7 +1912,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       let R, ov=null;
       if(GG.ov){ const O=GG.ov, F=O.frames; ov=[];
         const fr=F.map(q=>{ const d=document.createElement("div"); d.className="bm-kit"; Object.assign(d.style,{left:q.x+"px",top:q.y+"px",width:q.w+"px",height:q.h+"px",zIndex:O.z,visibility:"visible",opacity:0});
-          const i=document.createElement("img"); i.alt=""; i.className="cur"; i.src=`img/band/${q.f}.webp?v=1`; d.appendChild(i); play.insertBefore(d,cv); ov.push(d); return {d,i}; });
+          const i=document.createElement("img"); i.alt=""; i.className="cur"; i.src=`img/band/${q.f}.webp?v=4`; d.appendChild(i); play.insertBefore(d,cv); ov.push(d); return {d,i}; });
         await Promise.all(fr.map(o=>new Promise(r=>{ if(o.i.complete) r(); else { o.i.onload=r; setTimeout(r,1500); } })));
         for(let i=0;i<4;i++){ fr[0].d.style.opacity=.35; await wait(45); fr[0].d.style.opacity=1; await wait(55); }
         await wait(750);
@@ -1966,9 +1966,9 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const JORDAN=Member({name:"Jordan",pre:"jj",gag:"jordan",sound:"chord",anim:"zj",sparky:true,flash:"#37e0ff",bolts:["#7ff3ff","#fff6a0","#22c8ff"],poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:5500,scale:.97,
     ar:{1:0.6404,2:0.6635,3:0.5712,4:0.5865,5:0.5096,6:0.5,7:0.5308,8:0.4615,9:0.6538,10:0.5173,g1:.6096,g2:.5769},f:{2:.9,3:.97,9:1.36,g1:1.04,g2:1.1}});
   // Jacob: drummer, shots v2/v3 from his master sheet (face-locked)
-  const JACOB=Member({name:"Jacob",pre:"jb",gag:"jacob",sound:"drums",anim:"zz",flash:"#ff6ae6",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:2700,scale:.98,
-    seat:{pre:"jbk",frames:[1,2,3,4],idle:1,x:800,y:309,w:411,h:339,z:74,p:.5,start:true},
-    ar:{1:0.4962,2:0.3423,3:0.2865,4:0.3519,5:0.5019,6:0.3769,7:0.4058,8:0.4923,9:0.6135,10:0.3,g1:.5115,g2:.4269},f:{1:1.12,7:1.14,8:.7,9:1.08,10:1.05,g1:1,g2:1.29}});
+  const JACOB=Member({name:"Jacob",pre:"jb",v:"?v=4",gag:"jacob",sound:"drums",anim:"zz",flash:"#ff6ae6",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:2700,scale:.98,
+    seat:{pre:"jbk",frames:[1,2,3,4],idle:1,x:778,y:309,w:433,h:338,z:74,p:.5,start:true},
+    ar:{1:.4673,2:.3846,3:.2962,4:.3558,5:.5269,6:.3346,7:.3615,8:.6077,9:.6154,10:.3423,g1:.5115,g2:.4269},f:{1:1.12,7:1.14,8:.68,9:1.06,10:1.08,g1:1,g2:1.29}});
   // every so often one of them pulls a stunt; ?gag=pat|jordan|jacob runs one right away
   const CREW={pat:PAT,jordan:JORDAN,jacob:JACOB}; window.MSGag=n=>CREW[n]&&CREW[n].gag();
   const qg=(location.search.match(/[?&]gag=(\w+)/)||[])[1];
