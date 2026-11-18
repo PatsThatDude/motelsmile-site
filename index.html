@@ -1826,7 +1826,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   function relight(els,gap){ els.forEach((e,i)=>setTimeout(()=>{ e.classList.remove("gone"); e.style.transform=""; e.style.opacity=""; e.classList.add("zapM"); buzz(.25); setTimeout(()=>e.classList.remove("zapM"),380); },i*(gap||170))); }
   const GAGS={
     // Jacob: hop up on the bass drum, whack the M; it buzzes and dies for a while
-    jacob:{ keep:[{x:300,y:200,w:260,h:420}], ov:{z:96,shadow:{x:1016,y:519,w:60},occ:{f:"jbocc",x:955,y:470,w:145,h:130},frames:[{f:"jbya",x:933.2,y:169.3,w:183.9,h:349.7},{f:"jbys",x:938.2,y:172.1,w:217.6,h:336.9,tip:[.993,.001],hand:[.79,.13],air:1},{f:"jbyp",x:945.7,y:197.8,w:117.8,h:321.2,tip:[.78,.335]},{f:"jbyh",x:903,y:223.4,w:208,h:295.6,hand:[.063,.266]}]},
+    jacob:{ keep:[{x:300,y:200,w:260,h:420}], ov:{z:96,shadow:{x:1016,y:519,w:60},occ:{f:"jbocc",x:955,y:470,w:145,h:130},frames:[{f:"jbya",x:933.2,y:169.3,w:183.9,h:349.7},{f:"jbys",x:938.2,y:172.1,w:217.6,h:336.9,tip:[.993,.001],hand:[.79,.13],air:1},{f:"jbyp",x:945.7,y:197.8,w:117.8,h:321.2,tip:[.78,.335]},{f:"jbyh",x:903,y:223.4,w:208,h:295.6,hand:[.063,.266]},{f:"jbyv",x:930.3,y:179.8,w:168.1,h:339.2}],end:4,hold:1400},
       // Jacob, furious: spears the "o" of Motel dead-centre, rips it down, points it at you, then hurls it into the arcade
       O(){ return document.querySelector(".sign .w span:nth-child(2)"); },
       aim(F){ const O=this.O(); if(!O||O.classList.contains("gone")) return null; const r=O.getBoundingClientRect(), s=SR();
@@ -1948,7 +1948,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       let R, ov=null;
       if(GG.ov){ const O=GG.ov, F=O.frames; ov=[];
         const fr=F.map(q=>{ const d=document.createElement("div"); d.className="bm-kit"; Object.assign(d.style,{left:q.x+"px",top:q.y+"px",width:q.w+"px",height:q.h+"px",zIndex:O.z,visibility:"visible",opacity:0});
-          const i=document.createElement("img"); i.alt=""; i.className="cur"; i.src=`img/band/${q.f}.webp?v=9`; d.appendChild(i); play.insertBefore(d,cv); ov.push(d); return {d,i}; });
+          const i=document.createElement("img"); i.alt=""; i.className="cur"; i.src=`img/band/${q.f}.webp?v=10`; d.appendChild(i); play.insertBefore(d,cv); ov.push(d); return {d,i}; });
         await Promise.all(fr.map(o=>new Promise(r=>{ if(o.i.complete) r(); else { o.i.onload=r; setTimeout(r,1500); } })));
         if(O.occ){ const q=O.occ, d=document.createElement("div"); d.className="bm-kit"; Object.assign(d.style,{left:q.x+"px",top:q.y+"px",width:q.w+"px",height:q.h+"px",zIndex:O.z+1,visibility:"visible"});
           const i=document.createElement("img"); i.alt=""; i.className="cur"; i.src=`img/band/${q.f}.webp?v=1`; d.appendChild(i); play.insertBefore(d,cv); ov.push(d); }
@@ -1960,7 +1960,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
         await tween(110,u=>{ fr[1].d.style.transform=`translate(${dx}px,${dy+10-14*u}px)`; });
         let cur=1; const show=n=>{ cur=n; fr.forEach((o,i)=>{ o.d.style.opacity=i===n?1:0; if(i===n&&n!==1) o.d.style.transform=""; }); if(shd&&n!==1){ shd.style.transform=""; shd.style.opacity=1; } };
         R={L:F[1].x+F[1].w*F[1].tip[0]+dx,T:F[1].y+F[1].h*F[1].tip[1]-4+dy,w:0,h:0,tip:true,aim:A,dx,dy,show,F,fr};
-        GG._land=async()=>{ if(cur===1) await tween(160,u=>{ fr[1].d.style.transform=`translate(${dx*(1-u)}px,${(dy-4)*(1-u)}px)`; }); else await wait(250); show(0); };
+        GG._land=async()=>{ if(cur===1) await tween(160,u=>{ fr[1].d.style.transform=`translate(${dx*(1-u)}px,${(dy-4)*(1-u)}px)`; }); else await wait(250); show(O.end!=null?O.end:0); if(O.hold) await wait(O.hold); };
       } else { setPose(GA); at(GA); await wait(60); el.style.visibility="visible"; neon(1); await wait(90); await flicker(3); neon(0);
         await wait(700); setPose(GB); R=at(GB); }
       try{ await GG.hit(R); }catch(err){}
