@@ -141,6 +141,9 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .bm-rf{position:absolute;pointer-events:none;opacity:.3;filter:blur(1.5px);transform:scaleY(-1);-webkit-mask-image:linear-gradient(to top,#000,transparent 55%);mask-image:linear-gradient(to top,#000,transparent 55%);visibility:hidden}
 .bm-rf img{position:absolute;inset:0;width:100%;height:100%}
 .bm-kit{position:absolute;pointer-events:none;visibility:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}.bm-kit.on{pointer-events:auto}.bm-kit.hit{animation:kithit .12s}@keyframes kithit{0%{translate:0 1.5px}100%{translate:0 0}}.bm-kit img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;user-select:none;-webkit-user-drag:none;opacity:0}.bm-kit img.cur{opacity:1}
+.gagfx{position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden}.gagfx canvas{position:absolute;inset:0;width:100%;height:100%}.gagfx img{position:absolute;left:0;top:0;transform-origin:50% 50%;will-change:transform}
+.sign .zapM{animation:zapM .07s steps(2) infinite!important}@keyframes zapM{0%{opacity:1;filter:brightness(2.2)}100%{opacity:.15;text-shadow:none}}
+.sign .gone,.pill.gone{visibility:hidden}.pill.flying{pointer-events:none;transition:none}
 .bm-sh{position:absolute;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.65),transparent 70%);pointer-events:none;visibility:hidden}
 #pat-fx{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:200}
 .bm.zz{animation:patsh .09s infinite}.bm.zj{animation:jordj .16s infinite}@keyframes jordj{0%{translate:0 0;rotate:-3deg}50%{translate:0 -14px;rotate:3deg}100%{translate:0 0;rotate:-3deg}}@keyframes patsh{0%{translate:4px -2px}50%{translate:-4px 3px}100%{translate:2px 2px}}
@@ -1787,6 +1790,68 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     for(let i=0;i<c.length;i++) c[i]=(Math.random()*2-1)*(1-i/c.length);
     const n=a.createBufferSource(); n.buffer=b; const f=a.createBiquadFilter(); f.type="highpass"; f.frequency.value=3000; const g=a.createGain(); g.gain.value=.07; n.connect(f).connect(g).connect(a.destination); n.start(t); }
 
+  // ---------- gags: Jacob bonks the M, Pat hurls his bass at SMILE, Jordan knocks the buttons out of the park ----------
+  const stageEl=play.closest(".stage")||play.parentNode;
+  const fx=document.createElement("div"); fx.className="gagfx"; const fcv=document.createElement("canvas"); fx.appendChild(fcv); stageEl.appendChild(fx);
+  const fcx=fcv.getContext("2d"); let parts=[], fraf=0;
+  function fxSize(){ const r=stageEl.getBoundingClientRect(), d=Math.min(2,window.devicePixelRatio||1); fcv.width=r.width*d; fcv.height=r.height*d; fcx.setTransform(d,0,0,d,0,0); }
+  function fxLoop(){ const r=stageEl.getBoundingClientRect(); fcx.clearRect(0,0,r.width,r.height);
+    for(const p of parts){ p.t++; p.x+=p.vx; p.y+=p.vy; p.vy+=p.g; const a=Math.max(0,1-p.t/p.life); fcx.globalAlpha=a; fcx.fillStyle=p.c;
+      if(p.glow){ fcx.shadowColor=p.c; fcx.shadowBlur=10; } fcx.fillRect(p.x,p.y,p.s,p.s); fcx.shadowBlur=0; }
+    fcx.globalAlpha=1; parts=parts.filter(p=>p.t<p.life); fraf=parts.length?requestAnimationFrame(fxLoop):0; }
+  function burst(x,y,n,cols,sp,g){ if(!fraf) fxSize(); for(let i=0;i<n;i++){ const a=Math.random()*6.283, v=(.4+Math.random())*(sp||6);
+    parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-(sp||6)*.3,g:g==null?.25:g,s:2+Math.random()*2.5,c:cols[i%cols.length],t:0,life:30+Math.random()*35,glow:true}); }
+    if(!fraf) fraf=requestAnimationFrame(fxLoop); }
+  const SR=()=>stageEl.getBoundingClientRect(), PR=()=>play.getBoundingClientRect();
+  const k1=()=>PR().width/1672;
+  function rectIn(el){ const r=el.getBoundingClientRect(), s=SR(); return {x:r.left-s.left,y:r.top-s.top,w:r.width,h:r.height,cx:r.left-s.left+r.width/2,cy:r.top-s.top+r.height/2}; }
+  function p2s(x,y){ const p=PR(), s=SR(), k=p.width/1672; return [p.left-s.left+x*k, p.top-s.top+y*k]; }
+  function s2p(x,y){ const p=PR(), s=SR(), k=p.width/1672; return [(x+s.left-p.left)/k,(y+s.top-p.top)/k]; }
+  function tween(ms,fn){ return new Promise(res=>{ const t0=performance.now(); (function f(t){ const u=Math.min(1,(t-t0)/ms); fn(u); if(u<1) requestAnimationFrame(f); else res(); })(t0); }); }
+  function bonk(){ const a=ac(); if(!a) return; const t=a.currentTime, o=a.createOscillator(), g=a.createGain(); o.type="triangle"; o.frequency.setValueAtTime(900,t); o.frequency.exponentialRampToValueAtTime(300,t+.12); g.gain.setValueAtTime(.4,t); g.gain.exponentialRampToValueAtTime(.001,t+.18); o.connect(g).connect(a.destination); o.start(t); o.stop(t+.2); }
+  function crash(){ const a=ac(); if(!a) return; const t=a.currentTime, sr=a.sampleRate, b=a.createBuffer(1,sr*1.6,sr), d=b.getChannelData(0);
+    for(let i=0;i<d.length;i++){ const e=Math.exp(-i/sr*2.2); d[i]=(Math.random()*2-1)*e*(Math.random()<.04?2.4:1); }
+    const n=a.createBufferSource(); n.buffer=b; const hp=a.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=1800; const g=a.createGain(); g.gain.value=.5; n.connect(hp).connect(g).connect(a.destination); n.start(t);
+    const o=a.createOscillator(), og=a.createGain(); o.frequency.setValueAtTime(120,t); o.frequency.exponentialRampToValueAtTime(40,t+.4); og.gain.setValueAtTime(.8,t); og.gain.exponentialRampToValueAtTime(.001,t+.45); o.connect(og).connect(a.destination); o.start(t); o.stop(t+.5); }
+  function crack(){ const a=ac(); if(!a) return; const t=a.currentTime, o=a.createOscillator(), g=a.createGain(); o.type="square"; o.frequency.setValueAtTime(1400,t); o.frequency.exponentialRampToValueAtTime(500,t+.05); g.gain.setValueAtTime(.35,t); g.gain.exponentialRampToValueAtTime(.001,t+.08); o.connect(g).connect(a.destination); o.start(t); o.stop(t+.1);
+    const b=a.createBuffer(1,a.sampleRate*.9,a.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/d.length)*.5;
+    const n=a.createBufferSource(); n.buffer=b; const bp=a.createBiquadFilter(); bp.type="bandpass"; bp.Q.value=1.2; bp.frequency.setValueAtTime(600,t+.05); bp.frequency.exponentialRampToValueAtTime(2400,t+.9); const ng=a.createGain(); ng.gain.value=.25; n.connect(bp).connect(ng).connect(a.destination); n.start(t+.05); }
+  function relight(els,gap){ els.forEach((e,i)=>setTimeout(()=>{ e.classList.remove("gone"); e.style.transform=""; e.style.opacity=""; e.classList.add("zapM"); buzz(.25); setTimeout(()=>e.classList.remove("zapM"),380); },i*(gap||170))); }
+  const GAGS={
+    // Jacob: hop up on the bass drum, whack the M; it buzzes and dies for a while
+    jacob:{ spot(){ const M=document.querySelector(".sign .w .b.f1"); let x=1020; if(M){ const r=rectIn(M), w=hFor(635)*1.29*.4269; x=Math.max(950,Math.min(1095,s2p(r.cx,0)[0]+.29*w)); } return {x,feet:522,floor:635,z:96}; },
+      async hit(R){ const M=document.querySelector(".sign .w .b.f1"); const [tx,ty]=p2s(R.L+R.w*.21,R.T);
+        bonk(); let target=M?rectIn(M):{cx:tx,cy:ty}; burst(target.cx,target.y?target.y+target.h*.75:ty,40,["#ff6ae6","#fff","#bdf6ff"],5,.3); burst(tx,ty,12,["#ffd27a","#fff"],3,.3);
+        if(!M) return; M.classList.add("zapM"); buzz(1.2); const t0=performance.now(); while(performance.now()-t0<1200){ if(Math.random()<.3) burst(target.cx,target.cy,6,["#ff6ae6","#fff"],3,.35); await wait(90); }
+        M.classList.remove("zapM"); M.classList.add("gone"); burst(target.cx,target.cy,30,["#ff6ae6","#bdf6ff"],4,.35); setTimeout(()=>relight([M]),6500); } },
+    // Pat: up on the cooler, hurls the bass into SMILE; the whole word smashes and falls
+    pat:{ spot(){ return {x:1296,feet:553,floor:635,z:96}; },
+      async hit(R){ const W=document.querySelectorAll(".sign .w")[1]; const L=W?[...W.querySelectorAll("span")]:[];
+        const [sx,sy]=p2s(R.L+R.w*.8,R.T+R.h*.15), k=k1(), len=R.h*.62*k, T=W?rectIn(W):{cx:sx+300,cy:sy-300};
+        const b=document.createElement("img"); b.src="img/band/gag-bass.webp?v=1"; b.alt=""; b.style.width=len+"px"; fx.appendChild(b);
+        await tween(560,u=>{ const x=sx+(T.cx-sx)*u, y=sy+(T.cy-sy)*u-Math.sin(u*Math.PI)*120*k; b.style.transform=`translate(${x-len/2}px,${y-len*.24}px) rotate(${-40+u*900}deg)`; });
+        crash(); burst(T.cx,T.cy,90,["#ff6ae6","#fff","#bdf6ff","#ff3fd0"],8,.3);
+        let bx=T.cx, by=T.cy, bvx=2.5, bvy=-4, br=900-40;
+        const fall=L.map(e=>({e,x:0,y:0,vx:(Math.random()-.4)*7,vy:-2-Math.random()*5,r:0,vr:(Math.random()-.5)*16}));
+        L.forEach(e=>{ e.classList.add("zapM"); e.style.display="inline-block"; });
+        const t0=performance.now();
+        await new Promise(res=>{ (function f(){ const el=performance.now()-t0; bvy+=.6; bx+=bvx; by+=bvy; br+=14; b.style.transform=`translate(${bx-len/2}px,${by-len*.24}px) rotate(${br}deg)`;
+          for(const q of fall){ q.vy+=.55; q.x+=q.vx; q.y+=q.vy; q.r+=q.vr; q.e.style.transform=`translate(${q.x}px,${q.y}px) rotate(${q.r}deg)`; if(el>500) q.e.classList.remove("zapM"); }
+          if(Math.random()<.4&&el<900) burst(T.cx+(Math.random()-.5)*T.w,T.cy+Math.random()*80,4,["#ff6ae6","#fff"],3,.4);
+          if(el<1900) requestAnimationFrame(f); else res(); })(); });
+        b.remove(); L.forEach(e=>{ e.classList.add("gone"); e.style.transform=""; e.style.display=""; }); setTimeout(()=>relight(L),7000); } },
+    // Jordan: on the ledge, swings his Les Paul and launches each button into the skyline
+    jordan:{ spot(){ const P=document.querySelector(".sky .pills .pill"); let x=900; if(P){ const r=rectIn(P); x=Math.max(450,Math.min(1450,s2p(r.x,0)[0]-80)); } return {x,feet:488,floor:595,z:58}; },
+      async hit(R){ const P=[...document.querySelectorAll(".sky .pills .pill")]; crack(); const [hx,hy]=p2s(R.L+R.w*.9,R.T+R.h*.12); burst(hx,hy,30,["#fff7c2","#ffb02e","#fff"],6,.25);
+        const s=SR(); const flights=P.map((e,i)=>{ const r=rectIn(e), ang=[-62,-35,-80][i%3]+(Math.random()-.5)*16, dist=[.55,.8,.42][i%3]*s.width, spin=[540,-720,1080][i%3];
+          return {e,r,dx:Math.cos(ang*Math.PI/180)*dist*(i===2?-.6:1),dy:Math.sin(ang*Math.PI/180)*dist*.75,spin,delay:i*90,dur:1300+i*250}; });
+        P.forEach(e=>e.classList.add("flying"));
+        await Promise.all(flights.map(q=>new Promise(res=>setTimeout(async()=>{ await tween(q.dur,u=>{ const e2=1-Math.pow(1-u,2);
+            q.e.style.transform=`translate(${q.dx*e2}px,${q.dy*e2-Math.sin(u*Math.PI)*60}px) rotate(${q.spin*u}deg) scale(${1-.92*u})`; q.e.style.opacity=u>.85?(1-u)/.15:1; });
+          const [ex,ey]=[q.r.cx+q.dx,q.r.cy+q.dy]; burst(ex,ey,14,["#fff","#ffe9a8"],2.2,.02); q.e.classList.add("gone"); q.e.style.opacity=""; res(); },q.delay))));
+        setTimeout(()=>{ P.forEach(e=>{ e.style.transform=""; }); relight(P,220); P.forEach(e=>e.classList.remove("flying")); },6500); } }
+  };
+  let gagOn=false;
   function Member(cfg){
     const V="?v=1", P=k=>({k,ar:cfg.ar[k],f:(cfg.f[k]||1)*(cfg.scale||1),real:`img/band/${cfg.pre}${k}-real.webp${V}`,neon:`img/band/${cfg.pre}${k}-neon.webp${V}`});
     const POSES=cfg.poses.map(P), ZAP=P(cfg.zap), FRIED=P(cfg.fried);
@@ -1823,6 +1888,15 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
         frame(f); kitEl.classList.remove("hit"); void kitEl.offsetWidth; kitEl.classList.add("hit"); });
       await wait(dur); frame(S.idle); m.busy=false; schedule(); }
     if(S) kitEl.addEventListener("click",playKit);
+    const GG=cfg.gag&&GAGS[cfg.gag], GA=GG&&P("g1"), GB=GG&&P("g2");
+    m.gag=async()=>{ if(!GG||m.busy||gagOn) return false; m.busy=true; gagOn=true; clearTimeout(wT); play.style.zIndex=5;
+      if(m.seated) await stand(); else { await flicker(3); vis(false); neon(0); } m.spot=-1;
+      const s=GG.spot(); const at=p=>{ const h=hFor(s.floor)*p.f, w=h*p.ar, L=s.x-w/2, T=s.feet-h; Object.assign(el.style,{left:L+"px",top:T+"px",width:w+"px",height:h+"px",zIndex:s.z}); return {L,T,w,h}; };
+      setPose(GA); at(GA); await wait(60); el.style.visibility="visible"; neon(1); await wait(90); await flicker(3); neon(0);
+      await wait(700); setPose(GB); const R=at(GB);
+      try{ await GG.hit(R); }catch(err){}
+      await wait(700); await flicker(3); vis(false); neon(0); el.style.zIndex=""; play.style.zIndex=""; gagOn=false;
+      await wait(500); await appear(); m.busy=false; schedule(); return true; };
     const neon=on=>{ inn.style.opacity=on?1:0; ir.style.opacity=on?0:1; };
     async function flicker(n){ for(let i=0;i<n;i++){ neon(1); await wait(40+Math.random()*60); neon(0); await wait(30+Math.random()*80); } }
     async function appear(){ if(S&&!m.wasSeated&&Math.random()<S.p){ m.wasSeated=true; return sit(); } m.wasSeated=false; m.spot=freeSpot(m);
@@ -1847,22 +1921,27 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       vis(false); [el,rf,sh].forEach(e=>{ e.style.transition=""; e.style.opacity=""; });
       m.spot=-1; await wait(700+Math.random()*600); await appear(); m.busy=false; schedule(); }
     el.addEventListener("click",zap);
-    [...POSES,ZAP,FRIED].forEach(p=>["real","neon"].forEach(t=>{ const i=new Image(); i.src=p[t]; }));
+    [...POSES,ZAP,FRIED,...(GG?[GA,GB]:[])].forEach(p=>["real","neon"].forEach(t=>{ const i=new Image(); i.src=p[t]; }));
     MEMBERS.push(m);
     if(S&&S.start){ m.wasSeated=true; m.pose=POSES[0]; setPose(m.pose); kimg[0].onload=()=>{ sit(); }; schedule(16000+(cfg.offset||0)); return m; }
     m.spot=freeSpot(m); m.pose=POSES[Math.floor(Math.random()*POSES.length)];
     ir.onload=()=>{ ir.onload=null; vis(true); }; setPose(m.pose); place(); schedule(11000+(cfg.offset||0));
     return m;
   }
-  Member({name:"Pat",pre:"p",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,
-    ar:{1:.5135,2:.5269,3:.5462,4:.5308,5:.6558,6:.8077,7:.5346,8:.4692,9:.5981,10:.3962},f:{1:1.05,6:.78,9:1.3,10:1.05}});
+  const PAT=Member({name:"Pat",pre:"p",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,gag:"pat",
+    ar:{1:.5135,2:.5269,3:.5462,4:.5308,5:.6558,6:.8077,7:.5346,8:.4692,9:.5981,10:.3962,g1:.6346,g2:.6404},f:{1:1.05,6:.78,9:1.3,10:1.05,g1:.92,g2:1}});
   // Jordan: shots v3, made from his character master sheet
-  Member({name:"Jordan",pre:"jj",sound:"chord",anim:"zj",sparky:true,flash:"#37e0ff",bolts:["#7ff3ff","#fff6a0","#22c8ff"],poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:5500,scale:.97,
-    ar:{1:0.6404,2:0.6635,3:0.5712,4:0.5865,5:0.5096,6:0.5,7:0.5308,8:0.4615,9:0.6538,10:0.5173},f:{2:.9,3:.97,9:1.36}});
+  const JORDAN=Member({name:"Jordan",pre:"jj",gag:"jordan",sound:"chord",anim:"zj",sparky:true,flash:"#37e0ff",bolts:["#7ff3ff","#fff6a0","#22c8ff"],poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:5500,scale:.97,
+    ar:{1:0.6404,2:0.6635,3:0.5712,4:0.5865,5:0.5096,6:0.5,7:0.5308,8:0.4615,9:0.6538,10:0.5173,g1:.6096,g2:.5769},f:{2:.9,3:.97,9:1.36,g1:1.04,g2:1.1}});
   // Jacob: drummer, shots v2/v3 from his master sheet (face-locked)
-  Member({name:"Jacob",pre:"jb",sound:"drums",anim:"zz",flash:"#ff6ae6",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:2700,scale:.98,
+  const JACOB=Member({name:"Jacob",pre:"jb",gag:"jacob",sound:"drums",anim:"zz",flash:"#ff6ae6",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:2700,scale:.98,
     seat:{pre:"jbk",frames:[1,2,3,4],idle:1,x:800,y:309,w:411,h:339,z:74,p:.5,start:true},
-    ar:{1:0.4962,2:0.3423,3:0.2865,4:0.3519,5:0.5019,6:0.3769,7:0.4058,8:0.4923,9:0.6135,10:0.3},f:{1:1.12,7:1.14,8:.7,9:1.08,10:1.05}});
+    ar:{1:0.4962,2:0.3423,3:0.2865,4:0.3519,5:0.5019,6:0.3769,7:0.4058,8:0.4923,9:0.6135,10:0.3,g1:.5115,g2:.4269},f:{1:1.12,7:1.14,8:.7,9:1.08,10:1.05,g1:1,g2:1.29}});
+  // every so often one of them pulls a stunt; ?gag=pat|jordan|jacob runs one right away
+  const CREW={pat:PAT,jordan:JORDAN,jacob:JACOB}; window.MSGag=n=>CREW[n]&&CREW[n].gag();
+  const qg=(location.search.match(/[?&]gag=(\w+)/)||[])[1];
+  if(!still){ (async()=>{ await wait(qg?2500:22000+Math.random()*8000); if(qg&&CREW[qg]) await CREW[qg].gag();
+    while(true){ await wait(40000+Math.random()*25000); if(document.hidden||gagOn) continue; const ks=Object.keys(CREW); for(let i=0;i<3;i++){ const n=ks[Math.floor(Math.random()*ks.length)]; if(await CREW[n].gag()) break; } } })(); }
 })();
 </script>
 
