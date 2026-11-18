@@ -1,230 +1,231 @@
 {
-  "_readme": "Everything on motelsmile.com comes from this file. Claude edits it; the site rebuilds itself. Empty fields/lists hide or swap to a 'coming soon' line on the live site.",
-  "updated": "2026-11-15",
-  "site": {
-    "showSetupHints": false
-  },
-  "band": {
-    "name": "Motel Smile",
-    "tagline": "Rock from ear to ear.",
-    "from": "New York",
-    "bio": "Three-piece rock band out of New York. Loud, late, and built for small rooms.",
-    "members": [
-      {
-        "name": "Pat",
-        "role": "Bass, vocals"
-      },
-      {
-        "name": "Jordan",
-        "role": "Guitar"
-      },
-      {
-        "name": "Jacob",
-        "role": "Drums"
-      }
-    ]
-  },
-  "ticker": [
-    "Now playing: Don't Mind It",
-    "Debut album coming soon",
-    "Shows announced to the list first"
-  ],
-  "music": {
-    "featured": {
-      "title": "Don't Mind It",
-      "length": "4:06",
-      "status": "Out now",
-      "date": ""
-    },
-    "links": {
-      "spotify": "",
-      "apple": "",
-      "youtube": "",
-      "bandcamp": ""
-    },
-    "next": ""
-  },
-  "shows": [
-    {
-      "date": "2026-11-28",
-      "time": "11pm",
-      "venue": "Whiskey Rocks",
-      "city": "West Babylon, NY",
-      "address": "419 Great East Neck Rd, West Babylon, NY 11704",
-      "doors": "",
-      "price": "",
-      "ages": "",
-      "with": "",
-      "tickets": ""
-    }
-  ],
-  "videos": [],
-  "newsletter": {
-    "text": "Hear the album first. Get show dates before they're posted.",
-    "formAction": ""
-  },
-  "socials": [
-    {
-      "platform": "Instagram",
-      "url": "https://instagram.com/Motelsmile"
-    },
-    {
-      "platform": "TikTok",
-      "url": "https://www.tiktok.com/@motelsmile"
-    },
-    {
-      "platform": "YouTube",
-      "url": "https://www.youtube.com/@motelsmile"
-    },
-    {
-      "platform": "Spotify",
-      "url": "",
-      "soon": true
-    },
-    {
-      "platform": "Facebook",
-      "url": "https://www.facebook.com/MotelSmileMusic/"
-    }
-  ],
-  "images": {
-    "hero": "img/roof-main.webp?v=2",
-    "listen": "img/midtown.webp",
-    "live": "img/el.webp",
-    "watch": "img/fire.webp",
-    "band": "img/bridge-blue.webp",
-    "list": "img/li-platform.webp",
-    "follow": "img/li-diner.webp"
-  },
-  "credits": [
-    {
-      "what": "Midtown street",
-      "who": "Wikimedia Commons, CC BY 2.0",
-      "url": "https://commons.wikimedia.org/wiki/File:New_York_City_(33782771422).jpg"
-    },
-    {
-      "what": "Midtown skyline",
-      "who": "Rhododendrites, CC BY-SA 4.0",
-      "url": "https://commons.wikimedia.org/wiki/File:Manhattan_at_night_north_of_Rockefeller_Center_(11226).jpg"
-    },
-    {
-      "what": "Fire escape",
-      "who": "Acediscovery, CC BY 4.0",
-      "url": "https://commons.wikimedia.org/wiki/File:Fire-escape-New-York-September-2014.jpg"
-    },
-    {
-      "what": "Brooklyn Bridge",
-      "who": "Mike Sinko, CC BY 2.0",
-      "url": "https://commons.wikimedia.org/wiki/File:Brooklyn_Bridge_at_night_-_2016.jpg"
-    },
-    {
-      "what": "El stairs",
-      "who": "Wikimedia Commons, CC BY 2.0",
-      "url": "https://commons.wikimedia.org/wiki/File:Subway_Closure_Night_2_-_Coney_Island_Terminal_(49866371597).jpg"
-    },
-    {
-      "what": "Train platform",
-      "who": "Akin Cakiner, Unsplash",
-      "url": "https://unsplash.com/photos/a-train-station-with-a-train-on-the-tracks-RaV994E2qjk"
-    },
-    {
-      "what": "Diner sign",
-      "who": "Jon Tyson, Unsplash",
-      "url": "https://unsplash.com/photos/neon-sign-advertises-breakfast-lunch-dinner-and-late-night-TpQSe5KY80c"
-    },
-    {
-      "what": "Rooftop hero",
-      "who": "Generated image, song tags + flyer painted in",
-      "url": "#"
-    }
-  ],
-  "venues": [
-    {
-      "name": "Whiskey Rocks",
-      "city": "West Babylon, NY",
-      "address": "419 Great East Neck Rd, West Babylon, NY 11704"
-    }
-  ],
-  "photos": [],
-  "contact": {
-    "email": "",
-    "phone": ""
-  },
-  "log": [
-    {
-      "at": "2026-11-15T03:02:06.623Z",
-      "by": "u_5hpGM39XH9GCDW0GiIGkyg",
-      "text": "Set the Whiskey Rocks venue address to 419 Great East Neck Rd, West Babylon, NY 11704; Set the Whiskey Rocks venue city to West Babylon, NY; Updated the Nov 28 show at Whiskey Rocks with the same city and address"
-    }
-  ],
-  "records": [
-    {
-      "title": "Don't Mind It",
-      "audio": "audio/dont-mind-it.mp3",
-      "spotify": ""
-    },
-    {
-      "title": "Get Back",
-      "soon": true
-    },
-    {
-      "title": "Matter of Time",
-      "soon": true
-    },
-    {
-      "title": "Dirty Little Liar",
-      "soon": true
-    },
-    {
-      "title": "Better Free",
-      "soon": true
-    },
-    {
-      "title": "Fences",
-      "soon": true
-    },
-    {
-      "title": "Down",
-      "soon": true
-    },
-    {
-      "title": "Thread",
-      "soon": true
-    },
-    {
-      "title": "Mean",
-      "soon": true
-    },
-    {
-      "title": "Gnocchi",
-      "soon": true
-    },
-    {
-      "title": "Watch Your Tone",
-      "soon": true
-    },
-    {
-      "title": "Just Sayin",
-      "soon": true
-    },
-    {
-      "title": "I Know What You Need",
-      "soon": true
-    },
-    {
-      "title": "Sometimes",
-      "soon": true
-    },
-    {
-      "title": "What's Missing",
-      "soon": true
-    },
-    {
-      "title": "Never Ever Be",
-      "soon": true
-    },
-    {
-      "title": "Been Wrong",
-      "soon": true
-    }
+ "_readme": "Everything on motelsmile.com comes from this file. Claude edits it; the site rebuilds itself. Empty fields/lists hide or swap to a 'coming soon' line on the live site.",
+ "updated": "2026-11-15",
+ "site": {
+  "showSetupHints": false
+ },
+ "band": {
+  "name": "Motel Smile",
+  "tagline": "Rock from ear to ear.",
+  "from": "New York",
+  "bio": "Three-piece rock band out of New York. Loud, late, and built for small rooms.",
+  "members": [
+   {
+    "name": "Pat",
+    "role": "Bass, vocals"
+   },
+   {
+    "name": "Jordan",
+    "role": "Guitar"
+   },
+   {
+    "name": "Jacob",
+    "role": "Drums"
+   }
   ]
+ },
+ "ticker": [
+  "Now playing: Don't Mind It",
+  "Debut album coming soon",
+  "Shows announced to the list first"
+ ],
+ "music": {
+  "featured": {
+   "title": "Don't Mind It",
+   "length": "4:06",
+   "status": "Out now",
+   "date": ""
+  },
+  "links": {
+   "spotify": "",
+   "apple": "",
+   "youtube": "",
+   "bandcamp": ""
+  },
+  "next": ""
+ },
+ "shows": [
+  {
+   "date": "2026-11-28",
+   "time": "11pm",
+   "venue": "Whiskey Rocks",
+   "city": "West Babylon, NY",
+   "address": "419 Great East Neck Rd, West Babylon, NY 11704",
+   "doors": "",
+   "price": "",
+   "ages": "",
+   "with": "",
+   "tickets": ""
+  }
+ ],
+ "videos": [],
+ "newsletter": {
+  "text": "Hear the album first. Get show dates before they're posted.",
+  "formAction": "",
+  "endpoint": "/api/subscribe"
+ },
+ "socials": [
+  {
+   "platform": "Instagram",
+   "url": "https://instagram.com/Motelsmile"
+  },
+  {
+   "platform": "TikTok",
+   "url": "https://www.tiktok.com/@motelsmile"
+  },
+  {
+   "platform": "YouTube",
+   "url": "https://www.youtube.com/@motelsmile"
+  },
+  {
+   "platform": "Spotify",
+   "url": "",
+   "soon": true
+  },
+  {
+   "platform": "Facebook",
+   "url": "https://www.facebook.com/MotelSmileMusic/"
+  }
+ ],
+ "images": {
+  "hero": "img/roof-main.webp?v=2",
+  "listen": "img/midtown.webp",
+  "live": "img/el.webp",
+  "watch": "img/fire.webp",
+  "band": "img/bridge-blue.webp",
+  "list": "img/li-platform.webp",
+  "follow": "img/li-diner.webp"
+ },
+ "credits": [
+  {
+   "what": "Midtown street",
+   "who": "Wikimedia Commons, CC BY 2.0",
+   "url": "https://commons.wikimedia.org/wiki/File:New_York_City_(33782771422).jpg"
+  },
+  {
+   "what": "Midtown skyline",
+   "who": "Rhododendrites, CC BY-SA 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Manhattan_at_night_north_of_Rockefeller_Center_(11226).jpg"
+  },
+  {
+   "what": "Fire escape",
+   "who": "Acediscovery, CC BY 4.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Fire-escape-New-York-September-2014.jpg"
+  },
+  {
+   "what": "Brooklyn Bridge",
+   "who": "Mike Sinko, CC BY 2.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Brooklyn_Bridge_at_night_-_2016.jpg"
+  },
+  {
+   "what": "El stairs",
+   "who": "Wikimedia Commons, CC BY 2.0",
+   "url": "https://commons.wikimedia.org/wiki/File:Subway_Closure_Night_2_-_Coney_Island_Terminal_(49866371597).jpg"
+  },
+  {
+   "what": "Train platform",
+   "who": "Akin Cakiner, Unsplash",
+   "url": "https://unsplash.com/photos/a-train-station-with-a-train-on-the-tracks-RaV994E2qjk"
+  },
+  {
+   "what": "Diner sign",
+   "who": "Jon Tyson, Unsplash",
+   "url": "https://unsplash.com/photos/neon-sign-advertises-breakfast-lunch-dinner-and-late-night-TpQSe5KY80c"
+  },
+  {
+   "what": "Rooftop hero",
+   "who": "Generated image, song tags + flyer painted in",
+   "url": "#"
+  }
+ ],
+ "venues": [
+  {
+   "name": "Whiskey Rocks",
+   "city": "West Babylon, NY",
+   "address": "419 Great East Neck Rd, West Babylon, NY 11704"
+  }
+ ],
+ "photos": [],
+ "contact": {
+  "email": "",
+  "phone": ""
+ },
+ "log": [
+  {
+   "at": "2026-11-15T03:02:06.623Z",
+   "by": "u_5hpGM39XH9GCDW0GiIGkyg",
+   "text": "Set the Whiskey Rocks venue address to 419 Great East Neck Rd, West Babylon, NY 11704; Set the Whiskey Rocks venue city to West Babylon, NY; Updated the Nov 28 show at Whiskey Rocks with the same city and address"
+  }
+ ],
+ "records": [
+  {
+   "title": "Don't Mind It",
+   "audio": "audio/dont-mind-it.mp3",
+   "spotify": ""
+  },
+  {
+   "title": "Get Back",
+   "soon": true
+  },
+  {
+   "title": "Matter of Time",
+   "soon": true
+  },
+  {
+   "title": "Dirty Little Liar",
+   "soon": true
+  },
+  {
+   "title": "Better Free",
+   "soon": true
+  },
+  {
+   "title": "Fences",
+   "soon": true
+  },
+  {
+   "title": "Down",
+   "soon": true
+  },
+  {
+   "title": "Thread",
+   "soon": true
+  },
+  {
+   "title": "Mean",
+   "soon": true
+  },
+  {
+   "title": "Gnocchi",
+   "soon": true
+  },
+  {
+   "title": "Watch Your Tone",
+   "soon": true
+  },
+  {
+   "title": "Just Sayin",
+   "soon": true
+  },
+  {
+   "title": "I Know What You Need",
+   "soon": true
+  },
+  {
+   "title": "Sometimes",
+   "soon": true
+  },
+  {
+   "title": "What's Missing",
+   "soon": true
+  },
+  {
+   "title": "Never Ever Be",
+   "soon": true
+  },
+  {
+   "title": "Been Wrong",
+   "soon": true
+  }
+ ]
 }

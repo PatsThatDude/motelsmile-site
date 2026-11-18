@@ -291,7 +291,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     <h2>Shows</h2><div id="shows"></div></div></section>
   <section class="sheet" id="sheet-list" style="--c:var(--green)" aria-label="Mailing list"><button class="x" data-close aria-label="Close">✕</button><div class="in">
     <h2>The list</h2><p id="nl-text"></p>
-    <form id="signup"><input id="email" name="email" type="email" required placeholder="your@email.com" autocomplete="email" aria-label="Email address"><button class="btn solid" type="submit">Get on the list</button></form>
+    <form id="signup"><input name="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"><input id="email" name="email" type="email" required placeholder="your@email.com" autocomplete="email" aria-label="Email address"><button class="btn solid" type="submit">Get on the list</button></form>
     <p class="msg" id="msg" role="status"></p></div></section>
   <section class="sheet" id="sheet-follow" style="--c:var(--amber)" aria-label="Follow"><button class="x" data-close aria-label="Close">✕</button><div class="in">
     <h2>Follow</h2><div class="soc" id="soc"></div><p id="about" style="margin:14px 0 0"></p><p class="contact" id="contact"></p><p class="credits" id="credits"></p></div></section>
@@ -1484,7 +1484,14 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     }
     $("nl-text").textContent=c.newsletter.text;
     const form=$("signup");
-    if(c.newsletter.formAction){form.action=c.newsletter.formAction;form.method="post";form.target="_blank";}
+    if(c.newsletter.endpoint&&!signupBound){ signupBound=true; form.addEventListener("submit",async e=>{ e.preventDefault(); const btn=form.querySelector("button"), msg=$("msg");
+        btn.disabled=true; msg.textContent="Adding you…";
+        try{ const r=await fetch(c.newsletter.endpoint,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({email:$("email").value,hp:form.hp.value})}); const j=await r.json().catch(()=>({}));
+          if(r.ok&&j.ok){ msg.textContent=j.already?"You're already on the list. See you on the roof.":"You're on the list. See you on the roof."; form.reset(); }
+          else msg.textContent=j.error||"Something went wrong. Try again in a minute."; }
+        catch(err){ msg.textContent="Something went wrong. Try again in a minute."; }
+        btn.disabled=false; }); }
+    else if(c.newsletter.formAction){form.action=c.newsletter.formAction;form.method="post";form.target="_blank";}
     else if(!signupBound){signupBound=true;form.addEventListener("submit",e=>{if(form.action&&form.getAttribute("action"))return;e.preventDefault();$("msg").innerHTML='Sign-ups open soon. For now, follow <a href="https://instagram.com/Motelsmile" target="_blank" rel="noopener">@motelsmile</a> for show dates.';});}
     const ig=(c.socials||[]).find(s=>s.platform==="Instagram"&&s.url);
     if(ig) $("t-follow").textContent="@"+ig.url.split("/").filter(Boolean).pop().toLowerCase();
