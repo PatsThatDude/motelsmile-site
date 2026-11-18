@@ -1432,6 +1432,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     place(); requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick); addEventListener("resize",place);
+  // stunts can steer the phone camera: MSCam(plateX) pans there; returns where it was
+  window.MSCam=c=>{ const was=cxT; if(phone()&&c!=null){ cxT=clampC(c); hinted=true; } return phone()?was:null; };
   const setBarH=()=>$("stage").style.setProperty("--barh",$("bar").offsetHeight+"px");
   addEventListener("resize",setBarH); setBarH();
   function closeAll(){document.querySelectorAll(".sheet").forEach(s=>s.classList.remove("open"));document.querySelectorAll(".tile").forEach(t=>t.setAttribute("aria-expanded","false"));}
@@ -1826,7 +1828,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   function relight(els,gap){ els.forEach((e,i)=>setTimeout(()=>{ e.classList.remove("gone"); e.style.transform=""; e.style.opacity=""; e.classList.add("zapM"); buzz(.25); setTimeout(()=>e.classList.remove("zapM"),380); },i*(gap||170))); }
   const GAGS={
     // Jacob: hop up on the bass drum, whack the M; it buzzes and dies for a while
-    jacob:{ keep:[{x:300,y:200,w:260,h:420}], ov:{z:96,shadow:{x:1016,y:519,w:60},occ:{f:"jbocc",x:955,y:470,w:145,h:130},frames:[{f:"jbya",x:933.2,y:169.3,w:183.9,h:349.7},{f:"jbys",x:938.2,y:172.1,w:217.6,h:336.9,tip:[.993,.001],hand:[.79,.13],air:1},{f:"jbyp",x:945.7,y:197.8,w:117.8,h:321.2,tip:[.78,.335]},{f:"jbyh",x:903,y:223.4,w:208,h:295.6,hand:[.063,.266]},{f:"jbyv",x:930.3,y:179.8,w:168.1,h:339.2}],end:4,hold:1400},
+    jacob:{ cam:{on:1010,hit:430}, keep:[{x:300,y:200,w:260,h:420}], ov:{z:96,shadow:{x:1016,y:519,w:60},occ:{f:"jbocc",x:955,y:470,w:145,h:130},frames:[{f:"jbya",x:933.2,y:169.3,w:183.9,h:349.7},{f:"jbys",x:938.2,y:172.1,w:217.6,h:336.9,tip:[.993,.001],hand:[.79,.13],air:1},{f:"jbyp",x:945.7,y:197.8,w:117.8,h:321.2,tip:[.78,.335]},{f:"jbyh",x:903,y:223.4,w:208,h:295.6,hand:[.063,.266]},{f:"jbyv",x:930.3,y:179.8,w:168.1,h:339.2}],end:4,hold:1400},
       // Jacob, furious: spears the "o" of Motel dead-centre, rips it down, points it at you, then hurls it into the arcade
       O(){ return document.querySelector(".sign .w span:nth-child(2)"); },
       aim(F){ const O=this.O(); if(!O||O.classList.contains("gone")) return null; const r=O.getBoundingClientRect(), s=SR();
@@ -1840,9 +1842,9 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
         // a copy of the letter that can live above Jacob (the real one stays in the sign, behind his stick)
         const cs=getComputedStyle(O), cl=document.createElement("span"); cl.textContent=O.textContent;
         ["fontFamily","fontSize","fontWeight","fontStyle","color","textShadow","lineHeight","letterSpacing"].forEach(p=>cl.style[p]=cs[p]);
-        Object.assign(cl.style,{position:"absolute",left:"0",top:"0",display:"inline-block",whiteSpace:"pre",pointerEvents:"none",transformOrigin:"50% 55%"}); fx.appendChild(cl);
+        Object.assign(cl.style,{position:"absolute",left:"0",top:"0",display:"inline-block",whiteSpace:"pre",pointerEvents:"none",transformOrigin:"50% 55%",visibility:"hidden"}); fx.appendChild(cl);
         const oc=rectIn(O), cw=cl.offsetWidth, ch=cl.offsetHeight;
-        const put=(x,y,rot,sc,clip)=>{ cl.style.transform=`translate(${x-cw/2}px,${y-ch*.55}px) rotate(${rot}deg) scale(${sc})`; cl.style.clipPath=clip||"none"; };
+        const put=(x,y,rot,sc,clip)=>{ cl.style.visibility="visible"; cl.style.transform=`translate(${x-cw/2}px,${y-ch*.55}px) rotate(${rot}deg) scale(${sc})`; cl.style.clipPath=clip||"none"; };
         let x=oc.cx, y=oc.cy, onStick=A&&A.reach;
         if(!onStick&&A){ // out of reach (phone): he wings a stick through it first
           const [sx,sy]=p2s(A.tx+R.dx,A.ty+R.dy), st=document.createElement("div");
@@ -1859,18 +1861,22 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
         // point it at the camera… and hold it there, shaking with rage
         x=ptx; y=pty; for(let i=0;i<9;i++){ put(x+(Math.random()-.5)*4,y+(Math.random()-.5)*4,-30+(Math.random()-.5)*6,1.25); await wait(70); }
         // hurl it at the arcade — straight and hard, no fairy dust
-        const H=F[3], [hx,hy]=p2s(H.x+H.w*H.hand[0],H.y+H.h*H.hand[1]), [ax,ay]=p2s(399,350);
+        const H=F[3], HP=[H.x+H.w*H.hand[0],H.y+H.h*H.hand[1]], AP=[399,350];
+        const panning=window.MSCam&&window.MSCam()!=null;
         // the stick leaves his hand with the o still skewered on it
         const L=110*k, sw=Math.max(4,7*k), st=document.createElement("div");
         Object.assign(st.style,{position:"absolute",left:"0",top:"0",width:L+"px",height:sw+"px",borderRadius:sw+"px",background:"linear-gradient(90deg,#b98a4e,#e9c992 70%,#f5e2b8)",boxShadow:"0 1px 2px rgba(0,0,0,.5)",transformOrigin:"50% 50%",pointerEvents:"none"}); fx.appendChild(st);
         const fly=(cx,cy,ang,sc)=>{ const r=ang*Math.PI/180, ox=Math.cos(r)*L*.2*sc, oy=Math.sin(r)*L*.2*sc;
           st.style.transform=`translate(${cx-L/2}px,${cy-sw/2}px) rotate(${ang}deg) scale(${sc})`; put(cx+ox,cy+oy,ang+180,1.15*sc); };
-        R.show(3); whoosh(); fly(hx,hy,190,1);
-        await tween(380,u=>{ const e=1-Math.pow(1-u,1.6); fly(hx+(ax-hx)*e,hy+(ay-hy)*e-Math.sin(u*Math.PI)*40*k,190-720*u,1-.35*u); });
+        R.show(3); whoosh(); { const [hx,hy]=p2s(...HP); fly(hx,hy,190,1); }
+        if(panning){ await wait(120); window.MSCam(this.cam.hit); }
+        await tween(panning?720:380,u=>{ const e=1-Math.pow(1-u,1.6), [hx,hy]=p2s(...HP), [ax,ay]=p2s(...AP); fly(hx+(ax-hx)*e,hy+(ay-hy)*e-Math.sin(u*Math.PI)*40*k,190-720*u,1-.35*u); });
+        const [ax,ay]=p2s(...AP);
         crash(); burst(ax,ay,70,S,8,.35); burst(ax,ay,24,["#cfd8e0","#9fb0bf","#ffffff"],5,.45); shake(320);
         x=ax; y=ay; let vx=-1.5,vy=-3,r=-530; const t0=performance.now();
         await new Promise(res=>{ (function f(){ vy+=.7; x+=vx; y+=vy; r-=9; fly(x,y,r,.65); const o=Math.max(0,1-(performance.now()-t0)/600); cl.style.opacity=o; st.style.opacity=o; if(performance.now()-t0<600) requestAnimationFrame(f); else res(); })(); });
-        cl.remove(); st.remove(); setTimeout(()=>relight([O]),7000); } },
+        cl.remove(); st.remove(); setTimeout(()=>relight([O]),7000);
+        if(panning){ await wait(250); window.MSCam(this.cam.on); await wait(700); } } },
     // Pat: up on the cooler, hurls the bass into SMILE; the whole word smashes and falls
     pat:{ spot(){ return {x:1296,feet:553,floor:635,z:96}; },
       async hit(R){ const W=document.querySelectorAll(".sign .w")[1]; const L=W?[...W.querySelectorAll("span")]:[];
@@ -1937,6 +1943,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     if(S) kitEl.addEventListener("click",playKit);
     const GG=cfg.gag&&GAGS[cfg.gag], GA=GG&&P("g1"), GB=GG&&P("g2");
     m.gag=async()=>{ if(!GG||m.busy||gagOn) return false; m.busy=true; gagOn=true; clearTimeout(wT); play.style.zIndex=5;
+      const camWas=(GG.cam&&window.MSCam)?window.MSCam(GG.cam.on):null; if(camWas!=null) await wait(800);
       { // bandmates step out of the way: anyone overlapping the stunt area, the sign or the buttons fades out until it's over
         const boxes=[...document.querySelectorAll(".sign,.sky .pills .pill")].map(e=>{ const r=e.getBoundingClientRect(), S0=SR(), [x,y]=s2p(r.left-S0.left,r.top-S0.top), k=k1(); return {x,y,w:r.width/k,h:r.height/k}; });
         if(GG.ov) GG.ov.frames.forEach(f=>boxes.push({x:f.x-60,y:f.y,w:f.w+120,h:f.h})); if(GG.keep) GG.keep.forEach(b=>boxes.push(b));
@@ -1967,7 +1974,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       if(ov){ await wait(350); if(GG._land) await GG._land(); await wait(500); const d0=ov[0]; for(let i=0;i<3;i++){ d0.style.opacity=.35; await wait(45); d0.style.opacity=1; await wait(55); } ov.forEach(d=>d.remove()); }
       else { await wait(700); await flicker(3); }
       m.unhide&&m.unhide(); m.unhide=null;
-      vis(false); neon(0); el.style.zIndex=""; play.style.zIndex=""; gagOn=false;
+      vis(false); neon(0); el.style.zIndex=""; play.style.zIndex=""; gagOn=false; if(camWas!=null) window.MSCam(camWas);
       await wait(500); await appear(); m.busy=false; schedule(); return true; };
     const neon=on=>{ inn.style.opacity=on?1:0; ir.style.opacity=on?0:1; };
     async function flicker(n){ for(let i=0;i<n;i++){ neon(1); await wait(40+Math.random()*60); neon(0); await wait(30+Math.random()*80); } }
