@@ -1809,7 +1809,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     const S=cfg.seat; let kitEl=null, kimg=[];
     if(S){ kitEl=document.createElement("div"); kitEl.className="bm-kit"; kitEl.setAttribute("role","button"); kitEl.setAttribute("aria-label",cfg.name+" at the kit (tap to hear him play)");
       Object.assign(kitEl.style,{left:S.x+"px",top:S.y+"px",width:S.w+"px",height:S.h+"px",zIndex:S.z});
-      kimg=S.frames.map(f=>{ const i=document.createElement("img"); i.alt=""; i.src=`img/band/${S.pre}${f}.webp?v=1`; kitEl.appendChild(i); return i; });
+      kimg=S.frames.map(f=>{ const i=document.createElement("img"); i.alt=""; i.src=`img/band/${S.pre}${f}.webp?v=2`; kitEl.appendChild(i); return i; });
       play.insertBefore(kitEl,cv); }
     const frame=f=>kimg.forEach((im,i)=>im.classList.toggle("cur",S.frames[i]===f));
     const has=f=>S.frames.includes(f);
@@ -1861,7 +1861,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     ar:{1:0.6404,2:0.6635,3:0.5712,4:0.5865,5:0.5096,6:0.5,7:0.5308,8:0.4615,9:0.6538,10:0.5173},f:{2:.9,3:.97,9:1.36}});
   // Jacob: drummer, shots v2/v3 from his master sheet (face-locked)
   Member({name:"Jacob",pre:"jb",sound:"drums",anim:"zz",flash:"#ff6ae6",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:2700,scale:.98,
-    seat:{pre:"jbk",frames:[1,2],idle:1,x:800,y:377,w:411,h:271,z:74,p:.5,start:true},
+    seat:{pre:"jbk",frames:[1,2,3,4],idle:1,x:800,y:309,w:411,h:339,z:74,p:.5,start:true},
     ar:{1:0.4962,2:0.3423,3:0.2865,4:0.3519,5:0.5019,6:0.3769,7:0.4058,8:0.4923,9:0.6135,10:0.3},f:{1:1.12,7:1.14,8:.7,9:1.08,10:1.05}});
 })();
 </script>
