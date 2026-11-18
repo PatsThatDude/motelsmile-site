@@ -7,6 +7,17 @@
 <link rel="icon" href="img/smile-logo-96.webp">
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Motel Smile. New York rock.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Motel Smile">
+<meta property="og:title" content="Motel Smile">
+<meta property="og:description" content="New York rock. Hang on the roof, spin a record, catch a show.">
+<meta property="og:url" content="https://motelsmile.com/">
+<meta property="og:image" content="https://motelsmile.com/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://motelsmile.com/img/og.jpg">
+<meta name="theme-color" content="#0a0b12">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yellowtail&family=Permanent+Marker&family=Tilt+Neon&family=IBM+Plex+Mono:wght@400;600&display=swap">
@@ -930,7 +941,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   <div class="ac-ui">
     <a class="pill lg-back" style="--c:var(--cyan)" href="#" id="ac-back">← Back to the roof</a>
     <div class="ac-swipe" aria-hidden="true">⇠ swipe ⇢</div>
-    <div class="ac-sign">Game corner · Better Free pinball is live · more games soon</div>
+    <div class="ac-sign">Game corner · Better Free pinball coming soon · more games soon</div>
   </div>
 </section>
 <script>
@@ -978,9 +989,9 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   function blip(){ const a=ac(); if(!a) return; const t=a.currentTime; [523,659,784,1046].forEach((f,i)=>{ const o=a.createOscillator(), g=a.createGain(); o.type="square"; o.frequency.value=f; g.gain.setValueAtTime(0,t+i*.07); g.gain.linearRampToValueAtTime(.05,t+i*.07+.01); g.gain.exponentialRampToValueAtTime(.0001,t+i*.07+.12); o.connect(g).connect(a.destination); o.start(t+i*.07); o.stop(t+i*.07+.14); }); }
   const LINES=["is warming up. Coming soon.","needs a quarter. Coming soon.","is getting rewired. Coming soon.","high score: Jacob. Game coming soon."];
   function pinball(){ if(window.MSPinball){ window.MSPinball.open(); return; } const sc=document.createElement("script"); sc.src="games/fireball.js?v=11"; sc.onload=()=>window.MSPinball&&window.MSPinball.open(); document.body.appendChild(sc); }
-  cam.querySelectorAll(".ac-hot").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation(); blip(); if(b.dataset.game==="Fireball"){ setTimeout(pinball,250); return; }
+  cam.querySelectorAll(".ac-hot").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation(); blip(); if(b.dataset.game==="Fireball"&&/[?&]pinball=1/.test(location.search)){ setTimeout(pinball,250); return; }
     const r=b.getBoundingClientRect(), d=document.createElement("div"); d.className="bubble"; d.style.zIndex=20; d.style.position="fixed";
-    d.textContent=b.dataset.game+" "+LINES[Math.floor(Math.random()*LINES.length)];
+    d.textContent=b.dataset.game==="Fireball"?"Better Free pinball is getting its last coat of paint. Coming soon.":b.dataset.game+" "+LINES[Math.floor(Math.random()*LINES.length)];
     d.style.left=Math.max(120,Math.min(innerWidth-120,r.left+r.width/2))+"px"; d.style.top=Math.max(80,r.top+30)+"px"; A.appendChild(d); setTimeout(()=>d.remove(),2900); }));
   frame();
 })();
