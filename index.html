@@ -140,6 +140,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .bm .r{left:0;top:0;width:100%;height:100%}.bm .n{opacity:0;mix-blend-mode:screen}
 .bm-rf{position:absolute;pointer-events:none;opacity:.3;filter:blur(1.5px);transform:scaleY(-1);-webkit-mask-image:linear-gradient(to top,#000,transparent 55%);mask-image:linear-gradient(to top,#000,transparent 55%);visibility:hidden}
 .bm-rf img{position:absolute;inset:0;width:100%;height:100%}
+.bm-kit{position:absolute;pointer-events:none;visibility:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}.bm-kit.on{pointer-events:auto}.bm-kit.hit{animation:kithit .12s}@keyframes kithit{0%{translate:0 1.5px}100%{translate:0 0}}.bm-kit img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;user-select:none;-webkit-user-drag:none;opacity:0}.bm-kit img.cur{opacity:1}
 .bm-sh{position:absolute;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.65),transparent 70%);pointer-events:none;visibility:hidden}
 #pat-fx{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:200}
 .bm.zz{animation:patsh .09s infinite}.bm.zj{animation:jordj .16s infinite}@keyframes jordj{0%{translate:0 0;rotate:-3deg}50%{translate:0 -14px;rotate:3deg}100%{translate:0 0;rotate:-3deg}}@keyframes patsh{0%{translate:4px -2px}50%{translate:-4px 3px}100%{translate:2px 2px}}
@@ -1767,6 +1768,21 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       else { const n=a.createBufferSource(); n.buffer=nb; const bp=a.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=1800+Math.random()*900; bp.Q.value=.8; const g=a.createGain(); g.gain.setValueAtTime(.38,at); g.gain.exponentialRampToValueAtTime(.001,at+.14); n.connect(bp).connect(g).connect(a.destination); n.start(at,Math.random()); n.stop(at+.16); } }
     const c=a.createBufferSource(); c.buffer=nb; const hp=a.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=5000; const cg=a.createGain(); cg.gain.setValueAtTime(.18,t+dur*.85); cg.gain.exponentialRampToValueAtTime(.001,t+dur*.85+1.4);
     c.connect(hp).connect(cg).connect(a.destination); c.start(t+dur*.85); }
+  // Jacob at the kit: a 2-bar groove + tom fill + crash; calls hit(kind) on every stroke so the frames follow the beat
+  function drumGroove(hit){ const a=ac(), e=60/132/2, ev=[];
+    for(let i=0;i<14;i++){ const k=i%8; ev.push([i*e, k===2||k===6?"snare":(k===0||k===3||k===4)?"kick":"hat"]); }
+    for(let i=0;i<4;i++) ev.push([14*e+i*e/2,"tom"]); ev.push([16*e-.04,"up"]); ev.push([16*e+.08,"crash"]);
+    ev.forEach(([t,k])=>setTimeout(()=>hit(k),t*1000));
+    if(!a) return (16*e+.8)*1000; const t0=a.currentTime+.03, sr=a.sampleRate, nb=a.createBuffer(1,sr*2,sr), nd=nb.getChannelData(0); for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;
+    const noise=(at,type,f,q,g0,dec)=>{ const n=a.createBufferSource(); n.buffer=nb; const fl=a.createBiquadFilter(); fl.type=type; fl.frequency.value=f; fl.Q.value=q; const g=a.createGain(); g.gain.setValueAtTime(g0,at); g.gain.exponentialRampToValueAtTime(.001,at+dec); n.connect(fl).connect(g).connect(a.destination); n.start(at,Math.random()); n.stop(at+dec+.05); };
+    const tone=(at,f0,f1,g0,dec)=>{ const o=a.createOscillator(), g=a.createGain(); o.frequency.setValueAtTime(f0,at); o.frequency.exponentialRampToValueAtTime(f1,at+dec); g.gain.setValueAtTime(g0,at); g.gain.exponentialRampToValueAtTime(.001,at+dec); o.connect(g).connect(a.destination); o.start(at); o.stop(at+dec+.05); };
+    let tn=0; ev.forEach(([t,k])=>{ const at=t0+t;
+      if(k!=="tom"&&k!=="up"&&k!=="crash") noise(at,"highpass",7500,.7,.09,.05);
+      if(k==="kick"){ tone(at,150,45,.7,.32); }
+      if(k==="snare"){ noise(at,"bandpass",2200,.7,.5,.18); tone(at,210,160,.25,.09); }
+      if(k==="tom"){ const f=[220,180,140,105][tn++%4]; tone(at,f,f*.6,.5,.28); }
+      if(k==="crash"){ tone(at,150,45,.7,.35); noise(at,"highpass",4500,.5,.32,1.6); } });
+    return (16*e+.8)*1000; }
   function sizzle(dur){ const a=ac(); if(!a) return; const t=a.currentTime, b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate), c=b.getChannelData(0);
     for(let i=0;i<c.length;i++) c[i]=(Math.random()*2-1)*(1-i/c.length);
     const n=a.createBufferSource(); n.buffer=b; const f=a.createBiquadFilter(); f.type="highpass"; f.frequency.value=3000; const g=a.createGain(); g.gain.value=.07; n.connect(f).connect(g).connect(a.destination); n.start(t); }
@@ -1789,12 +1805,31 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       Object.assign(rf.style,{left:L+"px",top:f+"px",width:w+"px",height:h+"px"});
       const sw=Math.min(w,hFor(f)*.42); Object.assign(sh.style,{left:x-sw*.9+"px",top:f-11+"px",width:sw*1.8+"px",height:22+"px"}); }
     const vis=v=>[el,rf,sh].forEach(e=>e.style.visibility=v?"visible":"hidden");
+    // optional: a seat at the drum kit (frames are the kit + drummer, drawn over the plate's kit)
+    const S=cfg.seat; let kitEl=null, kimg=[];
+    if(S){ kitEl=document.createElement("div"); kitEl.className="bm-kit"; kitEl.setAttribute("role","button"); kitEl.setAttribute("aria-label",cfg.name+" at the kit (tap to hear him play)");
+      Object.assign(kitEl.style,{left:S.x+"px",top:S.y+"px",width:S.w+"px",height:S.h+"px",zIndex:S.z});
+      kimg=S.frames.map(f=>{ const i=document.createElement("img"); i.alt=""; i.src=`img/band/${S.pre}${f}.webp?v=1`; kitEl.appendChild(i); return i; });
+      play.insertBefore(kitEl,cv); }
+    const frame=f=>kimg.forEach((im,i)=>im.classList.toggle("cur",S.frames[i]===f));
+    const has=f=>S.frames.includes(f);
+    async function sit(){ m.seated=true; m.spot=-1; vis(false); frame(S.idle); kitEl.style.visibility="visible"; kitEl.classList.add("on");
+      for(let i=0;i<4;i++){ kitEl.style.opacity=.35; await wait(50+Math.random()*50); kitEl.style.opacity=1; await wait(40+Math.random()*70); } }
+    async function stand(){ for(let i=0;i<3;i++){ kitEl.style.opacity=.35; await wait(50); kitEl.style.opacity=1; await wait(50); }
+      kitEl.style.visibility="hidden"; kitEl.classList.remove("on"); m.seated=false; }
+    async function playKit(e){ e&&e.stopPropagation(); if(m.busy) return; m.busy=true; clearTimeout(wT); let alt=0;
+      const dur=drumGroove(k=>{ let f=S.idle;
+        if(k==="up") f=has(3)?3:2; else if(k==="crash"||k==="snare") f=2; else if(k==="tom") f=has(4)?4:2; else if(k==="kick") f=(alt++%2&&has(4))?4:2; else f=has(4)&&alt%2?4:2;
+        frame(f); kitEl.classList.remove("hit"); void kitEl.offsetWidth; kitEl.classList.add("hit"); });
+      await wait(dur); frame(S.idle); m.busy=false; schedule(); }
+    if(S) kitEl.addEventListener("click",playKit);
     const neon=on=>{ inn.style.opacity=on?1:0; ir.style.opacity=on?0:1; };
     async function flicker(n){ for(let i=0;i<n;i++){ neon(1); await wait(40+Math.random()*60); neon(0); await wait(30+Math.random()*80); } }
-    async function appear(){ m.spot=freeSpot(m);
+    async function appear(){ if(S&&!m.wasSeated&&Math.random()<S.p){ m.wasSeated=true; return sit(); } m.wasSeated=false; m.spot=freeSpot(m);
       let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===m.pose&&POSES.length>1); m.pose=np;
       setPose(m.pose); place(); await wait(80); neon(1); vis(true); await wait(90); await flicker(5); }
     async function teleport(){ if(m.busy||document.hidden) return; m.busy=true;
+      if(m.seated){ await stand(); await wait(500+Math.random()*700); await appear(); m.busy=false; return; }
       await flicker(4); neon(1); await wait(120); vis(false); neon(0); const old=m.spot; m.spot=-1;
       await wait(500+Math.random()*700); m.spot=old; await appear(); m.busy=false; }
     function schedule(first){ clearTimeout(wT); if(still) return; wT=setTimeout(async()=>{ await teleport(); schedule(); },first||11000); }
@@ -1814,6 +1849,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     el.addEventListener("click",zap);
     [...POSES,ZAP,FRIED].forEach(p=>["real","neon"].forEach(t=>{ const i=new Image(); i.src=p[t]; }));
     MEMBERS.push(m);
+    if(S&&S.start){ m.wasSeated=true; m.pose=POSES[0]; setPose(m.pose); kimg[0].onload=()=>{ sit(); }; schedule(16000+(cfg.offset||0)); return m; }
     m.spot=freeSpot(m); m.pose=POSES[Math.floor(Math.random()*POSES.length)];
     ir.onload=()=>{ ir.onload=null; vis(true); }; setPose(m.pose); place(); schedule(11000+(cfg.offset||0));
     return m;
@@ -1825,6 +1861,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     ar:{1:0.6404,2:0.6635,3:0.5712,4:0.5865,5:0.5096,6:0.5,7:0.5308,8:0.4615,9:0.6538,10:0.5173},f:{2:.9,3:.97,9:1.36}});
   // Jacob: drummer, shots v2/v3 from his master sheet (face-locked)
   Member({name:"Jacob",pre:"jb",sound:"drums",anim:"zz",flash:"#ff6ae6",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:2700,scale:.98,
+    seat:{pre:"jbk",frames:[1,2],idle:1,x:800,y:377,w:411,h:271,z:74,p:.5,start:true},
     ar:{1:0.4962,2:0.3423,3:0.2865,4:0.3519,5:0.5019,6:0.3769,7:0.4058,8:0.4923,9:0.6135,10:0.3},f:{1:1.12,7:1.14,8:.7,9:1.08,10:1.05}});
 })();
 </script>
