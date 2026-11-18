@@ -1759,6 +1759,14 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     [82.4,123.5,164.8].forEach(f=>{ const o=a.createOscillator(); o.type="sawtooth"; o.frequency.setValueAtTime(f,t); o.frequency.exponentialRampToValueAtTime(f*.55,t+dur); o.connect(d); o.start(t); o.stop(t+dur); });
     for(let k=0;k<dur*20;k++) g.gain.setValueAtTime(Math.random()<.75?.12+Math.random()*.08:.02,t+k/20); g.gain.setValueAtTime(0,t+dur);
     const q=a.createOscillator(), qg=a.createGain(); q.type="square"; q.frequency.setValueAtTime(900,t); q.frequency.exponentialRampToValueAtTime(2600,t+dur); qg.gain.setValueAtTime(0,t); qg.gain.linearRampToValueAtTime(.05,t+.3); qg.gain.linearRampToValueAtTime(0,t+dur); q.connect(qg).connect(a.destination); q.start(t); q.stop(t+dur); }
+  // Jacob: stuttering snare/tom rolls + cymbal crash
+  function drumZap(dur){ const a=ac(); if(!a) return; const t=a.currentTime, sr=a.sampleRate;
+    const nb=a.createBuffer(1,sr*2,sr), nd=nb.getChannelData(0); for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;
+    for(let tt=0,k=0;tt<dur;k++,tt+=.06+Math.random()*.07){ const tom=Math.random()<.35, at=t+tt;
+      if(tom){ const o=a.createOscillator(), g=a.createGain(); o.frequency.setValueAtTime([196,147,110][k%3],at); o.frequency.exponentialRampToValueAtTime(70,at+.25); g.gain.setValueAtTime(.45,at); g.gain.exponentialRampToValueAtTime(.001,at+.25); o.connect(g).connect(a.destination); o.start(at); o.stop(at+.3); }
+      else { const n=a.createBufferSource(); n.buffer=nb; const bp=a.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=1800+Math.random()*900; bp.Q.value=.8; const g=a.createGain(); g.gain.setValueAtTime(.38,at); g.gain.exponentialRampToValueAtTime(.001,at+.14); n.connect(bp).connect(g).connect(a.destination); n.start(at,Math.random()); n.stop(at+.16); } }
+    const c=a.createBufferSource(); c.buffer=nb; const hp=a.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=5000; const cg=a.createGain(); cg.gain.setValueAtTime(.18,t+dur*.85); cg.gain.exponentialRampToValueAtTime(.001,t+dur*.85+1.4);
+    c.connect(hp).connect(cg).connect(a.destination); c.start(t+dur*.85); }
   function sizzle(dur){ const a=ac(); if(!a) return; const t=a.currentTime, b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate), c=b.getChannelData(0);
     for(let i=0;i<c.length;i++) c[i]=(Math.random()*2-1)*(1-i/c.length);
     const n=a.createBufferSource(); n.buffer=b; const f=a.createBiquadFilter(); f.type="highpass"; f.frequency.value=3000; const g=a.createGain(); g.gain.value=.07; n.connect(f).connect(g).connect(a.destination); n.start(t); }
@@ -1795,7 +1803,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       neon(1); rf.style.opacity=.15; await wait(500);
       for(let i=0;i<2;i++){ neon(0); await wait(40); neon(1); await wait(40); } neon(0); rf.style.opacity=""; } })();
     function puff(n){ const R=m.rect(); for(let i=0;i<n;i++) smoke.push({x:R.x+R.w*(.3+Math.random()*.4),y:R.y+R.h*(.02+Math.random()*.25),vx:(Math.random()-.5)*.6,vy:-(0.8+Math.random()*1.2),r:5+Math.random()*6,a:.45,t:0,life:90+Math.random()*60}); kick(); }
-    async function zap(e){ e&&e.stopPropagation(); if(m.busy) return; m.busy=true; clearTimeout(wT); (cfg.sound==="chord"?guitarZap:bassZap)(1.5); m.zapping=true; kick(); el.classList.add(cfg.anim||"zz");
+    async function zap(e){ e&&e.stopPropagation(); if(m.busy) return; m.busy=true; clearTimeout(wT); (cfg.sound==="chord"?guitarZap:cfg.sound==="drums"?drumZap:bassZap)(1.5); m.zapping=true; kick(); el.classList.add(cfg.anim||"zz");
       setPose(ZAP); place(ZAP); const end=performance.now()+1500; let on=false;
       while(performance.now()<end){ on=!on; neon(on); await wait(55); }
       m.zapping=false; el.classList.remove(cfg.anim||"zz"); neon(0);
@@ -1815,6 +1823,9 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   // Jordan: shots v3, made from his character master sheet
   Member({name:"Jordan",pre:"jj",sound:"chord",anim:"zj",sparky:true,flash:"#37e0ff",bolts:["#7ff3ff","#fff6a0","#22c8ff"],poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:5500,scale:.97,
     ar:{1:0.6404,2:0.6635,3:0.5712,4:0.5865,5:0.5096,6:0.5,7:0.5308,8:0.4615,9:0.6538,10:0.5173},f:{2:.9,3:.97,9:1.36}});
+  // Jacob: drummer, shots v2/v3 from his master sheet (face-locked)
+  Member({name:"Jacob",pre:"jb",sound:"drums",anim:"zz",flash:"#ff6ae6",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:2700,scale:.98,
+    ar:{1:0.4962,2:0.3423,3:0.2865,4:0.3519,5:0.5019,6:0.3769,7:0.4058,8:0.4923,9:0.6135,10:0.3},f:{1:1.12,7:1.14,8:.7,9:1.08,10:1.05}});
 })();
 </script>
 
