@@ -496,6 +496,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 .gr-ask-h{font:700 20px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#fff;text-shadow:0 0 10px #000,0 0 4px #000}
 #gr-partner{position:absolute;z-index:5;display:none;pointer-events:none;transform-origin:50% 100%}
 #gr-wrap #gr-partner img{display:block}
+#gr-wrap img.gr-girl{display:block;pointer-events:none;transform-origin:50% 100%;filter:brightness(0) drop-shadow(0 0 2px #ff46c8) drop-shadow(0 0 7px #ff46c8) drop-shadow(0 0 16px rgba(199,125,255,.7));transition:opacity .4s}
 #gr-pshadow{position:absolute;display:none;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0))}
 #gr-partner img{position:absolute;left:0;top:0;width:100%;height:100%}
 #gr-partner .n{opacity:0}
@@ -513,7 +514,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     <img class="lg-bg lg-lay" id="pl-on" src="img/smile-lounge-on.webp?v=b1" alt="" width="1672" height="941">
     <canvas id="lg-fx" width="1672" height="941" aria-hidden="true"></canvas>
     <div id="gr-wrap" aria-hidden="true"><img id="gr-pose" alt=""><div id="gr-shadow"></div><img id="gr-dance" alt="Grace dancing"><div id="gr-pshadow"></div><div id="gr-partner"><img class="r" alt=""><img class="n" alt=""></div></div>
-    <div class="gr-ask" id="gr-ask"><span class="gr-ask-h">Dance with</span><a class="pill" style="--c:var(--pink)" href="#" data-partner="pat">Pat</a><a class="pill" style="--c:var(--cyan)" href="#" data-partner="jordan">Jordan</a><a class="pill" style="--c:#ffaa46" href="#" data-partner="jacob">Jacob</a><button class="x" id="gr-ask-x" aria-label="Send her back to the floor">✕</button></div>
+    <div class="gr-ask" id="gr-ask"><span class="gr-ask-h">Dance with</span><a class="pill" style="--c:var(--pink)" href="#" data-partner="pat">Pat</a><a class="pill" style="--c:var(--cyan)" href="#" data-partner="jordan">Jordan</a><a class="pill" style="--c:#ffaa46" href="#" data-partner="jacob">Jacob</a><a class="pill" style="--c:#c77dff" href="#" id="gr-girls">The girls</a><button class="x" id="gr-ask-x" aria-label="Send her back to the floor">✕</button></div>
 
     <svg id="lg-svg" viewBox="0 0 1672 941" aria-hidden="true">
       <defs>
@@ -1260,6 +1261,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   let FX=1190, FY=862, DH=85; // feet on the floor, height in lounge px (she grows when tapped)
   const HF=y=>1.436*(y-470); // full-size height for feet at plate y on the lounge floor
   const SMALL={x:1190,y:862,h:85}, BIG={x:1180,y:830,h:HF(830)};
+  // keep anyone dancing on the tiles: the floor's left edge runs (675,766)→(955,969)
+  const onFloor=(x,y)=>{ y=Math.max(750,Math.min(915,y)); const xl=675+1.379*(y-766)+70; return [Math.max(xl,Math.min(1570,x)),y]; };
   // spots on the open part of the dance floor (tile centres), for wandering
   let FS=null; function floorSpots(){ if(FS) return FS; const L=window.MSFloorLT||[]; FS=L.filter(q=>q[5]<=4).map(q=>[(q[0][0]+q[1][0]+q[2][0]+q[3][0])/4,(q[0][1]+q[1][1]+q[2][1]+q[3][1])/4]).filter(c=>c[0]>820&&c[0]<1540&&c[1]>745&&c[1]<905);
     if(!FS.length) FS=[[1000,820],[1180,830],[1300,790],[1120,880]]; return FS; }
@@ -1320,7 +1323,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function placeAsk(){ let l=FX-(ask.offsetWidth||560)/2; const V=window.MSLgView&&window.MSLgView(); ask.style.flexWrap="nowrap";
     if(V){ const w=ask.offsetWidth||560; l=Math.max(V[0]+12,Math.min(V[1]-w-12,l)); if(w>V[1]-V[0]-24){ ask.style.flexWrap="wrap"; ask.style.width=(V[1]-V[0]-24)+"px"; l=V[0]+12; } else ask.style.width=""; }
     Object.assign(ask.style,{left:l+"px",top:(FY-DH-80)+"px"}); }
-  function grow(on,quick){ if(on===big&&!quick) return; big=on; wanderId++; document.body.classList.toggle("gr-big",on); if(on&&window.MSLgPan) window.MSLgPan(BIG.x); const id=++growId, A={x:FX,y:FY,h:DH}, B=on?BIG:SMALL, t0=performance.now(), ms=(still||quick)?0:750;
+  function grow(on,quick){ if(on===big&&!quick) return; big=on; wanderId++; if(!on){ if(typeof duet!=="undefined"&&duet) duetEnd(); if(typeof girls!=="undefined"&&girls) girlsEnd(); } document.body.classList.toggle("gr-big",on); if(on&&window.MSLgPan) window.MSLgPan(BIG.x); const id=++growId, A={x:FX,y:FY,h:DH}, B=on?BIG:SMALL, t0=performance.now(), ms=(still||quick)?0:750;
     dance.classList.toggle("big",on); ask.classList.remove("on");
     if(on){ try{ const a=window.MSAC&&window.MSAC(); if(a){ const t=a.currentTime,o=a.createOscillator(),g=a.createGain(); o.type="triangle"; o.frequency.setValueAtTime(330,t); o.frequency.exponentialRampToValueAtTime(990,t+.35); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.15,t+.05); g.gain.exponentialRampToValueAtTime(.0001,t+.45); o.connect(g).connect(a.destination); o.start(t); o.stop(t+.5); } }catch(e){} }
     (function f(now){ if(id!==growId) return; const u=ms?Math.min(1,(now-t0)/ms):1, e=u<1?1-Math.pow(1-u,3):1, k=on?1+Math.sin(Math.PI*u)*.04:1;
@@ -1332,15 +1335,17 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   let wanderId=0;
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   function shadowAt(el,x,y,h){ Object.assign(el.style,{left:(x-h*.2)+"px",top:(y-h*.035)+"px",width:(h*.4)+"px",height:(h*.07)+"px",zIndex:String(Math.round(y)-1)}); }
-  function moveTo(tx,ty,ms){ const id=wanderId, ax=FX, ay=FY, pax=duet?duet.x:0, pay=duet?duet.y:0, t0=performance.now();
-    let ptx=pax,pty=pay; if(duet){ const side=tx>1180?-1:1, off=HF(ty)*.78; ptx=tx+side*off; pty=Math.max(750,Math.min(915,ty+(Math.random()*40-20))); }
+  function moveTo(tx,ty,ms){ const id=wanderId, ax=FX, ay=FY, t0=performance.now();
+    let pd=null, pax,pay,ptx,pty,pe0=0; // partner leg of the move, set up the first frame a partner is on the floor (he may arrive mid-move)
+    const planP=()=>{ pd=duet; pax=duet.x; pay=duet.y; const off=HF(ty)*.78; let side=tx>1180?-1:1; let c=onFloor(tx+side*off,ty+(Math.random()*40-20)); if(Math.abs(c[0]-tx)<off*.6){ side=-side; c=onFloor(tx+side*off,c[1]); } ptx=c[0]; pty=c[1]; };
     return new Promise(res=>{ (function f(now){ if(id!==wanderId||!big){ res(); return; } const u=Math.min(1,(now-t0)/ms), e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
       FX=ax+(tx-ax)*e; FY=ay+(ty-ay)*e; DH=HF(FY)*(1+Math.abs(Math.sin(u*Math.PI*3))*.015); setFrame(fi<0?0:fi,true); dance.style.zIndex=String(Math.round(FY)); shadowAt(shadow,FX,FY,DH);
-      if(duet){ duet.x=pax+(ptx-pax)*e; duet.y=pay+(pty-pay)*e; placePartner(); }
+      if(duet){ if(pd!==duet){ planP(); pe0=e; } const q=pe0>=1?1:(e-pe0)/(1-pe0); duet.x=pax+(ptx-pax)*q; duet.y=pay+(pty-pay)*q; placePartner(); }
       if(ask.classList.contains("on")) placeAsk();
       if(u<1) requestAnimationFrame(f); else res(); })(t0); }); }
   async function wander(){ const id=wanderId; while(big&&id===wanderId){ await sleep(2200+Math.random()*1800); if(!big||id!==wanderId) break;
-      const S=floorSpots(); let t; for(let k=0;k<8;k++){ t=S[Math.floor(Math.random()*S.length)]; const d=Math.hypot(t[0]-FX,t[1]-FY); if(d>90&&d<340) break; }
+      const S=floorSpots(); let t; for(let k=0;k<14;k++){ t=S[Math.floor(Math.random()*S.length)]; const d=Math.hypot(t[0]-FX,t[1]-FY);
+        const clear=!girls||girls.list.every(g=>Math.hypot(g.x-t[0],g.y-t[1])>HF(t[1])*.5&&g.y<t[1]-10); if(d>90&&d<340&&clear) break; }
       if(window.MSLgPan) window.MSLgPan(duet?(t[0]+duet.x)/2:t[0]);
       await moveTo(t[0],t[1],1500+Math.random()*700); } }
   // small Grace reacts to every tap: a line, a twirl or a hop, hearts
@@ -1350,7 +1355,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     document.querySelectorAll(".gr-say").forEach(s=>s.remove()); const b=document.createElement("div"); b.className="gr-say"; b.textContent=t; b.style.left=x+"px"; b.style.top=y+"px"; $("gr-wrap").appendChild(b); setTimeout(()=>b.remove(),1950); }
   function chirp(){ try{ const a=window.MSAC&&window.MSAC(); if(!a) return; const t=a.currentTime; [880,1175].forEach((f,i)=>{ const o=a.createOscillator(),g=a.createGain(); o.type="sine"; o.frequency.value=f; g.gain.setValueAtTime(.0001,t+i*.08); g.gain.exponentialRampToValueAtTime(.08,t+i*.08+.02); g.gain.exponentialRampToValueAtTime(.0001,t+i*.08+.16); o.connect(g).connect(a.destination); o.start(t+i*.08); o.stop(t+i*.08+.2); }); }catch(e){} }
   let tapAt=0;
-  dance.addEventListener("click",e=>{ e.stopPropagation(); if(!floorOn()||game) return; if(big){ if(duet) return; grow(false); return; }
+  dance.addEventListener("click",e=>{ e.stopPropagation(); if(!floorOn()||game) return; if(big){ if(duet||girls) return; grow(false); return; }
     const now=performance.now(), quick=now-tapAt<2600; tapAt=now; chirp();
     dance.classList.remove("twirl"); void dance.offsetWidth; dance.classList.add("twirl");
     say(FX,FY-DH-12,(!won&&!quick)?["Light the floor with me? Tap again!","Play with me? Tap again!"]:won?["Again? Tap me twice!",...LINES_ON]:LINES_ON); for(let i=0;i<3;i++) setTimeout(()=>heart(FX+(Math.random()*40-20),FY-DH),i*110);
@@ -1414,7 +1419,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function endGame(kind){ const g=game; game=null; window.MSFloorGame=null; document.body.classList.remove("gg-on"); hud.classList.remove("on"); catcher.classList.remove("on");
     if(kind==="win"){ won=true; [523,659,784,1046].forEach((f,i)=>setTimeout(()=>blip(f,.25,.13),i*110)); setTimeout(()=>gameCard("win",g.hits),300); }
     else gameCard(kind,g?g.hits:0); }
-  $("gr-ask-x").addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); if(duet) duetEnd(); grow(false); });
+  $("gr-ask-x").addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); if(duet) duetEnd(); if(girls) girlsEnd(); grow(false); });
   // dance with the band, right here on the lounge floor: the one you pick flickers in beside her and dances on the beat
   const PART={pat:{pre:"pd",v:"?v=1",n:4},jordan:{pre:"jj",v:"?v=1",n:8},jacob:{pre:"jb",v:"?v=4",n:8}}, pEl=$("gr-partner"), pR=pEl.querySelector(".r"), pN=pEl.querySelector(".n");
   let duet=null;
@@ -1425,8 +1430,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     return new Promise(res=>{ const im=new Image(); im.onload=()=>{ if(duet){ const W=im.naturalWidth,H=im.naturalHeight; duet.ar=W/H; pR.src=r; pN.src=n;
       Object.assign(pN.style,{left:(-20/W*100)+"%",top:(-20/H*100)+"%",width:(100+40/W*100)+"%",height:(100+40/H*100)+"%"}); placePartner(); } res(); }; im.onerror=res; im.src=r; }); }
   function heart(x,y){ const h=document.createElement("div"); h.className="gr-heart"; h.textContent="♥"; h.style.left=x+"px"; h.style.top=y+"px"; h.style.setProperty("--dx",(Math.random()*120-60)+"px"); $("gr-wrap").appendChild(h); setTimeout(()=>h.remove(),1150); }
-  async function duetStart(who){ if(duet) return; ask.classList.remove("on");
-    const side=FX>1180?-1:1, x=FX+side*HF(FY)*.78; duet={who,x,y:Math.max(750,Math.min(915,FY+10)),id:Math.random()};
+  async function duetStart(who){ if(duet||girls||!big||!floorOn()) return; ask.classList.remove("on");
+    let side=FX>1180?-1:1, c=onFloor(FX+side*HF(FY)*.78,FY+10); if(Math.abs(c[0]-FX)<HF(FY)*.45){ side=-side; c=onFloor(FX+side*HF(FY)*.78,FY+10); } const x=c[0]; duet={who,x,y:c[1],id:Math.random()};
     if(window.MSLgPan) window.MSLgPan((x+FX)/2);
     const id=duet.id, NK=PART[who].n; for(let k=1;k<=NK;k++){ const i=new Image(); i.src=`img/band/${PART[who].pre}${k}-real.webp${PART[who].v}`; }
     await setPartner(who,1+Math.floor(Math.random()*NK)); if(!duet||duet.id!==id) return;
@@ -1445,11 +1450,42 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     for(let i=0;i<3;i++){ pEl.classList.add("pop"); await new Promise(r=>setTimeout(r,60)); pEl.classList.remove("pop"); await new Promise(r=>setTimeout(r,60)); }
     pEl.style.display="none"; pSh.style.display="none"; pEl.style.transform=""; if(big){ placeAsk(); ask.classList.add("on"); } }
   ask.querySelectorAll("[data-partner]").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); duetStart(a.dataset.partner); }));
+  // dance with the girls: the girls still stuck in jars show up as neon silhouettes and dance around her
+  // (swap in the real Megan / Gianna / Sophia frames once they exist)
+  let girls=null;
+  async function girlsStart(){ if(girls||duet||!big||!floorOn()) return; ask.classList.remove("on"); const id=Math.random(); girls={id,list:[]};
+    const S=floorSpots(), offs=[[-1,.0],[1,-.05],[0,-.18]];
+    offs.forEach((o,i)=>{ const img=document.createElement("img"); img.className="gr-girl"; img.alt=""; img.style.opacity="0"; $("gr-wrap").appendChild(img);
+      const H0=HF(FY), C=S.filter(t=>t[1]<FY-15&&Math.abs(t[0]-FX)>H0*.5&&Math.abs(t[0]-FX)<H0*1.6&&!girls.list.some(o=>Math.hypot(o.x-t[0],o.y-t[1])<H0*.5));
+      const t=C.length?C[Math.floor(Math.random()*C.length)]:onFloor(FX+[-1,1,1.7][i]*H0*.8,FY-30), x=t[0], y=t[1];
+      girls.list.push({img,x,y,ph:i*3+1,flip:i===1}); });
+    const place=g=>{ const i=g.fi||0, h=HF(g.y)*.93, w=W[i]*h/600; g.img.src=FR[i]; Object.assign(g.img.style,{position:"absolute",left:(g.x-AX[i]*w)+"px",top:(g.y-h)+"px",width:w+"px",height:h+"px",zIndex:String(Math.round(g.y)),transform:g.flip?"scaleX(-1)":""}); };
+    girls.list.forEach(g=>{ g.fi=g.ph%8; place(g); requestAnimationFrame(()=>g.img.style.opacity="1"); });
+    say(FX,FY-DH-12,["Girls night!","Come on, ladies!","Where’s everybody else?"]);
+    for(let i=0;i<6;i++) setTimeout(()=>heart(FX+(Math.random()*160-80),FY-DH*.8),i*120);
+    const end=performance.now()+14000; let n=0;
+    while(girls&&girls.id===id&&performance.now()<end){
+      const song=audio&&!audio.paused&&/dont-mind-it/.test(audio.src); let waitMs=470;
+      if(song){ const b=BEATS.find(t=>t>audio.currentTime+.05); if(b) waitMs=Math.max(120,(b-audio.currentTime)*1000/(audio.playbackRate||1)); }
+      await sleep(waitMs); if(!girls||girls.id!==id) break;
+      n++; girls.list.forEach((g,i)=>{ g.fi=(g.fi+1)%8;
+        if(n%6===i*2){ // a new spot behind or beside her, never covering her
+          const C=S.filter(t=>t[1]<FY-15&&Math.abs(t[0]-FX)>HF(FY)*.5&&Math.abs(t[0]-FX)<HF(FY)*1.5&&!girls.list.some(o=>o!==g&&Math.hypot((o.tx??o.x)-t[0],(o.ty??o.y)-t[1])<HF(FY)*.45));
+          if(C.length){ const t=C[Math.floor(Math.random()*C.length)]; g.tx=t[0]; g.ty=t[1]; } }
+        if(g.tx!=null){ g.x+=(g.tx-g.x)*.35; g.y+=(g.ty-g.y)*.35; } place(g); }); }
+    girlsEnd(id); }
+  function girlsEnd(id){ if(!girls||(id&&girls.id!==id)) return; const L=girls.list; girls=null;
+    L.forEach(g=>{ g.img.style.opacity="0"; setTimeout(()=>g.img.remove(),450); });
+    if(big){ setTimeout(()=>{ if(big&&!duet&&!girls){ placeAsk(); ask.classList.add("on"); say(FX,FY-DH-12,["More of us are still stuck in jars…","Find the others!"]); } },500); } }
+  window.__grWin=()=>{ won=true; };
+  window.__gs=()=>({big,FX,FY,DH,fi,duet:duet?{who:duet.who,x:duet.x,y:duet.y}:null,girls:girls?girls.list.length:0,game:!!game,floor:floorOn(),inL:L.classList.contains("on"),
+    dance:dance.style.display,partner:pEl.style.display,pshadow:$("gr-pshadow").style.display,girlImgs:document.querySelectorAll(".gr-girl").length,ask:ask.classList.contains("on"),shadow:shadow.style.display});
+  $("gr-girls").addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); girlsStart(); });
   function hint(){ if(freed||hint.done||!L.classList.contains("on")||!floorOn()) return; hint.done=1;
     setTimeout(()=>{ if(!L.classList.contains("on")) return; $("gr-h").textContent="Nobody’s dancing…"; toast.querySelector("img").src="img/grace/jar.webp"+V; $("gr-go").hidden=true;
       showToast("Someone’s stuck in a jar up on the roof. Find her and set her free."); },1800); }
   lever.addEventListener("click",()=>setTimeout(hint,0));
-  addEventListener("ms-view",()=>{ if(!L.classList.contains("on")&&duet){ duet=null; pEl.style.display="none"; pSh.style.display="none"; } if(L.classList.contains("on")&&!floorOn()) pickPose(); render(); hint(); });
+  addEventListener("ms-view",()=>{ if(!L.classList.contains("on")&&duet){ duet=null; pEl.style.display="none"; pSh.style.display="none"; } if(!L.classList.contains("on")&&girls) girlsEnd(); if(L.classList.contains("on")&&!floorOn()) pickPose(); render(); hint(); });
   // main roof: her shadow on the front skylight glass while the floor is lit
   const mcv=$("gr-roof"), mx=mcv.getContext("2d"), gm=new Image(); gm.src="img/roof-glass.webp?v=1";
   const tmp=document.createElement("canvas"); tmp.width=260; tmp.height=220; const tx=tmp.getContext("2d");
