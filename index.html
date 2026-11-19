@@ -447,7 +447,7 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
 #gr-dance.twirl{animation:grTw .5s ease-in-out}
 @keyframes grTw{25%{transform:scaleX(-1)}50%{transform:scaleX(1)}75%{transform:scaleX(-1)}}
 #gr-dance{transform-origin:50% 100%}
-.gr-say{position:absolute;z-index:7;pointer-events:none;transform:translate(-50%,-100%);padding:8px 14px;border-radius:16px;background:#fff;color:#14040b;font:700 22px/1.2 var(--mono);white-space:nowrap;box-shadow:0 0 14px rgba(255,70,200,.6);animation:graySay 1.9s ease-out forwards}
+.gr-say{position:absolute;z-index:2001;pointer-events:none;transform:translate(-50%,-100%);padding:8px 14px;border-radius:16px;background:#fff;color:#14040b;font:700 22px/1.2 var(--mono);white-space:nowrap;box-shadow:0 0 14px rgba(255,70,200,.6);animation:graySay 1.9s ease-out forwards}
 .gr-say::after{content:"";position:absolute;left:50%;bottom:-9px;margin-left:-8px;border:8px solid transparent;border-top-color:#fff;border-bottom:0}
 @keyframes graySay{0%{opacity:0;margin-top:8px}12%{opacity:1;margin-top:0}80%{opacity:1}100%{opacity:0}}
 .lg-hot.lever.nudge{animation:lvNudge .9s ease-in-out 2}
@@ -489,15 +489,18 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
 @keyframes ggPop{to{transform:translate(-50%,-160%);opacity:0}}
 .gg-catch{position:absolute;inset:0;z-index:10;display:none;pointer-events:auto;touch-action:none}
 .gg-catch.on{display:block}
+@media (max-width:760px) and (orientation:portrait){body.gr-big .lg-panel,body.gr-big .lg-tag{opacity:0!important;pointer-events:none!important}}
 body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe{opacity:0!important;pointer-events:none!important}
 .gr-ask.on{display:flex}
 .gr-ask .pill{font-size:22px;padding:12px 22px}
 .gr-ask-h{font:700 20px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#fff;text-shadow:0 0 10px #000,0 0 4px #000}
 #gr-partner{position:absolute;z-index:5;display:none;pointer-events:none;transform-origin:50% 100%}
+#gr-wrap #gr-partner img{display:block}
+#gr-pshadow{position:absolute;display:none;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0))}
 #gr-partner img{position:absolute;left:0;top:0;width:100%;height:100%}
 #gr-partner .n{opacity:0}
 #gr-partner.pop .n{opacity:1}
-.gr-heart{position:absolute;z-index:6;pointer-events:none;color:#ff46c8;font-size:34px;text-shadow:0 0 10px #ff46c8;animation:grHeart 1.1s ease-out forwards}
+.gr-heart{position:absolute;z-index:2000;pointer-events:none;color:#ff46c8;font-size:34px;text-shadow:0 0 10px #ff46c8;animation:grHeart 1.1s ease-out forwards}
 @keyframes grHeart{to{transform:translate(var(--dx),-160px) scale(1.4);opacity:0}}
 .gr-ask .x{all:unset;cursor:pointer;color:#fff;font:700 22px var(--mono);width:44px;height:44px;display:grid;place-items:center;border-radius:50%;background:rgba(5,6,10,.7);border:2px solid rgba(255,255,255,.4)}
 #gr-shadow{position:absolute;display:none;width:190px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0))}
@@ -509,9 +512,9 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     <img class="lg-bg lg-lay" id="pl-sky" src="img/smile-lounge.webp?v=c1" alt="The Smile Lounge: a record player, a crate of records, a red couch and a dance floor on the roof" width="1672" height="941">
     <img class="lg-bg lg-lay" id="pl-on" src="img/smile-lounge-on.webp?v=c1" alt="" width="1672" height="941">
     <canvas id="lg-fx" width="1672" height="941" aria-hidden="true"></canvas>
-    <div id="gr-wrap" aria-hidden="true"><img id="gr-pose" alt=""><div id="gr-shadow"></div><img id="gr-dance" alt="Grace dancing"></div>
+    <div id="gr-wrap" aria-hidden="true"><img id="gr-pose" alt=""><div id="gr-shadow"></div><img id="gr-dance" alt="Grace dancing"><div id="gr-pshadow"></div><div id="gr-partner"><img class="r" alt=""><img class="n" alt=""></div></div>
     <div class="gr-ask" id="gr-ask"><span class="gr-ask-h">Dance with</span><a class="pill" style="--c:var(--pink)" href="#" data-partner="pat">Pat</a><a class="pill" style="--c:var(--cyan)" href="#" data-partner="jordan">Jordan</a><a class="pill" style="--c:#ffaa46" href="#" data-partner="jacob">Jacob</a><button class="x" id="gr-ask-x" aria-label="Send her back to the floor">✕</button></div>
-    <div id="gr-partner" aria-hidden="true"><img class="r" alt=""><img class="n" alt=""></div>
+
     <svg id="lg-svg" viewBox="0 0 1672 941" aria-hidden="true">
       <defs>
         <radialGradient id="lg-vinyl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1a1a20"/><stop offset=".36" stop-color="#0c0c10"/><stop offset=".37" stop-color="#16161c"/><stop offset="1" stop-color="#08080b"/></radialGradient>
@@ -1255,7 +1258,11 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   const W=[178,228,194,228,236,234,208,253], AX=[.566,.57,.548,.546,.458,.354,.349,.503];
   const POSES={sit:[982.2,581.6,46.3,42],lean:[1120.4,549,15.6,40],lie:[873,584.2,64,31.6]}; // tiny: 1/6 scale like Fences
   let FX=1190, FY=862, DH=85; // feet on the floor, height in lounge px (she grows when tapped)
-  const SMALL={x:1190,y:862,h:85}, BIG={x:1180,y:936,h:600};
+  const HF=y=>1.436*(y-470); // full-size height for feet at plate y on the lounge floor
+  const SMALL={x:1190,y:862,h:85}, BIG={x:1180,y:830,h:HF(830)};
+  // spots on the open part of the dance floor (tile centres), for wandering
+  let FS=null; function floorSpots(){ if(FS) return FS; const L=window.MSFloorLT||[]; FS=L.filter(q=>q[5]<=4).map(q=>[(q[0][0]+q[1][0]+q[2][0]+q[3][0])/4,(q[0][1]+q[1][1]+q[2][1]+q[3][1])/4]).filter(c=>c[0]>820&&c[0]<1540&&c[1]>745&&c[1]<905);
+    if(!FS.length) FS=[[1000,820],[1180,830],[1300,790],[1120,880]]; return FS; }
   const BEATS=[0.49,0.95,1.42,1.88,2.35,2.81,3.27,3.69,4.11,4.5,4.99,5.46,5.92,6.36,6.8,7.24,7.71,8.15,8.61,9.06,9.5,9.94,10.4,10.84,11.28,11.75,12.21,12.65,13.1,13.54,13.98,14.42,14.88,15.33,15.77,16.23,16.67,17.11,17.55,18,18.46,18.9,19.34,19.78,20.22,20.69,21.13,21.59,22.04,22.5,22.94,23.38,23.85,24.29,24.75,25.19,25.66,26.1,26.54,26.98,27.42,27.89,28.31,28.77,29.21,29.65,30.09,30.53,31,31.46,31.9,32.35,32.79,33.23,33.67,34.13,34.57,35.04,35.48,35.92,36.36,36.83,37.27,37.71,38.15,38.61,39.06,39.5,39.94,40.38,40.82,41.26,41.73,42.19,42.63,43.1,43.54,43.98,44.42,44.88,45.33,45.79,46.23,46.65,47.09,47.51,47.97,48.3,48.72,49.13,49.64,50.18,50.64,51.11,51.55,51.99,52.45,52.9,53.36,53.8,54.27,54.71,55.17,55.61,56.05,56.49,56.96,57.4,57.86,58.31,58.77,59.21,59.68,60.09,60.53,61,61.46,61.9,62.35,62.81,63.23,63.67,64.11,64.57,65.04,65.48,65.94,66.36,66.83,67.27,67.73,68.17,68.61,69.06,69.5,69.96,70.4,70.87,71.31,71.75,72.19,72.63,73.1,73.54,73.98,74.42,74.88,75.33,75.79,76.23,76.67,77.11,77.55,78,78.46,78.9,79.37,79.81,80.25,80.69,81.13,81.57,82.04,82.48,82.92,83.38,83.85,84.29,84.73,85.17,85.61,86.08,86.54,86.98,87.42,87.86,88.31,88.75,89.21,89.65,90.12,90.56,91,91.46,91.9,92.35,92.79,93.25,93.69,94.13,94.57,95.02,95.48,95.92,96.36,96.8,97.27,97.71,98.17,98.62,99.06,99.5,99.94,100.4,100.84,101.31,101.75,102.19,102.66,103.1,103.54,104,104.44,104.91,105.33,105.77,106.21,106.63,107.07,107.53,107.97,108.39,108.83,109.3,109.76,110.23,110.67,111.13,111.6,112.04,112.5,112.94,113.38,113.82,114.27,114.71,115.17,115.61,116.08,116.52,116.98,117.42,117.86,118.31,118.77,119.21,119.65,120.09,120.53,121,121.44,121.88,122.32,122.76,123.21,123.67,124.13,124.6,125.04,125.48,125.92,126.36,126.8,127.25,127.71,128.15,128.59,129.03,129.47,129.94,130.38,130.84,131.31,131.75,132.21,132.68,133.14,133.58,134.03,134.47,134.88,135.33,135.77,136.21,136.67,137.11,137.56,138.02,138.48,138.92,139.37,139.81,140.25,140.71,141.13,141.6,142.04,142.48,142.92,143.38,143.82,144.27,144.71,145.17,145.61,146.08,146.52,146.98,147.42,147.86,148.33,148.77,149.23,149.68,150.09,150.53,150.98,151.42,151.86,152.32,152.79,153.25,153.69,154.13,154.58,155.04,155.48,155.92,156.39,156.83,157.27,157.73,158.15,158.59,159.03,159.5,159.94,160.4,160.84,161.29,161.73,162.19,162.63,163.1,163.54,164,164.44,164.88,165.33,165.79,166.21,166.65,167.11,167.58,168.04,168.48,168.93,169.37,169.81,170.27,170.71,171.15,171.57,172.01,172.45,172.94,173.38,173.85,174.29,174.73,175.17,175.64,176.08,176.52,176.98,177.42,177.86,178.31,178.75,179.19,179.65,180.09,180.54,181,181.46,181.91,182.35,182.81,183.25,183.69,184.13,184.58,185.04,185.48,185.92,186.39,186.83,187.27,187.73,188.17,188.64,189.08,189.52,189.96,190.4,190.84,191.29,191.73,192.17,192.63,193.07,193.54,193.98,194.44,194.91,195.37,195.81,196.26,196.7,197.14,197.6,198.04,198.48,198.9,199.32,199.76,200.23,200.67,201.08,201.5,201.94,202.36,202.78,203.2,203.62,204.03,204.45,204.89,205.36,205.82,206.29,206.68,207.1,207.49,207.91,208.35,208.77,209.19,209.63,210.12,210.54,210.93,211.39,211.86,212.32,212.79,213.23,213.67,214.13,214.58,215.04,215.48,215.92,216.39,216.83,217.27,217.71,218.17,218.62,219.06,219.52,219.96,220.4,220.87,221.31,221.75,222.19,222.63,223.07,223.54,223.98,224.44,224.89,225.33,225.77,226.23,226.7,227.14,227.58,228.02,228.46,228.9,229.37,229.81,230.25,230.71,231.15,231.6,232.04,232.45,232.94,233.41,233.85,234.31,234.75,235.19,235.64,236.08,236.52,236.96,237.42,237.87,238.31,238.75,239.21,239.65,240.09,240.54,240.98,241.44,241.88];
   let pre=null;
   function preload(){ if(pre) return; pre=FR.map(s=>{ const i=new Image(); i.src=s; return i; }); }
@@ -1310,16 +1317,32 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   // tap her on the floor: she steps up close, full size, and offers to go dance with the band
   let big=false, growId=0;
   const ask=$("gr-ask");
-  function placeAsk(){ let l=BIG.x-420; const V=window.MSLgView&&window.MSLgView(); ask.style.flexWrap="nowrap";
+  function placeAsk(){ let l=FX-(ask.offsetWidth||560)/2; const V=window.MSLgView&&window.MSLgView(); ask.style.flexWrap="nowrap";
     if(V){ const w=ask.offsetWidth||560; l=Math.max(V[0]+12,Math.min(V[1]-w-12,l)); if(w>V[1]-V[0]-24){ ask.style.flexWrap="wrap"; ask.style.width=(V[1]-V[0]-24)+"px"; l=V[0]+12; } else ask.style.width=""; }
-    Object.assign(ask.style,{left:l+"px",top:(BIG.y-BIG.h-80)+"px"}); }
-  function grow(on,quick){ if(on===big&&!quick) return; big=on; if(on&&window.MSLgPan) window.MSLgPan(BIG.x-60); const id=++growId, A={x:FX,y:FY,h:DH}, B=on?BIG:SMALL, t0=performance.now(), ms=(still||quick)?0:750;
+    Object.assign(ask.style,{left:l+"px",top:(FY-DH-80)+"px"}); }
+  function grow(on,quick){ if(on===big&&!quick) return; big=on; wanderId++; document.body.classList.toggle("gr-big",on); if(on&&window.MSLgPan) window.MSLgPan(BIG.x); const id=++growId, A={x:FX,y:FY,h:DH}, B=on?BIG:SMALL, t0=performance.now(), ms=(still||quick)?0:750;
     dance.classList.toggle("big",on); ask.classList.remove("on");
     if(on){ try{ const a=window.MSAC&&window.MSAC(); if(a){ const t=a.currentTime,o=a.createOscillator(),g=a.createGain(); o.type="triangle"; o.frequency.setValueAtTime(330,t); o.frequency.exponentialRampToValueAtTime(990,t+.35); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.15,t+.05); g.gain.exponentialRampToValueAtTime(.0001,t+.45); o.connect(g).connect(a.destination); o.start(t); o.stop(t+.5); } }catch(e){} }
     (function f(now){ if(id!==growId) return; const u=ms?Math.min(1,(now-t0)/ms):1, e=u<1?1-Math.pow(1-u,3):1, k=on?1+Math.sin(Math.PI*u)*.04:1;
       FX=A.x+(B.x-A.x)*e; FY=A.y+(B.y-A.y)*e; DH=(A.h+(B.h-A.h)*e)*k;
       setFrame(fi<0?0:fi,true); shadow.style.left=(FX-19*DH/85)+"px"; shadow.style.top=(FY-4*DH/85)+"px"; shadow.style.width=(38*DH/85)+"px"; shadow.style.height=(7*DH/85)+"px";
-      if(u<1) requestAnimationFrame(f); else if(on){ placeAsk(); ask.classList.add("on"); } })(t0); }
+      dance.style.zIndex=String(Math.round(FY));
+      if(u<1) requestAnimationFrame(f); else if(on){ placeAsk(); ask.classList.add("on"); wander(); } })(t0); }
+  // full size, she drifts around the floor between moves; a partner (if any) keeps beside her
+  let wanderId=0;
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  function shadowAt(el,x,y,h){ Object.assign(el.style,{left:(x-h*.2)+"px",top:(y-h*.035)+"px",width:(h*.4)+"px",height:(h*.07)+"px",zIndex:String(Math.round(y)-1)}); }
+  function moveTo(tx,ty,ms){ const id=wanderId, ax=FX, ay=FY, pax=duet?duet.x:0, pay=duet?duet.y:0, t0=performance.now();
+    let ptx=pax,pty=pay; if(duet){ const side=tx>1180?-1:1, off=HF(ty)*.78; ptx=tx+side*off; pty=Math.max(750,Math.min(915,ty+(Math.random()*40-20))); }
+    return new Promise(res=>{ (function f(now){ if(id!==wanderId||!big){ res(); return; } const u=Math.min(1,(now-t0)/ms), e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+      FX=ax+(tx-ax)*e; FY=ay+(ty-ay)*e; DH=HF(FY)*(1+Math.abs(Math.sin(u*Math.PI*3))*.015); setFrame(fi<0?0:fi,true); dance.style.zIndex=String(Math.round(FY)); shadowAt(shadow,FX,FY,DH);
+      if(duet){ duet.x=pax+(ptx-pax)*e; duet.y=pay+(pty-pay)*e; placePartner(); }
+      if(ask.classList.contains("on")) placeAsk();
+      if(u<1) requestAnimationFrame(f); else res(); })(t0); }); }
+  async function wander(){ const id=wanderId; while(big&&id===wanderId){ await sleep(2200+Math.random()*1800); if(!big||id!==wanderId) break;
+      const S=floorSpots(); let t; for(let k=0;k<8;k++){ t=S[Math.floor(Math.random()*S.length)]; const d=Math.hypot(t[0]-FX,t[1]-FY); if(d>90&&d<340) break; }
+      if(window.MSLgPan) window.MSLgPan(duet?(t[0]+duet.x)/2:t[0]);
+      await moveTo(t[0],t[1],1500+Math.random()*700); } }
   // small Grace reacts to every tap: a line, a twirl or a hop, hearts
   const LINES_ON=["Hey you!","This song though!","Dance with me?","Watch this!","Turn it up!","Don’t mind me…"], LINES_OFF=["It’s too quiet…","Turn the floor on!","Is the DJ asleep?","Pull the lever!","I could dance all night","Put a record on?"];
   let lastLine="";
@@ -1395,17 +1418,19 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   // dance with the band, right here on the lounge floor: the one you pick flickers in beside her and dances on the beat
   const PART={pat:{pre:"p",v:"?v=1"},jordan:{pre:"jj",v:"?v=1"},jacob:{pre:"jb",v:"?v=4"}}, pEl=$("gr-partner"), pR=pEl.querySelector(".r"), pN=pEl.querySelector(".n");
   let duet=null;
+  const pSh=$("gr-pshadow");
+  function placePartner(){ if(!duet) return; const h=HF(duet.y)*1.06, w=h*(duet.ar||.5);
+    Object.assign(pEl.style,{left:(duet.x-w/2)+"px",top:(duet.y-h)+"px",width:w+"px",height:h+"px",zIndex:String(Math.round(duet.y))}); shadowAt(pSh,duet.x,duet.y,h); }
   function setPartner(who,k){ const P=PART[who], r=`img/band/${P.pre}${k}-real.webp${P.v}`, n=`img/band/${P.pre}${k}-neon.webp${P.v}`;
-    return new Promise(res=>{ const im=new Image(); im.onload=()=>{ const h=640, w=h*im.naturalWidth/im.naturalHeight, x=duet.x;
-      pR.src=r; pN.src=n; Object.assign(pEl.style,{left:(x-w/2)+"px",top:(936-h)+"px",width:w+"px",height:h+"px"}); res(); }; im.onerror=res; im.src=r; }); }
+    return new Promise(res=>{ const im=new Image(); im.onload=()=>{ if(duet){ duet.ar=im.naturalWidth/im.naturalHeight; pR.src=r; pN.src=n; placePartner(); } res(); }; im.onerror=res; im.src=r; }); }
   function heart(x,y){ const h=document.createElement("div"); h.className="gr-heart"; h.textContent="♥"; h.style.left=x+"px"; h.style.top=y+"px"; h.style.setProperty("--dx",(Math.random()*120-60)+"px"); $("gr-wrap").appendChild(h); setTimeout(()=>h.remove(),1150); }
   async function duetStart(who){ if(duet) return; ask.classList.remove("on");
-    const port=innerWidth<=760&&innerHeight>innerWidth, x=BIG.x-(port?215:330); duet={who,x,id:Math.random()};
-    if(window.MSLgPan) window.MSLgPan((x+BIG.x)/2);
+    const side=FX>1180?-1:1, x=FX+side*HF(FY)*.78; duet={who,x,y:Math.max(750,Math.min(915,FY+10)),id:Math.random()};
+    if(window.MSLgPan) window.MSLgPan((x+FX)/2);
     const id=duet.id; [1,2,3,4,5,6,7,8].forEach(k=>{ const i=new Image(); i.src=`img/band/${PART[who].pre}${k}-real.webp${PART[who].v}`; });
     await setPartner(who,1+Math.floor(Math.random()*8)); if(!duet||duet.id!==id) return;
-    pEl.style.display="block"; for(let i=0;i<4;i++){ pEl.classList.add("pop"); await new Promise(r=>setTimeout(r,60)); pEl.classList.remove("pop"); await new Promise(r=>setTimeout(r,70)); }
-    for(let i=0;i<5;i++) setTimeout(()=>heart(x+(BIG.x-x)/2+(Math.random()*80-40),936-520),i*120);
+    pEl.style.display="block"; pSh.style.display="block"; for(let i=0;i<4;i++){ pEl.classList.add("pop"); await new Promise(r=>setTimeout(r,60)); pEl.classList.remove("pop"); await new Promise(r=>setTimeout(r,70)); }
+    for(let i=0;i<5;i++) setTimeout(()=>{ if(duet) heart((duet.x+FX)/2+(Math.random()*80-40),FY-DH*.85); },i*120);
     const end=performance.now()+12000; let n=0, lastK=0;
     while(duet&&duet.id===id&&performance.now()<end){
       const song=audio&&!audio.paused&&/dont-mind-it/.test(audio.src); let waitMs=470;
@@ -1413,17 +1438,17 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       await new Promise(r=>setTimeout(r,waitMs)); if(!duet||duet.id!==id) break;
       let k; do{ k=1+Math.floor(Math.random()*8); }while(k===lastK); lastK=k; await setPartner(who,k);
       pEl.classList.add("pop"); pEl.style.transform=`translateY(${n%2?-10:0}px)`; setTimeout(()=>pEl.classList.remove("pop"),90);
-      if(n%4===0) heart(x+(BIG.x-x)/2+(Math.random()*80-40),936-500); n++; }
+      if(n%4===0&&duet) heart((duet.x+FX)/2+(Math.random()*80-40),FY-DH*.85); n++; }
     duetEnd(id); }
   async function duetEnd(id){ if(!duet||(id&&duet.id!==id)) return; duet=null;
     for(let i=0;i<3;i++){ pEl.classList.add("pop"); await new Promise(r=>setTimeout(r,60)); pEl.classList.remove("pop"); await new Promise(r=>setTimeout(r,60)); }
-    pEl.style.display="none"; pEl.style.transform=""; if(big){ placeAsk(); ask.classList.add("on"); } }
+    pEl.style.display="none"; pSh.style.display="none"; pEl.style.transform=""; if(big){ placeAsk(); ask.classList.add("on"); } }
   ask.querySelectorAll("[data-partner]").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); duetStart(a.dataset.partner); }));
   function hint(){ if(freed||hint.done||!L.classList.contains("on")||!floorOn()) return; hint.done=1;
     setTimeout(()=>{ if(!L.classList.contains("on")) return; $("gr-h").textContent="Nobody’s dancing…"; toast.querySelector("img").src="img/grace/jar.webp"+V; $("gr-go").hidden=true;
       showToast("Someone’s stuck in a jar up on the roof. Find her and set her free."); },1800); }
   lever.addEventListener("click",()=>setTimeout(hint,0));
-  addEventListener("ms-view",()=>{ if(!L.classList.contains("on")&&duet){ duet=null; pEl.style.display="none"; } if(L.classList.contains("on")&&!floorOn()) pickPose(); render(); hint(); });
+  addEventListener("ms-view",()=>{ if(!L.classList.contains("on")&&duet){ duet=null; pEl.style.display="none"; pSh.style.display="none"; } if(L.classList.contains("on")&&!floorOn()) pickPose(); render(); hint(); });
   // main roof: her shadow on the front skylight glass while the floor is lit
   const mcv=$("gr-roof"), mx=mcv.getContext("2d"), gm=new Image(); gm.src="img/roof-glass.webp?v=1";
   const tmp=document.createElement("canvas"); tmp.width=260; tmp.height=220; const tx=tmp.getContext("2d");
