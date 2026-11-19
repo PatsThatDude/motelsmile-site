@@ -253,6 +253,11 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   if(C){ const os=C.prototype.createOscillator; C.prototype.createOscillator=function(){ L("osc made, ctx "+this.state); return os.call(this); }; }
 })();
 </script>
+<div id="stage-fill" aria-hidden="true" style="position:fixed;inset:-40px;z-index:-1;display:none;background:#0a0b12 50% 42%/cover no-repeat;filter:blur(24px) brightness(.5)"></div>
+<script>
+// desktop framing: fill the window, but if that would crop more than ~6% of the picture, show it whole with soft blurred edges instead
+window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H0); return cov/con<=1.06?cov:con; };
+</script>
 <main class="stage" id="stage">
   <header class="top"><div><img src="img/smile-logo-96.webp" alt="" width="30" height="30">Motel Smile</div><span>New York Rock<a class="bs-link" id="bs-link" href="#backstage">Backstage</a></span></header>
 
@@ -669,8 +674,8 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
     if(portrait()){ if(pan.parentNode!==ui) ui.insertBefore(pan,ui.firstChild); } else if(pan.parentNode!==cam) cam.appendChild(pan);
     if(portrait()){ // phones: full height, drag sideways across the lounge
       S=Math.max(w/W0,h/H0); lgPan=Math.max(0,Math.min(Math.max(0,W0-w/S),lgPan)); OX=-lgPan*S; OY=(h-H0*S)*0.6;
-    }else{ // cover; crop sky first
-      S=Math.max(w/W0,h/H0); OX=(w-W0*S)*0.4; OY=(h-H0*S)*0.75;
+    }else{ // fill the window; show it whole (blurred edges) if filling would crop too much
+      S=window.MSFit(w,h,W0,H0); const lb=W0*S<w-1||H0*S<h-1; OX=(w-W0*S)*(lb?.5:.4); OY=(h-H0*S)*(lb?.5:.75); L.querySelector(".lg-fill").style.opacity=lb?"1":"";
     }
     if(!anim) cam.style.transform=`translate(${OX}px,${OY}px) scale(${S})`;
   }
@@ -681,11 +686,8 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
   const HF=$("hero-f");
   const WC={x:913,y:470,w:234}, CC={x:610,y:501,w:520}; // console centre + width in the wide shot / the close-up
   let anim=null;
-  function heroBox(){
-    const w=stg.clientWidth,h=stg.clientHeight,s=Math.max(w/W0,h/H0);
-    const bp=(stg.style.backgroundPosition||"50% 42%").split(" ").map(v=>parseFloat(v)/100);
-    return {s,ox:(w-W0*s)*bp[0],oy:(h-H0*s)*(isNaN(bp[1])?0.42:bp[1])};
-  }
+  function heroBox(){ const b=window.MSRoofBox; if(b) return {s:b.s,ox:b.ox,oy:b.oy};
+    const w=stg.clientWidth,h=stg.clientHeight,s=Math.max(w/W0,h/H0); return {s,ox:(w-W0*s)*.5,oy:(h-H0*s)*.42}; }
   function wideBox(){ const w=innerWidth,h=innerHeight,s=Math.max(w/W0,h/H0); const fx=portrait()?.55:.5; return {s,ox:(w-W0*s)*fx,oy:(h-H0*s)*.6}; }
   const io=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2, out=t=>1-Math.pow(1-t,3);
   const T=(el,x,y,s)=>{el.style.transform=`translate(${x}px,${y}px) scale(${s})`;};
@@ -1062,7 +1064,7 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
   let S=1,OX=0,OY=0,pan=0,anim=null;
   const portrait=()=>innerWidth<=760&&innerHeight>innerWidth;
   function frame(){ const w=innerWidth,h=innerHeight; S=Math.max(w/W0,h/H0);
-    if(portrait()){ pan=Math.max(0,Math.min(Math.max(0,W0-w/S),pan)); OX=-pan*S; OY=(h-H0*S)*.55; } else { OX=(w-W0*S)*.35; OY=(h-H0*S)*.6; }
+    if(portrait()){ pan=Math.max(0,Math.min(Math.max(0,W0-w/S),pan)); OX=-pan*S; OY=(h-H0*S)*.55; } else { S=window.MSFit(w,h,W0,H0); const lb=W0*S<w-1||H0*S<h-1; OX=(w-W0*S)*(lb?.5:.35); OY=(h-H0*S)*(lb?.5:.6); }
     if(!anim) cam.style.transform=`translate(${OX}px,${OY}px) scale(${S})`; }
   addEventListener("resize",()=>{ if(A.classList.contains("on")) frame(); });
   let drag=null, moved=false;
@@ -1072,7 +1074,7 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
   A.addEventListener("click",e=>{ if(moved){ e.preventDefault(); e.stopPropagation(); moved=false; } },true);
   const cl=v=>Math.max(0,Math.min(1,v)), io=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2, soft=t=>t*t*(3-2*t);
   function run(ms,f,done){ const t0=performance.now(); function st(now){ const t=cl((now-t0)/ms); f(t); if(t<1) anim=requestAnimationFrame(st); else { anim=null; done&&done(); } } anim=requestAnimationFrame(st); }
-  function heroBox(){ const w=stg.clientWidth,h=stg.clientHeight,s=Math.max(w/W0,h/H0); const bp=(stg.style.backgroundPosition||"50% 42%").split(" ").map(v=>parseFloat(v)/100); return {s,ox:(w-W0*s)*bp[0],oy:(h-H0*s)*(isNaN(bp[1])?.42:bp[1])}; }
+  function heroBox(){ const b=window.MSRoofBox; if(b) return {s:b.s,ox:b.ox,oy:b.oy}; const w=stg.clientWidth,h=stg.clientHeight,s=Math.max(w/W0,h/H0); return {s,ox:(w-W0*s)*.5,oy:(h-H0*s)*.42}; }
   function heroAt(hb,k){ const sx=hb.ox+FOCUS.x*hb.s, sy=hb.oy+FOCUS.y*hb.s; hero.style.transform=`translate(${sx-(sx-hb.ox)*k}px,${sy-(sy-hb.oy)*k}px) scale(${hb.s*k})`; }
   function camAt(M,k){ const sx=innerWidth/2, sy=innerHeight/2; cam.style.transform=`translate(${sx-(sx-M.ox)*k}px,${sy-(sy-M.oy)*k}px) scale(${M.s*k})`; }
 
@@ -1504,11 +1506,13 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
   let px=0.5, py=0.42;
   function place(){
     const TL=tall(); stage.classList.toggle("tall",TL); IMG.w=TL?941:1672; IMG.h=TL?1672:941;
-    const W=stage.clientWidth,H=stage.clientHeight, s0=Math.max(W/IMG.w,H/IMG.h);
+    const W=stage.clientWidth,H=stage.clientHeight, s0=phone()?Math.max(W/IMG.w,H/IMG.h):window.MSFit(W,H,IMG.w,IMG.h);
     const ox0=(W-IMG.w*s0)*px, oy0=(H-IMG.h*s0)*py;
+    window.MSRoofBox={s:s0,ox:ox0,oy:oy0};
     // everything below is placed in main-shot coordinates
     const s=TL?s0*MP.s:s0, ox=TL?ox0+s0*MP.tx:ox0, oy=TL?oy0+s0*MP.ty:oy0;
-    stage.style.backgroundPosition=`${(px*100).toFixed(2)}% ${(py*100).toFixed(2)}%`;
+    stage.style.backgroundPosition=`${ox0.toFixed(1)}px ${oy0.toFixed(1)}px`; stage.style.backgroundSize=`${(IMG.w*s0).toFixed(1)}px ${(IMG.h*s0).toFixed(1)}px`;
+    const fill=$("stage-fill"); if(fill){ const lb=IMG.w*s0<W-1||IMG.h*s0<H-1; fill.style.display=lb?"block":"none"; if(lb) fill.style.backgroundImage=stage.style.backgroundImage; stage.style.backgroundColor=lb?"transparent":""; }
     const L=ox+FLY.x*s, T=oy+FLY.y*s;
     Object.assign(fly.style,{left:L+"px",top:T+"px",width:FLY.w*s+"px",height:FLY.h*s+"px"});
     fly.style.visibility=(L+FLY.w*s<0||L>W)?"hidden":"visible";
