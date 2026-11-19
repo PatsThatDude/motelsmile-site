@@ -673,6 +673,27 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   const FOCUS={x:1433,y:683};   // the dance floor peek on the main roof
   function heroAt(hb,k){ const sx=hb.ox+FOCUS.x*hb.s, sy=hb.oy+FOCUS.y*hb.s; hero.style.transform=`translate(${sx-(sx-hb.ox)*k}px,${sy-(sy-hb.oy)*k}px) scale(${hb.s*k})`; }
   function camAt(M,k){ const sx=innerWidth/2, sy=innerHeight/2; cam.style.transform=`translate(${sx-(sx-M.ox)*k}px,${sy-(sy-M.oy)*k}px) scale(${M.s*k})`; }
+
+  // travel: roof rushes toward the doorway (accelerating, blurred, speed lines), flash, room lands with a little settle
+  const outQ=t=>1-Math.pow(1-t,4);
+  function travelIn(t,hb,M){ const a=cl(t/.58), ea=a*a*a;
+    heroAt(hb,1+4.2*ea); hero.style.filter=`blur(${(6*ea).toFixed(2)}px) brightness(${(1+.6*ea).toFixed(2)}) saturate(${(1+.4*ea).toFixed(2)})`;
+    hero.style.opacity=String(1-cl((t-.46)/.16));
+    const c=cl((t-.44)/.56), ec=outQ(c), bump=Math.sin(Math.PI*cl((c-.55)/.45))*.018;
+    cam.style.opacity=String(cl(c/.18)); camAt(M,1.75-.75*ec+bump);
+    { const cx=innerWidth/2, cy=innerHeight/2; cam.style.transform=`translate(${cx}px,${cy}px) rotate(${(-2.2*(1-ec)).toFixed(3)}deg) translate(${-cx}px,${-cy}px) `+cam.style.transform; }
+    cam.style.filter=c<1?`blur(${(5*(1-ec)).toFixed(2)}px)`:"";
+    const fl=Math.max(0,1-Math.abs(t-.5)/.1);
+    window.MST.frame(Math.sin(Math.PI*cl((t-.05)/.75))*.9, fl*.55, t);
+  }
+  function travelOut(t,hb,M){ const a=cl(t/.5), ea=a*a*a;
+    camAt(M,1+.9*ea); cam.style.filter=`blur(${(5*ea).toFixed(2)}px) brightness(${(1+.4*ea).toFixed(2)})`; cam.style.opacity=String(1-cl((t-.35)/.2));
+    const c=cl((t-.35)/.65), ec=outQ(c); hero.style.opacity=String(cl(c/.2)); heroAt(hb,4-3*ec);
+    hero.style.filter=c<1?`blur(${(5*(1-ec)).toFixed(2)}px)`:"";
+    const fl=Math.max(0,1-Math.abs(t-.42)/.1);
+    window.MST.frame(Math.sin(Math.PI*cl(t/.7))*.8, fl*.45, t);
+  }
+  function travelClear(){ hero.style.filter=""; cam.style.filter=""; window.MST.off(); }
   function enter(){
     if(L.classList.contains("on")) return;
     closeCrate(); lgPan=0; frame(); lgPan=Math.max(0,520-innerWidth/S/2); frame();
@@ -682,19 +703,19 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     if(still){ hero.style.display="none"; cam.style.opacity="1"; frame(); return; }
     const hb=heroBox(), M1={s:S,ox:OX,oy:OY};
     hero.style.display="block"; hero.style.opacity="1"; heroAt(hb,1); cam.style.opacity="0"; $("lg-panel").style.opacity="0";
-    run(950,t=>{ const e=io(t); heroAt(hb,1+1.8*e); hero.style.opacity=String(1-cl((t-.45)/.5));
-      const c=cl((t-.4)/.6); cam.style.opacity=String(c); camAt(M1,1.12-.12*soft(c)); },
-      ()=>{ hero.style.display="none"; cam.style.opacity="1"; $("lg-panel").style.opacity=""; frame(); });
+    window.MST.aim(hb.ox+FOCUS.x*hb.s,hb.oy+FOCUS.y*hb.s,"rgba(255,90,210,.55)"); window.MST.whoosh(true,1300);
+    run(1350,t=>{ travelIn(t,hb,M1); },
+      ()=>{ travelClear(); hero.style.display="none"; cam.style.opacity="1"; $("lg-panel").style.opacity=""; frame(); });
   }
   function leave(){
     closeCrate();
     const end=()=>{ hero.style.display="none"; L.classList.remove("on","moving"); L.setAttribute("aria-hidden","true"); stg.removeAttribute("aria-hidden"); cam.style.opacity="1"; cam.style.transform=""; window.MSMuffle&&window.MSMuffle(true); window.dispatchEvent(new Event("ms-view")); frame(); };
     if(still){ end(); return; }
     const hb=heroBox(), M1={s:S,ox:OX,oy:OY};
-    hero.style.display="block"; hero.style.opacity="0"; heroAt(hb,2.8); $("lg-panel").style.opacity="0";
-    run(800,t=>{ const e=io(t); camAt(M1,1+.12*e); cam.style.opacity=String(1-cl(t/.6));
-      hero.style.opacity=String(cl((t-.2)/.5)); heroAt(hb,2.8-1.8*e); },
-      ()=>{ end(); $("lg-panel").style.opacity=""; });
+    hero.style.display="block"; hero.style.opacity="0"; heroAt(hb,4); $("lg-panel").style.opacity="0";
+    window.MST.aim(innerWidth/2,innerHeight/2,"rgba(120,230,255,.5)"); window.MST.whoosh(false,1100);
+    run(1100,t=>{ travelOut(t,hb,M1); },
+      ()=>{ travelClear(); end(); $("lg-panel").style.opacity=""; });
   }
   $("lg-back").addEventListener("click",e=>{e.preventDefault(); if(location.hash==="#lounge") history.back(); else leave();});
   addEventListener("popstate",()=>{ if(location.hash==="#lounge") enter(); else if(L.classList.contains("on")) leave(); });
@@ -969,6 +990,27 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   function heroBox(){ const w=stg.clientWidth,h=stg.clientHeight,s=Math.max(w/W0,h/H0); const bp=(stg.style.backgroundPosition||"50% 42%").split(" ").map(v=>parseFloat(v)/100); return {s,ox:(w-W0*s)*bp[0],oy:(h-H0*s)*(isNaN(bp[1])?.42:bp[1])}; }
   function heroAt(hb,k){ const sx=hb.ox+FOCUS.x*hb.s, sy=hb.oy+FOCUS.y*hb.s; hero.style.transform=`translate(${sx-(sx-hb.ox)*k}px,${sy-(sy-hb.oy)*k}px) scale(${hb.s*k})`; }
   function camAt(M,k){ const sx=innerWidth/2, sy=innerHeight/2; cam.style.transform=`translate(${sx-(sx-M.ox)*k}px,${sy-(sy-M.oy)*k}px) scale(${M.s*k})`; }
+
+  // travel: roof rushes toward the doorway (accelerating, blurred, speed lines), flash, room lands with a little settle
+  const outQ=t=>1-Math.pow(1-t,4);
+  function travelIn(t,hb,M){ const a=cl(t/.58), ea=a*a*a;
+    heroAt(hb,1+4.2*ea); hero.style.filter=`blur(${(6*ea).toFixed(2)}px) brightness(${(1+.6*ea).toFixed(2)}) saturate(${(1+.4*ea).toFixed(2)})`;
+    hero.style.opacity=String(1-cl((t-.46)/.16));
+    const c=cl((t-.44)/.56), ec=outQ(c), bump=Math.sin(Math.PI*cl((c-.55)/.45))*.018;
+    cam.style.opacity=String(cl(c/.18)); camAt(M,1.75-.75*ec+bump);
+    { const cx=innerWidth/2, cy=innerHeight/2; cam.style.transform=`translate(${cx}px,${cy}px) rotate(${(-2.2*(1-ec)).toFixed(3)}deg) translate(${-cx}px,${-cy}px) `+cam.style.transform; }
+    cam.style.filter=c<1?`blur(${(5*(1-ec)).toFixed(2)}px)`:"";
+    const fl=Math.max(0,1-Math.abs(t-.5)/.1);
+    window.MST.frame(Math.sin(Math.PI*cl((t-.05)/.75))*.9, fl*.55, t);
+  }
+  function travelOut(t,hb,M){ const a=cl(t/.5), ea=a*a*a;
+    camAt(M,1+.9*ea); cam.style.filter=`blur(${(5*ea).toFixed(2)}px) brightness(${(1+.4*ea).toFixed(2)})`; cam.style.opacity=String(1-cl((t-.35)/.2));
+    const c=cl((t-.35)/.65), ec=outQ(c); hero.style.opacity=String(cl(c/.2)); heroAt(hb,4-3*ec);
+    hero.style.filter=c<1?`blur(${(5*(1-ec)).toFixed(2)}px)`:"";
+    const fl=Math.max(0,1-Math.abs(t-.42)/.1);
+    window.MST.frame(Math.sin(Math.PI*cl(t/.7))*.8, fl*.45, t);
+  }
+  function travelClear(){ hero.style.filter=""; cam.style.filter=""; window.MST.off(); }
   function enter(){ if(A.classList.contains("on")) return;
     pan=0; frame(); pan=Math.max(0,420-innerWidth/S/2); frame();
     A.classList.add("on"); A.setAttribute("aria-hidden","false"); stg.setAttribute("aria-hidden","true");
@@ -976,13 +1018,15 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
     window.dispatchEvent(new Event("ms-view"));
     if(still){ cam.style.opacity="1"; return; }
     const hb=heroBox(), M1={s:S,ox:OX,oy:OY}; hero.style.display="block"; hero.style.opacity="1"; heroAt(hb,1); cam.style.opacity="0";
-    run(900,t=>{ const e=io(t); heroAt(hb,1+1.8*e); hero.style.opacity=String(1-cl((t-.45)/.5)); const c=cl((t-.4)/.6); cam.style.opacity=String(c); camAt(M1,1.12-.12*soft(c)); },
-      ()=>{ hero.style.display="none"; cam.style.opacity="1"; frame(); }); }
+    window.MST.aim(hb.ox+FOCUS.x*hb.s,hb.oy+FOCUS.y*hb.s,"rgba(90,240,255,.55)"); window.MST.whoosh(true,1300);
+    run(1350,t=>{ travelIn(t,hb,M1); },
+      ()=>{ travelClear(); hero.style.display="none"; cam.style.opacity="1"; frame(); }); }
   function leave(){
     const end=()=>{ hero.style.display="none"; A.classList.remove("on"); A.setAttribute("aria-hidden","true"); stg.removeAttribute("aria-hidden"); cam.style.opacity="1"; window.dispatchEvent(new Event("ms-view")); frame(); };
     if(still){ end(); return; }
-    const hb=heroBox(), M1={s:S,ox:OX,oy:OY}; hero.style.display="block"; hero.style.opacity="0"; heroAt(hb,2.8);
-    run(750,t=>{ const e=io(t); camAt(M1,1+.12*e); cam.style.opacity=String(1-cl(t/.6)); hero.style.opacity=String(cl((t-.2)/.5)); heroAt(hb,2.8-1.8*e); }, end); }
+    const hb=heroBox(), M1={s:S,ox:OX,oy:OY}; hero.style.display="block"; hero.style.opacity="0"; heroAt(hb,4);
+    window.MST.aim(innerWidth/2,innerHeight/2,"rgba(255,90,210,.5)"); window.MST.whoosh(false,1100);
+    run(1100,t=>{ travelOut(t,hb,M1); }, ()=>{ travelClear(); end(); }); }
   $("ac-back").addEventListener("click",e=>{ e.preventDefault(); if(location.hash==="#arcade") history.back(); else leave(); });
   addEventListener("popstate",()=>{ if(location.hash==="#arcade") enter(); else if(A.classList.contains("on")) leave(); });
   document.querySelectorAll("[data-arcade]").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); e.stopImmediatePropagation(); enter(); },true));
@@ -2061,6 +2105,35 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
 })();
 </script>
 
+
+<style>
+.ms-warp{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:0;
+  background:repeating-conic-gradient(from var(--a,0deg) at var(--x,50%) var(--y,50%),transparent 0deg 4deg,var(--wc,#fff) 4deg 4.7deg,transparent 4.7deg 11deg);
+  -webkit-mask:radial-gradient(circle at var(--x,50%) var(--y,50%),transparent 0 14%,#000 62%);mask:radial-gradient(circle at var(--x,50%) var(--y,50%),transparent 0 14%,#000 62%)}
+.ms-flash{position:fixed;inset:0;z-index:61;pointer-events:none;opacity:0;background:radial-gradient(circle at var(--x,50%) var(--y,50%),var(--wc,#fff),transparent 70%)}
+</style>
+<div class="ms-warp" id="ms-warp" aria-hidden="true"></div><div class="ms-flash" id="ms-flash" aria-hidden="true"></div>
+<script>
+/* shared "travel" effect for going to the lounge / arcade: speed lines, flash, whoosh */
+window.MST=(()=>{
+  const W=document.getElementById("ms-warp"), F=document.getElementById("ms-flash");
+  function aim(x,y,c){ [W,F].forEach(e=>{ e.style.setProperty("--x",x+"px"); e.style.setProperty("--y",y+"px"); e.style.setProperty("--wc",c); }); }
+  function frame(lines,flash,t){ W.style.opacity=String(lines); W.style.setProperty("--a",(t*40)+"deg"); W.style.transform=`scale(${1+t*.25})`; F.style.opacity=String(flash); }
+  function off(){ W.style.opacity="0"; F.style.opacity="0"; W.style.transform=""; }
+  function whoosh(up,ms){ const a=window.MSAC&&window.MSAC(); if(!a) return; try{
+    const d=(ms||1000)/1000, t=a.currentTime, n=Math.floor(a.sampleRate*d), b=a.createBuffer(1,n,a.sampleRate), ch=b.getChannelData(0);
+    for(let i=0;i<n;i++) ch[i]=Math.random()*2-1;
+    const s=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain(); s.buffer=b; f.type="bandpass"; f.Q.value=1.4;
+    f.frequency.setValueAtTime(up?260:2400,t); f.frequency.exponentialRampToValueAtTime(up?2600:240,t+d*.85);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.22,t+d*.55); g.gain.exponentialRampToValueAtTime(.001,t+d);
+    s.connect(f); f.connect(g); g.connect(a.destination); s.start(t); s.stop(t+d);
+    const o=a.createOscillator(), og=a.createGain(); o.type="sine"; o.frequency.setValueAtTime(up?70:140,t+d*.45); o.frequency.exponentialRampToValueAtTime(up?40:60,t+d*.9);
+    og.gain.setValueAtTime(0,t+d*.45); og.gain.linearRampToValueAtTime(.25,t+d*.5); og.gain.exponentialRampToValueAtTime(.001,t+d*.95);
+    o.connect(og); og.connect(a.destination); o.start(t+d*.45); o.stop(t+d);
+  }catch(e){} }
+  return {aim,frame,off,whoosh};
+})();
+</script>
 
 <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "0e0692ebea4745b9bfc9459f56956fc4"}'></script><!-- End Cloudflare Web Analytics -->
 
