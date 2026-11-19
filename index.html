@@ -1416,19 +1416,20 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     else gameCard(kind,g?g.hits:0); }
   $("gr-ask-x").addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); if(duet) duetEnd(); grow(false); });
   // dance with the band, right here on the lounge floor: the one you pick flickers in beside her and dances on the beat
-  const PART={pat:{pre:"p",v:"?v=1"},jordan:{pre:"jj",v:"?v=1"},jacob:{pre:"jb",v:"?v=4"}}, pEl=$("gr-partner"), pR=pEl.querySelector(".r"), pN=pEl.querySelector(".n");
+  const PART={pat:{pre:"pd",v:"?v=1",n:4},jordan:{pre:"jj",v:"?v=1",n:8},jacob:{pre:"jb",v:"?v=4",n:8}}, pEl=$("gr-partner"), pR=pEl.querySelector(".r"), pN=pEl.querySelector(".n");
   let duet=null;
   const pSh=$("gr-pshadow");
   function placePartner(){ if(!duet) return; const h=HF(duet.y)*1.06, w=h*(duet.ar||.5);
     Object.assign(pEl.style,{left:(duet.x-w/2)+"px",top:(duet.y-h)+"px",width:w+"px",height:h+"px",zIndex:String(Math.round(duet.y))}); shadowAt(pSh,duet.x,duet.y,h); }
   function setPartner(who,k){ const P=PART[who], r=`img/band/${P.pre}${k}-real.webp${P.v}`, n=`img/band/${P.pre}${k}-neon.webp${P.v}`;
-    return new Promise(res=>{ const im=new Image(); im.onload=()=>{ if(duet){ duet.ar=im.naturalWidth/im.naturalHeight; pR.src=r; pN.src=n; placePartner(); } res(); }; im.onerror=res; im.src=r; }); }
+    return new Promise(res=>{ const im=new Image(); im.onload=()=>{ if(duet){ const W=im.naturalWidth,H=im.naturalHeight; duet.ar=W/H; pR.src=r; pN.src=n;
+      Object.assign(pN.style,{left:(-20/W*100)+"%",top:(-20/H*100)+"%",width:(100+40/W*100)+"%",height:(100+40/H*100)+"%"}); placePartner(); } res(); }; im.onerror=res; im.src=r; }); }
   function heart(x,y){ const h=document.createElement("div"); h.className="gr-heart"; h.textContent="♥"; h.style.left=x+"px"; h.style.top=y+"px"; h.style.setProperty("--dx",(Math.random()*120-60)+"px"); $("gr-wrap").appendChild(h); setTimeout(()=>h.remove(),1150); }
   async function duetStart(who){ if(duet) return; ask.classList.remove("on");
     const side=FX>1180?-1:1, x=FX+side*HF(FY)*.78; duet={who,x,y:Math.max(750,Math.min(915,FY+10)),id:Math.random()};
     if(window.MSLgPan) window.MSLgPan((x+FX)/2);
-    const id=duet.id; [1,2,3,4,5,6,7,8].forEach(k=>{ const i=new Image(); i.src=`img/band/${PART[who].pre}${k}-real.webp${PART[who].v}`; });
-    await setPartner(who,1+Math.floor(Math.random()*8)); if(!duet||duet.id!==id) return;
+    const id=duet.id, NK=PART[who].n; for(let k=1;k<=NK;k++){ const i=new Image(); i.src=`img/band/${PART[who].pre}${k}-real.webp${PART[who].v}`; }
+    await setPartner(who,1+Math.floor(Math.random()*NK)); if(!duet||duet.id!==id) return;
     pEl.style.display="block"; pSh.style.display="block"; for(let i=0;i<4;i++){ pEl.classList.add("pop"); await new Promise(r=>setTimeout(r,60)); pEl.classList.remove("pop"); await new Promise(r=>setTimeout(r,70)); }
     for(let i=0;i<5;i++) setTimeout(()=>{ if(duet) heart((duet.x+FX)/2+(Math.random()*80-40),FY-DH*.85); },i*120);
     const end=performance.now()+12000; let n=0, lastK=0;
@@ -1436,7 +1437,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       const song=audio&&!audio.paused&&/dont-mind-it/.test(audio.src); let waitMs=470;
       if(song){ const b=BEATS.find(t=>t>audio.currentTime+.05); if(b) waitMs=Math.max(120,(b-audio.currentTime)*1000/(audio.playbackRate||1)); }
       await new Promise(r=>setTimeout(r,waitMs)); if(!duet||duet.id!==id) break;
-      let k; do{ k=1+Math.floor(Math.random()*8); }while(k===lastK); lastK=k; await setPartner(who,k);
+      let k; do{ k=1+Math.floor(Math.random()*NK); }while(k===lastK); lastK=k; await setPartner(who,k);
       pEl.classList.add("pop"); pEl.style.transform=`translateY(${n%2?-10:0}px)`; setTimeout(()=>pEl.classList.remove("pop"),90);
       if(n%4===0&&duet) heart((duet.x+FX)/2+(Math.random()*80-40),FY-DH*.85); n++; }
     duetEnd(id); }
