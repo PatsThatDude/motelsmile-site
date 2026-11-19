@@ -1313,7 +1313,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     if(still) i=0;
     else if(songOn) i=beatIdx(audio.currentTime)%8;           // one move per beat of Don't Mind It
     else { if(now-lastSwap>500){ lastSwap=now; i=(fi+1)%8; } else i=fi; } // 0.5s loop otherwise
-    setFrame(i);
+    if(!girls) setFrame(i);
     shadow.style.transform=`scaleX(${.85+.15*Math.sin(now/220)})`;
     raf=requestAnimationFrame(step); }
   lever.addEventListener("click",()=>{ if(!floorOn()){ pickPose(); if(big) grow(false,true); } setTimeout(render,0); });
@@ -1453,29 +1453,61 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   // dance with the girls: the girls still stuck in jars show up as neon silhouettes and dance around her
   // (swap in the real Megan / Gianna / Sophia frames once they exist)
   let girls=null;
-  async function girlsStart(){ if(girls||duet||!big||!floorOn()) return; ask.classList.remove("on"); const id=Math.random(); girls={id,list:[]};
-    const S=floorSpots(), offs=[[-1,.0],[1,-.05],[0,-.18]];
-    offs.forEach((o,i)=>{ const img=document.createElement("img"); img.className="gr-girl"; img.alt=""; img.style.opacity="0"; $("gr-wrap").appendChild(img);
-      const H0=HF(FY), C=S.filter(t=>t[1]<FY-15&&Math.abs(t[0]-FX)>H0*.5&&Math.abs(t[0]-FX)<H0*1.6&&!girls.list.some(o=>Math.hypot(o.x-t[0],o.y-t[1])<H0*.5));
-      const t=C.length?C[Math.floor(Math.random()*C.length)]:onFloor(FX+[-1,1,1.7][i]*H0*.8,FY-30), x=t[0], y=t[1];
-      girls.list.push({img,x,y,ph:i*3+1,flip:i===1}); });
-    const place=g=>{ const i=g.fi||0, h=HF(g.y)*.93, w=W[i]*h/600; g.img.src=FR[i]; Object.assign(g.img.style,{position:"absolute",left:(g.x-AX[i]*w)+"px",top:(g.y-h)+"px",width:w+"px",height:h+"px",zIndex:String(Math.round(g.y)),transform:g.flip?"scaleX(-1)":""}); };
-    girls.list.forEach(g=>{ g.fi=g.ph%8; place(g); requestAnimationFrame(()=>g.img.style.opacity="1"); });
-    say(FX,FY-DH-12,["Girls night!","Come on, ladies!","Where’s everybody else?"]);
-    for(let i=0;i<6;i++) setTimeout(()=>heart(FX+(Math.random()*160-80),FY-DH*.8),i*120);
-    const end=performance.now()+14000; let n=0;
-    while(girls&&girls.id===id&&performance.now()<end){
+  // girls' routines: Grace leads, the three still-in-jar girls (neon silhouettes for now) follow; 16 beats each
+  const ROUTINES=[
+    {name:"The Wave",kind:"fun"},{name:"Mirror, Mirror",kind:"fun"},{name:"Conga",kind:"fun"},{name:"Spotlight",kind:"fun"},
+    {name:"Slow Burn",kind:"sultry"},{name:"Back to Back",kind:"sultry"},{name:"Hip Sway",kind:"sultry"}];
+  function girlsStart(){ if(girls||duet||!big||!floorOn()) return; ask.classList.remove("on"); wanderId++;
+    const id=Math.random(); girls={id,list:[],b:0,r:-1};
+    for(let i=0;i<3;i++){ const img=document.createElement("img"); img.className="gr-girl"; img.alt=""; img.style.opacity="0"; $("gr-wrap").appendChild(img);
+      const c=onFloor(FX+[-1,1,1.7][i]*HF(FY)*.7,FY-25); girls.list.push({img,x:c[0],y:c[1],tx:c[0],ty:c[1],fi:(i*3+1)%8,flip:i%2===0,op:1,sc:1,rot:0}); }
+    girls.grace={tx:FX,ty:FY,op:1,sc:1,rot:0};
+    girls.list.forEach(g=>{ placeGirl(g); requestAnimationFrame(()=>{ g.img.style.opacity="1"; }); });
+    say(FX,FY-DH-12,["Girls night!","Come on, ladies!","Hit it!"]); for(let i=0;i<6;i++) setTimeout(()=>heart(FX+(Math.random()*160-80),FY-DH*.8),i*120);
+    choreo(id); beatLoop(id); }
+  function placeGirl(g){ const i=g.fi, h=HF(g.y)*.93*g.sc, w=W[i]*h/600; g.img.src=FR[i];
+    Object.assign(g.img.style,{position:"absolute",left:(g.x-AX[i]*w)+"px",top:(g.y-h)+"px",width:w+"px",height:h+"px",zIndex:String(Math.round(g.y)),
+      transform:`${g.flip?"scaleX(-1) ":""}rotate(${g.rot.toFixed(2)}deg)`,opacity:String(g.op)}); }
+  function caption(r){ const ui=document.querySelector(".lg-ui"); let c=document.getElementById("gr-cap");
+    if(!c){ c=document.createElement("div"); c.id="gr-cap"; Object.assign(c.style,{position:"absolute",left:"50%",top:"calc(64px + env(safe-area-inset-top,0px))",transform:"translateX(-50%)",zIndex:12,padding:"6px 16px",borderRadius:"999px",background:"rgba(8,6,16,.75)",font:"700 13px var(--mono)",letterSpacing:".14em",textTransform:"uppercase",color:"#fff",pointerEvents:"none",transition:"opacity .3s",whiteSpace:"nowrap"}); ui.appendChild(c); }
+    const col=r.kind==="sultry"?"#aa5aff":"#ff46c8"; c.textContent=(r.kind==="sultry"?"♥ ":"★ ")+r.name; c.style.border="2px solid "+col; c.style.boxShadow="0 0 12px "+col; c.style.opacity="1"; }
+  // the beat clock: on each beat, work out where everyone should be and which frame they show
+  async function beatLoop(id){ const B=16, total=ROUTINES.length*B;
+    while(girls&&girls.id===id&&girls.b<total){
       const song=audio&&!audio.paused&&/dont-mind-it/.test(audio.src); let waitMs=470;
-      if(song){ const b=BEATS.find(t=>t>audio.currentTime+.05); if(b) waitMs=Math.max(120,(b-audio.currentTime)*1000/(audio.playbackRate||1)); }
-      await sleep(waitMs); if(!girls||girls.id!==id) break;
-      n++; girls.list.forEach((g,i)=>{ g.fi=(g.fi+1)%8;
-        if(n%6===i*2){ // a new spot behind or beside her, never covering her
-          const C=S.filter(t=>t[1]<FY-15&&Math.abs(t[0]-FX)>HF(FY)*.5&&Math.abs(t[0]-FX)<HF(FY)*1.5&&!girls.list.some(o=>o!==g&&Math.hypot((o.tx??o.x)-t[0],(o.ty??o.y)-t[1])<HF(FY)*.45));
-          if(C.length){ const t=C[Math.floor(Math.random()*C.length)]; g.tx=t[0]; g.ty=t[1]; } }
-        if(g.tx!=null){ g.x+=(g.tx-g.x)*.35; g.y+=(g.ty-g.y)*.35; } place(g); }); }
+      if(song){ const t=BEATS.find(t=>t>audio.currentTime+.05); if(t) waitMs=Math.max(120,(t-audio.currentTime)*1000/(audio.playbackRate||1)); }
+      const ri=Math.floor(girls.b/B), b=girls.b%B, R=ROUTINES[ri];
+      if(girls.r!==ri){ girls.r=ri; caption(R); if(!game) window.MSFloorGame=R.kind==="sultry"?(k=>["#aa5aff",.18+.1*(((k.charCodeAt(0)+k.charCodeAt(2))+girls.b)%3)]):null; }
+      plan(ri,b); girls.b++;
+      await sleep(waitMs); }
     girlsEnd(id); }
+  function plan(ri,b){ const H=HF(860)*.62, cx=1180, cy=840, all=[girls.grace,...girls.list];
+    const set=(m,x,y,f,o)=>{ const c=onFloor(x,y); m.tx=c[0]; m.ty=c[1]; if(f!=null){ const v=((f%8)+8)%8; if(m===girls.grace) m.gf=v; else m.fi=v; } Object.assign(m,o||{}); if(m===girls.grace) m.flip=false; };
+    const reset={op:1,sc:1,rot:0};
+    if(ri===0){ // The Wave: a line across the floor, the move ripples down it one beat apart
+      all.forEach((m,i)=>set(m,cx+(i-1.5)*H*.95,cy,b-i,reset)); }
+    else if(ri===1){ // Mirror, Mirror: two pairs face each other and copy every move
+      all.forEach((m,i)=>{ const pair=i<2?-1:1, inner=i%2===0?-1:1; set(m,cx+pair*H*1.05+inner*H*.33,cy-(i<2?0:30),b,{...reset,flip:inner>0}); }); }
+    else if(ri===2){ // Conga: follow the leader around the floor
+      all.forEach((m,i)=>{ const a=b*.42-i*.95; set(m,cx+Math.cos(a)*H*1.35,cy+Math.sin(a)*48,b+i*2,reset); }); }
+    else if(ri===3){ // Spotlight: each girl gets two beats front and centre, the others dim
+      const s=Math.floor(b/2)%4; all.forEach((m,i)=>{ const pos=i===s?[cx,cy+40]:[cx+[-1.5,-.5,.5,1.5][i]*H*.95,cy-35]; set(m,pos[0],pos[1],b+i,{op:i===s?1:.45,sc:i===s?1.06:1,rot:0}); }); }
+    else if(ri===4){ // Slow Burn: tight huddle, half-time, all in unison, a slow sway
+      all.forEach((m,i)=>{ const a=i*Math.PI/2+.4; set(m,cx+Math.cos(a)*H*.55,cy+Math.sin(a)*22,Math.floor(b/2),{op:1,sc:1,rot:(b%4<2?-1.5:1.5)}); }); }
+    else if(ri===5){ // Back to Back: two pairs back to back, sinking down and rising together
+      all.forEach((m,i)=>{ const pair=i<2?-1:1, side=i%2===0?-1:1; set(m,cx+pair*H*.95+side*H*.17,cy-(i<2?0:25),Math.floor(b/2)+3,{op:1,sc:1-(b%8<4?(b%4)*.025:(4-b%4)*.025),rot:0,flip:side<0}); }); }
+    else { // Hip Sway: a slow line that sways left and right on the beat
+      all.forEach((m,i)=>set(m,cx+(i-1.5)*H*.8+(b%2?22:-22),cy-(i%2?18:0),Math.floor(b/2)+i,{op:1,sc:1,rot:b%2?2:-2})); }
+  }
+  // smooth movement between beats
+  function choreo(id){ (function f(){ if(!girls||girls.id!==id) return;
+      const G=girls.grace; FX+=(G.tx-FX)*.12; FY+=(G.ty-FY)*.12; DH=HF(FY)*(G.sc||1);
+      if(G.gf!=null) fi=G.gf; setFrame(fi<0?0:fi,true); dance.style.zIndex=String(Math.round(FY)); dance.style.opacity=String(G.op); shadowAt(shadow,FX,FY,DH);
+      dance.style.transform=G.rot?`rotate(${G.rot}deg)`:"";
+      girls.list.forEach(g=>{ g.x+=(g.tx-g.x)*.12; g.y+=(g.ty-g.y)*.12; placeGirl(g); });
+      requestAnimationFrame(f); })(); }
   function girlsEnd(id){ if(!girls||(id&&girls.id!==id)) return; const L=girls.list; girls=null;
-    L.forEach(g=>{ g.img.style.opacity="0"; setTimeout(()=>g.img.remove(),450); });
+    L.forEach(g=>{ g.img.style.opacity="0"; setTimeout(()=>g.img.remove(),450); }); if(!game) window.MSFloorGame=null; dance.style.opacity=""; dance.style.transform=""; { const c=document.getElementById("gr-cap"); if(c) c.style.opacity="0"; } if(big) setTimeout(()=>{ if(big&&!girls&&!duet) wander(); },600);
     if(big){ setTimeout(()=>{ if(big&&!duet&&!girls){ placeAsk(); ask.classList.add("on"); say(FX,FY-DH-12,["More of us are still stuck in jars…","Find the others!"]); } },500); } }
   window.__grWin=()=>{ won=true; };
   window.__gs=()=>({big,FX,FY,DH,fi,duet:duet?{who:duet.who,x:duet.x,y:duet.y}:null,girls:girls?girls.list.length:0,game:!!game,floor:floorOn(),inL:L.classList.contains("on"),
