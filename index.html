@@ -2173,15 +2173,18 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     async function appear(){ if(S&&!m.wasSeated&&Math.random()<S.p){ m.wasSeated=true; return sit(); } m.wasSeated=false; m.spot=freeSpot(m);
       let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===m.pose&&POSES.length>1); m.pose=np;
       setPose(m.pose); place(); await wait(80); neon(1); vis(true); await wait(90); await flicker(5); }
-    async function teleport(){ if(m.busy||document.hidden||gagOn||window.MSAway()) return; m.busy=true;
+    async function teleport(){ if(m.busy||document.hidden||gagOn||window.MSAway()) return;
+      if(performance.now()-(window.__msTp||0)<5000){ schedule(2500+Math.random()*3000); return new Promise(()=>{}); } window.__msTp=performance.now(); m.busy=true;
       if(m.seated){ await stand(); await wait(500+Math.random()*700); await appear(); m.busy=false; return; }
       await flicker(4); neon(1); await wait(120); vis(false); neon(0); const old=m.spot; m.spot=-1;
       await wait(500+Math.random()*700); m.spot=old; await appear(); m.busy=false; }
-    function schedule(first){ clearTimeout(wT); if(still) return; wT=setTimeout(async()=>{ await teleport(); schedule(); },first||11000); }
-    if(!still) (async()=>{ await wait(cfg.offset||0); while(true){ await wait(3000+Math.random()*1000); if(m.busy||document.hidden||gagOn||window.MSAway()) continue;
-      for(let i=0;i<2;i++){ neon(1); await wait(45); neon(0); await wait(45); } if(m.busy) continue;
-      neon(1); rf.style.opacity=.15; await wait(500);
-      for(let i=0;i<2;i++){ neon(0); await wait(40); neon(1); await wait(40); } neon(0); rf.style.opacity=""; } })();
+    function schedule(first){ clearTimeout(wT); if(still) return; wT=setTimeout(async()=>{ await teleport(); schedule(); },first||(24000+Math.random()*14000)); }
+    // neon buzz: driven by one band-wide scheduler (below) so only one of them buzzes at a time
+    m.buzz=async kind=>{ if(m.busy||m.seated||m.spot<0||gagOn) return false;
+      if(kind==="blip"){ for(let i=0;i<2;i++){ neon(1); await wait(45); neon(0); await wait(55); } return true; }
+      for(let i=0;i<2;i++){ neon(1); await wait(45); neon(0); await wait(45); } if(m.busy) return true;
+      neon(1); rf.style.opacity=.15; await wait(kind==="big"?900:450);
+      for(let i=0;i<(kind==="big"?4:2);i++){ neon(0); await wait(40); neon(1); await wait(40); } neon(0); rf.style.opacity=""; return true; };
     function puff(n){ const R=m.rect(); for(let i=0;i<n;i++) smoke.push({x:R.x+R.w*(.3+Math.random()*.4),y:R.y+R.h*(.02+Math.random()*.25),vx:(Math.random()-.5)*.6,vy:-(0.8+Math.random()*1.2),r:5+Math.random()*6,a:.45,t:0,life:90+Math.random()*60}); kick(); }
     async function zap(e){ e&&e.stopPropagation(); if(m.busy) return; m.busy=true; clearTimeout(wT); (cfg.sound==="chord"?guitarZap:cfg.sound==="drums"?drumZap:bassZap)(1.5); m.zapping=true; kick(); el.classList.add(cfg.anim||"zz");
       setPose(ZAP); place(ZAP); const end=performance.now()+1500; let on=false;
@@ -2217,6 +2220,13 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     ar:{1:.4673,2:.3846,3:.2962,4:.3558,5:.5269,6:.3346,7:.3615,8:.6077,9:.6154,10:.3423,g1:.5115,g2:.4269},f:{1:1.12,7:1.14,8:.68,9:1.06,10:1.08,g1:1,g2:1.29}});
   // every so often one of them pulls a stunt; ?gag=pat|jordan|jacob runs one right away
   const CREW={pat:PAT,jordan:JORDAN,jacob:JACOB}; window.MSGag=n=>CREW[n]&&CREW[n].gag();
+  // band-wide neon buzz: one member at a time, every 7-13s, never the same one twice in a row, quiet right after a move
+  if(!still) (async()=>{ let last=null; await wait(4000);
+    while(true){ await wait(7000+Math.random()*6000); if(document.hidden||gagOn||window.MSAway()) continue;
+      if(performance.now()-(window.__msTp||0)<3000) continue;
+      const pool=Object.values(CREW).filter(m=>m!==last&&!m.busy&&!m.seated&&m.spot>=0); if(!pool.length) continue;
+      const m=pool[Math.floor(Math.random()*pool.length)], r=Math.random();
+      if(await m.buzz(r<.55?"blip":r<.9?"buzz":"big")) last=m; } })();
   // Grace on the roof: comes up off the dance floor full size and dances with each of the band
   window.MSGraceRoof=(()=>{
     const FR=[1,2,3,4,5,6,7,8].map(i=>"img/grace/d"+i+".webp?v=1"), W=[178,228,194,228,236,234,208,253], AX=[.566,.57,.548,.546,.458,.354,.349,.503];
