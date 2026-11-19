@@ -1085,11 +1085,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     try{
       if(AC) { window.MSAC(); return; }
       AC=window.MSAC(); if(!AC) return;
-      const n=AC.sampleRate*4, b=AC.createBuffer(1,n,AC.sampleRate), d=b.getChannelData(0);
-      for(let i=0;i<n;i++){ d[i]=(Math.random()*2-1)*.012; if(Math.random()<.0009) d[i]+=(Math.random()*2-1)*.7; }
-      const src=AC.createBufferSource(); src.buffer=b; src.loop=true;
-      const hp=AC.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=900;
-      crG=AC.createGain(); crG.gain.value=0; src.connect(hp).connect(crG).connect(AC.destination); src.start();
+
       // The song itself plays straight from the <audio> element (keeps playing on the lock screen and in the background).
       // Scratching decodes a few seconds around the needle from the same file (byte range) and plays that back and forth.
       try{ const sr=AC.sampleRate, BPS=16000; let S=null, pos=0, pos0=0, W=null, Wkey=-1, Wload=null;
@@ -1116,7 +1112,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
         window.MSMuffle=()=>{}; }catch(e){}
     }catch(e){AC=null;}
   }
-  function crackle(on){ if(crG&&AC) crG.gain.setTargetAtTime(on?.35:0,AC.currentTime,.15); }
+  function crackle(){} // vinyl crackle removed (Pat: annoying)
 
   /* ---------- frame loop ---------- */
   let looping=false;
