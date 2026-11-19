@@ -288,7 +288,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
 <div class="jx" id="jx" hidden role="dialog" aria-label="Grace is stuck in a jar">
   <button class="pill jx-x" id="jx-x" style="--c:var(--cyan)">✕ Not now</button>
   <div class="jx-stage"><div class="jx-say" id="jx-say"></div>
-    <div class="jx-box" id="jx-box" tabindex="0" role="button" aria-label="Tap the glass to break the jar"><img id="jx-img" alt="Grace trapped in a glass jar"><svg class="jx-cracks" id="jx-cracks" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+    <div class="jx-box" id="jx-box" tabindex="0" role="button" aria-label="Tap the glass to break the jar"><img id="jx-img" alt="Grace trapped in a glass jar"><img id="jx-img2" alt="" aria-hidden="true" style="opacity:0"><svg class="jx-cracks" id="jx-cracks" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg></div>
     <div class="jx-ui"><b id="jx-tip">Tap the glass to break her out</b><div class="jx-meter"><i id="jx-meter"></i></div></div></div>
 </div>
   <div class="gr-toast" id="gr-toast" role="status" hidden><img src="img/grace/d7.webp?v=2" alt=""><div><b id="gr-h">Grace is free!</b><span id="gr-msg">She’s waiting for you in the Smile Lounge.</span></div><button class="pill" style="--c:var(--pink)" id="gr-go">Go dance →</button><button class="gr-x" id="gr-x" aria-label="Close">✕</button></div>
@@ -520,7 +520,13 @@ body.in-room .mini{display:none}
 .jx.open .jx-stage{transform:none}
 .jx-box{position:relative;height:min(68vh,620px);aspect-ratio:496/900;cursor:pointer;touch-action:manipulation;outline:none;-webkit-tap-highlight-color:transparent;filter:drop-shadow(0 0 30px rgba(255,190,90,.25))}
 .jx-box:focus-visible{filter:drop-shadow(0 0 0 2px var(--cyan)) drop-shadow(0 0 18px var(--cyan))}
-.jx-box img{width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;transition:opacity .2s}
+.jx-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;transition:opacity .18s}
+.gr-walk{position:absolute;z-index:200;pointer-events:none;transform-origin:50% 100%;filter:drop-shadow(0 0 4px rgba(255,70,200,.95)) drop-shadow(0 0 10px rgba(255,190,90,.6))}
+.gr-trail{position:absolute;z-index:199;width:5px;height:5px;border-radius:50%;pointer-events:none;background:#ff46c8;box-shadow:0 0 8px #ff46c8;transition:transform 1s ease-out,opacity 1s}
+.bm,.bm-sh,.bm-rf,.bm-kit{transition:opacity .35s}
+body.jx-zoom .bm,body.jx-zoom .bm-sh,body.jx-zoom .bm-rf,body.jx-zoom .bm-kit,body.jx-zoom .top,body.jx-zoom #bar,body.jx-zoom .mini,body.jx-zoom .pan-hint{opacity:0!important;pointer-events:none!important}
+body.jx-zoom{overflow:hidden}
+.top,#bar{transition:opacity .3s}
 .jx-box.hit{animation:jxhit .28s ease-out}
 @keyframes jxhit{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(-6px,2px) rotate(-1.5deg)}55%{transform:translate(5px,-1px) rotate(1.2deg)}100%{transform:none}}
 .jx-cracks{position:absolute;left:8%;top:9%;width:84%;height:88%;pointer-events:none;overflow:visible}
@@ -1506,7 +1512,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   $("gr-go").addEventListener("click",()=>{ toast.hidden=true; const a=document.querySelector(".pill[data-lounge]"); a&&a.click(); });
   jar.hidden=freed;
   function freeGrace(){ freed=true; preload(); jar.classList.add("smash"); setTimeout(()=>{ jar.hidden=true; },460);
-    setTimeout(()=>{ $("gr-h").textContent="Grace is free!"; toast.querySelector("img").src=FR[6]; $("gr-go").hidden=false; showToast("She’s waiting for you on the dance floor in the Smile Lounge."); },350); render(); }
+    setTimeout(()=>walkToLounge(()=>{ $("gr-h").textContent="Grace is free!"; toast.querySelector("img").src=FR[6]; $("gr-go").hidden=false; showToast("She’s headed down to the Smile Lounge. Meet her on the dance floor!"); }),1200); render(); }
   /* ---------- jar close-up: tap the glass until it breaks ---------- */
   const JX=$("jx"), jxBox=$("jx-box"), jxCr=$("jx-cracks"), HITS=6; let hits=0, jxBusy=false;
   /* 7 states (0 cracks … 5 cracks, free) × 5 shots each: [image, what she says] */
@@ -1520,7 +1526,37 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     [["free-1", "I'm free! Meet me on the dance floor!"]]
   ].map(st=>st.map(([n,t])=>({src:"img/grace/jar-"+n+".webp",say:t})));
   const jxPick=s=>{ const a=JX_SET[s]; return a[Math.floor(Math.random()*a.length)]; };
-  let jxSeq=[]; function jxShow(s){ const v=jxSeq[s]||jxPick(s); $("jx-img").src=v.src; jxSay(v.say); }
+  /* each crack state loops through its shots like animation frames */
+  let jxCyc=0, jxFront=0;
+  const jxLoad=s=>{ (JX_SET[s]||[]).forEach(v=>{ const i=new Image(); i.src=v.src; }); };
+  function jxFrame(src){ const im=[$("jx-img"),$("jx-img2")], back=im[1-jxFront], front=im[jxFront];
+    const swap=()=>{ back.style.opacity=1; front.style.opacity=0; jxFront=1-jxFront; };
+    back.src=src; (back.decode?back.decode():Promise.resolve()).then(swap,swap); }
+  function jxShow(s){ clearInterval(jxCyc); const a=JX_SET[s].slice().sort(()=>Math.random()-.5); let i=0;
+    jxFrame(a[0].src); jxSay(a[0].say); jxLoad(s+1);
+    if(a.length>1&&!still) jxCyc=setInterval(()=>{ i=(i+1)%a.length; jxFrame(a[i].src); },s===6?520:640); }
+  /* roof camera pushes in on the jar sitting on the ledge */
+  let rzOrig=null; document.body.appendChild(JX);
+  function roofZoom(on,ms,done){ const st=$("stage");
+    if(on) rzOrig={tf:st.style.transform, to:st.style.transformOrigin};
+    const O=rzOrig, fin=()=>{ if(!on){ st.style.transform=O?O.tf:""; st.style.transformOrigin=O?O.to:""; rzOrig=null; } done&&done(); };
+    if(!O||still){ fin(); return; }
+    const r=jar.getBoundingClientRect(), P={x:r.left+r.width/2,y:r.top+r.height*.55}, C={x:innerWidth/2,y:innerHeight*.47}, K=Math.max(1.5,Math.min(8,innerHeight*.5/Math.max(10,r.height)));
+    if(on) roofZoom.v={P,C,K}; const V=roofZoom.v||{P,C,K};
+    st.style.transformOrigin=`${V.P.x}px ${V.P.y}px`;
+    const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2, t0=performance.now();
+    (function f(now){ const t=Math.min(1,(now-t0)/ms), e=ease(on?t:1-t);
+      st.style.transform=`translate(${(V.C.x-V.P.x)*e}px,${(V.C.y-V.P.y)*e}px) scale(${1+(V.K-1)*e})`;
+      if(t<1) requestAnimationFrame(f); else fin(); })(t0); }
+  /* free: tiny Grace dances along the roof from the jar into the lounge */
+  function walkToLounge(done){ const host=$("play"); if(!host||still){ done&&done(); return; }
+    const g=document.createElement("img"); g.className="gr-walk"; g.alt=""; host.appendChild(g);
+    const A={x:752,y:494,h:44}, B={x:1430,y:700,h:62}, ms=4600, t0=performance.now(); let fi=0, last=0;
+    (function f(now){ const t=Math.min(1,(now-t0)/ms), e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+      if(now-last>190){ fi=(fi+1)%8; last=now; g.src=FR[fi]; if(t<.9){ const d=document.createElement('i'); d.className='gr-trail'; d.style.left=(A.x+(B.x-A.x)*e)+'px'; d.style.top=(A.y+(B.y-A.y)*e-6)+'px'; host.appendChild(d); requestAnimationFrame(()=>{ d.style.transform=`translate(${(Math.random()-.5)*20}px,${-14-Math.random()*16}px) scale(.3)`; d.style.opacity=0; }); setTimeout(()=>d.remove(),1100); } }
+      const x=A.x+(B.x-A.x)*e, y=A.y+(B.y-A.y)*e-Math.abs(Math.sin(t*Math.PI*9))*3, h=A.h+(B.h-A.h)*e, w=h*W[fi]/600;
+      Object.assign(g.style,{height:h+"px",left:(x-w*AX[fi])+"px",top:(y-h)+"px",opacity:t>.9?(1-t)/.1:1,transform:t>.9?`scale(${1-(t-.9)*4})`:""});
+      if(t<1) requestAnimationFrame(f); else { g.remove(); done&&done(); } })(t0); }
   function tink(k){ try{ const a=window.MSAC&&window.MSAC(); if(!a) return; const t=a.currentTime;
       [2400,3300,4100].forEach((f,i)=>{ const o=a.createOscillator(), g=a.createGain(); o.type="sine"; o.frequency.value=f*(1+k*.05)*(1+Math.random()*.03); g.gain.setValueAtTime(.0001,t+i*.012); g.gain.exponentialRampToValueAtTime(.09,t+i*.012+.004); g.gain.exponentialRampToValueAtTime(.0001,t+.35+k*.05); o.connect(g).connect(a.destination); o.start(t); o.stop(t+.6); });
       const n=a.createBuffer(1,a.sampleRate*.08,a.sampleRate), d=n.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3)*(.25+k*.08);
@@ -1533,17 +1569,17 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const ring=document.createElementNS(NS,"circle"); ring.setAttribute("cx",x); ring.setAttribute("cy",y); ring.setAttribute("r",1.2+k*.4); g.appendChild(ring);
     jxCr.appendChild(g); }
   function jxSay(t){ const b=$("jx-say"); b.textContent=t; b.classList.remove("on"); void b.offsetWidth; b.classList.add("on"); }
-  function openJar(){ if(freed||JX.classList.contains("open")) return; window.MSAC&&window.MSAC(); hits=0; jxBusy=false; jxCr.innerHTML=""; $("jx-meter").style.width="0%";
-    JX.classList.remove("broke"); jxSeq=JX_SET.map((_,i)=>jxPick(i)); jxSeq.forEach(v=>{ const i=new Image(); i.src=v.src; }); const v0=jxSeq[0]; $("jx-img").src=v0.src; JX.hidden=false; requestAnimationFrame(()=>JX.classList.add("open")); document.body.classList.add("jx-on");
-    $("jx-tip").textContent="Tap the glass to break her out"; setTimeout(()=>jxSay(v0.say),450); setTimeout(()=>jxBox.focus({preventScroll:true}),200); }
-  function closeJar(){ JX.classList.remove("open"); document.body.classList.remove("jx-on"); setTimeout(()=>{ if(!JX.classList.contains("open")) JX.hidden=true; },350); }
+  function openJar(){ if(freed||rzOrig||JX.classList.contains("open")) return; window.MSAC&&window.MSAC(); hits=0; jxBusy=false; jxCr.innerHTML=""; $("jx-meter").style.width="0%";
+    JX.classList.remove("broke"); jxLoad(0); jxLoad(1); jxBusy=true; document.body.classList.add("jx-zoom"); roofZoom(true,900,()=>{ jxBusy=false; JX.hidden=false; jxShow(0); requestAnimationFrame(()=>JX.classList.add("open")); }); document.body.classList.add("jx-on");
+    $("jx-tip").textContent="Tap the glass to break her out"; setTimeout(()=>jxBox.focus({preventScroll:true}),1100); }
+  function closeJar(){ clearInterval(jxCyc); JX.classList.remove("open"); document.body.classList.remove("jx-on"); setTimeout(()=>{ if(!JX.classList.contains("open")) JX.hidden=true; roofZoom(false,700,()=>document.body.classList.remove("jx-zoom")); },350); }
   function hit(x,y){ if(jxBusy||freed) return; hits++; const k=hits; tink(k); crackAt(x,y,k);
     jxBox.classList.remove("hit"); void jxBox.offsetWidth; jxBox.classList.add("hit"); $("jx-meter").style.width=(k/HITS*100)+"%";
     if(navigator.vibrate) try{ navigator.vibrate(k<HITS?18:[30,40,60]); }catch(e){}
     if(k<HITS){ jxShow(k); $("jx-tip").textContent=`${HITS-k} more`; return; }
     jxBusy=true; $("jx-tip").textContent="";
     setTimeout(()=>{ shatter(); JX.classList.add("broke"); jxShards(); setTimeout(()=>jxShow(6),160);
-      setTimeout(()=>{ closeJar(); freeGrace(); },2300); },120); }
+      setTimeout(()=>{ closeJar(); freeGrace(); },2800); },120); }
   function jxShards(){ if(still) return; const r=jxBox.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height*.55;
     for(let i=0;i<40;i++){ const s=document.createElement("i"), a=Math.random()*Math.PI*2, d=120+Math.random()*Math.max(innerWidth,innerHeight)*.55, big=Math.random()<.55, w=big?8+Math.random()*18:4;
       s.className="jx-shard"; s.style.cssText=`left:${cx+(Math.random()-.5)*r.width*.6}px;top:${cy+(Math.random()-.5)*r.height*.6}px;width:${w}px;height:${big?w*(.4+Math.random()*.8):4}px;${big?"":`background:${["#ff46c8","#46dcff","#ffd36a"][i%3]};border-radius:4px;`}`;
