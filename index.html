@@ -452,7 +452,7 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
 @keyframes graySay{0%{opacity:0;margin-top:8px}12%{opacity:1;margin-top:0}80%{opacity:1}100%{opacity:0}}
 .lg-hot.lever.nudge{animation:lvNudge .9s ease-in-out 2}
 @keyframes lvNudge{50%{box-shadow:0 0 0 4px var(--cyan),0 0 30px var(--cyan)}}
-#pk-jar{background:url(img/grace/jar.webp?v=1) 50% 100%/contain no-repeat;filter:brightness(.82) saturate(.9) drop-shadow(0 0 6px rgba(255,190,90,.35));transform-origin:50% 100%;animation:jarwob 6s ease-in-out infinite}
+#pk-jar{background:url(img/grace/jar.webp?v=2) 50% 100%/contain no-repeat;filter:brightness(.82) saturate(.9) drop-shadow(0 0 6px rgba(255,190,90,.35));transform-origin:50% 100%;animation:jarwob 6s ease-in-out infinite}
 #pk-jar:hover,#pk-jar:focus-visible{filter:brightness(1.05) drop-shadow(0 0 10px rgba(255,190,90,.8))}
 @keyframes jarwob{0%,86%,100%{transform:rotate(0)}89%{transform:rotate(-4deg)}92%{transform:rotate(4deg)}95%{transform:rotate(-2deg)}}
 #pk-jar.smash{animation:jarsmash .45s ease-in forwards;pointer-events:none}
@@ -1257,7 +1257,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   let freed=false; try{ localStorage.removeItem("ms-grace"); }catch(e){}
   const V="?v=2", FR=[1,2,3,4,5,6,7,8].map(i=>"img/grace/d"+i+".webp"+V);
   const W=[170,233,186,254,206,231,224,222], AX=[.406,.387,.397,.575,.382,.571,.418,.504];
-  const POSES={sit:[982.2,581.6,46.3,42],lean:[1120.4,549,15.6,40],lie:[873,584.2,64,31.6]}; // tiny: 1/6 scale like Fences
+  const POSES={sit:[989.4,581.6,31.8,42],lean:[1117.8,549,20.8,40],lie:[870,590.1,70,25.7]}; // tiny: 1/6 scale like Fences
   let FX=1190, FY=862, DH=85; // feet on the floor, height in lounge px (she grows when tapped)
   const HF=y=>1.436*(y-470); // full-size height for feet at plate y on the lounge floor
   const SMALL={x:1190,y:862,h:85}, BIG={x:1180,y:830,h:HF(830)};
