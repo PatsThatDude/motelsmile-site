@@ -88,13 +88,7 @@
   }
  ],
  "images": {
-  "hero": "img/roof-main.webp?v=2",
-  "listen": "img/midtown.webp",
-  "live": "img/el.webp",
-  "watch": "img/fire.webp",
-  "band": "img/bridge-blue.webp",
-  "list": "img/li-platform.webp",
-  "follow": "img/li-diner.webp"
+  "hero": "img/roof-main.webp?v=c1"
  },
  "credits": [
   {

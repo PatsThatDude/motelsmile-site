@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Motel Smile</title>
-<link rel="icon" href="img/smile-logo-96.webp">
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Motel Smile. New York rock.">
 <meta property="og:type" content="website">
@@ -18,6 +17,10 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://motelsmile.com/img/og.jpg">
 <meta name="theme-color" content="#0a0b12">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yellowtail&family=Permanent+Marker&family=Tilt+Neon&family=IBM+Plex+Mono:wght@400;600&display=swap">
@@ -35,7 +38,7 @@ body{margin:0;background:var(--ink);color:var(--white);font-family:var(--mono);f
 a{color:inherit}
 :focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
 
-.stage.tall{background-image:url(img/rooftop-phone.webp?v=1)!important}
+.stage.tall{background-image:url(img/rooftop-phone.webp?v=c1)!important}
 .stage{position:relative;height:100%;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;background:#0a0b12 center 42%/cover no-repeat}
 .stage::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,6,10,.55) 0%,rgba(5,6,10,0) 18%,rgba(5,6,10,0) 62%,rgba(5,6,10,.7) 100%)}
 .top,.sky,.bar{position:relative;z-index:1}
@@ -95,7 +98,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   
   .sky{grid-template-columns:0 1fr;padding-top:2vh;grid-template-rows:auto 1fr;align-content:stretch;height:100%}
   .sign{font-size:clamp(52px,16vw,92px)}
-  .pills{grid-column:1/-1;align-self:end;margin:0 0 14px}
+  .pills{grid-column:1/-1;align-self:end;margin:0 0 14px;transition:opacity .35s}
+  .gag-hp .sky .pills{opacity:0;pointer-events:none}
   .pill{font-size:15px;padding:7px 13px}
   .bar{grid-template-columns:1fr 1fr}
   .tile{padding:12px 16px;border-bottom:1px solid var(--line)}
@@ -109,7 +113,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 @media (max-width:760px){.stage{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}}
 #play{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;z-index:3;pointer-events:none}
 #play .pk,#lg-play .pk{appearance:none;-webkit-appearance:none;background-color:transparent;border:0;padding:0;margin:0;color:transparent;position:absolute;pointer-events:auto;cursor:pointer;border-radius:8px;-webkit-tap-highlight-color:transparent}
-#play .pk.img{background-image:url(img/roof-main.webp?v=2);background-size:1672px 941px;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%)}
+#play .pk.img{background-image:url(img/roof-main.webp?v=c1);background-size:1672px 941px;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%)}
 #roof-fx{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:60}
 #roof-glass{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:60;opacity:0;background:#ff3fd0;-webkit-mask:url(img/roof-glass.webp?v=1) 0 0/1672px 941px;mask:url(img/roof-glass.webp?v=1) 0 0/1672px 941px;mix-blend-mode:screen}
 #play a.pk{display:block}
@@ -307,9 +311,9 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .lounge{position:fixed;inset:0;z-index:40;overflow:hidden;background:#05060a;opacity:0;pointer-events:none}
 .lounge.on{opacity:1;pointer-events:auto}
 .lounge:not(.on),.lounge:not(.on) *{pointer-events:none!important}
-.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=1) 40% 50%/cover;filter:blur(22px) brightness(.45)}
+.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=c1) 40% 50%/cover;filter:blur(22px) brightness(.45)}
 .lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
-.lg-cam{z-index:8}.lg-hero{z-index:2;background:url(img/roof-main.webp?v=2) 0 0/1672px 941px;pointer-events:none}
+.lg-cam{z-index:8}.lg-hero{z-index:2;background:url(img/roof-main.webp?v=c1) 0 0/1672px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
 .lg-bg{left:0;top:0;width:1672px;height:941px}
 .lg-front{left:341px;top:489px;width:886px;height:405px;pointer-events:none}
@@ -348,8 +352,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .lg-ui{position:absolute;inset:0;z-index:9;pointer-events:none}
 .lg-back{pointer-events:auto;position:absolute;left:max(16px,env(safe-area-inset-left,0px));top:14px}
 .lg-wl{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;background:0 0/1672px 941px no-repeat;opacity:0;pointer-events:none;will-change:transform,opacity}
-#wl-sky{z-index:3;background-image:url(img/lounge-wide-plate.webp?v=8)}#hero-g{z-index:4;background-image:url(img/hero-ground.webp?v=9)}#hero-f{z-index:6;background-image:url(img/hero-fore.webp?v=9)}
-#wl-mid{z-index:5;background-image:url(img/lounge-wide-mid.webp?v=8)}#wl-fore{z-index:7;background-image:url(img/lounge-wide-fore.webp?v=8)}
+#wl-sky{z-index:3;background-image:url(img/lounge-wide-plate.webp?v=c1)}#hero-g{z-index:4;background-image:url(img/hero-ground.webp?v=c1)}#hero-f{z-index:6;background-image:url(img/hero-fore.webp?v=9)}
+#wl-mid{z-index:5;background-image:url(img/lounge-wide-mid.webp?v=c1)}#wl-fore{z-index:7;background-image:url(img/lounge-wide-fore.webp?v=8)}
 .lg-cam .lg-lay{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0}
 .lg-dig{pointer-events:auto;position:absolute;inset:0;z-index:9;overflow:hidden;background:transparent;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
 .lg-dig .cr-fill{display:none}
@@ -403,7 +407,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .dig-row[disabled]{cursor:default;color:var(--fog)}.dig-row[disabled] em{color:var(--fog)}
 .dig-row:not([disabled]):hover{background:rgba(255,61,127,.12)}
 @media (max-width:760px){.dig-head h3{visibility:hidden}.dig-foot{flex-wrap:wrap;justify-content:center;border-radius:18px;width:calc(100% - 24px);padding:10px 12px;row-gap:8px}.dig-foot b{order:-1;flex:1 0 100%;text-align:center;font-size:18px}}
-.cr-fill{position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=1) 40% 50%/cover;filter:blur(24px) brightness(.4)}
+.cr-fill{position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=c1) 40% 50%/cover;filter:blur(24px) brightness(.4)}
 @media (max-width:760px) and (orientation:portrait){
   .lg-panel{position:absolute;pointer-events:auto;left:12px;right:12px;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;height:auto;transform:none;background:var(--glass);border-color:var(--line);padding:14px 16px;gap:8px}
   .lg-panel small{font-size:11px}.lg-panel b{font-size:24px}.lg-panel .row{font-size:13px}
@@ -442,8 +446,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 <section class="lounge" id="lounge" aria-label="The Smile Lounge" aria-hidden="true">
   <div class="lg-fill"></div>
   <div class="lg-cam" id="lg-cam">
-    <img class="lg-bg lg-lay" id="pl-sky" src="img/smile-lounge.webp?v=1" alt="The Smile Lounge: a record player, a crate of records, a red couch and a dance floor on the roof" width="1672" height="941">
-    <img class="lg-bg lg-lay" id="pl-on" src="img/smile-lounge-on.webp?v=1" alt="" width="1672" height="941">
+    <img class="lg-bg lg-lay" id="pl-sky" src="img/smile-lounge.webp?v=c1" alt="The Smile Lounge: a record player, a crate of records, a red couch and a dance floor on the roof" width="1672" height="941">
+    <img class="lg-bg lg-lay" id="pl-on" src="img/smile-lounge-on.webp?v=c1" alt="" width="1672" height="941">
     <canvas id="lg-fx" width="1672" height="941" aria-hidden="true"></canvas>
     <div id="gr-wrap" aria-hidden="true"><img id="gr-pose" alt=""><div id="gr-shadow"></div><img id="gr-dance" alt=""></div>
     <svg id="lg-svg" viewBox="0 0 1672 941" aria-hidden="true">
@@ -553,7 +557,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   const TT=i=>REC[i]?REC[i].title:"";
   // build a scene: state photo, cover art on the record face, scene texture, tape labels, crate rim on top
   function scene(id,state,i){
-    const sc=$(id), img=`img/crate-${state}.webp?v=1`; sc.innerHTML="";
+    const sc=$(id), img=`img/crate-${state}.webp?v=c1`; sc.innerHTML="";
     const ph=document.createElement("img"); ph.src=img; ph.alt=""; sc.appendChild(ph);
     const face=state==="A"?QA:QU, faceRec=state==="B"?i+1:i;
     const clip=document.createElement("div"); clip.className="cr-layer"; clip.style.clipPath=poly(face);
@@ -908,9 +912,9 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .arcade{position:fixed;inset:0;z-index:41;overflow:hidden;background:#05060a;opacity:0;pointer-events:none}
 .arcade.on{opacity:1;pointer-events:auto}
 .arcade:not(.on),.arcade:not(.on) *{pointer-events:none!important}
-.ac-fill{position:absolute;inset:-40px;background:url(img/game-corner.webp?v=1) 30% 50%/cover;filter:blur(22px) brightness(.45)}
+.ac-fill{position:absolute;inset:-40px;background:url(img/game-corner.webp?v=c1) 30% 50%/cover;filter:blur(22px) brightness(.45)}
 .ac-cam,.ac-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
-.ac-cam{z-index:8}.ac-hero{z-index:2;background:url(img/roof-main.webp?v=2) 0 0/1672px 941px;pointer-events:none;display:none}
+.ac-cam{z-index:8}.ac-hero{z-index:2;background:url(img/roof-main.webp?v=c1) 0 0/1672px 941px;pointer-events:none;display:none}
 .ac-cam>img{position:absolute;left:0;top:0;width:1672px;height:941px;user-select:none;-webkit-user-drag:none}
 #pb{position:fixed;inset:0;z-index:95;background:#05060a;display:none;touch-action:none;user-select:none;-webkit-user-select:none}
 #pb.on{display:block}
@@ -931,7 +935,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   <div class="ac-fill"></div>
   <div class="ac-hero" id="ac-hero"></div>
   <div class="ac-cam" id="ac-cam">
-    <img src="img/game-corner.webp?v=1" alt="The game corner behind the shack: three arcade cabinets, a pinball machine, an old TV with a console and two beanbags" width="1672" height="941">
+    <img src="img/game-corner.webp?v=c1" alt="The game corner behind the shack: three arcade cabinets, a pinball machine, an old TV with a console and two beanbags" width="1672" height="941">
     <button class="ac-hot" data-game="Rocket Runner" style="left:107px;top:227px;width:200px;height:520px" aria-label="Rocket Runner arcade cabinet"></button>
     <button class="ac-hot" data-game="Night Striker" style="left:310px;top:247px;width:150px;height:470px" aria-label="Night Striker arcade cabinet"></button>
     <button class="ac-hot" data-game="Pixel Outlaw" style="left:462px;top:267px;width:170px;height:425px" aria-label="Pixel Outlaw arcade cabinet"></button>
@@ -1457,10 +1461,25 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
   addEventListener("keydown",e=>{if(e.key==="Escape")closeAll();});
 
   const mapHref=x=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent([x.venue,x.address,x.city].filter(Boolean).join(", "));
+  function seo(c){ try{
+    const tz=d=>{ const m=+d.slice(5,7); return (m>=4&&m<=10)?"-04:00":"-05:00"; };
+    const hhmm=t=>{ const r=/(\d{1,2})(?::(\d\d))?\s*(am|pm)?/i.exec(t||""); if(!r) return ""; let h=+r[1]; const ap=(r[3]||"").toLowerCase(); if(ap==="pm"&&h<12)h+=12; if(ap==="am"&&h===12)h=0; return "T"+String(h).padStart(2,"0")+":"+(r[2]||"00")+":00"; };
+    const band={"@type":"MusicGroup",name:(c.band&&c.band.name)||"Motel Smile",url:"https://motelsmile.com/",image:"https://motelsmile.com/img/og.jpg",genre:"Rock",
+      sameAs:(c.socials||[]).map(s=>s.url).filter(Boolean)};
+    const today=new Date().toISOString().slice(0,10);
+    const ev=(c.shows||[]).filter(x=>x.date&&x.venue&&x.date>=today).map(x=>{ const t=hhmm(x.time); const o={"@type":"MusicEvent",name:band.name+" at "+x.venue,
+      startDate:x.date+(t?t+tz(x.date):""),eventStatus:"https://schema.org/EventScheduled",eventAttendanceMode:"https://schema.org/OfflineEventAttendanceMode",
+      location:{"@type":"Place",name:x.venue,address:x.address||x.city||""},performer:{"@type":"MusicGroup",name:band.name},organizer:{"@type":"Organization",name:x.venue},image:band.image,
+      description:band.name+" live at "+x.venue+(x.city?", "+x.city:"")+"."};
+      if(x.tickets) o.offers={"@type":"Offer",url:x.tickets,availability:"https://schema.org/InStock"}; return o; });
+    let s=document.getElementById("ld-json"); if(!s){ s=document.createElement("script"); s.type="application/ld+json"; s.id="ld-json"; document.head.appendChild(s); }
+    s.textContent=JSON.stringify({"@context":"https://schema.org","@graph":[band,...ev]});
+  }catch(e){} }
   let signupBound=false;
   function render(c){
+    seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${(c.images&&c.images.hero)||"img/roof-main.webp?v=2"}")`;
+    $("stage").style.backgroundImage=`url("${(c.images&&c.images.hero)||"img/roof-main.webp?v=c1"}")`;
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
@@ -1896,7 +1915,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
         cl.remove(); st.remove(); setTimeout(()=>relight([O]),7000);
         if(panning){ await wait(250); window.MSCam(this.cam.on); await wait(700); } } },
     // Pat: up on the cooler, hurls the bass into SMILE; the whole word smashes and falls
-    pat:{ spot(){ return {x:1296,feet:553,floor:635,z:96}; },
+    pat:{ spot(){ return {x:1282,feet:561,floor:635,z:96}; }, keep:[{x:1110,y:160,w:360,h:410}], cam:{on:1285},
       async hit(R){ const W=document.querySelectorAll(".sign .w")[1]; const L=W?[...W.querySelectorAll("span")]:[];
         const [sx,sy]=p2s(R.L+R.w*.8,R.T+R.h*.15), k=k1(), len=R.h*.62*k, T=W?rectIn(W):{cx:sx+300,cy:sy-300};
         const b=document.createElement("img"); b.src="img/band/gag-bass.webp?v=1"; b.alt=""; b.style.width=len+"px"; fx.appendChild(b);
@@ -1912,7 +1931,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
           if(el<1900) requestAnimationFrame(f); else res(); })(); });
         b.remove(); L.forEach(e=>{ e.classList.add("gone"); e.style.transform=""; e.style.display=""; }); setTimeout(()=>relight(L),7000); } },
     // Jordan: on the ledge, swings his Les Paul and launches each button into the skyline
-    jordan:{ spot(){ const P=document.querySelector(".sky .pills .pill"); let x=900; if(P){ const r=rectIn(P); x=Math.max(450,Math.min(1450,s2p(r.x,0)[0]-80)); } return {x,feet:488,floor:595,z:58}; },
+    jordan:{ cam:{ get on(){ return GAGS.jordan.spot().x; } }, spot(){ const P=document.querySelector(".sky .pills .pill"); let x=900; if(P){ const r=rectIn(P); x=Math.max(450,Math.min(1450,s2p(r.x,0)[0]-80)); } return {x,feet:488,floor:595,z:58}; },
       async hit(R){ const P=[...document.querySelectorAll(".sky .pills .pill")]; crack(); const [hx,hy]=p2s(R.L+R.w*.9,R.T+R.h*.12); burst(hx,hy,30,["#fff7c2","#ffb02e","#fff"],6,.25);
         const s=SR(); const flights=P.map((e,i)=>{ const r=rectIn(e), ang=[-62,-35,-80][i%3]+(Math.random()-.5)*16, dist=[.55,.8,.42][i%3]*s.width, spin=[540,-720,1080][i%3];
           return {e,r,dx:Math.cos(ang*Math.PI/180)*dist*(i===2?-.6:1),dy:Math.sin(ang*Math.PI/180)*dist*.75,spin,delay:i*90,dur:1300+i*250}; });
@@ -1960,7 +1979,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       await wait(dur); frame(S.idle); m.busy=false; schedule(); }
     if(S) kitEl.addEventListener("click",playKit);
     const GG=cfg.gag&&GAGS[cfg.gag], GA=GG&&P("g1"), GB=GG&&P("g2");
-    m.gag=async()=>{ if(!GG||m.busy||gagOn) return false; m.busy=true; gagOn=true; clearTimeout(wT); play.style.zIndex=5;
+    m.gag=async()=>{ if(!GG||m.busy||gagOn) return false; m.busy=true; gagOn=true; clearTimeout(wT); play.style.zIndex=5; document.body.classList.toggle("gag-hp",cfg.gag!=="jordan");
       const camWas=(GG.cam&&window.MSCam)?window.MSCam(GG.cam.on):null; if(camWas!=null) await wait(800);
       { // bandmates step out of the way: anyone overlapping the stunt area, the sign or the buttons fades out until it's over
         const boxes=[...document.querySelectorAll(".sign,.sky .pills .pill")].map(e=>{ const r=e.getBoundingClientRect(), S0=SR(), [x,y]=s2p(r.left-S0.left,r.top-S0.top), k=k1(); return {x,y,w:r.width/k,h:r.height/k}; });
@@ -1992,7 +2011,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       if(ov){ await wait(350); if(GG._land) await GG._land(); await wait(500); const d0=ov[0]; for(let i=0;i<3;i++){ d0.style.opacity=.35; await wait(45); d0.style.opacity=1; await wait(55); } ov.forEach(d=>d.remove()); }
       else { await wait(700); await flicker(3); }
       m.unhide&&m.unhide(); m.unhide=null;
-      vis(false); neon(0); el.style.zIndex=""; play.style.zIndex=""; gagOn=false; if(camWas!=null) window.MSCam(camWas);
+      vis(false); neon(0); el.style.zIndex=""; play.style.zIndex=""; gagOn=false; document.body.classList.remove("gag-hp"); if(camWas!=null) window.MSCam(camWas);
       await wait(500); await appear(); m.busy=false; schedule(); return true; };
     const neon=on=>{ inn.style.opacity=on?1:0; ir.style.opacity=on?0:1; };
     async function flicker(n){ for(let i=0;i<n;i++){ neon(1); await wait(40+Math.random()*60); neon(0); await wait(30+Math.random()*80); } }
