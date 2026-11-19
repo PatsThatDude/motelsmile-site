@@ -520,7 +520,7 @@ body.in-room .mini{display:none}
 .jx.open .jx-stage{transform:none}
 .jx-box{position:relative;height:min(68vh,620px);aspect-ratio:496/900;cursor:pointer;touch-action:manipulation;outline:none;-webkit-tap-highlight-color:transparent;filter:drop-shadow(0 0 30px rgba(255,190,90,.25))}
 .jx-box:focus-visible{filter:drop-shadow(0 0 0 2px var(--cyan)) drop-shadow(0 0 18px var(--cyan))}
-.jx-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;transition:opacity .18s}
+.jx-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;transition:opacity .45s}
 .gr-walk{position:absolute;z-index:200;pointer-events:none;transform-origin:50% 100%;filter:drop-shadow(0 0 4px rgba(255,70,200,.95)) drop-shadow(0 0 10px rgba(255,190,90,.6))}
 .gr-trail{position:absolute;z-index:199;width:5px;height:5px;border-radius:50%;pointer-events:none;background:#ff46c8;box-shadow:0 0 8px #ff46c8;transition:transform 1s ease-out,opacity 1s}
 .bm,.bm-sh,.bm-rf,.bm-kit{transition:opacity .35s}
@@ -1534,7 +1534,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     back.src=src; (back.decode?back.decode():Promise.resolve()).then(swap,swap); }
   function jxShow(s){ clearInterval(jxCyc); const a=JX_SET[s].slice().sort(()=>Math.random()-.5); let i=0;
     jxFrame(a[0].src); jxSay(a[0].say); jxLoad(s+1);
-    if(a.length>1&&!still) jxCyc=setInterval(()=>{ i=(i+1)%a.length; jxFrame(a[i].src); },s===6?520:640); }
+    if(a.length>1&&!still) jxCyc=setInterval(()=>{ i=(i+1)%a.length; jxFrame(a[i].src); },s===6?1300:1600); }
   /* roof camera pushes in on the jar sitting on the ledge */
   let rzOrig=null; document.body.appendChild(JX);
   function roofZoom(on,ms,done){ const st=$("stage");
