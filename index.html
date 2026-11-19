@@ -462,6 +462,24 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
 #gr-dance{filter:drop-shadow(0 0 10px rgba(255,70,200,.35));pointer-events:auto;cursor:pointer}
 #gr-dance.big{filter:drop-shadow(0 0 18px rgba(255,70,200,.6))}
 .gr-ask{position:absolute;z-index:6;display:none;gap:10px;align-items:center;pointer-events:auto;font-size:22px}
+.gg-card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:12;width:min(360px,calc(100% - 32px));box-sizing:border-box;padding:20px 22px;border-radius:14px;background:rgba(8,6,16,.88);border:2px solid var(--pink);box-shadow:0 0 24px rgba(255,61,127,.45);color:#fff;text-align:center;pointer-events:auto;display:none}
+.gg-card.on{display:block}
+.gg-card small{display:block;font:600 11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--pink)}
+.gg-card b{display:block;font:700 26px/1.15 var(--head,inherit);margin:6px 0 8px}
+.gg-card p{margin:0 0 16px;font-size:14px;line-height:1.45;color:rgba(255,255,255,.82)}
+.gg-card .row{display:flex;gap:10px;justify-content:center}
+.gg-card button{all:unset;cursor:pointer;padding:10px 18px;border-radius:999px;font-weight:700;font-size:15px;border:2px solid rgba(255,255,255,.4)}
+.gg-card button.go{border-color:var(--pink);box-shadow:0 0 12px var(--pink)}
+.gg-card button:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.gg-hud{position:absolute;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:12;display:none;align-items:center;gap:12px;padding:8px 16px;border-radius:999px;background:rgba(8,6,16,.8);border:2px solid var(--pink);color:#fff;font:600 13px var(--mono);letter-spacing:.06em;pointer-events:none;white-space:nowrap}
+.gg-hud.on{display:flex}
+.gg-hud .bar{width:110px;height:6px;border-radius:3px;background:rgba(255,255,255,.15);overflow:hidden}.gg-hud .bar i{display:block;height:100%;width:0;background:var(--pink);box-shadow:0 0 8px var(--pink);transition:width .15s}
+.gg-pop{position:absolute;z-index:11;pointer-events:none;font:800 22px var(--mono);color:#fff;text-shadow:0 0 10px var(--pink);transform:translate(-50%,-50%);animation:ggPop .6s ease-out forwards}
+.gg-pop.miss{color:#9aa;text-shadow:none;font-size:16px}
+@keyframes ggPop{to{transform:translate(-50%,-160%);opacity:0}}
+.gg-catch{position:absolute;inset:0;z-index:10;display:none;pointer-events:auto;touch-action:none}
+.gg-catch.on{display:block}
+body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe{opacity:0!important;pointer-events:none!important}
 .gr-ask.on{display:flex}
 .gr-ask .pill{font-size:22px;padding:12px 22px}
 .gr-ask .x{all:unset;cursor:pointer;color:#fff;font:700 22px var(--mono);width:44px;height:44px;display:grid;place-items:center;border-radius:50%;background:rgba(5,6,10,.7);border:2px solid rgba(255,255,255,.4)}
@@ -523,6 +541,9 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
   <div class="lg-hero" id="lg-hero"></div>
   <div class="lg-ui">
     <a class="pill lg-back" style="--c:var(--cyan)" href="#" id="lg-back">← Back to the roof</a>
+    <div class="gg-catch" id="gg-catch"></div>
+    <div class="gg-hud" id="gg-hud" aria-live="polite"><span>Light the floor</span><div class="bar"><i id="gg-bar"></i></div><span id="gg-count">0/12</span></div>
+    <div class="gg-card" id="gg-card" role="dialog" aria-label="Grace's game"><small id="gg-k">Grace · Fences</small><b id="gg-t">Light the floor</b><p id="gg-p">Tiles light up on the beat. Tap each one as it flashes. Hit 12 to set Grace free.</p><div class="row"><button class="go" id="gg-go">Play ▸</button><button id="gg-x">Not now</button></div></div>
     <div class="lg-swipe" aria-hidden="true">⇠ swipe ⇢</div>
     <div class="lg-dig" id="dig" data-mode="crate" role="dialog" aria-label="Record crate" aria-hidden="true">
       <div class="cr-fill"></div>
@@ -1009,6 +1030,10 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
   }
   window.MSLgPlaying=()=>!!cur&&(cur.audio?!audio.paused:(cur.spotify?true:playing!==false));
   window.MSLgOn=()=>L.classList.contains("on");
+  window.MSLgToPlate=(x,y)=>[(x-OX)/S,(y-OY)/S];
+  window.MSLgView=()=>[-OX/S,(innerWidth-OX)/S,-OY/S,(innerHeight-OY)/S];
+  window.MSLgPlay=()=>{ if(cur&&cur.audio&&recOn){ if(audio.paused||stopping) spinUp(); return true; }
+    const i=REC.findIndex(r=>!r.soon&&r.audio); if(i<0) return false; pick(i); return true; };
   window.MSLgPan=c=>{ if(!portrait()) return; lgPan=Math.max(0,c-innerWidth/S/2); frame(); };
   frame(); drawArm();
 })();
@@ -1141,6 +1166,7 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
   const lcv=$("lg-fx"), lx=lcv.getContext("2d"), mcv=$("roof-fx"), mx=mcv.getContext("2d"), glass=$("roof-glass"), plOn=$("pl-on"), lever=$("lg-lever");
   const occ=new Image(); occ.src="img/roof-occ.webp?v=1";
   const PAL=["#ff46c8","#46dcff","#ffaa46","#aa5aff"];
+  window.MSFloorLT=LT;
   const tv={}; [...LT,...MT].forEach(q=>{ const k=q[4]+","+q[5]; if(!(k in tv)) tv[k]=.5+Math.random()*.5; });
   let on=false; try{ localStorage.removeItem("ms-floor"); }catch(e){}
   // small canvas for a cheap glow (drawn small, scaled up)
@@ -1179,6 +1205,7 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
     let lvl=null, amp=0;
     if(on){ const n=Math.floor(now/beat); if(n!==step){ step=n; beatT=now; newPattern(n); } amp=still?.8:.55+.45*Math.exp(-(now-beatT)/(beat*.6)); lvl=k=>pat[k]?[pat[k],amp]:["#ff46c8",.05]; }
     else if(sputter){ lvl=k=>sputter.tiles.includes(k)?[PAL[k.length%4],.55]:null; amp=.35; }
+    if(window.MSFloorGame){ lvl=window.MSFloorGame; amp=.6; }
     // lounge
     lx.clearRect(0,0,1672,941);
     if(inL&&lvl){ lx.globalCompositeOperation="lighter"; tiles(lx,LT,lvl,1);
@@ -1192,7 +1219,7 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
       if(on){ beams(mx,MCANS,now,.55); const c=PAL[step%4]; glass.style.background=c; glass.style.opacity=String(.28+.3*amp);
         const r=mx.createRadialGradient(1433,703,0,1433,703,200); r.addColorStop(0,c+"55"); r.addColorStop(1,c+"00"); mx.fillStyle=r; mx.beginPath(); mx.ellipse(1433,703,200,50,0,0,7); mx.fill(); }
       mx.globalCompositeOperation="source-over"; }
-    if((on||P||stut)&&!(window.MSAway&&window.MSAway()&&!inL)) kick();
+    if((on||P||stut||window.MSFloorGame)&&!(window.MSAway&&window.MSAway()&&!inL)) kick();
   }
   function kick(){ if(!raf) raf=requestAnimationFrame(draw); }
   addEventListener("ms-view",kick); setInterval(kick,1000);
@@ -1273,7 +1300,60 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
       FX=A.x+(B.x-A.x)*e; FY=A.y+(B.y-A.y)*e; DH=(A.h+(B.h-A.h)*e)*k;
       setFrame(fi<0?0:fi,true); shadow.style.left=(FX-19*DH/85)+"px"; shadow.style.top=(FY-4*DH/85)+"px"; shadow.style.width=(38*DH/85)+"px"; shadow.style.height=(7*DH/85)+"px";
       if(u<1) requestAnimationFrame(f); else if(on){ placeAsk(); ask.classList.add("on"); } })(t0); }
-  dance.addEventListener("click",e=>{ e.stopPropagation(); if(!floorOn()) return; grow(!big); });
+  dance.addEventListener("click",e=>{ e.stopPropagation(); if(!floorOn()||game) return; if(big){ grow(false); return; } if(won) grow(true); else gameCard("intro"); });
+  /* ---------- Grace's game: Light the Floor ---------- */
+  const NEED=12, COUNT=20, WIN_MS=200;
+  let game=null, won=false;
+  const card=$("gg-card"), hud=$("gg-hud"), catcher=$("gg-catch");
+  function gameCard(kind,score){
+    const T={intro:["Grace · Fences","Light the floor","Tiles light up on the beat of the record. Tap each one as it flashes. Hit 12 to set Grace free.","Play ▸"],
+      win:["Grace · Fences","She’s free!",`${score} of ${COUNT} on the beat. Grace is all yours.`,"Dance ▸"],
+      lose:["Grace · Fences","So close",`${score} of ${COUNT}. You need ${NEED}. Want another go?`,"Try again ▸"],
+      stop:["Grace · Fences","The record stopped","Put the record back on and try again.","Try again ▸"]}[kind];
+    $("gg-k").textContent=T[0]; $("gg-t").textContent=T[1]; $("gg-p").textContent=T[2]; $("gg-go").textContent=T[3]; card.dataset.kind=kind; card.classList.add("on");
+    setTimeout(()=>$("gg-go").focus({preventScroll:true}),50); }
+  $("gg-x").addEventListener("click",()=>card.classList.remove("on"));
+  $("gg-go").addEventListener("click",()=>{ card.classList.remove("on"); if(card.dataset.kind==="win") grow(true); else startGame(); });
+  const centroid=q=>[(q[0][0]+q[1][0]+q[2][0]+q[3][0])/4,(q[0][1]+q[1][1]+q[2][1]+q[3][1])/4];
+  function blip(f,len,vol,type){ try{ const a=window.MSAC&&window.MSAC(); if(!a) return; const t=a.currentTime,o=a.createOscillator(),g=a.createGain(); o.type=type||"triangle"; o.frequency.setValueAtTime(f,t); g.gain.setValueAtTime(vol||.12,t); g.gain.exponentialRampToValueAtTime(.0001,t+(len||.15)); o.connect(g).connect(a.destination); o.start(t); o.stop(t+(len||.15)+.02); }catch(e){} }
+  function pop(txt,x,y,miss){ const ui=document.querySelector(".lg-ui"), d=document.createElement("div"); d.className="gg-pop"+(miss?" miss":""); d.textContent=txt; d.style.left=x+"px"; d.style.top=y+"px"; ui.appendChild(d); setTimeout(()=>d.remove(),650); }
+  function startGame(){
+    if(!window.MSFloorLT||!window.MSLgPlay||!window.MSLgPlay()){ return; }
+    if(!floorOn()) lever.click();
+    if(window.MSLgPan) window.MSLgPan(1150);
+    document.body.classList.add("gg-on");
+    const V=window.MSLgView?window.MSLgView():[0,1672,0,941], mx=(V[1]-V[0])*.08;
+    let LT=window.MSFloorLT.filter(q=>{ const [cx,cy]=centroid(q); return cx>Math.max(760,V[0]+mx)&&cx<Math.min(1560,V[1]-mx)&&cy<V[3]-40; }); // the open part of the floor that's on screen
+    if(LT.length<4) LT=window.MSFloorLT;
+    game={LT,targets:[],hits:0,done:0,started:performance.now(),last:null};
+    hud.classList.add("on"); catcher.classList.add("on"); $("gg-bar").style.width="0"; $("gg-count").textContent=`0/${NEED}`;
+    window.MSFloorGame=k=>{ if(!game) return null; for(const tg of game.targets){ if(tg.k!==k) continue;
+        if(tg.state==="hit"){ const u=(performance.now()-tg.at)/350; return u<1?["#ffffff",1-u*.4]:null; }
+        if(tg.state==="miss"){ const u=(performance.now()-tg.at)/350; return u<1?["#ff3d5a",.45*(1-u)]:null; }
+        const now=audio.currentTime, lead=tg.t-now, a=Math.max(.12,Math.min(1,1-lead/1.1)); return [tg.c,a]; }
+      return ["#ff46c8",.05]; };
+    requestAnimationFrame(gameTick); }
+  function gameTick(){ if(!game) return;
+    const now=audio.currentTime;
+    if(audio.paused&&performance.now()-game.started>2500){ endGame("stop"); return; }
+    // schedule: every 2nd beat, up to COUNT targets, each one lit 1.1s before its beat
+    if(game.targets.length<COUNT&&!audio.paused){ const lastT=game.targets.length?game.targets[game.targets.length-1].t:now-.2;
+      let bi=BEATS.findIndex(b=>b>Math.max(lastT+.8,now+.6)); if(bi>=0&&BEATS[bi]-now<1.1){ let q; do{ q=game.LT[Math.floor(Math.random()*game.LT.length)]; }while(game.last&&q===game.last&&game.LT.length>1);
+        game.last=q; game.targets.push({q,k:q[4]+","+q[5],t:BEATS[bi],c:["#ff46c8","#46dcff","#ffaa46","#aa5aff"][game.targets.length%4],state:"live"}); } }
+    for(const tg of game.targets){ if(tg.state==="live"&&now-tg.t>WIN_MS/1000*1.6){ tg.state="miss"; tg.at=performance.now(); game.done++; const [px,py]=centroid(tg.q), s=toScreen(px,py); pop("miss",s[0],s[1],true); } }
+    if(game.done>=COUNT){ endGame(game.hits>=NEED?"win":"lose"); return; }
+    requestAnimationFrame(gameTick); }
+  window.__gg=()=>game;
+  function toScreen(px,py){ const c=document.getElementById("lg-cam").getBoundingClientRect(), k=c.width/1672; return [c.left+px*k,c.top+py*k]; }
+  catcher.addEventListener("pointerdown",e=>{ if(!game) return; e.preventDefault(); const [px,py]=window.MSLgToPlate(e.clientX,e.clientY), now=audio.currentTime;
+    let best=null,bd=1e9; for(const tg of game.targets){ if(tg.state!=="live") continue; const [cx,cy]=centroid(tg.q), d=Math.hypot(px-cx,(py-cy)*2.2); if(d<bd){ bd=d; best=tg; } }
+    if(best&&bd<110&&Math.abs(now-best.t)<=WIN_MS/1000*1.6){ best.state="hit"; best.at=performance.now(); game.hits++; game.done++;
+      const off=Math.abs(now-best.t), word=off<.07?"perfect":off<.15?"nice":"ok"; blip(off<.07?1320:990,.14,.13); pop(word,e.clientX,e.clientY);
+      $("gg-bar").style.width=Math.min(100,game.hits/NEED*100)+"%"; $("gg-count").textContent=`${Math.min(game.hits,NEED)}/${NEED}`; }
+    else { blip(180,.12,.08,"square"); } });
+  function endGame(kind){ const g=game; game=null; window.MSFloorGame=null; document.body.classList.remove("gg-on"); hud.classList.remove("on"); catcher.classList.remove("on");
+    if(kind==="win"){ won=true; [523,659,784,1046].forEach((f,i)=>setTimeout(()=>blip(f,.25,.13),i*110)); setTimeout(()=>gameCard("win",g.hits),300); }
+    else gameCard(kind,g?g.hits:0); }
   $("gr-ask-x").addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); grow(false); });
   $("gr-band").addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); ask.classList.remove("on");
     window.MSGraceOut=true; const back=$("lg-back"); back&&back.click();
