@@ -285,7 +285,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
   </div>
   <div class="flash" id="flash"></div>
   <div class="hunt" id="hunt"></div>
-  <div class="gr-toast" id="gr-toast" role="status" hidden><img src="img/grace/d7.webp" alt=""><div><b id="gr-h">Grace is free!</b><span id="gr-msg">She’s waiting for you in the Smile Lounge.</span></div><button class="pill" style="--c:var(--pink)" id="gr-go">Go dance →</button><button class="gr-x" id="gr-x" aria-label="Close">✕</button></div>
+  <div class="gr-toast" id="gr-toast" role="status" hidden><img src="img/grace/d7.webp?v=2" alt=""><div><b id="gr-h">Grace is free!</b><span id="gr-msg">She’s waiting for you in the Smile Lounge.</span></div><button class="pill" style="--c:var(--pink)" id="gr-go">Go dance →</button><button class="gr-x" id="gr-x" aria-label="Close">✕</button></div>
   <div class="pan-hint" id="pan-hint" aria-hidden="true">⇠ swipe to look around ⇢</div>
   <a class="hot" id="lounge-hot" href="#lounge" data-lounge aria-label="The lounge: pick a record"></a>
 
@@ -1255,8 +1255,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   const $=id=>document.getElementById(id), still=matchMedia("(prefers-reduced-motion:reduce)").matches;
   const jar=$("pk-jar"), toast=$("gr-toast"), pose=$("gr-pose"), dance=$("gr-dance"), shadow=$("gr-shadow"), lever=$("lg-lever"), audio=$("lg-audio"), L=$("lounge");
   let freed=false; try{ localStorage.removeItem("ms-grace"); }catch(e){}
-  const V="?v=1", FR=[1,2,3,4,5,6,7,8].map(i=>"img/grace/d"+i+".webp"+V);
-  const W=[178,228,194,228,236,234,208,253], AX=[.566,.57,.548,.546,.458,.354,.349,.503];
+  const V="?v=2", FR=[1,2,3,4,5,6,7,8].map(i=>"img/grace/d"+i+".webp"+V);
+  const W=[170,233,186,254,206,231,224,222], AX=[.406,.387,.397,.575,.382,.571,.418,.504];
   const POSES={sit:[982.2,581.6,46.3,42],lean:[1120.4,549,15.6,40],lie:[873,584.2,64,31.6]}; // tiny: 1/6 scale like Fences
   let FX=1190, FY=862, DH=85; // feet on the floor, height in lounge px (she grows when tapped)
   const HF=y=>1.436*(y-470); // full-size height for feet at plate y on the lounge floor
@@ -2462,7 +2462,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const CREW={pat:PAT,jordan:JORDAN,jacob:JACOB}; window.MSGag=n=>CREW[n]&&CREW[n].gag();
   // Grace on the roof: comes up off the dance floor full size and dances with each of the band
   window.MSGraceRoof=(()=>{
-    const FR=[1,2,3,4,5,6,7,8].map(i=>"img/grace/d"+i+".webp?v=1"), W=[178,228,194,228,236,234,208,253], AX=[.566,.57,.548,.546,.458,.354,.349,.503];
+    const FR=[1,2,3,4,5,6,7,8].map(i=>"img/grace/d"+i+".webp?v=2"), W=[170,233,186,254,206,231,224,222], AX=[.406,.387,.397,.575,.382,.571,.418,.504];
     const g=document.createElement("img"), gs=document.createElement("div"); g.className="gr-roof"; g.alt="Grace"; g.setAttribute("role","button"); g.setAttribute("aria-label","Grace (tap her)"); gs.className="gr-roof-sh";
     play.insertBefore(gs,cv); play.insertBefore(g,cv);
     FR.forEach(s=>{ const i=new Image(); i.src=s; });
