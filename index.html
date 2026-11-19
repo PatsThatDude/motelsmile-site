@@ -364,6 +364,53 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
 .lg-hot.deck.live{cursor:grab;touch-action:none}.lg-hot.deck.live:active{cursor:grabbing}
 .lg-hint{position:absolute;left:380px;top:400px;z-index:5;font:600 19px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#fff;padding:8px 16px;border-radius:24px;background:rgba(5,6,10,.7);border:2px solid var(--cyan);box-shadow:0 0 12px var(--cyan);pointer-events:none;opacity:0;transition:opacity .4s;white-space:nowrap}
 .lg-hint.on{opacity:1}
+/* turntable view */
+.dk{position:absolute;inset:0;z-index:11;display:grid;place-items:center;background:rgba(4,4,8,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s;pointer-events:auto}
+.dk.open{opacity:1;visibility:visible;transition:opacity .3s}
+.dk-in{width:min(680px,94vw,calc((100vh - 230px)*520/440));min-width:min(300px,94vw);display:flex;flex-direction:column;gap:12px;padding:12px}
+.dk-head{display:flex;align-items:center;gap:14px}
+.dk-np small{display:block;font:600 11px var(--mono);letter-spacing:.25em;text-transform:uppercase;color:var(--pink)}
+.dk-np b{font-family:var(--tube);font-weight:400;font-size:26px;color:#fff;text-shadow:0 0 10px var(--pink)}
+.dk-deck{position:relative;width:100%;aspect-ratio:520/440;filter:drop-shadow(0 14px 30px rgba(0,0,0,.6))}
+.dk-deck svg{position:absolute;inset:0;width:100%;height:100%;user-select:none;-webkit-user-select:none}
+.dk-sheen{position:absolute;left:calc((220 - 188)/520*100%);top:calc((220 - 188)/440*100%);width:calc(376/520*100%);height:calc(376/440*100%);border-radius:50%;pointer-events:none;
+  background:conic-gradient(from 20deg,transparent 0 30deg,rgba(255,255,255,.10) 45deg,transparent 60deg 200deg,rgba(255,61,127,.10) 220deg,transparent 240deg);mix-blend-mode:screen}
+.dk-bar{height:4px;border-radius:2px;background:rgba(255,255,255,.12);overflow:hidden}.dk-bar i{display:block;height:100%;width:0;background:var(--pink);box-shadow:0 0 8px var(--pink)}
+.dk-ctrl{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.dk-ss{all:unset;cursor:pointer;font:700 11px/1.15 var(--mono);letter-spacing:.12em;color:#fff;text-align:center;padding:10px 14px;border-radius:6px;background:linear-gradient(#3a3c42,#1c1d21);border:1.5px solid #6a6e76;box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
+.dk-ss.on{border-color:var(--pink);box-shadow:0 0 12px var(--pink),inset 0 1px 0 rgba(255,255,255,.15)}
+.dk-ss:focus-visible,.dk-rpm button:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.dk-rpm{display:flex;gap:6px}.dk-rpm button{all:unset;cursor:pointer;font:600 13px var(--mono);color:#fff;padding:8px 11px;border-radius:6px;border:1.5px solid rgba(255,255,255,.3)}
+.dk-rpm button[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.dk-pitch{display:flex;align-items:center;gap:8px;font:600 11px var(--mono);letter-spacing:.12em;color:#cfd3da;flex:1;min-width:150px}
+.dk-pitch input{flex:1;accent-color:var(--pink)}.dk-pitch em{font-style:normal;color:#fff;min-width:44px}
+.dk-time{font:600 13px var(--mono);color:#fff}
+.dk-hint{margin:0;font:12px var(--mono);letter-spacing:.06em;color:#aeb3bc;text-align:center}
+body.dk-on .lg-panel,body.dk-on .lg-tag,body.dk-on .lg-hint{opacity:0!important;pointer-events:none!important}
+.lg-dj{margin-left:2px}
+/* roof player */
+.lp{display:flex;gap:16px;align-items:center;margin:4px 0 14px}
+.lp-rec{width:84px;height:84px;flex:none;border-radius:50%;background:radial-gradient(circle,#ff5b92 0 26%,#0a0a0c 27% 100%);box-shadow:0 0 0 2px #222,0 6px 18px rgba(0,0,0,.6);display:grid;place-items:center}
+.lp-rec img{width:30px;height:30px}
+.lp.on .lp-rec{animation:lpspin 1.8s linear infinite}@keyframes lpspin{to{transform:rotate(360deg)}}
+.lp-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.lp-main b{font-family:var(--tube);font-weight:400;font-size:24px;color:#fff;text-shadow:0 0 10px var(--pink)}
+.lp-row{display:flex;align-items:center;gap:12px}
+.lp-row .lg-bar{height:6px}
+.lp-t{font:600 13px var(--mono);color:#fff;white-space:nowrap}
+.lp-go{font:600 13px var(--mono);color:var(--cyan);text-decoration:none;align-self:flex-start}
+.mini{position:fixed;right:14px;bottom:calc(var(--barh,84px) + 12px);z-index:40;display:flex;align-items:center;gap:10px;padding:6px 8px 6px 14px;border-radius:999px;background:rgba(8,8,14,.88);border:1.5px solid var(--pink);box-shadow:0 0 14px rgba(255,61,127,.45);font:600 13px var(--mono);color:#fff;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .25s,transform .25s}
+.mini.on{opacity:1;transform:none;pointer-events:auto}
+.mini .eq{display:inline-flex;gap:2px;align-items:flex-end;height:14px}.mini .eq i{width:3px;background:var(--pink);height:4px}
+.mini.play .eq i{animation:eq .9s ease-in-out infinite}.mini.play .eq i:nth-child(2){animation-delay:-.3s}.mini.play .eq i:nth-child(3){animation-delay:-.6s}
+@keyframes eq{0%,100%{height:3px}50%{height:14px}}
+.mini button.t{all:unset;cursor:pointer;max-width:42vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini .lg-pp{width:32px;height:32px}.mini .lg-pp i{border-left-width:12px;border-top-width:7px;border-bottom-width:7px}.mini .lg-pp.playing i{width:11px;height:13px}
+body.in-room .mini{display:none}
+@media (max-width:760px){.mini{top:calc(env(safe-area-inset-top,0px) + 10px);bottom:auto;right:10px;padding:4px 6px 4px 12px;font-size:12px}.mini button.t{max-width:calc(100vw - 260px)}}
+@media (max-width:359px){.mini button.t{display:none}}
+@media (prefers-reduced-motion:reduce){.lp.on .lp-rec,.mini.play .eq i{animation:none}}
+
 .lg-bar span{display:block;height:100%;width:0;background:var(--pink);box-shadow:0 0 8px var(--pink)}
 .lg-panel a{color:var(--cyan);font-size:16px}
 .lg-panel iframe{border:0;border-radius:10px;width:100%;height:80px}
@@ -377,6 +424,7 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
 .lg-cam .lg-lay{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0}
 .lg-dig{pointer-events:auto;position:absolute;inset:0;z-index:9;overflow:hidden;background:transparent;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
 .lg-dig .cr-fill{display:none}
+.dig-soon .dig-row{opacity:.5;cursor:default}.dig-more em{color:var(--cyan)!important}.dig-soon .dig-row em{color:#9a9aa6!important}
 .lg-dig{background:rgba(5,6,10,.55)!important}.lg-dig .cr-mx,.lg-dig .dig-seg,.lg-dig .dig-foot{display:none!important}
 .lg-dig .dig-head h3{visibility:visible!important}
 .cr-mx{position:absolute;inset:0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
@@ -551,11 +599,11 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     <button class="lg-hot deck" id="lg-deck-hot" aria-label="Play or pause the record"></button>
     <button class="lg-hot lever" id="lg-lever" aria-label="Dance floor power: off" aria-pressed="false"></button>
     <div class="lg-tag" id="lg-tag">Pick a record ↓</div>
-    <div class="lg-hint" id="lg-hint" aria-hidden="true">Tap to stop · drag to scratch</div>
+    <div class="lg-hint" id="lg-hint" aria-hidden="true">Tap the deck to DJ · drag to scratch</div>
     <div class="lg-panel" id="lg-panel" aria-live="polite">
       <small id="lg-state">The lounge</small>
       <b id="lg-title">Pick a record</b>
-      <div class="row" id="lg-ctrl" hidden><button class="lg-pp" id="lg-pp" aria-label="Play"><i></i></button><div class="lg-bar" id="lg-bar" role="slider" aria-label="Seek" tabindex="0"><span id="lg-prog"></span></div><span id="lg-time">0:00</span><button class="lg-rpm" id="lg-rpm" aria-pressed="false" aria-label="Play at 45 RPM">45</button></div>
+      <div class="row" id="lg-ctrl" hidden><button class="lg-pp" id="lg-pp" aria-label="Play"><i></i></button><div class="lg-bar" id="lg-bar" role="slider" aria-label="Seek" tabindex="0"><span id="lg-prog"></span></div><span id="lg-time">0:00</span><button class="lg-rpm" id="lg-rpm" aria-pressed="false" aria-label="Play at 45 RPM">45</button><button class="lg-rpm lg-dj" id="lg-dj" aria-label="Open the turntable">DJ</button></div>
       <div id="lg-note" class="row">Flip through the crate.</div>
       <div id="lg-spot"></div>
     </div>
@@ -567,6 +615,59 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     <div class="gg-hud" id="gg-hud" aria-live="polite"><span>Light the floor</span><div class="bar"><i id="gg-bar"></i></div><span id="gg-count">0/12</span></div>
     <div class="gg-card" id="gg-card" role="dialog" aria-label="Grace's game"><small id="gg-k">Grace · Fences</small><b id="gg-t">Light the floor</b><p id="gg-p">Tiles light up on the beat. Tap each one as it flashes. Hit 12 to set Grace free.</p><div class="row"><button class="go" id="gg-go">Play ▸</button><button id="gg-x">Not now</button></div></div>
     <div class="lg-swipe" aria-hidden="true">⇠ swipe ⇢</div>
+    <div class="dk" id="dk" role="dialog" aria-label="Turntable" aria-hidden="true">
+      <div class="dk-in">
+        <div class="dk-head"><button class="dig-x" id="dk-x">✕ Close</button><div class="dk-np"><small id="dk-state">Now spinning</small><b id="dk-title"></b></div></div>
+        <div class="dk-deck">
+          <svg id="dk-svg" viewBox="0 0 520 440" role="img" aria-label="Turntable">
+            <defs>
+              <linearGradient id="dk-wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3a2516"/><stop offset=".5" stop-color="#241509"/><stop offset="1" stop-color="#160c05"/></linearGradient>
+              <radialGradient id="dk-plat" cx=".5" cy=".5" r=".5"><stop offset=".9" stop-color="#2a2a30"/><stop offset=".97" stop-color="#bfc3c9"/><stop offset="1" stop-color="#5d6168"/></radialGradient>
+              <radialGradient id="dk-lab" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#ff6fa0"/><stop offset="1" stop-color="#c41d58"/></radialGradient>
+              <radialGradient id="dk-metal" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#f3f5f8"/><stop offset="1" stop-color="#7c818a"/></radialGradient>
+              <path id="dk-arc" d="M 220 220 m -44 0 a 44 44 0 1 1 88 0"/>
+            </defs>
+            <rect x="2" y="2" width="516" height="436" rx="20" fill="url(#dk-wood)" stroke="#5a3a22" stroke-width="2"/>
+            <rect x="12" y="12" width="496" height="416" rx="14" fill="none" stroke="rgba(255,255,255,.06)"/>
+            <circle cx="220" cy="220" r="204" fill="#0d0d10"/>
+            <g id="dk-rot">
+              <circle cx="220" cy="220" r="200" fill="url(#dk-plat)"/>
+              <g id="dk-strobe" fill="#d9dde3"></g>
+              <circle cx="220" cy="220" r="188" fill="#09090b"/>
+              <g id="dk-grooves" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"></g>
+              <circle cx="220" cy="220" r="64" fill="url(#dk-lab)"/>
+              <image href="img/smile-logo-96.webp" x="196" y="170" width="48" height="48"/>
+              <text font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="3" fill="#fff"><textPath href="#dk-arc" startOffset="50%" text-anchor="middle">MOTEL SMILE</textPath></text>
+              <text x="220" y="250" text-anchor="middle" font-family="Yellowtail, cursive" font-size="15" fill="#fff" id="dk-lab-t">Don't Mind It</text>
+              <text x="220" y="266" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7" letter-spacing="2" fill="#ffd1e1">SIDE A · 33⅓</text>
+            </g>
+            <circle id="dk-vinyl" cx="220" cy="220" r="190" fill="transparent" style="cursor:grab;touch-action:none"/>
+            <circle cx="220" cy="220" r="5" fill="url(#dk-metal)" pointer-events="none"/>
+            <circle cx="470" cy="300" r="10" fill="#1a1a1e" stroke="#666" pointer-events="none"/>
+            <rect x="462" y="292" width="16" height="10" rx="2" fill="#2a2a2e" pointer-events="none"/>
+            <g id="dk-arm">
+              <circle cx="452" cy="78" r="28" fill="url(#dk-metal)" stroke="#444"/>
+              <circle cx="452" cy="78" r="11" fill="#2b2d31"/>
+              <rect x="400" y="70" width="34" height="16" rx="5" fill="#1d1e22" stroke="#555"/>
+              <line x1="452" y1="78" x2="752" y2="78" stroke="url(#dk-metal)" stroke-width="9" stroke-linecap="round"/>
+              <line x1="452" y1="78" x2="752" y2="78" stroke="rgba(255,255,255,.55)" stroke-width="1.6"/>
+              <rect x="738" y="66" width="34" height="24" rx="3" fill="#202125" stroke="#9aa0a8" transform="rotate(-18 752 78)"/>
+              <line id="dk-armhit" x1="452" y1="78" x2="772" y2="78" stroke="transparent" stroke-width="32" stroke-linecap="round" style="cursor:grab;touch-action:none" tabindex="0" role="slider" aria-label="Tonearm: drop it to jump in the song"/>
+            </g>
+          </svg>
+          <div class="dk-sheen" aria-hidden="true"></div>
+        </div>
+        <div class="dk-bar"><i id="dk-prog"></i></div>
+        <div class="dk-ctrl">
+          <button class="dk-ss" id="dk-ss" aria-label="Start or stop">START<br>STOP</button>
+          <div class="dk-rpm" role="group" aria-label="Speed"><button data-r="33" aria-pressed="true">33</button><button data-r="45" aria-pressed="false">45</button></div>
+          <label class="dk-pitch"><span>PITCH</span><input type="range" id="dk-pitch" min="-8" max="8" step="0.5" value="0" aria-label="Pitch"><em id="dk-pv">0.0%</em></label>
+          <span class="dk-time" id="dk-time">0:00 / 0:00</span>
+        </div>
+        <p class="dk-hint">Spin the record to scratch · drag the arm to jump · tap the record to stop</p>
+      </div>
+    </div>
+
     <div class="lg-dig" id="dig" data-mode="crate" role="dialog" aria-label="Record crate" aria-hidden="true">
       <div class="cr-fill"></div>
       <div class="cr-mx"><div class="cr-my"><div class="cr-box" id="cr-box">
@@ -647,11 +748,17 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   const show1=id=>["cs-U","cs-A","cs-B"].forEach(k=>$(k).classList.toggle("on",k===id));
   function drawCrate(){
     const ls=$("dig-list"); ls.innerHTML="";
-    REC.forEach((r,i)=>{
-      const b=document.createElement("button"); b.className="dig-row"; b.disabled=r.soon;
-      b.innerHTML=`<span></span><em>${r.soon?"Coming soon":"Play ▸"}</em>`; b.querySelector("span").textContent=r.title;
+    const soon=REC.filter(r=>r.soon).length;
+    REC.forEach((r,i)=>{ if(r.soon) return;
+      const b=document.createElement("button"); b.className="dig-row";
+      b.innerHTML=`<span></span><em>Play ▸</em>`; b.querySelector("span").textContent=r.title;
       b.addEventListener("click",()=>choose(i)); ls.appendChild(b);
     });
+    if(soon){ const more=document.createElement("button"); more.className="dig-row dig-more"; more.setAttribute("aria-expanded","false");
+      more.innerHTML=`<span>${soon} more in the crate</span><em>Coming soon ▾</em>`; ls.appendChild(more);
+      const box=document.createElement("div"); box.className="dig-soon"; box.hidden=true;
+      REC.forEach(r=>{ if(!r.soon) return; const d=document.createElement("div"); d.className="dig-row"; d.setAttribute("aria-disabled","true"); d.innerHTML=`<span></span><em>Soon</em>`; d.querySelector("span").textContent=r.title; box.appendChild(d); });
+      ls.appendChild(box); more.addEventListener("click",()=>{ box.hidden=!box.hidden; more.setAttribute("aria-expanded",String(!box.hidden)); more.querySelector("em").textContent=box.hidden?"Coming soon ▾":"Coming soon ▴"; }); }
     sel=Math.max(0,REC.findIndex(r=>!r.soon)); show();
   }
   let sel=0, flipping=false;
@@ -692,7 +799,10 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function setMode(m){ $("dig").dataset.mode=m; $("dig-m-crate").setAttribute("aria-pressed",m==="crate"); $("dig-m-list").setAttribute("aria-pressed",m==="list"); }
   $("dig-m-crate").addEventListener("click",()=>setMode("crate")); $("dig-m-list").addEventListener("click",()=>setMode("list"));
   // picking: the record tips up (state A) and you head back to the record player
-  function choose(i){ closeCrate(); setTimeout(()=>pick(i),still?0:250); }
+  // start the audio element inside the tap itself (muted) so iPhone allows the real start a moment later
+  function unlock(r){ if(!r||!r.audio) return; try{ if(audio.getAttribute("src")!==r.audio){ audio.src=r.audio; }
+      audio.muted=true; const pr=audio.play(); if(pr) pr.then(()=>{ if(audio.muted) audio.pause(); }).catch(()=>{}); }catch(e){} }
+  function choose(i){ unlock(REC[i]); closeCrate(); setTimeout(()=>pick(i),still?0:250); }
   // leaning in over the crate: the same picture, zoomed so the crate fills the view
   function crPose(){ const vw=innerWidth,vh=innerHeight, port=vw<vh;
     const s=port?Math.min(vw*.95/330,(vh-230)/300):Math.min(vw*.5/330,(vh-170)/300);
@@ -886,8 +996,9 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function pick(i){
     const r=REC[i]; if(!r||r.soon) return;
     closeCrate(); $("lg-tag").hidden=true;
-    cur=r; audio.pause(); playing=false; ui();
-    audio.src=r.audio||""; if(r.audio) audio.load();
+    cur=r; if(!audio.muted) audio.pause(); playing=false; ui();
+    if(r.audio){ if(audio.getAttribute("src")!==r.audio){ audio.src=r.audio; audio.load(); } } else audio.removeAttribute("src");
+    mediaMeta();
     initCrackle();
     seq=0; seqT0=performance.now()-8.55e3;
     $("lg-state").textContent="Cueing up"; $("lg-title").textContent=r.title; $("lg-note").textContent=""; $("lg-ctrl").hidden=true;
@@ -904,16 +1015,18 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function needleDown(){
     crackle(true);
     if(cur.spotify){ $("lg-state").textContent="On the platter"; $("lg-note").textContent="Press play on Spotify below."; return; }
-    if(cur.audio){ noPitch(); audio.playbackRate=rpmRate(); audio.play().then(()=>{playing=true;ui();crackle(false);}).catch(()=>{playing=false;ui();}); $("lg-ctrl").hidden=false; $("lg-note").textContent=""; hint(); }
+    if(cur.audio){ noPitch(); audio.muted=false; try{ audio.currentTime=0; }catch(e){} audio.playbackRate=rpmRate(); audio.play().then(()=>{playing=true;ui();crackle(false);}).catch(()=>{playing=false;ui();$("lg-note").textContent="Tap ▶ to drop the needle.";}); $("lg-ctrl").hidden=false; $("lg-note").textContent=""; hint(); }
     else { playing=true; $("lg-state").textContent="Now spinning"; $("lg-note").textContent="The track lands here soon. Follow for the drop."; }
   }
   function ui(){
     $("lg-pp").classList.toggle("playing",playing); $("lg-pp").setAttribute("aria-label",playing?"Pause":"Play");
-    if(cur&&cur.audio) $("lg-state").textContent=playing?"Now spinning":"Paused";
+    if(cur&&cur.audio) $("lg-state").textContent=playing?"Now spinning":(audio.ended?"Side over · tap ▶ to spin it again":"Paused");
+    const db=$("dk-ss"); if(db) db.classList.toggle("on",playing);
+    if("mediaSession" in navigator) try{ navigator.mediaSession.playbackState=playing?"playing":"paused"; }catch(e){}
   }
   /* ---------- deck feel: power-down / spin-up pitch, 45 rpm, seek, scratch ---------- */
   let rpm45=false, stopping=false, rampId=0;
-  const rpmRate=()=>rpm45?1.35:1;
+  let pitch=0; const rpmRate=()=>(rpm45?1.35:1)*(1+pitch/100);
   function noPitch(){ for(const k of ["preservesPitch","mozPreservesPitch","webkitPreservesPitch"]) if(k in audio) audio[k]=false; }
   function rampRate(a,b,ms,done){ const id=++rampId, t0=performance.now(); noPitch();
     (function f(now){ if(id!==rampId) return; const u=ms?Math.min(1,(now-t0)/ms):1, e=u*u*(3-2*u); try{ audio.playbackRate=Math.max(.07,a+(b-a)*e); }catch(_){}
@@ -923,14 +1036,15 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     audio.play().then(()=>{ playing=true; ui(); crackle(false); rampRate(.3,rpmRate(),still?0:550); }).catch(()=>{}); }
   function toggle(){
     if(!recOn||!cur) { openCrate(); return; }
-    if(cur.audio){ if(audio.paused||stopping) spinUp(); else powerDown(); }
+    if(cur.audio){ audio.muted=false; if(audio.ended){ try{ audio.currentTime=0; }catch(e){} } if(audio.paused||stopping) spinUp(); else powerDown(); }
     else { playing=!playing; crackle(playing); }
   }
   let hintT=0;
   function hint(){ const h=$("lg-hint"); h.classList.add("on"); clearTimeout(hintT); hintT=setTimeout(()=>h.classList.remove("on"),4200); }
   $("lg-pp").addEventListener("click",toggle);
-  $("lg-rpm").addEventListener("click",()=>{ rpm45=!rpm45; const b=$("lg-rpm"); b.setAttribute("aria-pressed",rpm45); b.setAttribute("aria-label",rpm45?"Play at 33 RPM":"Play at 45 RPM"); b.textContent=rpm45?"33":"45";
-    if(cur&&cur.audio&&!audio.paused&&!stopping) rampRate(audio.playbackRate,rpmRate(),still?0:350); });
+  $("lg-rpm").addEventListener("click",()=>setRpm(!rpm45));
+  function setRpm(v){ rpm45=v; document.querySelectorAll(".dk-rpm button").forEach(x=>x.setAttribute("aria-pressed",String((x.dataset.r==="45")===rpm45))); const b=$("lg-rpm"); b.setAttribute("aria-pressed",rpm45); b.setAttribute("aria-label",rpm45?"Play at 33 RPM":"Play at 45 RPM"); b.textContent=rpm45?"33":"45";
+    if(cur&&cur.audio&&!audio.paused&&!stopping) rampRate(audio.playbackRate,rpmRate(),still?0:350); }
   // seek: tap or drag the bar (the needle lifts and drops)
   let seeking=false;
   function seekAt(e){ const r=$("lg-bar").getBoundingClientRect(), u=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); if(audio.duration){ audio.currentTime=u*audio.duration; } }
@@ -948,9 +1062,9 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   deck.addEventListener("pointermove",e=>{ if(!scr||e.pointerId!==scr.id) return; const now=performance.now(), dx=e.clientX-scr.x;
     if(!scr.moved){ if(Math.abs(dx)<7&&Math.abs(e.clientY-scr.y)<7) return; scr.moved=true; startScratch(); }
     const dt=Math.max(8,now-scr.t), v=dx/dt; SCR.target=Math.max(-4,Math.min(4,v/.32)); SCR.lastMove=now; scr.x=e.clientX; scr.t=now; });
-  const deckUp=e=>{ if(!scr) return; const s=scr; scr=null; if(s.moved) endScratch(); else toggle(); };
+  const deckUp=e=>{ if(!scr) return; const s=scr; scr=null; if(s.moved) endScratch(); else openDeck(); };
   deck.addEventListener("pointerup",deckUp); deck.addEventListener("pointercancel",()=>{ if(scr&&scr.moved) endScratch(); scr=null; });
-  deck.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggle(); } });
+  deck.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openDeck(); } });
   function startScratch(){ initCrackle(); hideHint();
     SCR.wasPlaying=cur.audio?(!audio.paused&&!stopping):playing; SCR.t0=audio.currentTime||0; rampId++; stopping=false;
     if(cur.audio&&!audio.paused) audio.pause(); SCR.vel=SCR.wasPlaying?rpmRate():0; SCR.target=0; SCR.lastMove=performance.now();
@@ -960,6 +1074,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     else crackle(playing); }
   function hideHint(){ clearTimeout(hintT); $("lg-hint").classList.remove("on"); }
   audio.addEventListener("ended",()=>{playing=false;ui();crackle(true);});
+  audio.addEventListener("pause",()=>{ if(!stopping&&!SCR.on&&!audio.muted){ playing=false; ui(); } });
+  audio.addEventListener("play",()=>{ if(!audio.muted){ playing=true; ui(); } });
   audio.addEventListener("playing",()=>crackle(false));
   const fmt=s=>isFinite(s)?Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0"):"0:00";
 
@@ -974,26 +1090,30 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       const src=AC.createBufferSource(); src.buffer=b; src.loop=true;
       const hp=AC.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=900;
       crG=AC.createGain(); crG.gain.value=0; src.connect(hp).connect(crG).connect(AC.destination); src.start();
-      try{ const ms=AC.createMediaElementSource(audio), lp=AC.createBiquadFilter(), vg=AC.createGain(); lp.type="lowpass"; lp.frequency.value=20000;
-        // ring buffer of what just played, for scratching
-        const N=Math.floor(AC.sampleRate*8), RL=new Float32Array(N), RR=new Float32Array(N); let w=0;
-        const cap=AC.createScriptProcessor(2048,2,2);
-        cap.onaudioprocess=ev=>{ const iL=ev.inputBuffer.getChannelData(0), iR=ev.inputBuffer.numberOfChannels>1?ev.inputBuffer.getChannelData(1):iL, oL=ev.outputBuffer.getChannelData(0), oR=ev.outputBuffer.getChannelData(1);
-          oL.set(iL); oR.set(iR); if(audio.paused) return; for(let i=0;i<iL.length;i++){ const k=(w+i)%N; RL[k]=iL[i]; RR[k]=iR[i]; } w+=iL.length; };
-        ms.connect(cap).connect(lp).connect(vg).connect(AC.destination);
-        const sp=AC.createScriptProcessor(1024,1,2); let S=null, pos=0, pos0=0;
+      // The song itself plays straight from the <audio> element (keeps playing on the lock screen and in the background).
+      // Scratching decodes a few seconds around the needle from the same file (byte range) and plays that back and forth.
+      try{ const sr=AC.sampleRate, BPS=16000; let S=null, pos=0, pos0=0, W=null, Wkey=-1, Wload=null;
+        const vg=AC.createGain(); vg.connect(AC.destination);
+        window.MSScratchPrep=()=>{ const src=audio.currentSrc||audio.src; if(!src) return Promise.resolve(null); const t=audio.currentTime||0, key=Math.round(t/2);
+          if(W&&Wkey===key&&W.src===src) return Promise.resolve(W); if(Wload&&Wload.key===key) return Wload.p;
+          const a0=Math.max(0,t-7), a1=t+3;
+          const pr=fetch(src,{headers:{Range:`bytes=${Math.floor(a0*BPS)}-${Math.floor(a1*BPS)}`}}).then(r=>r.arrayBuffer()).then(ab=>new Promise((ok,no)=>AC.decodeAudioData(ab,ok,no)))
+            .then(buf=>{ const full=buf.duration>a1-a0+2; W={L:buf.getChannelData(0),R:buf.numberOfChannels>1?buf.getChannelData(1):buf.getChannelData(0),start:full?0:a0,src}; Wkey=key; Wload=null; return W; })
+            .catch(()=>{ Wload=null; return null; });
+          Wload={key,p:pr}; return pr; };
+        const sp=AC.createScriptProcessor(1024,1,2); const osc=AC.createConstantSource?AC.createConstantSource():AC.createOscillator(); const z=AC.createGain(); z.gain.value=0; osc.connect(z).connect(sp); try{osc.start();}catch(e){}
         sp.onaudioprocess=ev=>{ const oL=ev.outputBuffer.getChannelData(0), oR=ev.outputBuffer.getChannelData(1);
           if(!S||!S.on){ oL.fill(0); oR.fill(0); return; }
           const now=performance.now(); if(now-S.lastMove>70) S.target=0;
-          const have=Math.min(w,N), lo=w-have+1, hi=w-1;
-          for(let i=0;i<oL.length;i++){ S.vel+=(S.target-S.vel)*.0025; pos+=S.vel; if(pos>hi){pos=hi;} if(pos<lo){pos=lo;}
-            const f=Math.floor(pos), fr=pos-f, a=((f%N)+N)%N, b=(a+1)%N, g=Math.min(1,Math.abs(S.vel)*1.6);
-            let l=(RL[a]+(RL[b]-RL[a])*fr)*g, r=(RR[a]+(RR[b]-RR[a])*fr)*g;
-            if(have<AC.sampleRate*.3){ const n=(Math.random()*2-1)*.18*Math.min(1,Math.abs(S.vel)); l+=n; r+=n; }
-            oL[i]=l; oR[i]=r; } };
-        const sil=AC.createGain(); sil.gain.value=0; ms.connect(sil).connect(sp); sp.connect(vg);
-        window.MSScratch={ begin(s){ S=s; pos=pos0=w-1; }, end(){ const o=(pos-pos0)/AC.sampleRate; S=null; return o; }, vel:()=>S?S.vel:0 };
-        window.MSMuffle=m=>{ lp.frequency.setTargetAtTime(m?650:20000,AC.currentTime,.25); vg.gain.setTargetAtTime(m?.5:1,AC.currentTime,.25); }; }catch(e){}
+          for(let i=0;i<oL.length;i++){ S.vel+=(S.target-S.vel)*.0025; const g=Math.min(1,Math.abs(S.vel)*1.6);
+            if(!W){ const n=(Math.random()*2-1)*.12*g; oL[i]=n; oR[i]=n; continue; }
+            pos+=S.vel; const hi=W.L.length-2; if(pos>hi) pos=hi; if(pos<0) pos=0;
+            const f=Math.floor(pos), fr=pos-f; oL[i]=(W.L[f]+(W.L[f+1]-W.L[f])*fr)*g; oR[i]=(W.R[f]+(W.R[f+1]-W.R[f])*fr)*g; } };
+        sp.connect(vg);
+        window.MSScratch={ begin(s){ S=s; const t=audio.currentTime||0; const set=()=>{ if(W){ pos=pos0=Math.max(0,(t-W.start)*sr); } };
+            if(W&&W.src===(audio.currentSrc||audio.src)&&t>=W.start+.5&&t<=W.start+W.L.length/sr-.3) set(); else { W=null; window.MSScratchPrep().then(()=>{ if(S===s) set(); }); } },
+          end(){ const o=W?(pos-pos0)/sr:0; S=null; return o; }, vel:()=>S?S.vel:0 };
+        window.MSMuffle=()=>{}; }catch(e){}
     }catch(e){AC=null;}
   }
   function crackle(on){ if(crG&&AC) crG.gain.setTargetAtTime(on?.35:0,AC.currentTime,.15); }
@@ -1043,13 +1163,84 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       const going=cur&&(cur.audio?!audio.paused:(cur.spotify?true:playing!==false));
       if(SCR.on){ if(performance.now()-SCR.lastMove>70) SCR.target=0; const v=window.MSScratch?window.MSScratch.vel():SCR.target; spinV+=(v*200-spinV)*Math.min(1,dt*20); }
       else spinV+=((going?200*(cur&&cur.audio?audio.playbackRate:1):0)-spinV)*Math.min(1,dt*(stopping?6:1.8));
-      if(cur&&cur.audio&&audio.duration){ const p=audio.currentTime/audio.duration; armA=A_OUT+(A_IN-A_OUT)*p; $("lg-prog").style.width=(p*100)+"%"; $("lg-time").textContent=fmt(audio.currentTime); }
+      if(cur&&cur.audio&&audio.duration){ const p=audio.currentTime/audio.duration; armA=A_OUT+(A_IN-A_OUT)*p; $("lg-prog").style.width=(p*100)+"%"; $("lg-time").textContent=fmt(audio.currentTime)+" / "+fmt(audio.duration);
+        const lb=$("lg-bar"); lb.setAttribute("aria-valuenow",Math.round(audio.currentTime)); lb.setAttribute("aria-valuemax",Math.round(audio.duration)); lb.setAttribute("aria-valuetext",fmt(audio.currentTime)+" of "+fmt(audio.duration)); }
       armLift=(going||SCR.on)&&!seeking?0:6;
     }
     spinA=(spinA+spinV*dt)%360; spin.setAttribute("transform",`rotate(${spinA})`);
-    drawArm();
+    drawArm(); if(dkOpen) dkFrame(dt);
     if(L.classList.contains("on")||anim) requestAnimationFrame(tick); else looping=false;
   }
+
+  /* ---------- the turntable: tap the record player to take over the decks ---------- */
+  const dk=$("dk"), dkRot=$("dk-rot"), dkArm=$("dk-arm"), dkSvg=$("dk-svg");
+  const DC={x:220,y:220}, DPV={x:452,y:78}, DL=300, R_OUT=182, R_IN=76;
+  const stylus=a=>({x:DPV.x+DL*Math.cos(a*Math.PI/180),y:DPV.y+DL*Math.sin(a*Math.PI/180)});
+  const radAt=a=>{ const s=stylus(a); return Math.hypot(s.x-DC.x,s.y-DC.y); };
+  const solveA=r=>{ let best=90,bd=1e9; for(let a=80;a<=150;a+=.05){ const d=Math.abs(radAt(a)-r); if(d<bd){bd=d;best=a;} } return best; };
+  const DA_OUT=solveA(R_OUT), DA_IN=solveA(R_IN), DA_REST=86;
+  let dkOpen=false, dkAng=0, dkArmA=DA_REST, armDrag=null, vDrag=null, dkPrepT=0;
+  function openDeck(){ if(!recOn||!cur) { openCrate(); return; } dkOpen=true; hideHint(); initCrackle(); dk.classList.add("open"); dk.setAttribute("aria-hidden","false");
+    $("dk-title").textContent=cur.title; document.body.classList.add("dk-on"); if(window.MSScratchPrep&&cur.audio) window.MSScratchPrep(); loop(); setTimeout(()=>$("dk-ss").focus({preventScroll:true}),150); }
+  function closeDeck(){ dkOpen=false; dk.classList.remove("open"); dk.setAttribute("aria-hidden","true"); document.body.classList.remove("dk-on"); if(vDrag){ vDrag=null; endScratch(); } armDrag=null; }
+  $("dk-x").addEventListener("click",closeDeck); $("lg-dj").addEventListener("click",openDeck);
+  addEventListener("keydown",e=>{ if(dkOpen&&e.key==="Escape"){ e.stopPropagation(); closeDeck(); } },true);
+  $("dk-ss").addEventListener("click",()=>{ if(cur&&cur.audio&&audio.currentTime<.05&&audio.paused){ dkArmA=DA_OUT; } toggle(); });
+  document.querySelectorAll(".dk-rpm button").forEach(b=>b.addEventListener("click",()=>{ const v=b.dataset.r==="45"; if(v!==rpm45) setRpm(v); }));
+  $("dk-pitch").addEventListener("input",e=>{ pitch=+e.target.value; $("dk-pv").textContent=(pitch>0?"+":"")+pitch.toFixed(1)+"%"; if(cur&&cur.audio&&!audio.paused&&!stopping&&!SCR.on) audio.playbackRate=rpmRate(); });
+  $("dk-pitch").addEventListener("dblclick",e=>{ e.target.value=0; e.target.dispatchEvent(new Event("input")); });
+  const svgPt=e=>{ const m=dkSvg.getScreenCTM(); if(!m) return {x:0,y:0}; const q=dkSvg.createSVGPoint(); q.x=e.clientX; q.y=e.clientY; return q.matrixTransform(m.inverse()); };
+  const angAt=(c,q)=>Math.atan2(q.y-c.y,q.x-c.x)*180/Math.PI;
+  // the record: grab it and turn it back and forth to scratch; a quick tap starts or stops it
+  $("dk-vinyl").addEventListener("pointerdown",e=>{ if(!cur) return; e.preventDefault(); try{e.target.setPointerCapture(e.pointerId);}catch(_){}
+    if(window.MSScratchPrep&&cur.audio) window.MSScratchPrep(); const q=svgPt(e); vDrag={id:e.pointerId,a:angAt(DC,q),t:performance.now(),x:e.clientX,y:e.clientY,moved:false}; });
+  $("dk-vinyl").addEventListener("pointermove",e=>{ if(!vDrag||e.pointerId!==vDrag.id) return; const now=performance.now(), q=svgPt(e), a=angAt(DC,q);
+    if(!vDrag.moved){ if(Math.hypot(e.clientX-vDrag.x,e.clientY-vDrag.y)<6) return; vDrag.moved=true; startScratch(); }
+    let d=a-vDrag.a; if(d>180) d-=360; if(d<-180) d+=360; dkAng+=d; const dt=Math.max(8,now-vDrag.t);
+    SCR.target=Math.max(-4,Math.min(4,(d/dt*1000)/200)); SCR.lastMove=now; vDrag.a=a; vDrag.t=now; });
+  const vUp=e=>{ if(!vDrag) return; const v=vDrag; vDrag=null; if(v.moved) endScratch(); else toggle(); };
+  $("dk-vinyl").addEventListener("pointerup",vUp); $("dk-vinyl").addEventListener("pointercancel",vUp);
+  // the tonearm: pick it up and drop it anywhere on the record to jump there; park it on the rest to stop
+  $("dk-armhit").addEventListener("pointerdown",e=>{ if(!cur||!cur.audio) return; e.preventDefault(); e.stopPropagation(); try{e.target.setPointerCapture(e.pointerId);}catch(_){} armDrag={id:e.pointerId}; crackle(true); });
+  $("dk-armhit").addEventListener("pointermove",e=>{ if(!armDrag||e.pointerId!==armDrag.id) return; const a=angAt(DPV,svgPt(e)); dkArmA=Math.max(DA_REST-4,Math.min(DA_IN+1.5,a)); });
+  const armUp=e=>{ if(!armDrag) return; armDrag=null;
+    if(dkArmA<DA_OUT-2){ dkArmA=DA_REST; if(!audio.paused&&!stopping) powerDown(); else crackle(true); return; }
+    const u=Math.max(0,Math.min(1,(dkArmA-DA_OUT)/(DA_IN-DA_OUT))); if(audio.duration){ try{ audio.currentTime=Math.min(audio.duration-.3,u*audio.duration); }catch(_){} }
+    audio.muted=false; if(audio.paused||stopping) spinUp(); else crackle(false); };
+  $("dk-armhit").addEventListener("pointerup",armUp); $("dk-armhit").addEventListener("pointercancel",armUp);
+  $("dk-armhit").addEventListener("keydown",e=>{ if(!audio.duration) return; if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ e.preventDefault(); try{ audio.currentTime=Math.max(0,Math.min(audio.duration-.3,audio.currentTime+(e.key==="ArrowRight"?10:-10))); }catch(_){} } });
+  function dkFrame(dt){
+    if(!vDrag||!vDrag.moved) dkAng=(dkAng+spinV*dt)%360;
+    dkRot.setAttribute("transform",`rotate(${dkAng.toFixed(2)} ${DC.x} ${DC.y})`);
+    const d=audio.duration||0, t=audio.currentTime||0, going=cur&&cur.audio&&!audio.paused&&!stopping;
+    if(!armDrag){ const target=(going||SCR.on||(t>.05&&!audio.ended))&&d?DA_OUT+(DA_IN-DA_OUT)*(t/d):DA_REST; dkArmA+=(target-dkArmA)*Math.min(1,dt*(Math.abs(target-dkArmA)>3?5:30)); }
+    dkArm.setAttribute("transform",`rotate(${dkArmA.toFixed(2)} ${DPV.x} ${DPV.y})`);
+    $("dk-time").textContent=fmt(t)+" / "+fmt(d); $("dk-prog").style.width=(d?t/d*100:0)+"%";
+    $("dk-state").textContent=SCR.on?"Scratching":going?"Now spinning":audio.ended?"Side over":"Stopped";
+    const now=performance.now(); if(going&&now-dkPrepT>4000&&window.MSScratchPrep){ dkPrepT=now; window.MSScratchPrep(); }
+  }
+  /* ---------- lock screen / headphones / car: title, art and controls ---------- */
+  function mediaMeta(){ if(!("mediaSession" in navigator)||!cur) return; try{
+      navigator.mediaSession.metadata=new MediaMetadata({title:cur.title,artist:"Motel Smile",album:"Live from the roof",artwork:[{src:"img/icon-512.png",sizes:"512x512",type:"image/png"},{src:"img/icon-192.png",sizes:"192x192",type:"image/png"}]});
+      const ms=navigator.mediaSession, set=(k,f)=>{ try{ ms.setActionHandler(k,f); }catch(e){} };
+      set("play",()=>{ audio.muted=false; if(audio.ended) audio.currentTime=0; noPitch(); audio.playbackRate=rpmRate(); audio.play().catch(()=>{}); });
+      set("pause",()=>{ rampId++; stopping=false; audio.pause(); });
+      set("seekto",d=>{ try{ audio.currentTime=d.seekTime; }catch(e){} });
+      set("seekbackward",d=>{ audio.currentTime=Math.max(0,audio.currentTime-(d.seekOffset||10)); });
+      set("seekforward",d=>{ audio.currentTime=Math.min(audio.duration||0,audio.currentTime+(d.seekOffset||10)); });
+    }catch(e){} }
+  audio.addEventListener("timeupdate",()=>{ if("mediaSession" in navigator&&audio.duration&&navigator.mediaSession.setPositionState) try{ navigator.mediaSession.setPositionState({duration:audio.duration,position:Math.min(audio.duration,audio.currentTime),playbackRate:Math.max(.1,audio.playbackRate)}); }catch(e){} });
+  /* ---------- for the roof player: put the record on without the walk-over, and play/pause it ---------- */
+  window.MSLgDirect=()=>{ const i=REC.findIndex(r=>!r.soon&&r.audio); if(i<0) return false; const r=REC[i];
+    if(cur!==r||!recOn){ cur=r; if(audio.getAttribute("src")!==r.audio) audio.src=r.audio; $("lg-title").textContent=r.title; $("lg-tag").hidden=true; $("lg-note").textContent="";
+      recOn=true; seq=1; seqT0=performance.now()-20e3; deck.classList.add("live"); recLayer(false); setRec(PLAT.x,PLAT.y,PLAT.rx,PLAT.q,1); $("lg-ctrl").hidden=false; mediaMeta(); }
+    initCrackle(); audio.muted=false; if(audio.ended) audio.currentTime=0; rampId++; stopping=false; noPitch(); audio.playbackRate=rpmRate();
+    audio.play().then(()=>{ playing=true; ui(); crackle(false); }).catch(()=>{}); return true; };
+  window.MSLgToggle=()=>{ if(cur&&cur.audio&&recOn){ if(audio.paused||stopping){ window.MSLgDirect(); } else { rampId++; stopping=false; audio.pause(); } return; } window.MSLgDirect(); };
+  window.MSLgTitle=()=>cur?cur.title:((REC.find(r=>!r.soon&&r.audio)||{}).title||"");
+  (()=>{ const s=$("dk-strobe"), g=$("dk-grooves"); let h="";
+    for(let i=0;i<72;i++){ const a=i*5*Math.PI/180; h+=`<rect x="${(220+194*Math.cos(a)-1.6).toFixed(1)}" y="${(220+194*Math.sin(a)-1.6).toFixed(1)}" width="3.2" height="3.2"/>`; } s.innerHTML=h; h="";
+    for(let r=70;r<=186;r+=2.4){ const gap=(r>110&&r<112.5)||(r>150&&r<152.5); h+=`<circle cx="220" cy="220" r="${r.toFixed(1)}"${gap?' stroke="rgba(255,255,255,.12)"':''}/>`; } g.innerHTML=h; })();
   window.MSLgPlaying=()=>!!cur&&(cur.audio?!audio.paused:(cur.spotify?true:playing!==false));
   window.MSLgOn=()=>L.classList.contains("on");
   window.MSLgToPlate=(x,y)=>[(x-OX)/S,(y-OY)/S];
@@ -1703,6 +1894,44 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 </section>
 
 <script>
+/* Roof player: the "Now playing" tile plays the song right there, and a mini player follows you around the roof */
+(()=>{
+  const $=id=>document.getElementById(id), audio=$("lg-audio"), sheet=$("sheet-listen"), tile=document.querySelector('.tile[data-open="listen"]');
+  if(!audio||!sheet) return;
+  const fmt=s=>isFinite(s)?Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0"):"0:00";
+  const lp=document.createElement("div"); lp.className="lp"; lp.innerHTML=`<div class="lp-rec" aria-hidden="true"><img src="img/smile-logo-96.webp" alt=""></div>
+    <div class="lp-main"><b id="lp-title">Don't Mind It</b><div class="lp-row"><button class="lg-pp" id="lp-pp" aria-label="Play"><i></i></button><div class="lg-bar" id="lp-bar" role="slider" aria-label="Seek" tabindex="0"><span id="lp-prog"></span></div><span class="lp-t" id="lp-t">0:00 / 4:06</span></div>
+    <a class="lp-go" href="#" id="lp-go">Spin it on the record player in the lounge →</a></div>`;
+  const inn=sheet.querySelector(".in"); inn.insertBefore(lp,inn.querySelector(".thumbs"));
+  const mini=document.createElement("div"); mini.className="mini"; mini.id="mini"; mini.setAttribute("role","region"); mini.setAttribute("aria-label","Now playing");
+  mini.innerHTML=`<span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><button class="t" id="mini-t">Don't Mind It</button><button class="lg-pp" id="mini-pp" aria-label="Play"><i></i></button>`;
+  document.body.appendChild(mini);
+  const toggle=()=>{ if(window.MSLgToggle) window.MSLgToggle(); };
+  $("lp-pp").addEventListener("click",e=>{ e.stopPropagation(); toggle(); });
+  $("mini-pp").addEventListener("click",e=>{ e.stopPropagation(); toggle(); });
+  $("mini-t").addEventListener("click",()=>{ if(!sheet.classList.contains("open")) tile&&tile.click(); });
+  $("lp-go").addEventListener("click",e=>{ e.preventDefault(); const b=document.querySelector(".pill[data-lounge]"); document.querySelector("#sheet-listen [data-close]").click(); b&&b.click(); });
+  let seeking=false; const bar=$("lp-bar");
+  const seekAt=e=>{ const r=bar.getBoundingClientRect(), u=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); if(audio.duration) audio.currentTime=u*audio.duration; };
+  bar.addEventListener("pointerdown",e=>{ if(!audio.duration) return; seeking=true; try{bar.setPointerCapture(e.pointerId);}catch(_){} seekAt(e); });
+  bar.addEventListener("pointermove",e=>{ if(seeking) seekAt(e); }); bar.addEventListener("pointerup",()=>seeking=false); bar.addEventListener("pointercancel",()=>seeking=false);
+  bar.addEventListener("keydown",e=>{ if(!audio.duration) return; if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ e.preventDefault(); audio.currentTime=Math.max(0,Math.min(audio.duration,audio.currentTime+(e.key==="ArrowRight"?5:-5))); } });
+  const sub=$("t-listen-sub"), head=$("t-listen"), sub0=sub?sub.textContent:"";
+  function paint(){ const on=!audio.paused&&!audio.muted, d=audio.duration||246.7, t=audio.currentTime||0, title=(window.MSLgTitle&&window.MSLgTitle())||"Don't Mind It";
+    for(const id of ["lp-pp","mini-pp"]){ const b=$(id); b.classList.toggle("playing",on); b.setAttribute("aria-label",on?"Pause":"Play"); }
+    lp.classList.toggle("on",on); $("lp-title").textContent=title; $("mini-t").textContent=title;
+    $("lp-prog").style.width=(t/d*100)+"%"; $("lp-t").textContent=fmt(t)+" / "+fmt(d);
+    bar.setAttribute("aria-valuenow",Math.round(t)); bar.setAttribute("aria-valuetext",fmt(t)+" of "+fmt(d));
+    const started=!!audio.getAttribute("src")&&!audio.muted&&(on||(t>.5&&!audio.ended));
+    mini.classList.toggle("on",started&&!sheet.classList.contains("open")); mini.classList.toggle("play",on);
+    if(head) head.textContent=title+(on?" ♪":" ▸"); if(sub) sub.textContent=on?"Playing · "+fmt(t)+" / "+fmt(d):(started?"Paused · "+fmt(t):sub0);
+  }
+  ["play","pause","timeupdate","ended","seeked","loadedmetadata","volumechange"].forEach(k=>audio.addEventListener(k,paint));
+  new MutationObserver(paint).observe(sheet,{attributes:true,attributeFilter:["class"]});
+  setTimeout(()=>{ if(sub&&!sub.textContent.startsWith("P")){} paint(); },1500);
+})();
+</script>
+<script>
 /* iPhone: Web Audio is muted by the ring/silent switch unless the page plays as media. On the first touch, switch the audio session to playback and play a tiny silent clip so every sound on the roof is heard. */
 (()=>{
   let CTX=null;
@@ -1839,7 +2068,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   requestAnimationFrame(tick); addEventListener("resize",place);
   // stunts can steer the phone camera: MSCam(plateX) pans there; returns where it was
   window.MSCam=c=>{ const was=cxT; if(phone()&&c!=null){ cxT=clampC(c); hinted=true; } return phone()?was:null; };
-  const setBarH=()=>$("stage").style.setProperty("--barh",$("bar").offsetHeight+"px");
+  const setBarH=()=>{ const h=$("bar").offsetHeight+"px"; $("stage").style.setProperty("--barh",h); document.documentElement.style.setProperty("--barh",h); };
   addEventListener("resize",setBarH); setBarH();
   function closeAll(){document.querySelectorAll(".sheet").forEach(s=>s.classList.remove("open"));document.querySelectorAll(".tile").forEach(t=>t.setAttribute("aria-expanded","false"));}
   function open(k){
