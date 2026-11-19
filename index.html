@@ -324,7 +324,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
 body.in-room #stage>:is(.top,#flyer,#play,#flash,#hunt,#pan-hint,#lounge-hot,.sky,.sheet,.bar,.gagfx){visibility:hidden;content-visibility:hidden}
 body.in-room #stage>:is(.top,#flyer,#play,#hunt,.sky,.bar) *{animation-play-state:paused!important}
 body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-state:paused!important}
-.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=c1) 40% 50%/cover;filter:blur(22px) brightness(.45)}
+.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=b1) 40% 50%/cover;filter:blur(22px) brightness(.45)}
 .lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
 .lg-cam{z-index:8}.lg-hero{z-index:2;background:url(img/roof-main.webp?v=c1) 0 0/1672px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
@@ -348,7 +348,7 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
 .lg-tag[hidden]{display:none}
 @keyframes lgpulse{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-8px);opacity:.75}}
 /* front-of-console player: sits on the speaker grille */
-.lg-panel{transition:opacity .3s;position:absolute;left:250px;top:722px;width:362px;height:186px;z-index:4;padding:18px 22px;background:rgba(5,6,10,.5);border:1.5px solid rgba(255,61,127,.35);border-radius:6px;box-shadow:inset 0 0 40px rgba(0,0,0,.6);backdrop-filter:blur(2px);display:flex;flex-direction:column;gap:7px;font-family:var(--mono);color:var(--fog)}
+.lg-panel{transition:opacity .3s;position:absolute;left:448px;top:752px;width:330px;height:176px;z-index:4;padding:18px 22px;background:rgba(5,6,10,.5);border:1.5px solid rgba(255,61,127,.35);border-radius:6px;box-shadow:inset 0 0 40px rgba(0,0,0,.6);backdrop-filter:blur(2px);display:flex;flex-direction:column;gap:7px;font-family:var(--mono);color:var(--fog)}
 .lg-panel small{font-size:12px;letter-spacing:.25em;text-transform:uppercase;color:var(--pink)}
 .lg-panel b{font-family:var(--tube);font-weight:400;font-size:30px;line-height:1.05;color:#fff;text-shadow:0 0 10px var(--pink)}
 .lg-panel .row{display:flex;align-items:center;gap:12px;font-size:14px}
@@ -427,7 +427,7 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
 .dig-row[disabled]{cursor:default;color:var(--fog)}.dig-row[disabled] em{color:var(--fog)}
 .dig-row:not([disabled]):hover{background:rgba(255,61,127,.12)}
 @media (max-width:760px){.dig-head h3{visibility:hidden}.dig-foot{flex-wrap:wrap;justify-content:center;border-radius:18px;width:calc(100% - 24px);padding:10px 12px;row-gap:8px}.dig-foot b{order:-1;flex:1 0 100%;text-align:center;font-size:18px}}
-.cr-fill{position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=c1) 40% 50%/cover;filter:blur(24px) brightness(.4)}
+.cr-fill{position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=b1) 40% 50%/cover;filter:blur(24px) brightness(.4)}
 @media (max-width:760px) and (orientation:portrait){
   .lg-panel{position:absolute;pointer-events:auto;left:12px;right:12px;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;height:auto;transform:none;background:var(--glass);border-color:var(--line);padding:14px 16px;gap:8px}
   .lg-panel small{font-size:11px}.lg-panel b{font-size:24px}.lg-panel .row{font-size:13px}
@@ -509,8 +509,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 <section class="lounge" id="lounge" aria-label="The Smile Lounge" aria-hidden="true">
   <div class="lg-fill"></div>
   <div class="lg-cam" id="lg-cam">
-    <img class="lg-bg lg-lay" id="pl-sky" src="img/smile-lounge.webp?v=c1" alt="The Smile Lounge: a record player, a crate of records, a red couch and a dance floor on the roof" width="1672" height="941">
-    <img class="lg-bg lg-lay" id="pl-on" src="img/smile-lounge-on.webp?v=c1" alt="" width="1672" height="941">
+    <img class="lg-bg lg-lay" id="pl-sky" src="img/smile-lounge.webp?v=b1" alt="The Smile Lounge: a record player, a crate of records, a red couch and a dance floor on the roof" width="1672" height="941">
+    <img class="lg-bg lg-lay" id="pl-on" src="img/smile-lounge-on.webp?v=b1" alt="" width="1672" height="941">
     <canvas id="lg-fx" width="1672" height="941" aria-hidden="true"></canvas>
     <div id="gr-wrap" aria-hidden="true"><img id="gr-pose" alt=""><div id="gr-shadow"></div><img id="gr-dance" alt="Grace dancing"><div id="gr-pshadow"></div><div id="gr-partner"><img class="r" alt=""><img class="n" alt=""></div></div>
     <div class="gr-ask" id="gr-ask"><span class="gr-ask-h">Dance with</span><a class="pill" style="--c:var(--pink)" href="#" data-partner="pat">Pat</a><a class="pill" style="--c:var(--cyan)" href="#" data-partner="jordan">Jordan</a><a class="pill" style="--c:#ffaa46" href="#" data-partner="jacob">Jacob</a><button class="x" id="gr-ask-x" aria-label="Send her back to the floor">✕</button></div>
