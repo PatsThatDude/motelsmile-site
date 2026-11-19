@@ -285,6 +285,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
   </div>
   <div class="flash" id="flash"></div>
   <div class="hunt" id="hunt"></div>
+<div class="jz" id="jz" hidden role="button" tabindex="0" aria-label="A jar on the ledge with someone inside. Tap to look closer"><button class="pill jx-x" id="jz-x" style="--c:var(--cyan)">✕ Back</button><div class="jz-say">Wait… is someone in there?</div><b class="jz-tip">Tap the jar to look closer</b></div>
 <div class="jx" id="jx" hidden role="dialog" aria-label="Grace is stuck in a jar">
   <button class="pill jx-x" id="jx-x" style="--c:var(--cyan)">✕ Not now</button>
   <div class="jx-stage"><div class="jx-say" id="jx-say"></div>
@@ -521,11 +522,17 @@ body.in-room .mini{display:none}
 .jx-box{position:relative;height:min(68vh,620px);aspect-ratio:496/900;cursor:pointer;touch-action:manipulation;outline:none;-webkit-tap-highlight-color:transparent;filter:drop-shadow(0 0 30px rgba(255,190,90,.25))}
 .jx-box:focus-visible{filter:drop-shadow(0 0 0 2px var(--cyan)) drop-shadow(0 0 18px var(--cyan))}
 .jx-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;transition:opacity .6s}
+.jz{position:fixed;inset:0;z-index:79;cursor:pointer;-webkit-tap-highlight-color:transparent;opacity:0;transition:opacity .4s}
+.jz.on{opacity:1}
+.jz-say{position:absolute;left:50%;top:14%;transform:translateX(-50%);background:#fff;color:#111;font:700 14px/1.2 ui-monospace,Menlo,monospace;padding:8px 12px;border-radius:12px;white-space:nowrap;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+.jz-tip{position:absolute;left:50%;bottom:9%;transform:translateX(-50%);color:#fff;font-size:15px;text-shadow:0 2px 10px #000;white-space:nowrap;animation:jzp 1.6s ease-in-out infinite}
+@keyframes jzp{50%{opacity:.45}}
 .gr-walk{position:absolute;z-index:200;pointer-events:none;transform-origin:50% 100%;filter:drop-shadow(0 0 4px rgba(255,70,200,.95)) drop-shadow(0 0 10px rgba(255,190,90,.6))}
 .gr-trail{position:absolute;z-index:199;width:5px;height:5px;border-radius:50%;pointer-events:none;background:#ff46c8;box-shadow:0 0 8px #ff46c8;transition:transform 1s ease-out,opacity 1s}
 .bm,.bm-sh,.bm-rf,.bm-kit{transition:opacity .35s}
 body.jx-zoom .bm,body.jx-zoom .bm-sh,body.jx-zoom .bm-rf,body.jx-zoom .bm-kit,body.jx-zoom .top,body.jx-zoom #bar,body.jx-zoom .mini,body.jx-zoom .pan-hint{opacity:0!important;pointer-events:none!important}
-body.jx-zoom{overflow:hidden}
+html.jx-zoom,html.jx-zoom body{overflow:clip!important;overscroll-behavior:none}
+#stage.zooming{will-change:transform}
 .top,#bar{transition:opacity .3s}
 .jx-box.hit{animation:jxhit .28s ease-out}
 @keyframes jxhit{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(-6px,2px) rotate(-1.5deg)}55%{transform:translate(5px,-1px) rotate(1.2deg)}100%{transform:none}}
@@ -1536,11 +1543,11 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     jxFrame(a[0].src); jxSay(a[0].say); jxLoad(s+1);
     if(a.length>1&&!still) jxCyc=setInterval(()=>{ i=(i+1)%a.length; jxFrame(a[i].src); },s===6?1800:2200); }
   /* roof camera pushes in on the jar sitting on the ledge */
-  let rzOrig=null; document.body.appendChild(JX);
+  let rzOrig=null; document.body.appendChild(JX); document.body.appendChild($("jz"));
   function roofZoom(on,ms,done){ const st=$("stage");
     if(on) rzOrig={tf:st.style.transform, to:st.style.transformOrigin};
     const O=rzOrig, fin=()=>{ if(!on){ st.style.transform=O?O.tf:""; st.style.transformOrigin=O?O.to:""; rzOrig=null; } done&&done(); };
-    if(!O||still){ fin(); return; }
+    if(!O){ fin(); return; } if(still) ms=1;
     const r=jar.getBoundingClientRect(), P={x:r.left+r.width/2,y:r.top+r.height*.55}, C={x:innerWidth/2,y:innerHeight*.47}, K=Math.max(1.5,Math.min(8,innerHeight*.5/Math.max(10,r.height)));
     if(on) roofZoom.v={P,C,K}; const V=roofZoom.v||{P,C,K};
     st.style.transformOrigin=`${V.P.x}px ${V.P.y}px`;
@@ -1570,9 +1577,17 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     jxCr.appendChild(g); }
   function jxSay(t){ const b=$("jx-say"); b.textContent=t; b.classList.remove("on"); void b.offsetWidth; b.classList.add("on"); }
   function openJar(){ if(freed||rzOrig||JX.classList.contains("open")) return; window.MSAC&&window.MSAC(); hits=0; jxBusy=false; jxCr.innerHTML=""; $("jx-meter").style.width="0%";
-    JX.classList.remove("broke"); jxLoad(0); jxLoad(1); jxBusy=true; document.body.classList.add("jx-zoom"); roofZoom(true,900,()=>{ jxBusy=false; JX.hidden=false; jxShow(0); requestAnimationFrame(()=>JX.classList.add("open")); }); document.body.classList.add("jx-on");
-    $("jx-tip").textContent="Tap the glass to break her out"; setTimeout(()=>jxBox.focus({preventScroll:true}),1100); }
-  function closeJar(){ clearInterval(jxCyc); JX.classList.remove("open"); document.body.classList.remove("jx-on"); setTimeout(()=>{ if(!JX.classList.contains("open")) JX.hidden=true; roofZoom(false,700,()=>document.body.classList.remove("jx-zoom")); },350); }
+    JX.classList.remove("broke"); jxLoad(0); jxLoad(1); jxBusy=true; document.body.classList.add("jx-zoom"); document.documentElement.classList.add("jx-zoom"); whenStill(()=>roofZoom(true,1100,()=>{ const z=$("jz"); z.hidden=false; requestAnimationFrame(()=>z.classList.add("on")); z.focus({preventScroll:true}); })); document.body.classList.add("jx-on");
+    $("jx-tip").textContent="Tap the glass to break her out"; }
+  // phones pan the roof toward a tapped thing: wait until it settles before the camera pushes in
+  function whenStill(go){ const pl=$("play"); let last=pl.style.transform, calm=0, t0=performance.now();
+    (function f(){ const now=pl.style.transform; calm=now===last?calm+1:0; last=now;
+      if(calm>=8||performance.now()-t0>1500) go(); else requestAnimationFrame(f); })(); }
+  function jzGo(){ const z=$("jz"); if(z.hidden) return; z.classList.remove("on"); setTimeout(()=>z.hidden=true,300); jxBusy=false; JX.hidden=false; jxShow(0); requestAnimationFrame(()=>JX.classList.add("open")); setTimeout(()=>jxBox.focus({preventScroll:true}),400); }
+  function jzBack(){ const z=$("jz"); z.classList.remove("on"); setTimeout(()=>z.hidden=true,300); jxBusy=false; roofZoom(false,800,()=>{ document.body.classList.remove("jx-zoom"); document.documentElement.classList.remove("jx-zoom"); }); }
+  $("jz").addEventListener("click",e=>{ if(e.target.id==="jz-x"){ e.stopPropagation(); jzBack(); return; } jzGo(); });
+  $("jz").addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); jzGo(); } if(e.key==="Escape") jzBack(); });
+  function closeJar(){ clearInterval(jxCyc); JX.classList.remove("open"); document.body.classList.remove("jx-on"); setTimeout(()=>{ if(!JX.classList.contains("open")) JX.hidden=true; roofZoom(false,700,()=>{ document.body.classList.remove("jx-zoom"); document.documentElement.classList.remove("jx-zoom"); }); },350); }
   function hit(x,y){ if(jxBusy||freed) return; hits++; const k=hits; tink(k); crackAt(x,y,k);
     jxBox.classList.remove("hit"); void jxBox.offsetWidth; jxBox.classList.add("hit"); $("jx-meter").style.width=(k/HITS*100)+"%";
     if(navigator.vibrate) try{ navigator.vibrate(k<HITS?18:[30,40,60]); }catch(e){}
