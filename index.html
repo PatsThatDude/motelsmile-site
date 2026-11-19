@@ -441,7 +441,17 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
 #pk-reset:hover,#pk-reset:focus-visible{filter:brightness(1.25) drop-shadow(0 0 6px rgba(255,40,60,.7))}
 #pk-reset.press{animation:rspress .35s ease-out}
 @keyframes rspress{30%{transform:scale(.9);filter:brightness(1.8) drop-shadow(0 0 12px #ff2a3a)}}
-#gr-wrap #gr-pose{filter:drop-shadow(0 1px 1px rgba(0,0,0,.7))}
+#gr-wrap #gr-pose{filter:drop-shadow(0 1px 1px rgba(0,0,0,.7));pointer-events:auto;cursor:pointer}
+#gr-wrap #gr-pose.hop{animation:grHop .45s ease-out}
+@keyframes grHop{30%{transform:translateY(-14px)}60%{transform:translateY(0)}80%{transform:translateY(-4px)}}
+#gr-dance.twirl{animation:grTw .5s ease-in-out}
+@keyframes grTw{25%{transform:scaleX(-1)}50%{transform:scaleX(1)}75%{transform:scaleX(-1)}}
+#gr-dance{transform-origin:50% 100%}
+.gr-say{position:absolute;z-index:7;pointer-events:none;transform:translate(-50%,-100%);padding:8px 14px;border-radius:16px;background:#fff;color:#14040b;font:700 22px/1.2 var(--mono);white-space:nowrap;box-shadow:0 0 14px rgba(255,70,200,.6);animation:graySay 1.9s ease-out forwards}
+.gr-say::after{content:"";position:absolute;left:50%;bottom:-9px;margin-left:-8px;border:8px solid transparent;border-top-color:#fff;border-bottom:0}
+@keyframes graySay{0%{opacity:0;margin-top:8px}12%{opacity:1;margin-top:0}80%{opacity:1}100%{opacity:0}}
+.lg-hot.lever.nudge{animation:lvNudge .9s ease-in-out 2}
+@keyframes lvNudge{50%{box-shadow:0 0 0 4px var(--cyan),0 0 30px var(--cyan)}}
 #pk-jar{background:url(img/grace/jar.webp?v=1) 50% 100%/contain no-repeat;filter:brightness(.82) saturate(.9) drop-shadow(0 0 6px rgba(255,190,90,.35));transform-origin:50% 100%;animation:jarwob 6s ease-in-out infinite}
 #pk-jar:hover,#pk-jar:focus-visible{filter:brightness(1.05) drop-shadow(0 0 10px rgba(255,190,90,.8))}
 @keyframes jarwob{0%,86%,100%{transform:rotate(0)}89%{transform:rotate(-4deg)}92%{transform:rotate(4deg)}95%{transform:rotate(-2deg)}}
@@ -482,6 +492,13 @@ body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-s
 body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe{opacity:0!important;pointer-events:none!important}
 .gr-ask.on{display:flex}
 .gr-ask .pill{font-size:22px;padding:12px 22px}
+.gr-ask-h{font:700 20px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#fff;text-shadow:0 0 10px #000,0 0 4px #000}
+#gr-partner{position:absolute;z-index:5;display:none;pointer-events:none;transform-origin:50% 100%}
+#gr-partner img{position:absolute;left:0;top:0;width:100%;height:100%}
+#gr-partner .n{opacity:0}
+#gr-partner.pop .n{opacity:1}
+.gr-heart{position:absolute;z-index:6;pointer-events:none;color:#ff46c8;font-size:34px;text-shadow:0 0 10px #ff46c8;animation:grHeart 1.1s ease-out forwards}
+@keyframes grHeart{to{transform:translate(var(--dx),-160px) scale(1.4);opacity:0}}
 .gr-ask .x{all:unset;cursor:pointer;color:#fff;font:700 22px var(--mono);width:44px;height:44px;display:grid;place-items:center;border-radius:50%;background:rgba(5,6,10,.7);border:2px solid rgba(255,255,255,.4)}
 #gr-shadow{position:absolute;display:none;width:190px;height:26px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0))}
 </style>
@@ -493,7 +510,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     <img class="lg-bg lg-lay" id="pl-on" src="img/smile-lounge-on.webp?v=c1" alt="" width="1672" height="941">
     <canvas id="lg-fx" width="1672" height="941" aria-hidden="true"></canvas>
     <div id="gr-wrap" aria-hidden="true"><img id="gr-pose" alt=""><div id="gr-shadow"></div><img id="gr-dance" alt="Grace dancing"></div>
-    <div class="gr-ask" id="gr-ask"><a class="pill" style="--c:var(--pink)" href="#" id="gr-band">Dance with the band ↑</a><button class="x" id="gr-ask-x" aria-label="Send her back to the floor">✕</button></div>
+    <div class="gr-ask" id="gr-ask"><span class="gr-ask-h">Dance with</span><a class="pill" style="--c:var(--pink)" href="#" data-partner="pat">Pat</a><a class="pill" style="--c:var(--cyan)" href="#" data-partner="jordan">Jordan</a><a class="pill" style="--c:#ffaa46" href="#" data-partner="jacob">Jacob</a><button class="x" id="gr-ask-x" aria-label="Send her back to the floor">✕</button></div>
+    <div id="gr-partner" aria-hidden="true"><img class="r" alt=""><img class="n" alt=""></div>
     <svg id="lg-svg" viewBox="0 0 1672 941" aria-hidden="true">
       <defs>
         <radialGradient id="lg-vinyl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1a1a20"/><stop offset=".36" stop-color="#0c0c10"/><stop offset=".37" stop-color="#16161c"/><stop offset="1" stop-color="#08080b"/></radialGradient>
@@ -1292,7 +1310,9 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   // tap her on the floor: she steps up close, full size, and offers to go dance with the band
   let big=false, growId=0;
   const ask=$("gr-ask");
-  function placeAsk(){ Object.assign(ask.style,{left:(BIG.x-330)+"px",top:(BIG.y-BIG.h-80)+"px"}); }
+  function placeAsk(){ let l=BIG.x-420; const V=window.MSLgView&&window.MSLgView(); ask.style.flexWrap="nowrap";
+    if(V){ const w=ask.offsetWidth||560; l=Math.max(V[0]+12,Math.min(V[1]-w-12,l)); if(w>V[1]-V[0]-24){ ask.style.flexWrap="wrap"; ask.style.width=(V[1]-V[0]-24)+"px"; l=V[0]+12; } else ask.style.width=""; }
+    Object.assign(ask.style,{left:l+"px",top:(BIG.y-BIG.h-80)+"px"}); }
   function grow(on,quick){ if(on===big&&!quick) return; big=on; if(on&&window.MSLgPan) window.MSLgPan(BIG.x-60); const id=++growId, A={x:FX,y:FY,h:DH}, B=on?BIG:SMALL, t0=performance.now(), ms=(still||quick)?0:750;
     dance.classList.toggle("big",on); ask.classList.remove("on");
     if(on){ try{ const a=window.MSAC&&window.MSAC(); if(a){ const t=a.currentTime,o=a.createOscillator(),g=a.createGain(); o.type="triangle"; o.frequency.setValueAtTime(330,t); o.frequency.exponentialRampToValueAtTime(990,t+.35); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.15,t+.05); g.gain.exponentialRampToValueAtTime(.0001,t+.45); o.connect(g).connect(a.destination); o.start(t); o.stop(t+.5); } }catch(e){} }
@@ -1300,7 +1320,24 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       FX=A.x+(B.x-A.x)*e; FY=A.y+(B.y-A.y)*e; DH=(A.h+(B.h-A.h)*e)*k;
       setFrame(fi<0?0:fi,true); shadow.style.left=(FX-19*DH/85)+"px"; shadow.style.top=(FY-4*DH/85)+"px"; shadow.style.width=(38*DH/85)+"px"; shadow.style.height=(7*DH/85)+"px";
       if(u<1) requestAnimationFrame(f); else if(on){ placeAsk(); ask.classList.add("on"); } })(t0); }
-  dance.addEventListener("click",e=>{ e.stopPropagation(); if(!floorOn()||game) return; if(big){ grow(false); return; } if(won) grow(true); else gameCard("intro"); });
+  // small Grace reacts to every tap: a line, a twirl or a hop, hearts
+  const LINES_ON=["Hey you!","This song though!","Dance with me?","Watch this!","Turn it up!","Don’t mind me…"], LINES_OFF=["It’s too quiet…","Turn the floor on!","Is the DJ asleep?","Pull the lever!","I could dance all night","Put a record on?"];
+  let lastLine="";
+  function say(x,y,list){ let t; do{ t=list[Math.floor(Math.random()*list.length)]; }while(t===lastLine&&list.length>1); lastLine=t;
+    document.querySelectorAll(".gr-say").forEach(s=>s.remove()); const b=document.createElement("div"); b.className="gr-say"; b.textContent=t; b.style.left=x+"px"; b.style.top=y+"px"; $("gr-wrap").appendChild(b); setTimeout(()=>b.remove(),1950); }
+  function chirp(){ try{ const a=window.MSAC&&window.MSAC(); if(!a) return; const t=a.currentTime; [880,1175].forEach((f,i)=>{ const o=a.createOscillator(),g=a.createGain(); o.type="sine"; o.frequency.value=f; g.gain.setValueAtTime(.0001,t+i*.08); g.gain.exponentialRampToValueAtTime(.08,t+i*.08+.02); g.gain.exponentialRampToValueAtTime(.0001,t+i*.08+.16); o.connect(g).connect(a.destination); o.start(t+i*.08); o.stop(t+i*.08+.2); }); }catch(e){} }
+  let tapAt=0;
+  dance.addEventListener("click",e=>{ e.stopPropagation(); if(!floorOn()||game) return; if(big){ if(duet) return; grow(false); return; }
+    const now=performance.now(), quick=now-tapAt<2600; tapAt=now; chirp();
+    dance.classList.remove("twirl"); void dance.offsetWidth; dance.classList.add("twirl");
+    say(FX,FY-DH-12,(!won&&!quick)?["Light the floor with me? Tap again!","Play with me? Tap again!"]:won?["Again? Tap me twice!",...LINES_ON]:LINES_ON); for(let i=0;i<3;i++) setTimeout(()=>heart(FX+(Math.random()*40-20),FY-DH),i*110);
+    // second tap while she's talking opens her game (or brings her up close once she's won it)
+    if(quick){ setTimeout(()=>{ if(won) grow(true); else gameCard("intro"); },250); } });
+  pose.addEventListener("click",e=>{ e.stopPropagation(); if(!freed||floorOn()) return; chirp();
+    pose.classList.remove("hop"); void pose.offsetWidth; pose.classList.add("hop");
+    const b=POSES[pk]; say(b[0]+b[2]/2,b[1]-10,LINES_OFF);
+    lever.classList.remove("nudge"); void lever.offsetWidth; lever.classList.add("nudge");
+    clearTimeout(pose.t); pose.t=setTimeout(()=>{ if(!floorOn()){ pickPose(); } },1900); });
   /* ---------- Grace's game: Light the Floor ---------- */
   const NEED=12, COUNT=20, WIN_MS=200;
   let game=null, won=false;
@@ -1354,15 +1391,39 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function endGame(kind){ const g=game; game=null; window.MSFloorGame=null; document.body.classList.remove("gg-on"); hud.classList.remove("on"); catcher.classList.remove("on");
     if(kind==="win"){ won=true; [523,659,784,1046].forEach((f,i)=>setTimeout(()=>blip(f,.25,.13),i*110)); setTimeout(()=>gameCard("win",g.hits),300); }
     else gameCard(kind,g?g.hits:0); }
-  $("gr-ask-x").addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); grow(false); });
-  $("gr-band").addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); ask.classList.remove("on");
-    window.MSGraceOut=true; const back=$("lg-back"); back&&back.click();
-    setTimeout(()=>{ grow(false,true); window.MSGraceRoof&&window.MSGraceRoof.start(); },still?50:1300); });
+  $("gr-ask-x").addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); if(duet) duetEnd(); grow(false); });
+  // dance with the band, right here on the lounge floor: the one you pick flickers in beside her and dances on the beat
+  const PART={pat:{pre:"p",v:"?v=1"},jordan:{pre:"jj",v:"?v=1"},jacob:{pre:"jb",v:"?v=4"}}, pEl=$("gr-partner"), pR=pEl.querySelector(".r"), pN=pEl.querySelector(".n");
+  let duet=null;
+  function setPartner(who,k){ const P=PART[who], r=`img/band/${P.pre}${k}-real.webp${P.v}`, n=`img/band/${P.pre}${k}-neon.webp${P.v}`;
+    return new Promise(res=>{ const im=new Image(); im.onload=()=>{ const h=640, w=h*im.naturalWidth/im.naturalHeight, x=duet.x;
+      pR.src=r; pN.src=n; Object.assign(pEl.style,{left:(x-w/2)+"px",top:(936-h)+"px",width:w+"px",height:h+"px"}); res(); }; im.onerror=res; im.src=r; }); }
+  function heart(x,y){ const h=document.createElement("div"); h.className="gr-heart"; h.textContent="♥"; h.style.left=x+"px"; h.style.top=y+"px"; h.style.setProperty("--dx",(Math.random()*120-60)+"px"); $("gr-wrap").appendChild(h); setTimeout(()=>h.remove(),1150); }
+  async function duetStart(who){ if(duet) return; ask.classList.remove("on");
+    const port=innerWidth<=760&&innerHeight>innerWidth, x=BIG.x-(port?215:330); duet={who,x,id:Math.random()};
+    if(window.MSLgPan) window.MSLgPan((x+BIG.x)/2);
+    const id=duet.id; [1,2,3,4,5,6,7,8].forEach(k=>{ const i=new Image(); i.src=`img/band/${PART[who].pre}${k}-real.webp${PART[who].v}`; });
+    await setPartner(who,1+Math.floor(Math.random()*8)); if(!duet||duet.id!==id) return;
+    pEl.style.display="block"; for(let i=0;i<4;i++){ pEl.classList.add("pop"); await new Promise(r=>setTimeout(r,60)); pEl.classList.remove("pop"); await new Promise(r=>setTimeout(r,70)); }
+    for(let i=0;i<5;i++) setTimeout(()=>heart(x+(BIG.x-x)/2+(Math.random()*80-40),936-520),i*120);
+    const end=performance.now()+12000; let n=0, lastK=0;
+    while(duet&&duet.id===id&&performance.now()<end){
+      const song=audio&&!audio.paused&&/dont-mind-it/.test(audio.src); let waitMs=470;
+      if(song){ const b=BEATS.find(t=>t>audio.currentTime+.05); if(b) waitMs=Math.max(120,(b-audio.currentTime)*1000/(audio.playbackRate||1)); }
+      await new Promise(r=>setTimeout(r,waitMs)); if(!duet||duet.id!==id) break;
+      let k; do{ k=1+Math.floor(Math.random()*8); }while(k===lastK); lastK=k; await setPartner(who,k);
+      pEl.classList.add("pop"); pEl.style.transform=`translateY(${n%2?-10:0}px)`; setTimeout(()=>pEl.classList.remove("pop"),90);
+      if(n%4===0) heart(x+(BIG.x-x)/2+(Math.random()*80-40),936-500); n++; }
+    duetEnd(id); }
+  async function duetEnd(id){ if(!duet||(id&&duet.id!==id)) return; duet=null;
+    for(let i=0;i<3;i++){ pEl.classList.add("pop"); await new Promise(r=>setTimeout(r,60)); pEl.classList.remove("pop"); await new Promise(r=>setTimeout(r,60)); }
+    pEl.style.display="none"; pEl.style.transform=""; if(big){ placeAsk(); ask.classList.add("on"); } }
+  ask.querySelectorAll("[data-partner]").forEach(a=>a.addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); duetStart(a.dataset.partner); }));
   function hint(){ if(freed||hint.done||!L.classList.contains("on")||!floorOn()) return; hint.done=1;
     setTimeout(()=>{ if(!L.classList.contains("on")) return; $("gr-h").textContent="Nobody’s dancing…"; toast.querySelector("img").src="img/grace/jar.webp"+V; $("gr-go").hidden=true;
       showToast("Someone’s stuck in a jar up on the roof. Find her and set her free."); },1800); }
   lever.addEventListener("click",()=>setTimeout(hint,0));
-  addEventListener("ms-view",()=>{ if(L.classList.contains("on")&&!floorOn()) pickPose(); render(); hint(); });
+  addEventListener("ms-view",()=>{ if(!L.classList.contains("on")&&duet){ duet=null; pEl.style.display="none"; } if(L.classList.contains("on")&&!floorOn()) pickPose(); render(); hint(); });
   // main roof: her shadow on the front skylight glass while the floor is lit
   const mcv=$("gr-roof"), mx=mcv.getContext("2d"), gm=new Image(); gm.src="img/roof-glass.webp?v=1";
   const tmp=document.createElement("canvas"); tmp.width=260; tmp.height=220; const tx=tmp.getContext("2d");
@@ -2339,7 +2400,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     const hot=document.createElement("div"); Object.assign(hot.style,{position:"absolute",left:"1470px",top:"610px",width:"220px",height:"190px",zIndex:61,cursor:"pointer",display:"none",pointerEvents:"auto"});
     hot.setAttribute("role","button"); hot.setAttribute("aria-label","Grace dancing on the floor below (tap her)"); play.appendChild(hot);
     hot.addEventListener("click",e=>{ e.stopPropagation(); start(); });
-    setInterval(()=>{ hot.style.display=(!on&&window.MSGraceShadowOn&&window.MSGraceShadowOn())?"block":"none"; },500);
+    hot.style.display="none"; // retired: Grace dances with the band in the lounge now
     return {start,leave,on:()=>on};
   })();
   const qg=(location.search.match(/[?&]gag=(\w+)/)||[])[1];
