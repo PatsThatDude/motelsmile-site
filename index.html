@@ -1438,7 +1438,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       if(song){ const b=BEATS.find(t=>t>audio.currentTime+.05); if(b) waitMs=Math.max(120,(b-audio.currentTime)*1000/(audio.playbackRate||1)); }
       await new Promise(r=>setTimeout(r,waitMs)); if(!duet||duet.id!==id) break;
       let k; do{ k=1+Math.floor(Math.random()*NK); }while(k===lastK); lastK=k; await setPartner(who,k);
-      pEl.classList.add("pop"); pEl.style.transform=`translateY(${n%2?-10:0}px)`; setTimeout(()=>pEl.classList.remove("pop"),90);
+      pEl.style.transform=`translateY(${n%2?-10:0}px)`;
       if(n%4===0&&duet) heart((duet.x+FX)/2+(Math.random()*80-40),FY-DH*.85); n++; }
     duetEnd(id); }
   async function duetEnd(id){ if(!duet||(id&&duet.id!==id)) return; duet=null;
