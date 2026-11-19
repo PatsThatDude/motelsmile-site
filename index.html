@@ -1509,8 +1509,18 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     setTimeout(()=>{ $("gr-h").textContent="Grace is free!"; toast.querySelector("img").src=FR[6]; $("gr-go").hidden=false; showToast("She’s waiting for you on the dance floor in the Smile Lounge."); },350); render(); }
   /* ---------- jar close-up: tap the glass until it breaks ---------- */
   const JX=$("jx"), jxBox=$("jx-box"), jxCr=$("jx-cracks"), HITS=6; let hits=0, jxBusy=false;
-  const JX_SAY=["Get me out of here!","Whoa! What was that?!","Yes! Hit it harder!","Careful, it's cracking!","Right there! Keep going!","One more hit!"];
-  const JX_IMG=["jar-big","jar-1","jar-2","jar-3","jar-4","jar-5","jar-free"].map(n=>"img/grace/"+n+".webp");
+  /* 7 states (0 cracks … 5 cracks, free) × 5 shots each: [image, what she says] */
+  const JX_SET=[
+    [["s0-1", "Get me out of here!"],["s0-2", "Ugh. Finally, someone!"],["s0-3", "Hello? Anyone out there?"],["s0-4", "Don't just stare. Help!"],["s0-5", "Over here! HELP!"]],
+    [["s1-1", "Whoa! What was that?!"],["s1-2", "Oh my god, it cracked!"],["s1-3", "Wait, was that you?!"],["s1-4", "Eek! Warn me next time!"],["s1-5", "Is that… a crack?"]],
+    [["s2-1", "Yes! Hit it harder!"],["s2-2", "Take that, jar!"],["s2-3", "Let! Me! Out!"],["s2-4", "Come on, break!"],["s2-5", "It's giving! Push!"]],
+    [["s3-1", "Careful, it's cracking!"],["s3-2", "Watch my head!"],["s3-3", "Too close, too close!"],["s3-4", "Okay that was LOUD!"],["s3-5", "I can't look!"]],
+    [["s4-1", "Right there! Keep going!"],["s4-2", "Yes! It's working!"],["s4-3", "You've got this!"],["s4-4", "Almost there!"]],
+    [["s5-1", "One more hit!"]],
+    [["free-1", "I'm free! Meet me on the dance floor!"]]
+  ].map(st=>st.map(([n,t])=>({src:"img/grace/jar-"+n+".webp",say:t})));
+  const jxPick=s=>{ const a=JX_SET[s]; return a[Math.floor(Math.random()*a.length)]; };
+  let jxSeq=[]; function jxShow(s){ const v=jxSeq[s]||jxPick(s); $("jx-img").src=v.src; jxSay(v.say); }
   function tink(k){ try{ const a=window.MSAC&&window.MSAC(); if(!a) return; const t=a.currentTime;
       [2400,3300,4100].forEach((f,i)=>{ const o=a.createOscillator(), g=a.createGain(); o.type="sine"; o.frequency.value=f*(1+k*.05)*(1+Math.random()*.03); g.gain.setValueAtTime(.0001,t+i*.012); g.gain.exponentialRampToValueAtTime(.09,t+i*.012+.004); g.gain.exponentialRampToValueAtTime(.0001,t+.35+k*.05); o.connect(g).connect(a.destination); o.start(t); o.stop(t+.6); });
       const n=a.createBuffer(1,a.sampleRate*.08,a.sampleRate), d=n.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3)*(.25+k*.08);
@@ -1524,15 +1534,15 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     jxCr.appendChild(g); }
   function jxSay(t){ const b=$("jx-say"); b.textContent=t; b.classList.remove("on"); void b.offsetWidth; b.classList.add("on"); }
   function openJar(){ if(freed||JX.classList.contains("open")) return; window.MSAC&&window.MSAC(); hits=0; jxBusy=false; jxCr.innerHTML=""; $("jx-meter").style.width="0%";
-    JX.classList.remove("broke"); JX_IMG.forEach(u=>{ const i=new Image(); i.src=u; }); $("jx-img").src=JX_IMG[0]; JX.hidden=false; requestAnimationFrame(()=>JX.classList.add("open")); document.body.classList.add("jx-on");
-    $("jx-tip").textContent="Tap the glass to break her out"; setTimeout(()=>jxSay("Get me out of here!"),450); setTimeout(()=>jxBox.focus({preventScroll:true}),200); }
+    JX.classList.remove("broke"); jxSeq=JX_SET.map((_,i)=>jxPick(i)); jxSeq.forEach(v=>{ const i=new Image(); i.src=v.src; }); const v0=jxSeq[0]; $("jx-img").src=v0.src; JX.hidden=false; requestAnimationFrame(()=>JX.classList.add("open")); document.body.classList.add("jx-on");
+    $("jx-tip").textContent="Tap the glass to break her out"; setTimeout(()=>jxSay(v0.say),450); setTimeout(()=>jxBox.focus({preventScroll:true}),200); }
   function closeJar(){ JX.classList.remove("open"); document.body.classList.remove("jx-on"); setTimeout(()=>{ if(!JX.classList.contains("open")) JX.hidden=true; },350); }
   function hit(x,y){ if(jxBusy||freed) return; hits++; const k=hits; tink(k); crackAt(x,y,k);
     jxBox.classList.remove("hit"); void jxBox.offsetWidth; jxBox.classList.add("hit"); $("jx-meter").style.width=(k/HITS*100)+"%";
     if(navigator.vibrate) try{ navigator.vibrate(k<HITS?18:[30,40,60]); }catch(e){}
-    if(k<HITS){ $("jx-img").src=JX_IMG[k]; jxSay(JX_SAY[k]); $("jx-tip").textContent=`${HITS-k} more`; return; }
+    if(k<HITS){ jxShow(k); $("jx-tip").textContent=`${HITS-k} more`; return; }
     jxBusy=true; $("jx-tip").textContent="";
-    setTimeout(()=>{ shatter(); JX.classList.add("broke"); jxShards(); setTimeout(()=>{ $("jx-img").src=JX_IMG[6]; jxSay("I'm free! Meet me on the dance floor!"); },160);
+    setTimeout(()=>{ shatter(); JX.classList.add("broke"); jxShards(); setTimeout(()=>jxShow(6),160);
       setTimeout(()=>{ closeJar(); freeGrace(); },2300); },120); }
   function jxShards(){ if(still) return; const r=jxBox.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height*.55;
     for(let i=0;i<40;i++){ const s=document.createElement("i"), a=Math.random()*Math.PI*2, d=120+Math.random()*Math.max(innerWidth,innerHeight)*.55, big=Math.random()<.55, w=big?8+Math.random()*18:4;
