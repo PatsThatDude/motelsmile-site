@@ -287,6 +287,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
   </div>
   <div class="flash" id="flash"></div>
   <button class="hunt on" id="hunt" aria-haspopup="dialog" aria-label="Roof secrets"></button>
+  <div class="sec-note" id="sec-note" role="status" aria-live="polite"></div>
   <div class="sec-pop" id="sec-pop" hidden role="dialog" aria-label="Roof secrets"><b>Roof secrets</b><ul id="sec-list"></ul><small>Tap things. Everything on the roof does something.</small></div>
   <div class="welcome" id="welcome" aria-live="polite"><b>Welcome to the roof.</b><span>Tap anything. Find the secrets. Someone’s stuck in a jar…</span></div>
 <div class="jz" id="jz" hidden role="button" tabindex="0" aria-label="A jar on the ledge with someone inside. Tap to look closer"><button class="pill jx-x" id="jz-x" style="--c:var(--cyan)">✕ Back</button><div class="jz-say">Wait… is someone in there?</div><b class="jz-tip">Tap the jar to look closer</b></div>
@@ -593,6 +594,17 @@ body.jx-zoom .lng-edge,body.in-room .lng-edge{opacity:0!important;pointer-events
   .welcome{top:24%;width:min(300px,84vw)}.welcome b{font-size:22px;white-space:nowrap}.welcome span{font-size:12px}
 }
 body.jx-zoom .welcome,body.jx-zoom .sec-pop,body.jx-zoom .jar-help{opacity:0!important;pointer-events:none!important}
+/* progress lives in the header: Roof secrets badge + drop-down notifications */
+.top .hunt{position:static!important;display:inline-flex!important;align-items:center;gap:6px;margin:0 14px 0 0;padding:6px 12px!important;font:600 11px/1 var(--mono)!important;letter-spacing:.14em;text-transform:uppercase;color:#fff!important;background:rgba(93,255,158,.12)!important;border:1.5px solid var(--green)!important;border-radius:20px!important;box-shadow:0 0 12px rgba(93,255,158,.35);vertical-align:middle;cursor:pointer}
+.top .hunt b{color:var(--green);font-weight:700}
+.top .hunt{white-space:nowrap}.top .hunt i{font-style:normal}.top>div{white-space:nowrap}
+@media (max-width:380px){.top .hunt .hr{display:none}.top{letter-spacing:.14em}}
+.sec-pop{position:fixed!important;top:calc(54px + env(safe-area-inset-top,0px))!important;right:max(16px,env(safe-area-inset-right,0px))!important;z-index:95!important}
+.sec-note{position:fixed;top:calc(54px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));z-index:96;max-width:min(340px,calc(100vw - 32px));padding:10px 14px;border-radius:12px;background:rgba(8,6,16,.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1.5px solid var(--green);box-shadow:0 0 18px rgba(93,255,158,.35);color:#fff;font:13px/1.35 var(--mono);opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .3s,transform .3s}
+.sec-note.on{opacity:1;transform:none}
+.sec-note b{display:block;color:var(--green);font:11px var(--mono);letter-spacing:.16em;text-transform:uppercase;margin-bottom:3px}
+@media (max-width:760px){ .top .hunt{margin:0;padding:6px 10px!important;font-size:10px!important} .sec-note,.sec-pop{right:12px!important;top:calc(50px + env(safe-area-inset-top,0px))!important} }
+.gr-toast{top:calc(58px + env(safe-area-inset-top,0px));bottom:auto!important}
 .gr-walk{position:absolute;z-index:200;pointer-events:none;transform-origin:50% 100%;filter:drop-shadow(0 0 4px rgba(255,70,200,.95)) drop-shadow(0 0 10px rgba(255,190,90,.6))}
 .gr-trail{position:absolute;z-index:199;width:5px;height:5px;border-radius:50%;pointer-events:none;background:#ff46c8;box-shadow:0 0 8px #ff46c8;transition:transform 1s ease-out,opacity 1s}
 .bm,.bm-sh,.bm-rf,.bm-kit{transition:opacity .35s}
@@ -2247,16 +2259,20 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     /* roof secrets: Grace, the 5 tags, the band, the dance floor */
     const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"]];
     const got=new Set();
-    const showHunt=()=>{ hunt.textContent=`★ Roof secrets ${got.size}/${SEC.length}`;
+    const showHunt=()=>{ hunt.innerHTML=`★ <i class="hr">Roof </i>secrets <b>${got.size}/${SEC.length}</b>`;
       $("sec-list").innerHTML=SEC.map(([k,a,h])=>`<li class="${got.has(k)?"got":""}"><i>${got.has(k)?"✓":"?"}</i><span>${got.has(k)?a:h}</span></li>`).join(""); };
+    { const sp=document.querySelector(".top span"); if(sp) sp.insertBefore(hunt,sp.firstChild); }
+    const NOTE={grace:"Grace is free! She’s headed down to the lounge.",band:"You messed with the band.",floor:"The dance floor is lit."};
+    let noteT=0; const note=(t)=>{ const n=$("sec-note"); n.innerHTML=`<b>★ Secret found · ${got.size}/${SEC.length}</b>${t}`; n.classList.add("on"); clearTimeout(noteT); noteT=setTimeout(()=>n.classList.remove("on"),3800); };
     window.MSSecret=k=>{ if(got.has(k)||!SEC.some(s=>s[0]===k)) return; got.add(k); showHunt(); hunt.classList.remove("pop"); void hunt.offsetWidth; hunt.classList.add("pop");
-      if(got.size===SEC.length) setTimeout(()=>{ const pp=$("sec-pop"); pp.hidden=false; },600); };
+      note(k.startsWith("tag:")?`Song tag: “${k.slice(4)}”`:NOTE[k]);
+      if(got.size===SEC.length) setTimeout(()=>note("All 8 roof secrets found. Respect."),4200); };
     hunt.addEventListener("click",e=>{ e.stopPropagation(); const pp=$("sec-pop"); pp.hidden=!pp.hidden; });
     addEventListener("pointerdown",e=>{ const pp=$("sec-pop"); if(!pp.hidden&&!e.target.closest("#sec-pop,#hunt")) pp.hidden=true; });
     const hitTag=(name,b,where,x,y,w,h)=>{ const g=document.createElement("div"); g.className="tag-found"; Object.assign(g.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); where.appendChild(g); setTimeout(()=>g.remove(),1500);
         const isNew=!found.includes(name); if(isNew){ found.push(name); window.MSSecret&&window.MSSecret("tag:"+name); }
-        say(b,isNew?`Found: "${name}"`:`"${name}" (already found)`); showHunt();
-        if(isNew&&found.length===TAGS.length) setTimeout(()=>say(b,`All ${TAGS.length} found. Respect.`),3000); };
+        if(!isNew) say(b,`"${name}" (already found)`); showHunt();
+        };
     window.MSPlay.hitTag=hitTag;
     TAGS.forEach(([name,x,y,w,h])=>{ const b=document.createElement("button"); b.className="pk"; b.setAttribute("aria-label","Graffiti tag");
       Object.assign(b.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); box.appendChild(b);
