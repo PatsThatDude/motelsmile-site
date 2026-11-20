@@ -2390,7 +2390,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     found=found.filter(n=>TAGS.some(t=>t[0]===n));
     /* roof secrets: Grace, the 5 tags, the band, the dance floor */
     const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"],["windows","Peek in every window","The binoculars by the wall see a lot"],["jill","Free Jill","Someone else is trapped across the street"]];
-    const got=new Set();
+    const got=new Set(); window.MSGot=()=>got; window.MSSecList=()=>SEC.map(x=>x[0]);
     const showHunt=()=>{ hunt.innerHTML=`★ <i class="hr">Roof </i>secrets <b>${got.size}/${SEC.length}</b>`;
       $("sec-list").innerHTML=SEC.map(([k,a,h])=>`<li class="${got.has(k)?"got":""}"><i>${got.has(k)?"✓":"?"}</i><span>${got.has(k)?a:h}</span></li>`).join(""); };
     { const sp=document.querySelector(".top span"); if(sp) sp.insertBefore(hunt,sp.firstChild); }
@@ -3590,6 +3590,101 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
     if(name==="amb") return arg===false?(loopOff(),ambOff()):ambOn();
     if(name==="win") return arg?loopOn(arg):loopOff();
     if(FX[name]) FX[name](a.currentTime+.01,arg); }catch(e){} };
+})();
+</script>
+<style>
+/* roof guide: a neon "what's up here?" button + a brochure of everything to do */
+.gd-btn{position:absolute;left:max(16px,env(safe-area-inset-left,0px));top:46px;z-index:6;display:inline-flex;align-items:center;gap:8px;padding:7px 14px 7px 9px;border-radius:999px;border:1.5px solid #ffd36a;background:rgba(10,7,18,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff4d6;font:400 15px/1 var(--tube);letter-spacing:.02em;cursor:pointer;box-shadow:0 0 0 1px rgba(255,211,106,.15),0 0 16px rgba(255,190,70,.45),inset 0 0 10px rgba(255,190,70,.18);text-shadow:0 0 8px rgba(255,190,70,.9);transition:transform .15s,box-shadow .2s;-webkit-tap-highlight-color:transparent}
+.gd-btn:hover,.gd-btn:focus-visible{transform:translateY(-1px) scale(1.03);box-shadow:0 0 0 1px rgba(255,211,106,.3),0 0 26px rgba(255,190,70,.7),inset 0 0 12px rgba(255,190,70,.25);outline:none}
+.gd-btn .gd-star{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#ffd36a;color:#1a0f00;font:700 13px/1 system-ui;text-shadow:none;box-shadow:0 0 10px #ffb23d}
+.gd-btn .gd-new{position:absolute;right:-6px;top:-9px;padding:2px 6px;border-radius:8px;background:var(--pink);color:#fff;font:700 9px/1.2 var(--mono);letter-spacing:.12em;text-shadow:none;box-shadow:0 0 10px var(--pink);animation:gdBob 1.6s ease-in-out infinite}
+.gd-btn.seen .gd-new{display:none}.gd-btn .gd-s{display:none}@media (max-width:360px){.gd-btn .gd-t{display:none}.gd-btn .gd-s{display:inline}}
+.gd-btn:not(.seen)::after{content:"";position:absolute;inset:-4px;border-radius:inherit;border:2px solid rgba(255,211,106,.8);animation:gdRing 2.2s ease-out infinite;pointer-events:none}
+@keyframes gdRing{0%{opacity:.9;transform:scale(1)}80%,100%{opacity:0;transform:scale(1.35,1.7)}}
+@keyframes gdBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-events:none}
+.gd-btn{font-size:17px;padding:8px 16px 8px 9px}.gd-btn .gd-star{width:24px;height:24px}
+@media (max-width:760px){.gd-btn{top:calc(7px + env(safe-area-inset-top,0px));left:48px;font-size:13.5px;padding:5px 11px 5px 6px;gap:6px}.gd-btn .gd-star{width:20px;height:20px;font-size:11px}.gd-btn .gd-new{top:-7px;right:-8px;font-size:8px}.top>div{font-size:0;letter-spacing:0}.hunt .hr{display:none}.gd-btn .gd-l{display:none}}
+
+.gd{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));background:rgba(3,2,8,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .25s}
+.gd[hidden]{display:none}.gd.on{opacity:1}
+.gd-card{position:relative;width:min(860px,100%);max-height:100%;overflow:auto;overscroll-behavior:contain;border-radius:22px;padding:26px 26px 20px;background:radial-gradient(120% 80% at 0% 0%,rgba(255,61,127,.16),transparent 55%),radial-gradient(100% 80% at 100% 100%,rgba(60,230,255,.12),transparent 60%),#0b0814;border:1px solid rgba(255,255,255,.08);box-shadow:0 0 0 1px rgba(255,61,127,.25),0 0 40px rgba(255,61,127,.2),0 30px 80px rgba(0,0,0,.6);transform:translateY(14px) scale(.98);transition:transform .3s cubic-bezier(.2,.9,.3,1.2);color:#fff}
+.gd.on .gd-card{transform:none}
+.gd-x{position:absolute;right:14px;top:14px;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);color:#fff;font:400 18px/1 system-ui;cursor:pointer}
+.gd-x:hover{border-color:var(--pink);box-shadow:0 0 12px rgba(255,61,127,.5)}
+.gd-kick{font:500 11px var(--mono);letter-spacing:.26em;text-transform:uppercase;color:#ffd36a}
+.gd-h{margin:6px 0 4px;font:400 clamp(30px,5.4vw,46px)/1.02 var(--script);color:#fff;text-shadow:0 0 6px #fff,0 0 16px var(--pink),0 0 34px var(--pink)}
+.gd-sub{margin:0 0 18px;color:#cfc6dc;font:14px/1.45 system-ui,sans-serif;max-width:40em}
+.gd-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.gd-it{--c:var(--pink);position:relative;display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;padding:14px 14px 14px 12px;border-radius:14px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);transition:border-color .2s,background .2s,transform .15s}
+.gd-it:hover{border-color:color-mix(in srgb,var(--c) 55%,transparent);background:rgba(255,255,255,.055)}
+.gd-ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 16%,transparent);border:1px solid color-mix(in srgb,var(--c) 50%,transparent);box-shadow:0 0 14px color-mix(in srgb,var(--c) 30%,transparent);color:var(--c)}
+.gd-ic svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px currentColor)}
+.gd-it b{display:block;font:400 19px/1.1 var(--tube);color:#fff;margin-bottom:3px}
+.gd-it p{margin:0;font:12.5px/1.4 system-ui,sans-serif;color:#b9b0c8}
+.gd-go{all:unset;box-sizing:border-box;cursor:pointer;white-space:nowrap;padding:8px 13px;border-radius:999px;border:1.5px solid var(--c);color:#fff;font:400 14px/1 var(--tube);box-shadow:0 0 10px color-mix(in srgb,var(--c) 45%,transparent);text-shadow:0 0 6px var(--c)}
+.gd-go:hover,.gd-go:focus-visible{background:color-mix(in srgb,var(--c) 22%,transparent)}
+.gd-done{font:600 10px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--green);padding:6px 9px;border-radius:999px;border:1px solid rgba(93,255,158,.4);background:rgba(93,255,158,.08)}
+.gd-it.done{opacity:.72}
+.gd-foot{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px dashed rgba(255,255,255,.12);font:12px/1.4 var(--mono);color:#a59db5}
+.gd-foot b{color:var(--green);font-weight:500}
+.gd-bar{flex:1 1 180px;height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}.gd-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--cyan));box-shadow:0 0 10px var(--green);transition:width .5s}
+@media (max-width:760px){.gd{place-items:end center;padding:0}.gd-card{border-radius:22px 22px 0 0;padding:22px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:92vh;transform:translateY(40px)}
+  .gd-grid{grid-template-columns:1fr;gap:9px}.gd-it{grid-template-columns:38px 1fr auto;padding:11px 10px;gap:10px}.gd-ic{width:38px;height:38px}.gd-it b{font-size:17px}.gd-it p{font-size:12px}.gd-sub{font-size:13px;margin-bottom:14px}}
+@media (prefers-reduced-motion:reduce){.gd-btn::after,.gd-new{animation:none}}
+</style>
+<button class="gd-btn" id="gd-btn" type="button" aria-haspopup="dialog" aria-controls="gd"><span class="gd-star">★</span><span class="gd-t">What’s<span class="gd-l">&nbsp;up</span>&nbsp;here?</span><span class="gd-s">Guide</span><span class="gd-new">NEW</span></button>
+<div class="gd" id="gd" hidden role="dialog" aria-modal="true" aria-labelledby="gd-h">
+  <div class="gd-card">
+    <button class="gd-x" id="gd-x" aria-label="Close">✕</button>
+    <div class="gd-kick">Motel Smile · the roof</div>
+    <h2 class="gd-h" id="gd-h">Everything on this roof does something.</h2>
+    <p class="gd-sub">Poke around, break some glass, spy on the neighbors. Here’s what’s hiding up here. Tap <b style="color:#ffd36a;font-weight:500">Go</b> to jump straight to it.</p>
+    <div class="gd-grid" id="gd-grid"></div>
+    <div class="gd-foot"><span>Roof secrets <b id="gd-n">0/0</b></span><div class="gd-bar"><i id="gd-bar"></i></div><span>Start over: hit the red button on the shack wall.</span></div>
+  </div>
+</div>
+<script>
+(()=>{
+  const $=id=>document.getElementById(id), stage=$("stage"), btn=$("gd-btn"), gd=$("gd");
+  if(stage) stage.appendChild(btn);
+  const I={
+    jar:'<svg viewBox="0 0 24 24"><path d="M8 3h8v3H8z"/><path d="M7 6h10l1 3v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9z"/><path d="M11 12l-2 3 3 1-1 3"/></svg>',
+    bino:'<svg viewBox="0 0 24 24"><circle cx="6.5" cy="15" r="3.5"/><circle cx="17.5" cy="15" r="3.5"/><path d="M10 15h4M5 11l2-6h3l1 6M19 11l-2-6h-3l-1 6"/></svg>',
+    win:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M5 12h14M12 3v18"/><circle cx="15" cy="16" r="1.2"/></svg>',
+    band:'<svg viewBox="0 0 24 24"><path d="M14 4l6 6-8 8a3 3 0 0 1-4 0l-2-2a3 3 0 0 1 0-4z"/><path d="M17 7l3-3"/><circle cx="11" cy="13" r="1.5"/></svg>',
+    tag:'<svg viewBox="0 0 24 24"><path d="M8 3h4v4H8z"/><path d="M9 7v3l-2 2v8h6v-8l-2-2V7"/><path d="M15 9c2 0 3 1 4 3M16 6c3 0 5 2 6 5"/></svg>',
+    rec:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r=".6"/></svg>',
+    floor:'<svg viewBox="0 0 24 24"><path d="M3 17l9-5 9 5-9 5z"/><path d="M12 12v-3M8 7l1.5 2M16 7l-1.5 2M12 3v2"/></svg>',
+    game:'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="11" rx="4"/><path d="M8 10v5M5.5 12.5h5"/><circle cx="16" cy="11.5" r="1"/><circle cx="18" cy="14" r="1"/></svg>'
+  };
+  const click=sel=>{ const e=document.querySelector(sel); if(e) e.click(); };
+  const binoc=then=>{ if(window.MSBinoc){ window.MSBinoc(); if(then) setTimeout(then,700); } };
+  const ITEMS=[
+    {k:"grace",c:"var(--pink)",ic:"jar",t:"Free Grace",p:"Someone’s stuck in a jar on the ledge. Tap the glass until it breaks.",go:()=>click("#pk-jar")},
+    {k:"windows",c:"var(--cyan)",ic:"bino",t:"The binoculars",p:"Spy on the building across the street. Six lit windows. Don’t get caught.",go:()=>binoc()},
+    {k:"jill",c:"#ffd36a",ic:"win",t:"Free Jill",p:"There’s another girl in a jar, in a window across the street.",go:()=>binoc(()=>window.__bx&&window.__bx.enter("jar"))},
+    {k:"band",c:"#ff6a3d",ic:"band",t:"Mess with the band",p:"Tap Pat, Jordan or Jacob. At your own risk.",go:()=>document.querySelectorAll(".bm").forEach(el=>el.animate&&el.animate([{filter:"none"},{filter:"drop-shadow(0 0 10px #ff6a3d) drop-shadow(0 0 22px #ff6a3d) brightness(1.25)"},{filter:"none"}],{duration:900,iterations:3}))},
+    {k:"tags",c:"var(--green)",ic:"tag",t:"Find the song tags",p:"Five Motel Smile song titles are sprayed around the roof. Tap the graffiti.",go:null},
+    {k:"lounge",c:"#b07cff",ic:"rec",t:"The Smile Lounge",p:"Dig through the crate, drop the needle, hear the record.",go:()=>click("#lng-sign")},
+    {k:"floor",c:"var(--pink)",ic:"floor",t:"Light up the dance floor",p:"Down in the lounge. Flip the switch and see who shows up.",go:()=>click("#lng-sign")},
+    {k:"arcade",c:"var(--blue)",ic:"game",t:"Game Corner",p:"The arcade by the shack. Better Free pinball is coming soon.",go:()=>click("#pk-arcade")}
+  ];
+  const state=()=>{ const g=window.MSGot?window.MSGot():new Set(), tags=[...g].filter(k=>k.startsWith("tag:")).length, nT=window.MSSecList?window.MSSecList().filter(k=>k.startsWith("tag:")).length:5;
+    return {g,tags,nT}; };
+  function render(){ const {g,tags,nT}=state();
+    $("gd-grid").innerHTML=ITEMS.map((it,i)=>{ const done=it.k==="tags"?tags>=nT&&nT>0:g.has(it.k);
+      const p=it.k==="tags"&&tags&&!done?`${tags} of ${nT} found. Keep looking.`:it.p;
+      return `<div class="gd-it${done?" done":""}" style="--c:${it.c}"><div class="gd-ic">${I[it.ic]}</div><div><b>${it.t}</b><p>${p}</p></div>${done?'<span class="gd-done">✓ Done</span>':it.go?`<button class="gd-go" data-i="${i}">Go →</button>`:`<button class="gd-go" data-i="${i}">Look</button>`}</div>`; }).join("");
+    const all=window.MSSecList?window.MSSecList().length:0, n=g.size; $("gd-n").textContent=`${n}/${all}`; $("gd-bar").style.width=(all?n/all*100:0)+"%"; }
+  function open(){ render(); btn.classList.add("seen"); const w=$("welcome"); w&&w.classList.remove("on"); gd.hidden=false; requestAnimationFrame(()=>gd.classList.add("on")); setTimeout(()=>$("gd-x").focus({preventScroll:true}),60);
+    window.MSBxSfx&&window.MSBxSfx("tick"); }
+  function close(){ gd.classList.remove("on"); setTimeout(()=>{ if(!gd.classList.contains("on")) gd.hidden=true; },260); btn.focus({preventScroll:true}); }
+  btn.addEventListener("click",e=>{ e.stopPropagation(); open(); });
+  $("gd-x").addEventListener("click",close);
+  gd.addEventListener("click",e=>{ if(e.target===gd) close(); const b=e.target.closest(".gd-go"); if(!b) return; const it=ITEMS[+b.dataset.i]; close(); if(it.go) setTimeout(it.go,280); });
+  addEventListener("keydown",e=>{ if(e.key==="Escape"&&!gd.hidden){ e.stopPropagation(); close(); } },true);
+  window.MSGuide=open;
 })();
 </script>
 <script>
