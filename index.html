@@ -565,6 +565,9 @@ body.jx-zoom .lng-edge,body.in-room .lng-edge{opacity:0!important;pointer-events
 .bm,.bm-sh,.bm-rf,.bm-kit{transition:opacity .35s}
 body.jx-zoom .bm,body.jx-zoom .bm-sh,body.jx-zoom .bm-rf,body.jx-zoom .bm-kit,body.jx-zoom .top,body.jx-zoom #bar,body.jx-zoom .mini,body.jx-zoom .pan-hint{opacity:0!important;pointer-events:none!important}
 html.jx-zoom,html.jx-zoom body{overflow:clip!important;overscroll-behavior:none}
+body.jx-zoom .sky,body.jx-zoom #flyer,body.jx-zoom .lng-sign,body.jx-zoom .hunt{opacity:0!important;pointer-events:none!important;transition:opacity .25s}
+.jx.pushing .jx-box{-webkit-mask-image:radial-gradient(ellipse 58% 52% at 50% 50%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 58% 52% at 50% 50%,#000 62%,transparent 100%)}
+.jx.pushing .jx-say,.jx.pushing .jx-ui{opacity:0}
 #stage.zooming{will-change:transform}
 .top,#bar{transition:opacity .3s}
 .jx-box.hit{animation:jxhit .28s ease-out}
@@ -1574,7 +1577,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     back.src=src; (back.decode?back.decode():Promise.resolve()).then(swap,swap); }
   function jxShow(s){ clearInterval(jxCyc); const a=JX_SET[s].slice().sort(()=>Math.random()-.5); let i=0;
     jxFrame(a[0].src); jxSay(a[0].say); jxLoad(s+1);
-    if(a.length>1&&!still) jxCyc=setInterval(()=>{ i=(i+1)%a.length; jxFrame(a[i].src); },s===6?1800:2200); }
+    if(a.length>1&&!still) jxCyc=setInterval(()=>{ i=(i+1)%a.length; jxFrame(a[i].src); },s===6?1300:1500); }
   /* roof camera pushes in on the jar sitting on the ledge */
   let rzOrig=null; document.body.appendChild(JX); document.body.appendChild($("jz"));
   function roofZoom(on,ms,done){ const st=$("stage");
@@ -1582,7 +1585,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const O=rzOrig, fin=()=>{ if(!on){ st.style.transform=O?O.tf:""; st.style.transformOrigin=O?O.to:""; rzOrig=null; } done&&done(); };
     if(!O){ fin(); return; } if(still) ms=1;
     const r=jar.getBoundingClientRect(), P={x:r.left+r.width/2,y:r.top+r.height*.55}, C={x:innerWidth/2,y:innerHeight*.47}, K=Math.max(1.5,Math.min(8,innerHeight*.5/Math.max(10,r.height)));
-    if(on) roofZoom.v={P,C,K}; const V=roofZoom.v||{P,C,K};
+    if(on) roofZoom.v=roofZoom.next||{P,C,K}; roofZoom.next=null; const V=roofZoom.v||{P,C,K};
     st.style.transformOrigin=`${V.P.x}px ${V.P.y}px`;
     const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2, t0=performance.now();
     (function f(now){ const t=Math.min(1,(now-t0)/ms), e=ease(on?t:1-t);
@@ -1609,8 +1612,25 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const ring=document.createElementNS(NS,"circle"); ring.setAttribute("cx",x); ring.setAttribute("cy",y); ring.setAttribute("r",1.2+k*.4); g.appendChild(ring);
     jxCr.appendChild(g); }
   function jxSay(t){ const b=$("jx-say"); b.textContent=t; b.classList.remove("on"); void b.offsetWidth; b.classList.add("on"); }
+  /* push in: the roof camera moves in on the jar, and the ledge shot fades in over it, jar on jar */
+  function pushIn(){ const r=jar.getBoundingClientRect(), stg=JX.querySelector(".jx-stage"), bgL=JX.querySelector(".jx-bg"), st=$("stage");
+    JX.hidden=false; jxShow(0); stg.style.transition="none"; stg.style.transform="none"; JX.classList.add("open","pushing"); JX.style.transition="none"; JX.style.opacity=1;
+    const J=jxCr.getBoundingClientRect(), Cj={x:J.left+J.width/2,y:J.top+J.height/2}, Pr={x:r.left+r.width/2,y:r.top+r.height/2};
+    const s0=Math.max(.04,Math.min(1,r.height/J.height)), K=1/s0, ms=still?1:1300;
+    rzOrig={tf:st.style.transform, to:st.style.transformOrigin}; roofZoom.v={P:Pr,C:Cj,K}; st.style.transformOrigin=`${Pr.x}px ${Pr.y}px`;
+    stg.style.transformOrigin=`${Cj.x}px ${Cj.y}px`;
+    const set=e=>{ // e: 0..1 camera progress (log-scaled so the push feels even)
+      const k=Math.exp(Math.log(K)*e), sc=k*s0, f=1-(k-1)/(K-1||1);
+      st.style.transform=`translate(${(Cj.x-Pr.x)*(1-f)}px,${(Cj.y-Pr.y)*(1-f)}px) scale(${k})`;
+      stg.style.transform=`translate(${(Pr.x-Cj.x)*f}px,${(Pr.y-Cj.y)*f}px) scale(${sc})`;
+      const o=Math.max(0,Math.min(1,(e-.45)/.4)); stg.style.opacity=o; JX.style.background=`rgba(5,6,10,${o})`; bgL.style.opacity=o; };
+    set(0);
+    const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2, t0=performance.now();
+    (function f(now){ const t=Math.min(1,(now-t0)/ms); set(ease(t)); if(t<1) requestAnimationFrame(f); else {
+      stg.style.transition=stg.style.transform=stg.style.opacity=stg.style.transformOrigin=""; JX.style.background=JX.style.transition=JX.style.opacity=""; bgL.style.opacity="";
+      JX.classList.remove("pushing"); jxBusy=false; jxBox.focus({preventScroll:true}); } })(t0); }
   function openJar(){ if(freed||rzOrig||JX.classList.contains("open")) return; window.MSAC&&window.MSAC(); hits=0; jxBusy=false; jxCr.innerHTML=""; $("jx-meter").style.width="0%";
-    JX.classList.remove("broke"); jxLoad(0); jxLoad(1); jxBusy=true; document.body.classList.add("jx-zoom"); document.documentElement.classList.add("jx-zoom"); whenStill(()=>roofZoom(true,1000,()=>{ jxBusy=false; JX.hidden=false; jxShow(0); requestAnimationFrame(()=>JX.classList.add("open")); setTimeout(()=>jxBox.focus({preventScroll:true}),300); })); document.body.classList.add("jx-on");
+    JX.classList.remove("broke"); jxLoad(0); jxLoad(1); jxBusy=true; document.body.classList.add("jx-zoom"); document.documentElement.classList.add("jx-zoom"); whenStill(pushIn); document.body.classList.add("jx-on");
     $("jx-tip").textContent="Tap the glass to break her out"; }
   // phones pan the roof toward a tapped thing: wait until it settles before the camera pushes in
   function whenStill(go){ const pl=$("play"); let last=pl.style.transform, calm=0, t0=performance.now();
