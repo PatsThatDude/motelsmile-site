@@ -278,6 +278,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <div id="roof-glass" aria-hidden="true"></div>
     <canvas id="roof-fx" width="1672" height="941" aria-hidden="true"></canvas>
     <canvas id="gr-roof" width="1672" height="941" aria-hidden="true" style="position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:60"></canvas>
+    <a class="lng-sign" id="lng-sign" href="#lounge" data-lounge aria-label="Smile Lounge: go downstairs"><span>Smile Lounge</span><i>↓</i></a>
     <a class="pk" id="pk-floor" href="#lounge" data-lounge style="left:1337px;top:665px;width:185px;height:51px;clip-path:polygon(3.2% 11.8%,55.7% 88.2%,96.8% 11.8%)" aria-label="Dance floor: go to the Smile Lounge"></a>
     <a class="pk" id="pk-arcade" href="#arcade" data-arcade style="left:335px;top:318px;width:128px;height:245px" aria-label="Arcade: go to the game corner"></a>
     <canvas id="pat-fx" width="1672" height="941"></canvas>
@@ -293,6 +294,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <div class="jx-ui"><b id="jx-tip">Tap the glass to break her out</b><div class="jx-meter"><i id="jx-meter"></i></div></div></div>
 </div>
   <div class="gr-toast" id="gr-toast" role="status" hidden><img src="img/grace/d7.webp?v=2" alt=""><div><b id="gr-h">Grace is free!</b><span id="gr-msg">She’s waiting for you in the Smile Lounge.</span></div><button class="pill" style="--c:var(--pink)" id="gr-go">Go dance →</button><button class="gr-x" id="gr-x" aria-label="Close">✕</button></div>
+  <a class="lng-edge" id="lng-edge" href="#lounge" data-lounge aria-label="Go to the Smile Lounge">Lounge <b>›</b></a>
   <div class="pan-hint" id="pan-hint" aria-hidden="true">⇠ swipe to look around ⇢</div>
   <a class="hot" id="lounge-hot" href="#lounge" data-lounge aria-label="The lounge: pick a record"></a>
 
@@ -527,6 +529,24 @@ body.in-room .mini{display:none}
 .jz-say{position:absolute;left:50%;top:14%;transform:translateX(-50%);background:#fff;color:#111;font:700 14px/1.2 ui-monospace,Menlo,monospace;padding:8px 12px;border-radius:12px;white-space:nowrap;box-shadow:0 6px 24px rgba(0,0,0,.5)}
 .jz-tip{position:absolute;left:50%;bottom:9%;transform:translateX(-50%);color:#fff;font-size:15px;text-shadow:0 2px 10px #000;white-space:nowrap;animation:jzp 1.6s ease-in-out infinite}
 @keyframes jzp{50%{opacity:.45}}
+/* lounge entrance: neon sign over the skylight + phone edge chip when it's off screen */
+.lng-sign{position:absolute;left:1352px;top:598px;width:160px;z-index:6;display:flex;flex-direction:column;align-items:center;text-decoration:none;font-family:var(--tube);color:#fff;-webkit-tap-highlight-color:transparent;animation:lngGlow 2.4s ease-in-out infinite}
+.lng-sign span{font-size:26px;line-height:1;white-space:nowrap;text-shadow:0 0 6px #ff3d7f,0 0 16px #ff3d7f,0 0 30px #ff3d7f}
+.lng-sign i{font-style:normal;font-size:28px;line-height:1;margin-top:2px;color:#ffd36a;text-shadow:0 0 10px #ffb03d;animation:lngBob 1.2s ease-in-out infinite}
+@keyframes lngGlow{50%{filter:brightness(1.35)}}
+@keyframes lngBob{50%{transform:translateY(6px)}}
+.lng-edge{display:none}
+@media (max-width:760px){
+  .lng-sign span{font-size:32px}.lng-sign{left:1335px;width:194px;top:582px}
+  .lng-edge{display:flex;align-items:center;gap:4px;position:absolute;right:0;top:46%;z-index:6;padding:10px 10px 10px 14px;border-radius:22px 0 0 22px;background:rgba(10,8,18,.72);border:1.5px solid var(--pink);border-right:0;color:#fff;font:600 15px/1 var(--sans,system-ui);text-decoration:none;box-shadow:0 0 14px rgba(255,61,127,.55);transition:opacity .3s,transform .3s;-webkit-tap-highlight-color:transparent}
+  .lng-edge b{font-size:22px;line-height:.8;color:var(--pink)}
+  .lng-edge.off{opacity:0;transform:translateX(100%);pointer-events:none}
+  /* slimmer bottom bar: keep the label + title, drop the sub-line */
+  .tile{padding:9px 14px}.tile em{display:none}.tile b{font-size:18px}.tile small{font-size:10px}
+  /* lounge card: compact so the room shows */
+  .lg-panel{padding:10px 14px!important;gap:4px!important}.lg-panel small{display:none}.lg-panel b{font-size:20px!important}.lg-panel .row{font-size:12px!important}
+}
+body.jx-zoom .lng-edge,body.in-room .lng-edge{opacity:0!important;pointer-events:none!important}
 .gr-walk{position:absolute;z-index:200;pointer-events:none;transform-origin:50% 100%;filter:drop-shadow(0 0 4px rgba(255,70,200,.95)) drop-shadow(0 0 10px rgba(255,190,90,.6))}
 .gr-trail{position:absolute;z-index:199;width:5px;height:5px;border-radius:50%;pointer-events:none;background:#ff46c8;box-shadow:0 0 8px #ff46c8;transition:transform 1s ease-out,opacity 1s}
 .bm,.bm-sh,.bm-rf,.bm-kit{transition:opacity .35s}
@@ -2185,6 +2205,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       if(!hinted&&!still){ const k=(t-t0-1200)/2600; if(k>=0&&k<=1) cxT=clampC(760-360*Math.sin(Math.PI*k)); else if(k>1){ hinted=true; cxT=clampC(760); } }
       cxT=clampC(cxT); cx+= (cxT-cx)*(drag?0.6:0.14); py=0.5; px=toPx(cx);
       const h=$("pan-hint"); if(h) h.style.opacity=(!hinted&&t-t0>1000)?"1":"0";
+      const le=$("lng-edge"), fl=$("pk-floor"); if(le&&fl){ const r=fl.getBoundingClientRect(); le.classList.toggle("off", r.left+r.width*.5 < stage.clientWidth-20); }
     } else { px=0.5; py=0.42; }
     if(tall()) py=0.5;
     place(); if(window.MSAway&&window.MSAway()) setTimeout(()=>requestAnimationFrame(tick),400); else requestAnimationFrame(tick);
