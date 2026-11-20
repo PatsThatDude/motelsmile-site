@@ -1573,7 +1573,9 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   let jxCyc=0, jxFront=0;
   const jxLoad=s=>{ (JX_SET[s]||[]).forEach(v=>{ const i=new Image(); i.src=v.src; }); };
   function jxFrame(src){ const im=[$("jx-img"),$("jx-img2")], back=im[1-jxFront], front=im[jxFront];
-    const swap=()=>{ back.style.opacity=1; front.style.opacity=0; jxFront=1-jxFront; };
+    const swap=()=>{ back.style.zIndex=1; front.style.zIndex=0; back.style.transition=""; back.style.opacity=1; jxFront=1-jxFront;
+      clearTimeout(jxFrame.t); jxFrame.t=setTimeout(()=>{ front.style.transition="none"; front.style.opacity=0; },650); };
+    back.style.transition="none"; back.style.opacity=0; void back.offsetWidth;
     back.src=src; (back.decode?back.decode():Promise.resolve()).then(swap,swap); }
   function jxShow(s){ clearInterval(jxCyc); const a=JX_SET[s].slice().sort(()=>Math.random()-.5); let i=0;
     jxFrame(a[0].src); jxSay(a[0].say); jxLoad(s+1);
