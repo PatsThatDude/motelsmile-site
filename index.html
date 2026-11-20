@@ -274,8 +274,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <button class="pk img" id="pk-gnome" style="left:248px;top:560px;width:100px;height:90px;background-position:-248px -560px;transform-origin:50% 90%" aria-label="Garden gnome"></button>
     <button class="pk" id="pk-reset" style="left:186px;top:476px;width:38px;height:46px" aria-label="Reset button: start the roof over"></button>
     <a class="show-sign" id="show-sign" href="#shows" data-open="shows" hidden aria-label="Next show"><small id="ss-a"></small><b id="ss-b"></b></a>
-    <div class="fanwall" id="fanwall" aria-hidden="true"></div><button class="fw-empty" id="fw-empty" aria-label="Sign the wall: spray your name on the roof">Sign the wall <i>→ tap</i></button>
-    <button class="spray" id="spray" aria-label="Spray your name on the wall"><svg viewBox="0 0 24 40" aria-hidden="true"><rect x="9" y="1" width="6" height="5" rx="1" fill="#ddd"/><rect x="10.5" y="0" width="3" height="2" fill="#ff3d7f"/><rect x="4" y="6" width="16" height="32" rx="4" fill="#ff3d7f"/><rect x="4" y="15" width="16" height="9" fill="#14040b"/><text x="12" y="22" font-size="6" text-anchor="middle" fill="#ffd36a" font-family="monospace">MS</text><ellipse cx="12" cy="37" rx="8" ry="2" fill="rgba(0,0,0,.4)"/></svg></button>
+    <button class="binoc" id="binoc" aria-label="Coin-op binoculars: look across the street"><span class="bn-tag">Look ↗</span><img src="img/binoc/viewer.webp" alt=""></button>
     <div class="jar-glow" id="jar-glow" aria-hidden="true"></div><div class="jar-help" id="jar-help" aria-hidden="true">help!</div>
     <button class="pk girl-jar" data-girl="megan" style="left:1272px;top:504px;width:37px;height:60px;background-image:url(img/girls/megan-jar.webp)" aria-label="A jar labeled MEGAN. Someone is trapped inside"></button>
     <button class="pk girl-jar" data-girl="gianna" style="left:152px;top:446px;width:37px;height:60px;background-image:url(img/girls/gianna-jar.webp)" aria-label="A jar labeled GIANNA. Someone is trapped inside"></button>
@@ -295,7 +294,6 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
   <button class="hunt on" id="hunt" aria-haspopup="dialog" aria-label="Roof secrets"></button>
   <div class="wx" id="wx" aria-hidden="true"><canvas id="wx-c"></canvas></div>
   <div class="card-note" id="pm-card" hidden role="dialog" aria-label="Pigeon mail"><button class="cn-x" data-cn-x aria-label="Close">✕</button><b>Pigeon mail</b><p>Coo. Leave your email and I’ll fly you new songs and show dates.</p><form id="pm-form"><input name="hp" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp"><input id="pm-email" type="email" required placeholder="you@email.com" autocomplete="email"><button class="btn solid" style="--c:var(--green)">Send it</button></form><p class="cn-msg" id="pm-msg" role="status"></p></div>
-  <div class="card-note" id="sp-card" hidden role="dialog" aria-label="Spray your name"><button class="cn-x" data-cn-x aria-label="Close">✕</button><b>Spray your name on the roof</b><p>The band approves every tag before it goes up.</p><form id="sp-form"><input name="hp" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp"><input id="sp-name" maxlength="18" required placeholder="Your name" autocomplete="nickname"><div class="sp-cols" id="sp-cols" role="radiogroup" aria-label="Paint colour"></div><button class="btn solid" style="--c:var(--pink)">Spray it</button></form><p class="cn-msg" id="sp-msg" role="status"></p></div>
   <div class="sec-note" id="sec-note" role="status" aria-live="polite"></div>
   <div class="sec-pop" id="sec-pop" hidden role="dialog" aria-label="Roof secrets"><b>Roof secrets</b><ul id="sec-list"></ul><small>Tap things. Everything on the roof does something.</small></div>
   <div class="welcome" id="welcome" aria-live="polite"><b>Welcome to the roof.</b><span>Tap anything. Find the secrets. Someone’s stuck in a jar…</span></div>
@@ -2348,7 +2346,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const hunt=$("hunt"), box=$("tags");
     found=found.filter(n=>TAGS.some(t=>t[0]===n));
     /* roof secrets: Grace, the 5 tags, the band, the dance floor */
-    const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["megan","Free Megan","Another jar… near the drinks"],["gianna","Free Gianna","A jar up on the old AC unit"],["sophia","Free Sophia","A jar on the ledge past the drums"],["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"]];
+    const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["megan","Free Megan","Another jar… near the drinks"],["gianna","Free Gianna","A jar up on the old AC unit"],["sophia","Free Sophia","A jar on the ledge past the drums"],["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"],["windows","Peek in every window","The binoculars by the wall see a lot"]];
     const got=new Set();
     const showHunt=()=>{ hunt.innerHTML=`★ <i class="hr">Roof </i>secrets <b>${got.size}/${SEC.length}</b>`;
       $("sec-list").innerHTML=SEC.map(([k,a,h])=>`<li class="${got.has(k)?"got":""}"><i>${got.has(k)?"✓":"?"}</i><span>${got.has(k)?a:h}</span></li>`).join(""); };
@@ -3124,18 +3122,6 @@ window.MST=(()=>{
   $("pm-form").addEventListener("submit",async e=>{ e.preventDefault(); const m=$("pm-msg"); m.className="cn-msg"; m.textContent="Flying…";
     const d=await post("/api/subscribe",{email:$("pm-email").value,hp:e.target.hp.value});
     if(d.ok){ m.textContent=d.already?"You’re already on the list. Coo.":"Got it. Watch your inbox."; e.target.querySelector("button").disabled=true; } else { m.className="cn-msg err"; m.textContent=d.error||"Try again."; } });
-  // ---- fan wall
-  const COLS={pink:"#ff4fa3",cyan:"#46dcff",yellow:"#ffd36a",green:"#5dff9e",white:"#ffffff"}; let col="pink";
-  $("sp-cols").innerHTML=Object.entries(COLS).map(([k,v])=>`<button type="button" role="radio" aria-label="${k}" aria-checked="${k===col}" data-c="${k}" style="background:${v}"></button>`).join("");
-  $("sp-cols").addEventListener("click",e=>{ const b=e.target.closest("[data-c]"); if(!b) return; col=b.dataset.c; $("sp-cols").querySelectorAll("button").forEach(x=>x.setAttribute("aria-checked",x===b)); });
-  $("spray").addEventListener("click",e=>{ e.stopPropagation(); openCard("sp-card"); }); $("fw-empty").addEventListener("click",e=>{ e.stopPropagation(); openCard("sp-card"); });
-  $("sp-form").addEventListener("submit",async e=>{ e.preventDefault(); const m=$("sp-msg"); m.className="cn-msg"; m.textContent="Shaking the can…";
-    const d=await post("/api/wall",{name:$("sp-name").value,color:col,hp:e.target.hp.value});
-    if(d.ok){ m.textContent="Sent! It goes up once the band approves it."; e.target.querySelector("button:last-child").disabled=true; } else { m.className="cn-msg err"; m.textContent=d.error||"Try again."; } });
-  const seed=s=>{ let h=2166136261; for(const c of s) h=Math.imul(h^c.charCodeAt(0),16777619); return (h>>>0)/4294967296; };
-  fetch("/api/wall").then(r=>r.json()).then(d=>{ const w=$("fanwall"); if(!d||!d.names||!d.names.length) return; const em=$("fw-empty"); em.classList.add("has"); em.innerHTML="+ add yours";
-    const rows=[[2,0],[38,0],[18,1],[56,1]]; w.innerHTML=d.names.slice(0,8).map((x,i)=>{ const r=seed(x.id), row=i%4, y=6+row*19+r*6, xx=(i>>2)*120+(row%2?60:0)+r*30, rot=-8+r*14;
-      return `<span class="c-${x.c}" style="left:${xx}px;top:${y}px;transform:rotate(${rot.toFixed(1)}deg)">${x.n.replace(/[&<>]/g,"")}</span>`; }).join(""); }).catch(()=>{});
   // ---- real NYC weather + time of day (open-meteo, no key)
   const st=$("stage"), cv=$("wx-c"), q=new URLSearchParams(location.search).get("wx");
   let mode=null, drops=[];
@@ -3160,6 +3146,110 @@ window.MST=(()=>{
   fetch("https://api.open-meteo.com/v1/forecast?latitude=40.71&longitude=-74.0&current=weather_code,temperature_2m,is_day&daily=sunrise,sunset&timezone=UTC&temperature_unit=fahrenheit&forecast_days=1")
     .then(r=>r.json()).then(d=>{ const c=d.current||{}, ss=d.daily&&d.daily.sunset&&Date.parse(d.daily.sunset[0]+"Z"), sr=d.daily&&d.daily.sunrise&&Date.parse(d.daily.sunrise[0]+"Z");
       apply(c.weather_code,!!c.is_day,c.temperature_2m,ss,sr); }).catch(()=>apply(null,false,null));
+})();
+</script>
+<style>
+/* rooftop binoculars */
+.binoc{position:absolute;left:528px;top:462px;width:66px;height:142px;z-index:70;pointer-events:auto;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;filter:drop-shadow(0 6px 6px rgba(0,0,0,.55))}
+.binoc img{width:100%;height:100%;object-fit:contain;display:block}
+.binoc::after{content:"";position:absolute;left:30%;top:14%;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,#fff 0,rgba(120,240,255,.9) 30%,transparent 70%);animation:bnGlint 3.2s ease-in-out infinite}
+.binoc .bn-tag{position:absolute;left:50%;top:-30px;transform:translateX(-50%) rotate(-4deg);white-space:nowrap;font-family:var(--tube);font-size:17px;color:#7af0ff;text-shadow:0 0 8px #3ddcff;pointer-events:none;opacity:.95}
+.binoc:hover,.binoc:focus-visible{filter:drop-shadow(0 0 10px #46dcff) drop-shadow(0 6px 6px rgba(0,0,0,.55))}
+@keyframes bnGlint{0%,70%,100%{opacity:0;transform:scale(.4)}78%{opacity:1;transform:scale(1.1)}86%{opacity:0;transform:scale(.6)}}
+body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
+.bx{position:fixed;inset:0;z-index:85;background:#020205;opacity:0;transition:opacity .45s;touch-action:none;-webkit-user-select:none;user-select:none;overflow:clip}
+.bx.open{opacity:1}.bx[hidden]{display:none}
+.bx-lens{position:absolute;inset:0;overflow:clip;--r:min(46vh,30vw);--cx1:calc(50% - var(--r)*.82);--cx2:calc(50% + var(--r)*.82);
+  -webkit-mask-image:radial-gradient(circle var(--r) at var(--cx1) 50%,#000 92%,transparent 100%),radial-gradient(circle var(--r) at var(--cx2) 50%,#000 92%,transparent 100%);
+  mask-image:radial-gradient(circle var(--r) at var(--cx1) 50%,#000 92%,transparent 100%),radial-gradient(circle var(--r) at var(--cx2) 50%,#000 92%,transparent 100%)}
+@media (max-aspect-ratio:1/1){.bx-lens{--r:min(44vw,34vh);--cx1:50%;--cx2:50%;-webkit-mask-image:radial-gradient(ellipse calc(var(--r)*1.04) calc(var(--r)*1.42) at 50% 47%,#000 90%,transparent 100%);mask-image:radial-gradient(ellipse calc(var(--r)*1.04) calc(var(--r)*1.42) at 50% 47%,#000 90%,transparent 100%)}}
+.bx-pan{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+.bx-pan>img{display:block;width:100%;height:100%;-webkit-user-drag:none;pointer-events:none}
+.bx-lens::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,transparent 55%,rgba(0,0,0,.55) 100%);mix-blend-mode:multiply}
+.bx-win{position:absolute;border:0;padding:0;background:transparent;cursor:pointer;border-radius:3px;-webkit-tap-highlight-color:transparent}
+.bx-win::before{content:"";position:absolute;inset:-8%;border-radius:4px;box-shadow:0 0 0 1.5px rgba(255,236,170,.0),0 0 18px rgba(255,210,120,.0);animation:bxW 2.8s ease-in-out infinite;animation-delay:var(--d,0s)}
+.bx-win.seen::before{animation:none;box-shadow:0 0 0 1.5px rgba(120,240,255,.55)}
+.bx-win.dark{background:rgba(5,5,10,.86);transition:background .25s}
+@keyframes bxW{0%,100%{box-shadow:0 0 0 1.5px rgba(255,236,170,0),0 0 14px rgba(255,210,120,0)}50%{box-shadow:0 0 0 1.5px rgba(255,236,170,.55),0 0 18px rgba(255,210,120,.45)}}
+.bx-scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .45s;background:#000}
+.bx.inwin .bx-scene{opacity:1;pointer-events:auto}
+.bx-scene img,.bx-scene video{width:100%;height:100%;object-fit:cover;display:block}
+@media (max-aspect-ratio:1/1){.bx-scene img,.bx-scene video{object-fit:contain;transform:scale(1.4)}}
+.bx-ui{position:absolute;left:0;right:0;bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:8px;z-index:3;text-align:center;padding:0 16px;pointer-events:none}
+.bx-ui>*{pointer-events:auto}
+.bx-ui b{font-family:var(--tube);font-weight:400;font-size:clamp(17px,3vw,24px);color:#fff;text-shadow:0 0 12px #3ddcff}
+.bx-ui small{font-size:13px;color:#cfe;opacity:.8;letter-spacing:.04em}
+.bx-cap{font-family:var(--tube);font-size:clamp(16px,2.6vw,22px);color:#ffd36a;text-shadow:0 0 10px #ff9a3d;max-width:34em}
+.bx-x{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:14px;z-index:4}
+.bx-back{display:none}.bx.inwin .bx-back{display:inline-flex}.bx.inwin .bx-hint{display:none}
+.bx-count{position:absolute;top:calc(18px + env(safe-area-inset-top,0px));right:16px;z-index:4;font-family:var(--tube);font-size:16px;color:#7af0ff;text-shadow:0 0 8px #3ddcff}
+@media (prefers-reduced-motion:reduce){.bx,.bx-scene{transition:none}.bx-win::before,.binoc::after{animation:none}}
+</style>
+<div class="bx" id="bx" hidden role="dialog" aria-label="Coin-op binoculars looking across the street">
+  <div class="bx-lens" id="bx-lens"><div class="bx-pan" id="bx-pan"><img src="img/binoc/street.webp?v=1" alt="Apartment buildings across the street at night, a few windows lit"></div>
+    <div class="bx-scene" id="bx-scene"></div></div>
+  <button class="pill bx-x" id="bx-x" style="--c:var(--cyan)">✕ Back to the roof</button>
+  <div class="bx-count" id="bx-count"></div>
+  <div class="bx-ui"><b class="bx-hint" id="bx-hint">Drag to look around. Tap a lit window.</b><div class="bx-cap" id="bx-cap"></div><button class="pill bx-back" id="bx-back" style="--c:var(--pink)">← Back to the street</button></div>
+</div>
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const bx=$("bx"); document.body.appendChild(bx);
+  const PW=1536, PH=1024;
+  /* lit windows in the street photo (px in the 1536x1024 photo) */
+  const WIN=[
+    {k:"mirror",x:652,y:487,w:57,h:118,v:"img/binoc/w-makeup.mp4?v=2",poster:"img/binoc/w-makeup.webp?v=2",cap:"“Everybody wanna say it’s a matter of time…”"},
+    {k:"guitar",x:1335,y:373,w:60,h:115,img:"img/binoc/w1.webp",cap:"Somebody’s been listening to Better Free on repeat."},
+    {k:"cat",x:1215,y:561,w:57,h:117,img:"img/binoc/w2.webp",cap:"Mrs. Delgado and Meatball, 4F. Every night at 11."},
+    {k:"dance",x:652,y:678,w:58,h:122,img:"img/binoc/w3.webp",cap:"Slow dance, spaghetti on the stove."},
+    {k:"pizza",x:1217,y:757,w:61,h:133,img:"img/binoc/w4.webp",cap:"Caught. 2 a.m. slice."},
+    {k:"jar",x:908,y:300,w:57,h:115,img:"img/binoc/w5.webp",cap:"Wait… another jar? Someone’s trapped over there too."}
+  ];
+  const DECOY=[{x:240,y:475,w:57,h:115},{x:20,y:475,w:55,h:115},{x:1085,y:760,w:60,h:130},{x:652,y:878,w:58,h:122}];
+  const pan=$("bx-pan"), lens=$("bx-lens"), scene=$("bx-scene");
+  let seen=new Set(); try{ seen=new Set(JSON.parse(localStorage.getItem("ms-bx-seen")||"[]")); }catch(e){}
+  const save=()=>{ try{ localStorage.setItem("ms-bx-seen",JSON.stringify([...seen])); }catch(e){} };
+  WIN.forEach((w,i)=>{ const b=document.createElement("button"); b.className="bx-win"+(seen.has(w.k)?" seen":""); b.dataset.k=w.k; b.setAttribute("aria-label","Lit window "+(i+1));
+    Object.assign(b.style,{left:w.x/PW*100+"%",top:w.y/PH*100+"%",width:w.w/PW*100+"%",height:w.h/PH*100+"%"}); b.style.setProperty("--d",(i*.47)+"s"); pan.appendChild(b); w.el=b; });
+  DECOY.forEach(w=>{ const b=document.createElement("button"); b.className="bx-win decoy"; b.tabIndex=-1; b.setAttribute("aria-hidden","true");
+    Object.assign(b.style,{left:w.x/PW*100+"%",top:w.y/PH*100+"%",width:w.w/PW*100+"%",height:w.h/PH*100+"%"}); b.style.setProperty("--d","9s"); pan.appendChild(b); });
+  /* view: the street photo drawn at scale S, offset (ox,oy) */
+  let S=1, ox=0, oy=0, zoomK=1;
+  const fitS=()=>{ const W=innerWidth,H=innerHeight; return Math.max(W/PW,H/PH)*1.55; };
+  const clamp=()=>{ const W=innerWidth,H=innerHeight; ox=Math.min(0,Math.max(W-PW*S,ox)); oy=Math.min(0,Math.max(H-PH*S,oy)); };
+  const apply=(ms)=>{ pan.style.transition=ms?`transform ${ms}ms cubic-bezier(.3,.1,.2,1)`:"none"; pan.style.width=PW+"px"; pan.style.height=PH+"px"; pan.style.transform=`translate(${ox}px,${oy}px) scale(${S})`; };
+  const centerOn=(x,y)=>{ ox=innerWidth/2-x*S; oy=innerHeight/2-y*S; clamp(); };
+  const count=()=>{ $("bx-count").textContent=`Windows ${[...seen].filter(k=>WIN.some(w=>w.k===k)).length}/${WIN.length}`; };
+  function open(){ window.MSAC&&window.MSAC(); bx.hidden=false; S=fitS(); centerOn(PW*.55,PH*.5); apply(0); count(); requestAnimationFrame(()=>bx.classList.add("open")); document.body.classList.add("bx-on"); $("bx-x").focus({preventScroll:true}); }
+  function close(){ leave(true); bx.classList.remove("open"); document.body.classList.remove("bx-on"); setTimeout(()=>{ if(!bx.classList.contains("open")) bx.hidden=true; },460); }
+  let cur=null;
+  function enter(w){ cur=w; const s0=S; const cx=w.x+w.w/2, cy=w.y+w.h/2;
+    // fly into the window, then cut to the scene inside
+    S=Math.min(innerWidth/w.w,innerHeight/w.h)*.9; centerOn(cx,cy); apply(700);
+    setTimeout(()=>{ scene.innerHTML=w.v?`<video src="${w.v}" poster="${w.poster}" autoplay muted loop playsinline></video>`:`<img src="${w.img}" alt="">`; bx.classList.add("inwin"); $("bx-cap").textContent=w.cap; },560);
+    w._s0=s0; if(!seen.has(w.k)){ seen.add(w.k); save(); w.el.classList.add("seen"); count(); if(WIN.every(x=>seen.has(x.k))) window.MSSecret&&window.MSSecret("windows"); }
+    setTimeout(()=>$("bx-back").focus({preventScroll:true}),700); }
+  function leave(instant){ if(!cur) return; const w=cur; cur=null; bx.classList.remove("inwin"); $("bx-cap").textContent=""; setTimeout(()=>scene.innerHTML="",460);
+    S=w._s0||fitS(); centerOn(w.x+w.w/2,w.y+w.h/2); apply(instant?0:600); }
+  /* drag to look around */
+  let drag=null, moved=0;
+  lens.addEventListener("pointerdown",e=>{ if(cur) return; drag={x:e.clientX,y:e.clientY,ox,oy}; moved=0; lens.setPointerCapture&&lens.setPointerCapture(e.pointerId); });
+  lens.addEventListener("pointermove",e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; moved=Math.max(moved,Math.abs(dx)+Math.abs(dy)); ox=drag.ox+dx; oy=drag.oy+dy; clamp(); apply(0); });
+  lens.addEventListener("pointerup",e=>{ const d=drag; drag=null; if(!d||moved>8) return;
+    // a tap: which window is under it?
+    const px=(e.clientX-ox)/S, py=(e.clientY-oy)/S;
+    const w=WIN.find(w=>px>=w.x-10&&px<=w.x+w.w+10&&py>=w.y-10&&py<=w.y+w.h+10); if(w){ enter(w); return; }
+    const dz=DECOY.find(w=>px>=w.x&&px<=w.x+w.w&&py>=w.y&&py<=w.y+w.h);
+    if(dz){ const el=[...pan.querySelectorAll(".decoy")][DECOY.indexOf(dz)]; el.classList.add("dark"); $("bx-cap").textContent="Lights out. They saw you."; setTimeout(()=>{ el.classList.remove("dark"); if(!cur) $("bx-cap").textContent=""; },2200); } });
+  lens.addEventListener("pointercancel",()=>drag=null);
+  addEventListener("resize",()=>{ if(bx.hidden||cur) return; S=fitS(); clamp(); apply(0); });
+  $("bx-x").addEventListener("click",close); $("bx-back").addEventListener("click",()=>leave());
+  addEventListener("keydown",e=>{ if(bx.hidden) return; if(e.key==="Escape"){ cur?leave():close(); return; }
+    const st={ArrowLeft:[60,0],ArrowRight:[-60,0],ArrowUp:[0,60],ArrowDown:[0,-60]}[e.key]; if(st&&!cur){ ox+=st[0]; oy+=st[1]; clamp(); apply(200); e.preventDefault(); } });
+  bx.addEventListener("keydown",e=>{ const b=e.target.closest&&e.target.closest(".bx-win:not(.decoy)"); if(b&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); enter(WIN.find(w=>w.k===b.dataset.k)); } });
+  [bx,lens].forEach(el=>el.addEventListener("scroll",()=>{ el.scrollTop=0; el.scrollLeft=0; }));
+  const bn=$("binoc"); if(bn) bn.addEventListener("click",e=>{ e.stopPropagation(); open(); });
 })();
 </script>
 
