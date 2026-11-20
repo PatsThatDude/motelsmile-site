@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Fan wall · approve tags</title>
+<style>
+:root{--bg:#0b0a12;--fg:#f4f0fa;--fog:#9a93ad;--pink:#ff3d7f;--green:#5dff9e;--line:rgba(255,255,255,.12)}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 system-ui,-apple-system,sans-serif;padding:20px max(16px,env(safe-area-inset-left))}
+h1{font-size:22px;margin:0 0 4px}p{color:var(--fog);margin:0 0 16px}
+input{font:inherit;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#16141f;color:var(--fg);width:min(320px,100%)}
+button{font:inherit;padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:#1c1a27;color:var(--fg);cursor:pointer}
+button.ok{border-color:var(--green);color:var(--green)}button.no{border-color:var(--pink);color:var(--pink)}
+h2{font-size:16px;margin:24px 0 8px;color:var(--fog);text-transform:uppercase;letter-spacing:.12em}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.row b{flex:1;font-size:18px}.row small{color:var(--fog)}
+.c-pink{color:#ff4fa3}.c-cyan{color:#46dcff}.c-yellow{color:#ffd36a}.c-green{color:#5dff9e}.c-white{color:#fff}
+#msg{color:var(--pink);min-height:20px}
+</style></head><body>
+<h1>Fan wall</h1><p>Names visitors want sprayed on the roof. Approve to put them up (newest 40 show).</p>
+<div id="login"><input id="key" type="password" placeholder="Wall key" autocomplete="current-password"> <button id="go">Open</button></div>
+<div id="msg"></div>
+<div id="lists" hidden><h2>Waiting <span id="pc"></span></h2><div id="pending"></div><h2>On the wall</h2><div id="approved"></div><p style="margin-top:20px"><button id="out">Forget key on this device</button></p></div>
+<script>
+const $=id=>document.getElementById(id); let KEY=""; try{KEY=localStorage.getItem("wall-key")||"";}catch(e){}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const when=t=>t?new Date(t).toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}):"";
+async function call(action,id){ const r=await fetch("/api/wall",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({admin:KEY,action,id})}); const d=await r.json(); if(!d.ok){ $("msg").textContent=d.error||"Error"; $("lists").hidden=true; $("login").hidden=false; return; } $("msg").textContent=""; $("login").hidden=true; $("lists").hidden=false; try{localStorage.setItem("wall-key",KEY);}catch(e){} render(d); }
+function render(d){ $("pc").textContent=d.pending.length?`(${d.pending.length})`:"";
+  $("pending").innerHTML=d.pending.length?d.pending.map(x=>`<div class="row"><b class="c-${esc(x.c)}">${esc(x.n)}</b><small>${when(x.t)} ${esc(x.country||"")}</small><button class="ok" data-a="approve" data-id="${esc(x.id)}">Approve</button><button class="no" data-a="reject" data-id="${esc(x.id)}">Reject</button></div>`).join(""):"<p>Nothing waiting.</p>";
+  $("approved").innerHTML=d.approved.length?d.approved.map(x=>`<div class="row"><b class="c-${esc(x.c)}">${esc(x.n)}</b><small>${when(x.ok)}</small><button class="no" data-a="remove" data-id="${esc(x.id)}">Remove</button></div>`).join(""):"<p>No names yet.</p>"; }
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-a]"); if(b) call(b.dataset.a,b.dataset.id); });
+$("go").onclick=()=>{ KEY=$("key").value.trim(); call("list"); }; $("key").onkeydown=e=>{ if(e.key==="Enter") $("go").click(); };
+$("out").onclick=()=>{ try{localStorage.removeItem("wall-key");}catch(e){} location.reload(); };
+if(KEY) call("list");
+</script></body></html>

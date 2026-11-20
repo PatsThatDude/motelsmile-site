@@ -273,6 +273,9 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <button class="pk" id="pk-amp" style="left:805px;top:500px;width:72px;height:92px" aria-label="Amp"></button>
     <button class="pk img" id="pk-gnome" style="left:248px;top:560px;width:100px;height:90px;background-position:-248px -560px;transform-origin:50% 90%" aria-label="Garden gnome"></button>
     <button class="pk" id="pk-reset" style="left:186px;top:476px;width:38px;height:46px" aria-label="Reset button: start the roof over"></button>
+    <a class="show-sign" id="show-sign" href="#shows" data-open="shows" hidden aria-label="Next show"><small id="ss-a"></small><b id="ss-b"></b></a>
+    <div class="fanwall" id="fanwall" aria-label="Fan wall"></div>
+    <button class="spray" id="spray" aria-label="Spray your name on the wall"><svg viewBox="0 0 24 40" aria-hidden="true"><rect x="9" y="1" width="6" height="5" rx="1" fill="#ddd"/><rect x="10.5" y="0" width="3" height="2" fill="#ff3d7f"/><rect x="4" y="6" width="16" height="32" rx="4" fill="#ff3d7f"/><rect x="4" y="15" width="16" height="9" fill="#14040b"/><text x="12" y="22" font-size="6" text-anchor="middle" fill="#ffd36a" font-family="monospace">MS</text><ellipse cx="12" cy="37" rx="8" ry="2" fill="rgba(0,0,0,.4)"/></svg></button>
     <div class="jar-glow" id="jar-glow" aria-hidden="true"></div><div class="jar-help" id="jar-help" aria-hidden="true">help!</div>
     <button class="pk" id="pk-jar" style="left:733px;top:434px;width:37px;height:60px" aria-label="A jar on the ledge. Someone is trapped inside. Open it up close" hidden></button>
     <button class="pk" id="pk-cooler" style="left:1225px;top:550px;width:140px;height:90px" aria-label="Cooler"></button>
@@ -287,6 +290,9 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
   </div>
   <div class="flash" id="flash"></div>
   <button class="hunt on" id="hunt" aria-haspopup="dialog" aria-label="Roof secrets"></button>
+  <div class="wx" id="wx" aria-hidden="true"><canvas id="wx-c"></canvas></div>
+  <div class="card-note" id="pm-card" hidden role="dialog" aria-label="Pigeon mail"><button class="cn-x" data-cn-x aria-label="Close">✕</button><b>Pigeon mail</b><p>Coo. Leave your email and I’ll fly you new songs and show dates.</p><form id="pm-form"><input name="hp" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp"><input id="pm-email" type="email" required placeholder="you@email.com" autocomplete="email"><button class="btn solid" style="--c:var(--green)">Send it</button></form><p class="cn-msg" id="pm-msg" role="status"></p></div>
+  <div class="card-note" id="sp-card" hidden role="dialog" aria-label="Spray your name"><button class="cn-x" data-cn-x aria-label="Close">✕</button><b>Spray your name on the roof</b><p>The band approves every tag before it goes up.</p><form id="sp-form"><input name="hp" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp"><input id="sp-name" maxlength="18" required placeholder="Your name" autocomplete="nickname"><div class="sp-cols" id="sp-cols" role="radiogroup" aria-label="Paint colour"></div><button class="btn solid" style="--c:var(--pink)">Spray it</button></form><p class="cn-msg" id="sp-msg" role="status"></p></div>
   <div class="sec-note" id="sec-note" role="status" aria-live="polite"></div>
   <div class="sec-pop" id="sec-pop" hidden role="dialog" aria-label="Roof secrets"><b>Roof secrets</b><ul id="sec-list"></ul><small>Tap things. Everything on the roof does something.</small></div>
   <div class="welcome" id="welcome" aria-live="polite"><b>Welcome to the roof.</b><span>Tap anything. Find the secrets. Someone’s stuck in a jar…</span></div>
@@ -605,6 +611,43 @@ body.jx-zoom .welcome,body.jx-zoom .sec-pop,body.jx-zoom .jar-help{opacity:0!imp
 .sec-note b{display:block;color:var(--green);font:11px var(--mono);letter-spacing:.16em;text-transform:uppercase;margin-bottom:3px}
 @media (max-width:760px){ .top .hunt{margin:0;padding:6px 10px!important;font-size:10px!important} .sec-note,.sec-pop{right:12px!important;top:calc(50px + env(safe-area-inset-top,0px))!important} }
 .gr-toast{top:calc(58px + env(safe-area-inset-top,0px));bottom:auto!important}
+/* next-show neon on a skyline building */
+.show-sign{position:absolute;left:806px;top:300px;width:150px;z-index:4;display:flex;flex-direction:column;align-items:center;gap:1px;text-decoration:none;color:#fff;font-family:var(--tube);text-align:center;transform:rotate(-2deg);-webkit-tap-highlight-color:transparent;animation:ssFlick 6s infinite}
+.show-sign[hidden]{display:none}
+.show-sign small{font:700 12px/1.1 var(--mono);white-space:nowrap;letter-spacing:.12em;text-transform:uppercase;color:#46dcff;text-shadow:0 0 6px #46dcff}
+.show-sign b{font-weight:400;font-size:30px;line-height:1;color:#fff;text-shadow:0 0 6px #ff3d7f,0 0 14px #ff3d7f,0 0 26px #ff3d7f;white-space:nowrap}
+@keyframes ssFlick{0%,92%,100%{opacity:1}93%{opacity:.4}94%{opacity:1}96%{opacity:.6}}
+/* fan wall: approved names sprayed on the parapet */
+.fanwall{position:absolute;left:478px;top:506px;width:250px;height:84px;z-index:3;pointer-events:none}
+.fanwall span{position:absolute;white-space:nowrap;font-family:var(--tube);font-size:17px;line-height:1;opacity:.92;mix-blend-mode:screen;filter:blur(.25px)}
+.fanwall .c-pink{color:#ff4fa3;text-shadow:0 0 6px #ff3d7f}.fanwall .c-cyan{color:#46dcff;text-shadow:0 0 6px #46dcff}.fanwall .c-yellow{color:#ffd36a;text-shadow:0 0 6px #ffb03d}.fanwall .c-green{color:#5dff9e;text-shadow:0 0 6px #2cff7a}.fanwall .c-white{color:#fff;text-shadow:0 0 6px #fff}
+.fanwall span.new{animation:spIn 1.2s ease-out}
+@keyframes spIn{0%{opacity:0;filter:blur(6px)}100%{opacity:.92;filter:blur(.25px)}}
+.spray{position:absolute;left:700px;top:548px;width:28px;height:48px;z-index:5;padding:0;border:0;background:none;cursor:pointer;transform:rotate(-14deg);filter:drop-shadow(0 0 6px rgba(255,61,127,.7));-webkit-tap-highlight-color:transparent;animation:spBob 3s ease-in-out infinite}
+.spray svg{width:100%;height:100%;display:block}
+@keyframes spBob{50%{transform:rotate(-8deg) translateY(-2px)}}
+/* little paper cards (pigeon mail, spray your name) */
+.card-note{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-1deg);z-index:97;width:min(340px,calc(100vw - 32px));box-sizing:border-box;padding:18px 18px 14px;border-radius:6px;background:#f3ead7;color:#1c1420;box-shadow:0 18px 50px rgba(0,0,0,.6);font:14px/1.4 var(--mono)}
+.card-note[hidden]{display:none}
+.card-note b{display:block;font-family:var(--tube);font-weight:400;font-size:24px;color:#d0145f;margin-bottom:4px}
+.card-note p{margin:0 0 10px}
+.card-note form{display:flex;flex-wrap:wrap;gap:8px}
+.card-note input:not(.hp){flex:1 1 180px;min-width:0;font:inherit;padding:10px 12px;border-radius:8px;border:1.5px solid #1c1420;background:#fff;color:#1c1420}
+.card-note .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.card-note .btn{flex:0 0 auto}
+.card-note .cn-x{position:absolute;top:6px;right:8px;border:0;background:none;font-size:18px;cursor:pointer;color:#1c1420}
+.cn-msg{font-weight:700;color:#0a7a3c;min-height:1em;margin:8px 0 0!important}.cn-msg.err{color:#c0123f}
+.sp-cols{display:flex;gap:8px;flex-basis:100%}.sp-cols button{width:30px;height:30px;border-radius:50%;border:2px solid #1c1420;cursor:pointer}.sp-cols button[aria-checked="true"]{outline:3px solid #1c1420;outline-offset:2px}
+/* real NYC weather + time of day on the roof */
+.wx{position:absolute;inset:0;z-index:3;pointer-events:none}
+.wx canvas{width:100%;height:100%;display:block}
+.stage::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity 2s}
+.stage.tod-dusk::after{opacity:1;background:linear-gradient(180deg,rgba(255,110,50,.42),rgba(255,70,110,.26) 28%,rgba(255,140,70,.1) 48%,transparent 60%);mix-blend-mode:screen}
+.stage.tod-day::after{opacity:1;background:linear-gradient(180deg,rgba(90,140,230,.45),rgba(120,160,240,.2) 40%,transparent 62%);mix-blend-mode:screen}
+.stage.tod-late::after{opacity:.45;background:rgba(0,0,20,.6);mix-blend-mode:multiply}
+.wx-read{font-size:inherit;color:var(--fog);margin-left:14px}
+@media (max-width:760px){.wx-read{display:none}}
+body.jx-zoom .show-sign,body.jx-zoom .spray,body.jx-zoom .fanwall,body.jx-zoom .wx{opacity:0!important;pointer-events:none!important}
 .gr-walk{position:absolute;z-index:200;pointer-events:none;transform-origin:50% 100%;filter:drop-shadow(0 0 4px rgba(255,70,200,.95)) drop-shadow(0 0 10px rgba(255,190,90,.6))}
 .gr-trail{position:absolute;z-index:199;width:5px;height:5px;border-radius:50%;pointer-events:none;background:#ff46c8;box-shadow:0 0 8px #ff46c8;transition:transform 1s ease-out,opacity 1s}
 .bm,.bm-sh,.bm-rf,.bm-kit{transition:opacity .35s}
@@ -2348,7 +2391,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const shows=(c.shows||[]).filter(x=>!x.date||x.date>=today).sort((a,b)=>(a.date||"9")<(b.date||"9")?-1:1);
     if(shows.length){
       const d0=shows[0].date?new Date(shows[0].date+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}):"TBA";
-      $("t-shows").textContent="Next: "+d0; $("t-shows-sub").textContent=[shows[0].venue,shows[0].time].filter(Boolean).join(" · ");
+      $("t-shows").textContent="Next: "+d0; $("t-shows-sub").textContent=[shows[0].venue,shows[0].time].filter(Boolean).join(" · "); window.MSShowSign&&window.MSShowSign(shows[0]);
       $("shows").innerHTML=`<ul class="rows">${shows.map(x=>{const d=x.date?new Date(x.date+"T12:00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}):"TBA";
         const extra=[x.doors&&("doors "+x.doors),x.price,x.ages,x.with&&("with "+x.with)].filter(Boolean).map(esc).join(" · ");
         return `<li><div><b>${x.tickets?`<a ${ext(x.tickets)}>${esc(x.venue)}</a>`:esc(x.venue)}</b>${extra?`<span class="extra">${extra}</span>`:""}</div><span style="text-align:right">${[d,x.time,x.city].filter(Boolean).map(esc).join(" · ")}<br><a ${ext(mapHref(x))} style="font-size:12px">Map ↗</a>${x.tickets?` · <a ${ext(x.tickets)} style="font-size:12px">Tickets ↗</a>`:""}</span></li>`;}).join("")}</ul>`;
@@ -3010,6 +3053,63 @@ window.MST=(()=>{
   const h=document.getElementById("jar-help"), jar=document.getElementById("pk-jar"), LINES=["help!","help!!","psst… up here","get me out!","hello??"]; let i=0;
   setInterval(()=>{ if(!h||h.classList.contains("gone")||jar.hidden||document.body.classList.contains("in-room")||document.body.classList.contains("jx-zoom")) return;
     h.textContent=LINES[i++%LINES.length]; h.classList.add("on"); setTimeout(()=>h.classList.remove("on"),1800); },7000);
+})();
+</script>
+<script>
+/* roof extras: next-show neon, fan wall, pigeon mail, real NYC weather + time of day */
+(()=>{ const $=id=>document.getElementById(id);
+  // ---- next show countdown on a skyline building
+  window.MSShowSign=x=>{ const el=$("show-sign"); if(!x||!x.date){ el.hidden=true; return; }
+    const ny=new Date(new Date().toLocaleString("en-US",{timeZone:"America/New_York"})); ny.setHours(0,0,0,0);
+    const d=new Date(x.date+"T00:00:00"), n=Math.round((d-ny)/864e5);
+    $("ss-a").textContent=[d.toLocaleDateString("en-US",{month:"short",day:"numeric"}),x.venue].filter(Boolean).join(" · ");
+    $("ss-b").textContent=n<=0?"TONIGHT":n===1?"TOMORROW":n+" DAYS"; el.hidden=false; el.setAttribute("aria-label",`Next show: ${$("ss-a").textContent}, ${$("ss-b").textContent.toLowerCase()}`); };
+  // ---- little cards
+  const openCard=id=>{ document.querySelectorAll(".card-note").forEach(c=>c.hidden=c.id!==id); const c=$(id); const i=c.querySelector("input:not(.hp)"); setTimeout(()=>i&&i.focus(),60); };
+  document.querySelectorAll("[data-cn-x]").forEach(b=>b.addEventListener("click",()=>b.closest(".card-note").hidden=true));
+  addEventListener("keydown",e=>{ if(e.key==="Escape") document.querySelectorAll(".card-note").forEach(c=>c.hidden=true); });
+  const post=async(url,body)=>{ try{ const r=await fetch(url,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)}); return await r.json(); }catch(e){ return {ok:false,error:"No signal on the roof. Try again."}; } };
+  // ---- pigeon mail: after the pigeon flies off, it drops a note
+  const pg=$("pk-pigeon"); if(pg) pg.addEventListener("click",()=>setTimeout(()=>openCard("pm-card"),1300),{once:true});
+  $("pm-form").addEventListener("submit",async e=>{ e.preventDefault(); const m=$("pm-msg"); m.className="cn-msg"; m.textContent="Flying…";
+    const d=await post("/api/subscribe",{email:$("pm-email").value,hp:e.target.hp.value});
+    if(d.ok){ m.textContent=d.already?"You’re already on the list. Coo.":"Got it. Watch your inbox."; e.target.querySelector("button").disabled=true; } else { m.className="cn-msg err"; m.textContent=d.error||"Try again."; } });
+  // ---- fan wall
+  const COLS={pink:"#ff4fa3",cyan:"#46dcff",yellow:"#ffd36a",green:"#5dff9e",white:"#ffffff"}; let col="pink";
+  $("sp-cols").innerHTML=Object.entries(COLS).map(([k,v])=>`<button type="button" role="radio" aria-label="${k}" aria-checked="${k===col}" data-c="${k}" style="background:${v}"></button>`).join("");
+  $("sp-cols").addEventListener("click",e=>{ const b=e.target.closest("[data-c]"); if(!b) return; col=b.dataset.c; $("sp-cols").querySelectorAll("button").forEach(x=>x.setAttribute("aria-checked",x===b)); });
+  $("spray").addEventListener("click",e=>{ e.stopPropagation(); openCard("sp-card"); });
+  $("sp-form").addEventListener("submit",async e=>{ e.preventDefault(); const m=$("sp-msg"); m.className="cn-msg"; m.textContent="Shaking the can…";
+    const d=await post("/api/wall",{name:$("sp-name").value,color:col,hp:e.target.hp.value});
+    if(d.ok){ m.textContent="Sent! It goes up once the band approves it."; e.target.querySelector("button:last-child").disabled=true; } else { m.className="cn-msg err"; m.textContent=d.error||"Try again."; } });
+  const seed=s=>{ let h=2166136261; for(const c of s) h=Math.imul(h^c.charCodeAt(0),16777619); return (h>>>0)/4294967296; };
+  fetch("/api/wall").then(r=>r.json()).then(d=>{ const w=$("fanwall"); if(!d||!d.names) return;
+    const rows=[[2,0],[38,0],[18,1],[56,1]]; w.innerHTML=d.names.slice(0,8).map((x,i)=>{ const r=seed(x.id), row=i%4, y=6+row*19+r*6, xx=(i>>2)*120+(row%2?60:0)+r*30, rot=-8+r*14;
+      return `<span class="c-${x.c}" style="left:${xx}px;top:${y}px;transform:rotate(${rot.toFixed(1)}deg)">${x.n.replace(/[&<>]/g,"")}</span>`; }).join(""); }).catch(()=>{});
+  // ---- real NYC weather + time of day (open-meteo, no key)
+  const st=$("stage"), cv=$("wx-c"), q=new URLSearchParams(location.search).get("wx");
+  let mode=null, drops=[];
+  const run=()=>{ if(!mode||matchMedia("(prefers-reduced-motion: reduce)").matches) return; const ctx=cv.getContext("2d");
+    const fit=()=>{ cv.width=st.clientWidth; cv.height=st.clientHeight; }; fit(); addEventListener("resize",fit);
+    const N=mode==="rain"?140:90; drops=Array.from({length:N},()=>({x:Math.random(),y:Math.random(),v:.4+Math.random()*.6,s:Math.random()}));
+    (function f(){ if(document.hidden||document.body.classList.contains("in-room")){ requestAnimationFrame(f); return; }
+      const W=cv.width,H=cv.height; ctx.clearRect(0,0,W,H);
+      if(mode==="rain"){ ctx.strokeStyle="rgba(200,220,255,.35)"; ctx.lineWidth=1; ctx.beginPath();
+        for(const d of drops){ d.y+=.018*d.v; d.x-=.002*d.v; if(d.y>1){ d.y=-.05; d.x=Math.random()*1.1; } const x=d.x*W,y=d.y*H; ctx.moveTo(x,y); ctx.lineTo(x-3,y+14+10*d.v); } ctx.stroke(); }
+      else { ctx.fillStyle="rgba(255,255,255,.8)"; for(const d of drops){ d.y+=.0025*d.v; d.x+=Math.sin((d.y+d.s)*12)*.0008; if(d.y>1){ d.y=-.02; d.x=Math.random(); } ctx.beginPath(); ctx.arc(d.x*W,d.y*H,1+d.s*2,0,7); ctx.fill(); } }
+      requestAnimationFrame(f); })(); };
+  const apply=(code,isDay,temp,sunset,sunrise)=>{
+    mode=[51,53,55,56,57,61,63,65,66,67,80,81,82,95,96,99].includes(code)?"rain":[71,73,75,77,85,86].includes(code)?"snow":null;
+    const now=Date.now(); let tod="night";
+    if(sunset&&now>sunset-75*60e3&&now<sunset+25*60e3) tod="dusk"; else if(isDay) tod="day";
+    const h=+new Date().toLocaleString("en-US",{timeZone:"America/New_York",hour:"numeric",hour12:false}); if(!isDay&&h>=1&&h<5) tod="late";
+    if(q) { if(["rain","snow"].includes(q)) mode=q; if(["dusk","day","late","night"].includes(q)) tod=q; }
+    st.classList.add("tod-"+tod); run();
+    const words={rain:"rain",snow:"snow"}[mode]||(tod==="day"?"clear":"night");
+    if(temp!=null){ const sp=document.querySelector(".top span"); if(sp){ const r=document.createElement("i"); r.className="wx-read"; r.style.fontStyle="normal"; r.textContent=`NYC ${Math.round(temp)}° · ${words}`; sp.insertBefore(r,sp.querySelector(".bs-link")||null); } } };
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=40.71&longitude=-74.0&current=weather_code,temperature_2m,is_day&daily=sunrise,sunset&timezone=UTC&temperature_unit=fahrenheit&forecast_days=1")
+    .then(r=>r.json()).then(d=>{ const c=d.current||{}, ss=d.daily&&d.daily.sunset&&Date.parse(d.daily.sunset[0]+"Z"), sr=d.daily&&d.daily.sunrise&&Date.parse(d.daily.sunrise[0]+"Z");
+      apply(c.weather_code,!!c.is_day,c.temperature_2m,ss,sr); }).catch(()=>apply(null,false,null));
 })();
 </script>
 
