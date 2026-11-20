@@ -279,7 +279,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <button class="pk girl-jar" data-girl="megan" style="left:1272px;top:504px;width:37px;height:60px;background-image:url(img/girls/megan-jar.webp)" aria-label="A jar labeled MEGAN. Someone is trapped inside"></button>
     <button class="pk girl-jar" data-girl="gianna" style="left:152px;top:446px;width:37px;height:60px;background-image:url(img/girls/gianna-jar.webp)" aria-label="A jar labeled GIANNA. Someone is trapped inside"></button>
     <button class="pk girl-jar" data-girl="sophia" style="left:1172px;top:432px;width:37px;height:60px;background-image:url(img/girls/sophia-jar.webp)" aria-label="A jar labeled SOPHIA. Someone is trapped inside"></button>
-    <button class="pk" id="pk-jar" style="left:733px;top:434px;width:37px;height:60px" aria-label="A jar on the ledge. Someone is trapped inside. Open it up close" hidden></button>
+    <button class="pk" id="pk-jar" style="left:590px;top:434px;width:37px;height:60px" aria-label="A jar on the ledge. Someone is trapped inside. Open it up close" hidden></button>
     <button class="pk" id="pk-cooler" style="left:1225px;top:550px;width:140px;height:90px" aria-label="Cooler"></button>
     <div id="roof-glass" aria-hidden="true"></div>
     <canvas id="roof-fx" width="1672" height="941" aria-hidden="true"></canvas>
@@ -600,9 +600,9 @@ body.jx-zoom .lng-edge,body.in-room .lng-edge{opacity:0!important;pointer-events
 .hunt.pop{animation:secPop .6s}
 @keyframes secPop{40%{transform:scale(1.2);box-shadow:0 0 16px var(--green)}}
 /* Grace hook on the roof: spotlight + help bubble */
-.jar-glow{position:absolute;left:690px;top:380px;width:124px;height:150px;border-radius:50%;pointer-events:none;background:radial-gradient(ellipse at 50% 60%,rgba(255,200,120,.45),rgba(255,120,180,.18) 45%,transparent 70%);animation:jarGlow 2.6s ease-in-out infinite}
+.jar-glow{position:absolute;left:547px;top:380px;width:124px;height:150px;border-radius:50%;pointer-events:none;background:radial-gradient(ellipse at 50% 60%,rgba(255,200,120,.45),rgba(255,120,180,.18) 45%,transparent 70%);animation:jarGlow 2.6s ease-in-out infinite}
 @keyframes jarGlow{50%{opacity:.45;transform:scale(.9)}}
-.jar-help{position:absolute;left:752px;top:404px;transform:translate(-50%,-100%) scale(.6);opacity:0;pointer-events:none;z-index:7;padding:3px 9px;border-radius:10px;background:#fff;color:#14040b;font:700 17px/1.1 var(--mono);white-space:nowrap;box-shadow:0 0 10px rgba(255,70,200,.7);transition:opacity .25s,transform .25s}
+.jar-help{position:absolute;left:609px;top:404px;transform:translate(-50%,-100%) scale(.6);opacity:0;pointer-events:none;z-index:7;padding:3px 9px;border-radius:10px;background:#fff;color:#14040b;font:700 17px/1.1 var(--mono);white-space:nowrap;box-shadow:0 0 10px rgba(255,70,200,.7);transition:opacity .25s,transform .25s}
 .jar-help::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-top-color:#fff;border-bottom:0}
 .jar-help.on{opacity:1;transform:translate(-50%,-100%) scale(1)}
 .jar-glow.gone,.jar-help.gone{display:none}
@@ -1657,7 +1657,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function sparkle(){ // glass shards + glitter from the jar
     const host=$("play"); if(!host||still) return;
     for(let i=0;i<22;i++){ const s=document.createElement("i"), a=Math.random()*Math.PI*2, r=40+Math.random()*90, big=Math.random()<.4;
-      s.style.cssText=`position:absolute;left:752px;top:470px;width:${big?7:4}px;height:${big?3:4}px;background:${big?"rgba(230,240,255,.9)":["#ff46c8","#46dcff","#ffd36a"][i%3]};border-radius:${big?1:4}px;pointer-events:none;z-index:61;box-shadow:0 0 6px currentColor;transition:transform .7s cubic-bezier(.1,.7,.3,1),opacity .7s;`;
+      s.style.cssText=`position:absolute;left:609px;top:470px;width:${big?7:4}px;height:${big?3:4}px;background:${big?"rgba(230,240,255,.9)":["#ff46c8","#46dcff","#ffd36a"][i%3]};border-radius:${big?1:4}px;pointer-events:none;z-index:61;box-shadow:0 0 6px currentColor;transition:transform .7s cubic-bezier(.1,.7,.3,1),opacity .7s;`;
       host.appendChild(s); requestAnimationFrame(()=>{ s.style.transform=`translate(${Math.cos(a)*r}px,${Math.sin(a)*r*.7+30}px) rotate(${Math.random()*720}deg)`; s.style.opacity="0"; });
       setTimeout(()=>s.remove(),800); } }
   function showToast(msg){ if(msg) $("gr-msg").textContent=msg; toast.hidden=false; clearTimeout(showToast.t); showToast.t=setTimeout(()=>toast.hidden=true,9000); }
@@ -1708,7 +1708,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   /* free: tiny Grace dances along the roof from the jar into the lounge */
   function walkToLounge(done,frames,start){ frames=frames||FR; const host=$("play"); if(!host||still){ done&&done(); return; }
     const g=document.createElement("img"); g.className="gr-walk"; g.alt=""; host.appendChild(g);
-    const A={x:(start||{}).x||752,y:(start||{}).y||494,h:44}, B={x:1430,y:700,h:62}, ms=4600, t0=performance.now(); let fi=0, last=0;
+    const A={x:(start||{}).x||609,y:(start||{}).y||494,h:44}, B={x:1430,y:700,h:62}, ms=4600, t0=performance.now(); let fi=0, last=0;
     (function f(now){ const t=Math.min(1,(now-t0)/ms), e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
       if(now-last>190){ fi=(fi+1)%8; last=now; g.src=frames[fi]; if(t<.9){ const d=document.createElement('i'); d.className='gr-trail'; d.style.left=(A.x+(B.x-A.x)*e)+'px'; d.style.top=(A.y+(B.y-A.y)*e-6)+'px'; host.appendChild(d); requestAnimationFrame(()=>{ d.style.transform=`translate(${(Math.random()-.5)*20}px,${-14-Math.random()*16}px) scale(.3)`; d.style.opacity=0; }); setTimeout(()=>d.remove(),1100); } }
       const x=A.x+(B.x-A.x)*e, y=A.y+(B.y-A.y)*e-Math.abs(Math.sin(t*Math.PI*9))*3, h=A.h+(B.h-A.h)*e, w=h*W[fi]/600;
