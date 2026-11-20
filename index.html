@@ -298,6 +298,16 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
   <div class="sec-pop" id="sec-pop" hidden role="dialog" aria-label="Roof secrets"><b>Roof secrets</b><ul id="sec-list"></ul><small>Tap things. Everything on the roof does something.</small></div>
   <div class="welcome" id="welcome" aria-live="polite"><b>Welcome to the roof.</b><span>Tap anything. Find the secrets. Someone’s stuck in a jar…</span></div>
 <div class="jz" id="jz" hidden role="button" tabindex="0" aria-label="A jar on the ledge with someone inside. Tap to look closer"><button class="pill jx-x" id="jz-x" style="--c:var(--cyan)">✕ Back</button><div class="jz-say">Wait… is someone in there?</div><b class="jz-tip">Tap the jar to look closer</b></div>
+<script>
+/* speed: load what the current view needs now; everything else trickles in one file at a time while the page is idle, or when you open that view */
+(function(){ const q=[]; let busy=false, started=false;
+  const idle=window.requestIdleCallback||(f=>setTimeout(()=>f({timeRemaining:()=>8}),200));
+  function pump(){ if(busy||!q.length) return; if(document.hidden){ setTimeout(pump,1500); return; } busy=true; const s=q.shift(); const i=new Image(); i.onload=i.onerror=()=>{ busy=false; idle(pump); }; i.src=s; }
+  window.MSIdleLoad=(s,now)=>{ if(now){ const i=new Image(); i.src=s; return; } q.push(s); if(started) idle(pump); };
+  addEventListener("load",()=>setTimeout(()=>{ started=true; idle(pump); },2500));
+  window.MSLazy=root=>{ (root||document).querySelectorAll("[data-src]").forEach(el=>{ el.src=el.dataset.src; el.removeAttribute("data-src"); }); };
+})();
+</script>
 <div class="jx" id="jx" hidden role="dialog" aria-label="Grace is stuck in a jar on the roof ledge"><div class="jx-bg"></div>
   <button class="pill jx-x" id="jx-x" style="--c:var(--cyan)">✕ Not now</button><button class="pill jx-pan" id="jx-pan-l" hidden style="--c:var(--pink)">← Jar</button><button class="pill jx-pan" id="jx-pan-r" hidden style="--c:var(--cyan)">Binoculars →</button>
   <div class="jx-stage"><div class="jx-say" id="jx-say"></div>
@@ -340,7 +350,12 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
 .lounge{position:fixed;inset:0;z-index:40;overflow:hidden;background:#05060a;opacity:0;pointer-events:none}
 .lounge.on{opacity:1;pointer-events:auto}
 .lounge:not(.on),.lounge:not(.on) *{pointer-events:none!important}
-.lounge:not(.on):not(.moving){visibility:hidden}
+.lounge:not(.on):not(.moving){visibility:hidden;content-visibility:hidden}
+/* Megan, Gianna, Sophia jars hidden for now (only Grace + Jill) */
+#play .girl-jar{display:none!important}
+.lounge:not(.on):not(.moving) *,.arcade:not(.on) *{animation-play-state:paused!important}
+body.bx-on #stage *,body.jx-on:not(.jx-zoom) #stage *{animation-play-state:paused!important}
+.bx[hidden] *,.jx[hidden] *{animation:none!important}
 body.in-room #stage>:is(.top,#flyer,#play,#flash,#hunt,#pan-hint,#lounge-hot,.sky,.sheet,.bar,.gagfx){visibility:hidden;content-visibility:hidden}
 body.in-room #stage>:is(.top,#flyer,#play,#hunt,.sky,.bar) *{animation-play-state:paused!important}
 body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-state:paused!important}
@@ -749,8 +764,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 <section class="lounge" id="lounge" aria-label="The Smile Lounge" aria-hidden="true">
   <div class="lg-fill"></div>
   <div class="lg-cam" id="lg-cam">
-    <img class="lg-bg lg-lay" id="pl-sky" src="img/smile-lounge.webp?v=b1" alt="The Smile Lounge: a record player, a crate of records, a red couch and a dance floor on the roof" width="1672" height="941">
-    <img class="lg-bg lg-lay" id="pl-on" src="img/smile-lounge-on.webp?v=b1" alt="" width="1672" height="941">
+    <img class="lg-bg lg-lay" id="pl-sky" data-src="img/smile-lounge.webp?v=b1" alt="The Smile Lounge: a record player, a crate of records, a red couch and a dance floor on the roof" width="1672" height="941">
+    <img class="lg-bg lg-lay" id="pl-on" data-src="img/smile-lounge-on.webp?v=b1" alt="" width="1672" height="941">
     <canvas id="lg-fx" width="1672" height="941" aria-hidden="true"></canvas>
     <div id="gr-wrap" aria-hidden="true"><img id="gr-pose" alt=""><div id="gr-shadow"></div><img id="gr-dance" alt="Grace dancing"><div id="gr-pshadow"></div><div id="gr-partner"><img class="r" alt=""><img class="n" alt=""></div></div>
     <div class="gr-ask" id="gr-ask"><span class="gr-ask-h">Dance with</span><a class="pill" style="--c:var(--pink)" href="#" data-partner="pat">Pat</a><a class="pill" style="--c:var(--cyan)" href="#" data-partner="jordan">Jordan</a><a class="pill" style="--c:#ffaa46" href="#" data-partner="jacob">Jacob</a><a class="pill" style="--c:#c77dff" href="#" id="gr-girls">The girls</a><button class="x" id="gr-ask-x" aria-label="Send her back to the floor">✕</button></div>
@@ -1063,7 +1078,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   }
   function travelClear(){ hero.style.filter=""; cam.style.filter=""; window.MST.off(); }
   function enter(){
-    if(L.classList.contains("on")) return;
+    if(L.classList.contains("on")) return; window.MSLazy&&window.MSLazy(L);
     closeCrate(); lgPan=0; frame(); lgPan=Math.max(0,520-innerWidth/S/2); frame();
     L.classList.add("on"); L.setAttribute("aria-hidden","false"); stg.setAttribute("aria-hidden","true");
     if(location.hash!=="#lounge") history.pushState(null,"","#lounge");
@@ -1444,7 +1459,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 .arcade{position:fixed;inset:0;z-index:41;overflow:hidden;background:#05060a;opacity:0;pointer-events:none}
 .arcade.on{opacity:1;pointer-events:auto}
 .arcade:not(.on),.arcade:not(.on) *{pointer-events:none!important}
-.arcade:not(.on){visibility:hidden}
+.arcade:not(.on){visibility:hidden;content-visibility:hidden}
 .ac-fill{position:absolute;inset:-40px;background:url(img/game-corner.webp?v=c1) 30% 50%/cover;filter:blur(22px) brightness(.45)}
 .ac-cam,.ac-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
 .ac-cam{z-index:8}.ac-hero{z-index:2;background:url(img/roof-main.webp?v=c3) 0 0/1672px 941px;pointer-events:none;display:none}
@@ -1468,7 +1483,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   <div class="ac-fill"></div>
   <div class="ac-hero" id="ac-hero"></div>
   <div class="ac-cam" id="ac-cam">
-    <img src="img/game-corner.webp?v=c1" alt="The game corner behind the shack: three arcade cabinets, a pinball machine, an old TV with a console and two beanbags" width="1672" height="941">
+    <img data-src="img/game-corner.webp?v=c1" alt="The game corner behind the shack: three arcade cabinets, a pinball machine, an old TV with a console and two beanbags" width="1672" height="941">
     <button class="ac-hot" data-game="Rocket Runner" style="left:107px;top:227px;width:200px;height:520px" aria-label="Rocket Runner arcade cabinet"></button>
     <button class="ac-hot" data-game="Night Striker" style="left:310px;top:247px;width:150px;height:470px" aria-label="Night Striker arcade cabinet"></button>
     <button class="ac-hot" data-game="Pixel Outlaw" style="left:462px;top:267px;width:170px;height:425px" aria-label="Pixel Outlaw arcade cabinet"></button>
@@ -1523,7 +1538,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     window.MST.frame(Math.sin(Math.PI*cl(t/.7))*.8, fl*.45, t);
   }
   function travelClear(){ hero.style.filter=""; cam.style.filter=""; window.MST.off(); }
-  function enter(){ if(A.classList.contains("on")) return;
+  function enter(){ if(A.classList.contains("on")) return; window.MSLazy&&window.MSLazy(A);
     pan=0; frame(); pan=Math.max(0,420-innerWidth/S/2); frame();
     A.classList.add("on"); A.setAttribute("aria-hidden","false"); stg.setAttribute("aria-hidden","true");
     if(location.hash!=="#arcade") history.pushState(null,"","#arcade");
@@ -2367,7 +2382,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const hunt=$("hunt"), box=$("tags");
     found=found.filter(n=>TAGS.some(t=>t[0]===n));
     /* roof secrets: Grace, the 5 tags, the band, the dance floor */
-    const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["megan","Free Megan","Another jar… near the drinks"],["gianna","Free Gianna","A jar up on the old AC unit"],["sophia","Free Sophia","A jar on the ledge past the drums"],["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"],["windows","Peek in every window","The binoculars by the wall see a lot"],["jill","Free Jill","Across the street… bring a slingshot"],["jill5","Sharpshooter","Free Jill in 5 shots or fewer"]];
+    const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"],["windows","Peek in every window","The binoculars by the wall see a lot"],["jill","Free Jill","Across the street… bring a slingshot"],["jill5","Sharpshooter","Free Jill in 5 shots or fewer"]];
     const got=new Set();
     const showHunt=()=>{ hunt.innerHTML=`★ <i class="hr">Roof </i>secrets <b>${got.size}/${SEC.length}</b>`;
       $("sec-list").innerHTML=SEC.map(([k,a,h])=>`<li class="${got.has(k)?"got":""}"><i>${got.has(k)?"✓":"?"}</i><span>${got.has(k)?a:h}</span></li>`).join(""); };
@@ -3020,7 +3035,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       while(performance.now()<end&&!gagOn){ let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===m.pose&&POSES.length>1); m.pose=np; setPose(np); place();
         neon(1); inner.style.transform=`translateY(${k%2?-7:0}px)`; await wait(90); neon(0); await wait(380); k++; }
       inner.style.transform=""; m.busy=false; schedule(); return true; };
-    [...POSES,ZAP,FRIED,...(GG?[GA,GB]:[])].forEach(p=>["real","neon"].forEach(t=>{ const i=new Image(); i.src=p[t]; }));
+    [...POSES,ZAP,FRIED,...(GG?[GA,GB]:[])].forEach((p,i)=>["real","neon"].forEach(t=>window.MSIdleLoad(p[t],i<2)));
     MEMBERS.push(m);
     if(S&&S.start){ m.wasSeated=true; m.pose=POSES[0]; setPose(m.pose); kimg[0].onload=()=>{ sit(); }; schedule(16000+(cfg.offset||0)); return m; }
     m.spot=freeSpot(m); m.pose=POSES[Math.floor(Math.random()*POSES.length)];
@@ -3043,7 +3058,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     const FR=[1,2,3,4,5,6,7,8].map(i=>"img/grace/d"+i+".webp?v=2"), W=[170,233,186,254,206,231,224,222], AX=[.406,.387,.397,.575,.382,.571,.418,.504];
     const g=document.createElement("img"), gs=document.createElement("div"); g.className="gr-roof"; g.alt="Grace"; g.setAttribute("role","button"); g.setAttribute("aria-label","Grace (tap her)"); gs.className="gr-roof-sh";
     play.insertBefore(gs,cv); play.insertBefore(g,cv);
-    FR.forEach(s=>{ const i=new Image(); i.src=s; });
+    FR.forEach(s=>window.MSIdleLoad(s));
     let on=false, x=1520, f=700, fi=0, lastBeat=0, run=0, raf=0, bobT=0;
     function put(){ const h=hFor(f)*.9, w=W[fi]*h/600;
       Object.assign(g.style,{left:(x-AX[fi]*w)+"px",top:(f-h-Math.abs(Math.sin(bobT))*6)+"px",width:w+"px",height:h+"px",zIndex:10+Math.round(f/10)});
@@ -3207,7 +3222,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
 @media (prefers-reduced-motion:reduce){.bx,.bx-scene{transition:none}.bx-win::before,.binoc::after{animation:none}}
 </style>
 <div class="bx" id="bx" hidden role="dialog" aria-label="Coin-op binoculars looking across the street">
-  <div class="bx-lens" id="bx-lens"><div class="bx-pan" id="bx-pan"><img src="img/binoc/street.webp?v=1" alt="Apartment buildings across the street at night, a few windows lit"></div>
+  <div class="bx-lens" id="bx-lens"><div class="bx-pan" id="bx-pan"><img data-src="img/binoc/street.webp?v=1" alt="Apartment buildings across the street at night, a few windows lit"></div>
     <div class="bx-scene" id="bx-scene"></div></div>
   <button class="pill bx-x" id="bx-x" style="--c:var(--cyan)">← Back to the ledge</button>
   <div class="bx-count" id="bx-count"></div>
@@ -3242,7 +3257,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
   const apply=(ms)=>{ pan.style.transition=ms?`transform ${ms}ms cubic-bezier(.3,.1,.2,1)`:"none"; pan.style.width=PW+"px"; pan.style.height=PH+"px"; pan.style.transform=`translate(${ox}px,${oy}px) scale(${S})`; };
   const centerOn=(x,y)=>{ ox=innerWidth/2-x*S; oy=innerHeight/2-y*S; clamp(); };
   const count=()=>{ $("bx-count").textContent=`Windows ${[...seen].filter(k=>WIN.some(w=>w.k===k)).length}/${WIN.length}`; };
-  function open(){ window.MSAC&&window.MSAC(); bx.hidden=false; S=fitS(); centerOn(PW*.55,PH*.5); apply(0); count(); requestAnimationFrame(()=>bx.classList.add("open")); document.body.classList.add("bx-on"); $("bx-x").focus({preventScroll:true}); }
+  function open(){ window.MSAC&&window.MSAC(); window.MSLazy&&window.MSLazy(bx); bx.hidden=false; S=fitS(); centerOn(PW*.55,PH*.5); apply(0); count(); requestAnimationFrame(()=>bx.classList.add("open")); document.body.classList.add("bx-on"); $("bx-x").focus({preventScroll:true}); }
   function close(){ leave(true); bx.classList.remove("open"); document.body.classList.remove("bx-on"); setTimeout(()=>{ if(!bx.classList.contains("open")) bx.hidden=true; },460); }
   let cur=null;
   function enter(w){ cur=w; const s0=S; const cx=w.x+w.w/2, cy=w.y+w.h/2;
@@ -3332,7 +3347,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
     <div class="sl-bal" id="sl-bal"><button class="pill" id="sl-bl" style="--c:var(--cyan)">◀ Lean</button><div class="bar"><i id="sl-needle"></i></div><button class="pill" id="sl-br" style="--c:var(--cyan)">Lean ▶</button></div>
     <div class="sl-cyoa" id="sl-cyoa"><div class="sl-card"><h3>Jill’s jar is smashed!</h3><p>How does she get over to our roof? You pick.</p><div class="sl-opts" id="sl-opts"></div></div></div>`;
   bx.appendChild(sl);
-  const cv=sl.querySelector("canvas"), ctx=cv.getContext("2d"); const fit=()=>{ const d=Math.min(2,devicePixelRatio||1); cv.width=innerWidth*d; cv.height=innerHeight*d; ctx.setTransform(d,0,0,d,0,0); }; fit(); addEventListener("resize",fit);
+  const cv=sl.querySelector("canvas"), ctx=cv.getContext("2d"); const fit=()=>{ const d=Math.min(2,devicePixelRatio||1); cv.width=innerWidth*d; cv.height=innerHeight*d; ctx.setTransform(d,0,0,d,0,0); }; cv.width=cv.height=1; addEventListener("resize",()=>{ if(bx.classList.contains("sling")) fit(); });
   const pig=new Image(); pig.src="img/pigeon2.webp";
   const AMMO=[["cap","Bottle cap"],["pizza","Pizza slice"],["stick","Drumstick"],["pick","Guitar pick"],["tomato","Tomato"],["pigeon","The pigeon"]];
   let ammo="cap", pigeonAsked=false;
@@ -3340,7 +3355,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
   $("sl-ammo").addEventListener("click",e=>{ const b=e.target.closest("[data-a]"); if(!b) return; ammo=b.dataset.a; $("sl-ammo").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b)); pigeonAsked=false; });
   // Jill's window inset (comic jar) + cracks, inside the pan so it moves with the street
   const inset=document.createElement("div"); inset.className="sl-win"; Object.assign(inset.style,{left:JW.x/B.PW*100+"%",top:JW.y/B.PH*100+"%",width:JW.w/B.PW*100+"%",height:JW.h/B.PH*100+"%"});
-  inset.innerHTML=`<img src="img/binoc/jill-win.webp" alt=""><svg viewBox="0 0 100 100" preserveAspectRatio="none"></svg>`; inset.style.display="none"; B.pan.appendChild(inset);
+  inset.innerHTML=`<img data-src="img/binoc/jill-win.webp" alt=""><svg viewBox="0 0 100 100" preserveAspectRatio="none"></svg>`; inset.style.display="none"; B.pan.appendChild(inset);
   const crk=inset.querySelector("svg");
   let hits=0, shots=0, wind=0, busy=false, freedJ=false;
   try{ freedJ=localStorage.getItem("ms-jill-free")==="1"; }catch(e){}
@@ -3348,11 +3363,11 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
   const stat=()=>{ $("sl-hits").textContent=`Hits ${Math.min(hits,5)}/5 · Shots ${shots}`; $("sl-wind").textContent=wind===0?"No wind":`Wind ${wind<0?"←":"→"} ${Math.abs(Math.round(wind/6))}`; };
   const newWind=()=>{ wind=Math.round((Math.random()-.5)*60); };
   function canSling(){ bx.classList.toggle("can-sling",!freedJ&&(B.seen().has("jar"))); }
-  setInterval(canSling,800);
-  function enterSling(){ if(freedJ) return; bx.classList.add("sling"); inset.style.display="block"; newWind(); stat();
+  setInterval(()=>{ if(!bx.hidden) canSling(); },800);
+  function enterSling(){ if(freedJ) return; window.MSLazy&&window.MSLazy(inset); fit(); bx.classList.add("sling"); inset.style.display="block"; newWind(); stat();
     const S=Math.max(innerWidth/B.PW,innerHeight/B.PH)*1.9; B.setView(S,innerWidth/2-(JW.x+JW.w/2)*S,innerHeight*.34-(JW.y+JW.h/2)*S,600);
     say("Pull back, aim, let go",1800); }
-  function exitSling(){ bx.classList.remove("sling","sl-cut"); inset.style.display="none"; ctx.clearRect(0,0,innerWidth,innerHeight); B.setView(B.fit(),B.ox(),B.oy(),400); }
+  function exitSling(){ setTimeout(()=>{ if(!bx.classList.contains("sling")){ cv.width=cv.height=1; } },500); bx.classList.remove("sling","sl-cut"); inset.style.display="none"; ctx.clearRect(0,0,innerWidth,innerHeight); B.setView(B.fit(),B.ox(),B.oy(),400); }
   sb.addEventListener("click",e=>{ e.stopPropagation(); enterSling(); });
   // back / close leave sling mode first
   $("bx-x").addEventListener("click",()=>{ if(bx.classList.contains("sling")) exitSling(); },true);
