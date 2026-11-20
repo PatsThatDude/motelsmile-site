@@ -3198,13 +3198,12 @@ window.MST=(()=>{
 body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
 .bx{position:fixed;inset:0;z-index:85;background:#020205;opacity:0;transition:opacity .45s;touch-action:none;-webkit-user-select:none;user-select:none;overflow:clip}
 .bx.open{opacity:1}.bx[hidden]{display:none}
-.bx-lens{position:absolute;inset:0;overflow:clip;--r:min(46vh,30vw);--cx1:calc(50% - var(--r)*.82);--cx2:calc(50% + var(--r)*.82);
-  -webkit-mask-image:radial-gradient(circle var(--r) at var(--cx1) 50%,#000 92%,transparent 100%),radial-gradient(circle var(--r) at var(--cx2) 50%,#000 92%,transparent 100%);
-  mask-image:radial-gradient(circle var(--r) at var(--cx1) 50%,#000 92%,transparent 100%),radial-gradient(circle var(--r) at var(--cx2) 50%,#000 92%,transparent 100%)}
-@media (max-aspect-ratio:1/1){.bx-lens{--r:min(44vw,34vh);--cx1:50%;--cx2:50%;-webkit-mask-image:radial-gradient(ellipse calc(var(--r)*1.04) calc(var(--r)*1.42) at 50% 47%,#000 90%,transparent 100%);mask-image:radial-gradient(ellipse calc(var(--r)*1.04) calc(var(--r)*1.42) at 50% 47%,#000 90%,transparent 100%)}}
+.bx-lens{position:absolute;inset:0;overflow:clip;cursor:grab;
+  -webkit-mask-image:radial-gradient(ellipse 56% 58% at 50% 50%,#000 60%,transparent 100%);mask-image:radial-gradient(ellipse 56% 58% at 50% 50%,#000 60%,transparent 100%)}
+.bx-lens.grab{cursor:grabbing}
 .bx-pan{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
 .bx-pan>img{display:block;width:100%;height:100%;-webkit-user-drag:none;pointer-events:none}
-.bx-lens::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,transparent 55%,rgba(0,0,0,.55) 100%);mix-blend-mode:multiply}
+.bx-lens::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 62%,rgba(0,0,0,.35) 100%)}
 .bx-win{position:absolute;border:0;padding:0;background:transparent;cursor:pointer;border-radius:3px;-webkit-tap-highlight-color:transparent}
 .bx-win::before{content:"";position:absolute;inset:-8%;border-radius:4px;box-shadow:0 0 0 1.5px rgba(255,236,170,.0),0 0 18px rgba(255,210,120,.0);animation:bxW 2.8s ease-in-out infinite;animation-delay:var(--d,0s)}
 .bx-win.seen::before{animation:none;box-shadow:0 0 0 1.5px rgba(120,240,255,.55)}
@@ -3229,7 +3228,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
     <div class="bx-scene" id="bx-scene"></div></div>
   <button class="pill bx-x" id="bx-x" style="--c:var(--cyan)">← Back to the ledge</button>
   <div class="bx-count" id="bx-count"></div>
-  <div class="bx-ui"><b class="bx-hint" id="bx-hint">Drag to look around. Tap a lit window.</b><div class="bx-cap" id="bx-cap"></div><button class="pill bx-back" id="bx-back" style="--c:var(--pink)">← Back to the street</button></div>
+  <div class="bx-ui"><b class="bx-hint" id="bx-hint">Drag or scroll to look around. Tap a lit window.</b><div class="bx-cap" id="bx-cap"></div><button class="pill bx-back" id="bx-back" style="--c:var(--pink)">← Back to the street</button></div>
 </div>
 <script>
 (function(){
@@ -3255,7 +3254,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
     Object.assign(b.style,{left:w.x/PW*100+"%",top:w.y/PH*100+"%",width:w.w/PW*100+"%",height:w.h/PH*100+"%"}); b.style.setProperty("--d","9s"); pan.appendChild(b); });
   /* view: the street photo drawn at scale S, offset (ox,oy) */
   let S=1, ox=0, oy=0, zoomK=1;
-  const fitS=()=>{ const W=innerWidth,H=innerHeight; return Math.max(W/PW,H/PH)*1.55; };
+  const fitS=()=>{ const W=innerWidth,H=innerHeight; return Math.max(W/PW,H/PH)*1.3; };
   const clamp=()=>{ const W=innerWidth,H=innerHeight; ox=Math.min(0,Math.max(W-PW*S,ox)); oy=Math.min(0,Math.max(H-PH*S,oy)); };
   const apply=(ms)=>{ pan.style.transition=ms?`transform ${ms}ms cubic-bezier(.3,.1,.2,1)`:"none"; pan.style.width=PW+"px"; pan.style.height=PH+"px"; pan.style.transform=`translate(${ox}px,${oy}px) scale(${S})`; };
   const centerOn=(x,y)=>{ ox=innerWidth/2-x*S; oy=innerHeight/2-y*S; clamp(); };
@@ -3273,15 +3272,22 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
     S=w._s0||fitS(); centerOn(w.x+w.w/2,w.y+w.h/2); apply(instant?0:600); }
   /* drag to look around */
   let drag=null, moved=0;
-  lens.addEventListener("pointerdown",e=>{ if(cur) return; drag={x:e.clientX,y:e.clientY,ox,oy}; moved=0; lens.setPointerCapture&&lens.setPointerCapture(e.pointerId); });
-  lens.addEventListener("pointermove",e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; moved=Math.max(moved,Math.abs(dx)+Math.abs(dy)); ox=drag.ox+dx; oy=drag.oy+dy; clamp(); apply(0); });
+  /* drag (with a little momentum when you let go), or scroll / two-finger swipe on a trackpad */
+  let vx=0, vy=0, lastT=0, glide=0;
+  const stopGlide=()=>{ cancelAnimationFrame(glide); glide=0; };
+  lens.addEventListener("pointerdown",e=>{ if(cur) return; stopGlide(); drag={x:e.clientX,y:e.clientY,ox,oy,px:e.clientX,py:e.clientY}; moved=0; vx=vy=0; lastT=performance.now(); lens.classList.add("grab"); lens.setPointerCapture&&lens.setPointerCapture(e.pointerId); });
+  lens.addEventListener("pointermove",e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; moved=Math.max(moved,Math.abs(dx)+Math.abs(dy));
+    const n=performance.now(), dt=Math.max(1,n-lastT); vx=vx*.6+(e.clientX-drag.px)/dt*.4*16; vy=vy*.6+(e.clientY-drag.py)/dt*.4*16; drag.px=e.clientX; drag.py=e.clientY; lastT=n;
+    ox=drag.ox+dx; oy=drag.oy+dy; clamp(); apply(0); });
+  lens.addEventListener("pointerup",()=>{ lens.classList.remove("grab"); if(drag&&moved>8&&performance.now()-lastT<80&&Math.hypot(vx,vy)>1.5){ const f=()=>{ vx*=.93; vy*=.93; ox+=vx; oy+=vy; clamp(); apply(0); if(Math.hypot(vx,vy)>.3) glide=requestAnimationFrame(f); else glide=0; }; glide=requestAnimationFrame(f); } },true);
+  lens.addEventListener("wheel",e=>{ if(cur||bx.classList.contains("sling")) return; e.preventDefault(); stopGlide(); ox-=e.deltaX; oy-=e.deltaY; clamp(); apply(0); },{passive:false});
   lens.addEventListener("pointerup",e=>{ const d=drag; drag=null; if(!d||moved>8) return;
     // a tap: which window is under it?
     const px=(e.clientX-ox)/S, py=(e.clientY-oy)/S;
     const w=WIN.find(w=>px>=w.x-10&&px<=w.x+w.w+10&&py>=w.y-10&&py<=w.y+w.h+10); if(w){ enter(w); return; }
     const dz=DECOY.find(w=>px>=w.x&&px<=w.x+w.w&&py>=w.y&&py<=w.y+w.h);
     if(dz){ const el=[...pan.querySelectorAll(".decoy")][DECOY.indexOf(dz)]; el.classList.add("dark"); window.MSBxSfx&&window.MSBxSfx("slam"); setTimeout(()=>window.MSBxSfx&&window.MSBxSfx("click"),180); $("bx-cap").textContent="Lights out. They saw you."; setTimeout(()=>{ el.classList.remove("dark"); if(!cur) $("bx-cap").textContent=""; },2200); } });
-  lens.addEventListener("pointercancel",()=>drag=null);
+  lens.addEventListener("pointercancel",()=>{ drag=null; lens.classList.remove("grab"); });
   addEventListener("resize",()=>{ if(bx.hidden||cur) return; S=fitS(); clamp(); apply(0); });
   $("bx-x").addEventListener("click",close); $("bx-back").addEventListener("click",()=>leave());
   addEventListener("keydown",e=>{ if(bx.hidden) return; if(e.key==="Escape"){ cur?leave():close(); return; }
