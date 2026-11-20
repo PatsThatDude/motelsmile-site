@@ -2385,7 +2385,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const hunt=$("hunt"), box=$("tags");
     found=found.filter(n=>TAGS.some(t=>t[0]===n));
     /* roof secrets: Grace, the 5 tags, the band, the dance floor */
-    const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"],["windows","Peek in every window","The binoculars by the wall see a lot"],["jill","Free Jill","Across the street… bring a slingshot"],["jill5","Sharpshooter","Free Jill in 5 shots or fewer"]];
+    const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"],["windows","Peek in every window","The binoculars by the wall see a lot"],["jill","Free Jill","Someone else is trapped across the street"]];
     const got=new Set();
     const showHunt=()=>{ hunt.innerHTML=`★ <i class="hr">Roof </i>secrets <b>${got.size}/${SEC.length}</b>`;
       $("sec-list").innerHTML=SEC.map(([k,a,h])=>`<li class="${got.has(k)?"got":""}"><i>${got.has(k)?"✓":"?"}</i><span>${got.has(k)?a:h}</span></li>`).join(""); };
@@ -3242,7 +3242,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
     {k:"cat",x:1215,y:561,w:57,h:117,img:"img/binoc/w2.webp",cap:"Mrs. Delgado and Meatball, 4F. Every night at 11."},
     {k:"dance",x:652,y:678,w:58,h:122,img:"img/binoc/w3.webp",cap:"Slow dance, spaghetti on the stove."},
     {k:"pizza",x:1217,y:757,w:61,h:133,img:"img/binoc/w4.webp",cap:"Caught. 2 a.m. slice."},
-    {k:"jar",x:908,y:300,w:57,h:115,img:"img/binoc/w5.webp?v=2",cap:"JILL? Someone’s trapped over there too."}
+    {k:"jar",x:908,y:300,w:57,h:115,img:"img/binoc/w5.webp?v=2",cap:"JILL? Someone’s trapped over there too. Tap her jar to break it."}
   ];
   const DECOY=[{x:240,y:475,w:57,h:115},{x:20,y:475,w:55,h:115},{x:1085,y:760,w:60,h:130},{x:652,y:878,w:58,h:122}];
   const pan=$("bx-pan"), lens=$("bx-lens"), scene=$("bx-scene");
@@ -3265,7 +3265,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
   function enter(w){ cur=w; const s0=S; window.MSBxSfx&&window.MSBxSfx("whoosh"); const cx=w.x+w.w/2, cy=w.y+w.h/2;
     // fly into the window, then cut to the scene inside
     S=Math.min(innerWidth/w.w,innerHeight/w.h)*.9; centerOn(cx,cy); apply(700);
-    setTimeout(()=>{ scene.innerHTML=w.v?`<video src="${w.v}" poster="${w.poster}" autoplay muted loop playsinline></video>`:`<img src="${w.img}" alt="">`; bx.classList.add("inwin"); $("bx-cap").textContent=w.cap; if(cur===w) window.MSBxSfx&&window.MSBxSfx("win",w.k); },560);
+    setTimeout(()=>{ scene.innerHTML=w.v?`<video src="${w.v}" poster="${w.poster}" autoplay muted loop playsinline></video>`:`<img src="${w.img}" alt="">`; bx.classList.add("inwin"); $("bx-cap").textContent=w.cap; window.MSJarWin&&window.MSJarWin(w,scene); if(cur===w) window.MSBxSfx&&window.MSBxSfx("win",w.k); },560);
     w._s0=s0; if(!seen.has(w.k)){ seen.add(w.k); save(); w.el.classList.add("seen"); count(); if(WIN.every(x=>seen.has(x.k))) window.MSSecret&&window.MSSecret("windows"); }
     setTimeout(()=>$("bx-back").focus({preventScroll:true}),700); }
   function leave(instant){ if(!cur) return; const w=cur; cur=null; window.MSBxSfx&&window.MSBxSfx("win",null); if(!instant) window.MSBxSfx&&window.MSBxSfx("whoosh",1); bx.classList.remove("inwin"); $("bx-cap").textContent=""; setTimeout(()=>scene.innerHTML="",460);
@@ -3303,7 +3303,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
 </script>
 <style>
 /* slingshot across the street: free Jill */
-.bx-sling{display:none}.bx.can-sling:not(.inwin):not(.sling) .bx-sling{display:inline-flex}
+.bx-jtap{position:absolute;inset:0;width:100%;height:100%;z-index:1}@media (max-aspect-ratio:1/1){.bx-jtap{transform:scale(1.4)}}.bx-sling{display:none}.bx.can-sling:not(.inwin):not(.sling) .bx-sling{display:inline-flex}
 .bx.sling .bx-hint,.bx.sling .bx-count{display:none}
 .sl{position:absolute;inset:0;z-index:5;display:none;touch-action:none}
 .bx.sling .sl{display:block}
@@ -3371,7 +3371,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
   const say=(t,ms=1300)=>{ const m=$("sl-msg"); m.textContent=t; m.classList.add("on"); clearTimeout(say.t); say.t=setTimeout(()=>m.classList.remove("on"),ms); };
   const stat=()=>{ $("sl-hits").textContent=`Hits ${Math.min(hits,5)}/5 · Shots ${shots}`; $("sl-wind").textContent=wind===0?"No wind":`Wind ${wind<0?"←":"→"} ${Math.abs(Math.round(wind/6))}`; };
   const newWind=()=>{ wind=Math.round((Math.random()-.5)*60); };
-  function canSling(){ bx.classList.toggle("can-sling",!freedJ&&(B.seen().has("jar"))); }
+  function canSling(){ bx.classList.remove("can-sling"); } /* slingshot parked for now (Pat 11-20): Jill is freed by tapping her jar inside her window */
   setInterval(()=>{ if(!bx.hidden) canSling(); },800);
   function enterSling(){ if(freedJ) return; window.MSLazy&&window.MSLazy(inset); fit(); bx.classList.add("sling"); inset.style.display="block"; newWind(); stat();
     const S=Math.max(innerWidth/B.PW,innerHeight/B.PH)*1.9; B.setView(S,innerWidth/2-(JW.x+JW.w/2)*S,innerHeight*.34-(JW.y+JW.h/2)*S,600);
@@ -3432,7 +3432,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
     ctx.clearRect(0,0,innerWidth,innerHeight); stat();
     if(hits<5){ window.MSBxSfx&&window.MSBxSfx(ammo==="tomato"?"splat":"crack"); if(dmg>1) setTimeout(()=>window.MSBxSfx&&window.MSBxSfx("crack"),90); say((bounced?"Lucky bounce! ":"")+(dmg>1?"Double crack! ":"Crack! ")+`${hits}/5`,1300); return setTimeout(()=>{ busy=false; newWind(); stat(); draw(); },800); }
     say("SMASH!",1200); window.MSBxSfx&&window.MSBxSfx("smash"); inset.querySelector("img").src="img/binoc/jill-win-broke.webp"; crk.innerHTML="";
-    window.MSSecret&&window.MSSecret("jill"); if(shots<=5) window.MSSecret&&window.MSSecret("jill5");
+    window.MSSecret&&window.MSSecret("jill");
     setTimeout(cyoa,1300); }
   // ---- choose how she gets over
   const OPTS=[["zip","Zip-line","She ties her curtains into a rope. You fire it across, she rides a coat hanger down."],["pigeon","Pigeon express","The roof pigeon flies over and hauls her back. Barely."],["plank","Plank walk","The band shoves a plank across. Keep her balanced."],["escape","Fire-escape dash","Down the fire escape, across the street, dodge the taxi."],["fling","Fling herself","She grabs your trick and slingshots herself over."]];
@@ -3485,6 +3485,24 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
     window.MSJillFree&&window.MSJillFree(); B.setJillBroke(); say(msg+" She’s in the Smile Lounge.",3200);
     setTimeout(()=>{ exitSling(); busy=false; canSling(); },2600); }
   if(freedJ){ B.setJillBroke(); setTimeout(()=>window.MSJillFree&&window.MSJillFree(true),1200); }
+  /* tap Jill's jar (inside her window) until it breaks */
+  const JAR={x:530,y:180,w:220,h:400}, JCR=["M640 330 L600 290 M640 330 L690 300 M640 330 L625 395","M625 395 L575 425 M625 395 L670 450 M690 300 L725 270","M600 290 L555 305 M670 450 L705 500 M575 425 L548 470","M640 330 L650 225 M555 305 L545 250 M705 500 L735 480","M725 270 L742 330 M548 470 L585 540 M650 225 L610 205"];
+  const JLINE=["Yes! Again!","It’s cracking!","Harder!","Almost!"];
+  window.MSJarWin=(w,scene)=>{ if(w.k!=="jar"||freedJ) return; const im=scene.querySelector("img"); if(!im) return; let n=0, gone=false;
+    const sv=document.createElementNS("http://www.w3.org/2000/svg","svg"); sv.setAttribute("viewBox","0 0 1280 720"); sv.setAttribute("class","bx-jtap");
+    sv.setAttribute("preserveAspectRatio",matchMedia("(max-aspect-ratio:1/1)").matches?"xMidYMid meet":"xMidYMid slice");
+    sv.innerHTML=`<g class="cr" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" style="filter:drop-shadow(0 0 3px #9ef)"></g><rect x="${JAR.x}" y="${JAR.y}" width="${JAR.w}" height="${JAR.h}" rx="40" fill="transparent" style="cursor:pointer"/>`;
+    scene.appendChild(sv); const g=sv.querySelector(".cr");
+    sv.querySelector("rect").addEventListener("pointerdown",e=>{ e.preventDefault(); e.stopPropagation(); if(gone) return; n++;
+      const pth=document.createElementNS("http://www.w3.org/2000/svg","path"); pth.setAttribute("d",JCR[n-1]); g.appendChild(pth);
+      im.animate([{translate:"0 0"},{translate:"-6px 0"},{translate:"6px 0"},{translate:"0 0"}],{duration:220});
+      if(navigator.vibrate) try{ navigator.vibrate(n<5?20:[30,40,60]); }catch(_){}
+      if(n<5){ window.MSBxSfx&&window.MSBxSfx("crack"); document.getElementById("bx-cap").textContent=`${JLINE[n-1]} ${n}/5`; return; }
+      gone=true; window.MSBxSfx&&window.MSBxSfx("win",null); window.MSBxSfx&&window.MSBxSfx("smash");
+      scene.animate([{filter:"brightness(3)"},{filter:"brightness(1)"}],{duration:420}); im.src="img/binoc/w5-broke.webp"; sv.remove();
+      window.MSSecret&&window.MSSecret("jill"); freedJ=true; try{ localStorage.setItem("ms-jill-free","1"); }catch(_){}
+      window.MSJillFree&&window.MSJillFree(); B.setJillBroke(); setTimeout(()=>window.MSBxSfx&&window.MSBxSfx("tada"),700);
+      document.getElementById("bx-cap").textContent="SMASH! Jill’s out. She’s headed to the Smile Lounge."; }); };
   window.__sl={state:()=>({hits,shots,wind,freedJ,mode:bx.classList.contains("sling")}),force:(k)=>RUN[k](),hit:()=>hit(false)};
 })();
 </script>
