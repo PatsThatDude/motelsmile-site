@@ -287,7 +287,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
   <div class="flash" id="flash"></div>
   <div class="hunt" id="hunt"></div>
 <div class="jz" id="jz" hidden role="button" tabindex="0" aria-label="A jar on the ledge with someone inside. Tap to look closer"><button class="pill jx-x" id="jz-x" style="--c:var(--cyan)">✕ Back</button><div class="jz-say">Wait… is someone in there?</div><b class="jz-tip">Tap the jar to look closer</b></div>
-<div class="jx" id="jx" hidden role="dialog" aria-label="Grace is stuck in a jar">
+<div class="jx" id="jx" hidden role="dialog" aria-label="Grace is stuck in a jar on the roof ledge"><div class="jx-bg"></div>
   <button class="pill jx-x" id="jx-x" style="--c:var(--cyan)">✕ Not now</button>
   <div class="jx-stage"><div class="jx-say" id="jx-say"></div>
     <div class="jx-box" id="jx-box" tabindex="0" role="button" aria-label="Tap the glass to break the jar"><img id="jx-img" alt="Grace trapped in a glass jar"><img id="jx-img2" alt="" aria-hidden="true" style="opacity:0"><svg class="jx-cracks" id="jx-cracks" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg></div>
@@ -518,6 +518,18 @@ body.in-room .mini{display:none}
 .gr-toast[hidden]{display:none}
 .jx{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 55%,rgba(60,20,40,.75),rgba(3,3,8,.94) 70%);opacity:0;transition:opacity .35s;overflow:hidden}
 .jx.open{opacity:1}.jx[hidden]{display:none}
+/* break-out happens right in the rooftop-ledge shot, full screen */
+.jx{background:#05060a}
+.jx-bg{position:absolute;inset:-60px;background:url(img/grace/ledge-bg.webp) center/cover no-repeat;filter:blur(26px) brightness(.55)}
+.jx .jx-stage{position:absolute;inset:0;display:block;transform:scale(1.12);opacity:0;transition:transform .7s cubic-bezier(.2,.8,.2,1),opacity .45s}
+.jx.open .jx-stage{transform:none;opacity:1}
+.jx .jx-box{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:100%;width:auto;aspect-ratio:720/964;filter:none}
+.jx .jx-box img{object-fit:cover}
+.jx .jx-cracks{left:21%;top:8%;width:59%;height:80%}
+.jx .jx-say{top:6%;transform:translate(-50%,0);z-index:4}
+.jx .jx-ui{position:absolute;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:4;text-shadow:0 2px 12px #000}
+@media (min-aspect-ratio:3/4){.jx .jx-box{box-shadow:0 0 80px 30px #05060a}}
+
 .jx-x{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:14px;z-index:3}
 .jx-stage{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;transform:scale(.4) translateY(30%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .jx.open .jx-stage{transform:none}
@@ -1551,7 +1563,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     [["s4-1", "Right there! Keep going!"],["s4-2", "Yes! It's working!"],["s4-3", "You've got this!"],["s4-4", "Almost there!"]],
     [["s5-1", "One more hit!"]],
     [["free-1", "I'm free! Meet me on the dance floor!"]]
-  ].map(st=>st.map(([n,t])=>({src:"img/grace/jar-"+n+".webp",say:t})));
+  ].map(st=>st.map(([n,t])=>({src:"img/grace/ledge-"+n+".webp",say:t})));
   const jxPick=s=>{ const a=JX_SET[s]; return a[Math.floor(Math.random()*a.length)]; };
   /* each crack state loops through its shots like animation frames */
   let jxCyc=0, jxFront=0;
@@ -1597,7 +1609,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     jxCr.appendChild(g); }
   function jxSay(t){ const b=$("jx-say"); b.textContent=t; b.classList.remove("on"); void b.offsetWidth; b.classList.add("on"); }
   function openJar(){ if(freed||rzOrig||JX.classList.contains("open")) return; window.MSAC&&window.MSAC(); hits=0; jxBusy=false; jxCr.innerHTML=""; $("jx-meter").style.width="0%";
-    JX.classList.remove("broke"); jxLoad(0); jxLoad(1); jxBusy=true; document.body.classList.add("jx-zoom"); document.documentElement.classList.add("jx-zoom"); whenStill(()=>roofZoom(true,1100,()=>{ const z=$("jz"); z.hidden=false; requestAnimationFrame(()=>z.classList.add("on")); z.focus({preventScroll:true}); })); document.body.classList.add("jx-on");
+    JX.classList.remove("broke"); jxLoad(0); jxLoad(1); jxBusy=true; document.body.classList.add("jx-zoom"); document.documentElement.classList.add("jx-zoom"); whenStill(()=>roofZoom(true,1000,()=>{ jxBusy=false; JX.hidden=false; jxShow(0); requestAnimationFrame(()=>JX.classList.add("open")); setTimeout(()=>jxBox.focus({preventScroll:true}),300); })); document.body.classList.add("jx-on");
     $("jx-tip").textContent="Tap the glass to break her out"; }
   // phones pan the roof toward a tapped thing: wait until it settles before the camera pushes in
   function whenStill(go){ const pl=$("play"); let last=pl.style.transform, calm=0, t0=performance.now();
@@ -1619,7 +1631,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     for(let i=0;i<40;i++){ const s=document.createElement("i"), a=Math.random()*Math.PI*2, d=120+Math.random()*Math.max(innerWidth,innerHeight)*.55, big=Math.random()<.55, w=big?8+Math.random()*18:4;
       s.className="jx-shard"; s.style.cssText=`left:${cx+(Math.random()-.5)*r.width*.6}px;top:${cy+(Math.random()-.5)*r.height*.6}px;width:${w}px;height:${big?w*(.4+Math.random()*.8):4}px;${big?"":`background:${["#ff46c8","#46dcff","#ffd36a"][i%3]};border-radius:4px;`}`;
       JX.appendChild(s); requestAnimationFrame(()=>{ s.style.transform=`translate(${Math.cos(a)*d}px,${Math.sin(a)*d+120}px) rotate(${(Math.random()-.5)*900}deg)`; s.style.opacity="0"; }); setTimeout(()=>s.remove(),1300); } }
-  jxBox.addEventListener("pointerdown",e=>{ e.preventDefault(); const r=jxBox.getBoundingClientRect(); hit((e.clientX-r.left)/r.width*100,(e.clientY-r.top)/r.height*100); });
+  jxBox.addEventListener("pointerdown",e=>{ e.preventDefault(); const r=jxCr.getBoundingClientRect(), x=(e.clientX-r.left)/r.width*100, y=(e.clientY-r.top)/r.height*100; if(x<0||x>100||y<0||y>100) return; hit(x,y); });
   jxBox.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); hit(35+Math.random()*30,40+Math.random()*35); } });
   $("jx-x").addEventListener("click",closeJar); JX.addEventListener("pointerdown",e=>{ if(e.target===JX) closeJar(); });
   addEventListener("keydown",e=>{ if(e.key==="Escape"&&JX.classList.contains("open")&&!jxBusy) closeJar(); });
