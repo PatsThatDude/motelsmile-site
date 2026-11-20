@@ -521,13 +521,14 @@ body.in-room .mini{display:none}
 /* break-out happens right in the rooftop-ledge shot, full screen */
 .jx{background:#05060a}
 .jx-bg{position:absolute;inset:-60px;background:url(img/grace/ledge-bg.webp) center/cover no-repeat;filter:blur(26px) brightness(.55)}
-.jx .jx-stage{position:absolute;inset:0;display:block;transform:scale(1.12);opacity:0;transition:transform .7s cubic-bezier(.2,.8,.2,1),opacity .45s}
+.jx .jx-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform:scale(1.12);opacity:0;transition:transform .7s cubic-bezier(.2,.8,.2,1),opacity .45s}
 .jx.open .jx-stage{transform:none;opacity:1}
-.jx .jx-box{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:100%;width:auto;aspect-ratio:720/964;filter:none}
+.jx .jx-box{position:relative;flex:0 0 auto;height:100%;width:auto;aspect-ratio:720/964;filter:none}
 .jx .jx-box img{object-fit:cover}
 .jx .jx-cracks{left:21%;top:8%;width:59%;height:80%}
 .jx .jx-say{top:6%;transform:translate(-50%,0);z-index:4}
 .jx .jx-ui{position:absolute;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:4;text-shadow:0 2px 12px #000}
+.jx .jx-ui b{white-space:nowrap;text-align:center;font-size:clamp(18px,5.2vw,28px)}
 @media (min-aspect-ratio:3/4){.jx .jx-box{box-shadow:0 0 80px 30px #05060a}}
 
 .jx-x{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:14px;z-index:3}
