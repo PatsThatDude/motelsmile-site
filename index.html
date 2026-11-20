@@ -1020,7 +1020,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   /* ---------- framing: the 1672x941 scene box is scaled to cover the screen ---------- */
   let S=1,OX=0,OY=0;
-  const portrait=()=>innerWidth<=760&&innerHeight>innerWidth;
+  const portrait=()=>innerHeight>innerWidth&&innerWidth<=1100; /* phones and tablets held upright: full height, swipe across */
   // phones: drag sideways in the lounge to look over at the stage (0 = record player, 422 = drums + cooler)
   let lgPan=0, lgDrag=null;
   L.addEventListener("pointerdown",e=>{ if(!portrait()||e.target.closest("a,.lg-panel,.lg-dig,.lg-back,.lg-hot.deck.live")) return; lgDrag={x:e.clientX,p:lgPan,moved:false}; });
@@ -1504,7 +1504,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   const A=$("arcade"), cam=$("ac-cam"), hero=$("ac-hero"), stg=$("stage");
   const FOCUS={x:400,y:430};
   let S=1,OX=0,OY=0,pan=0,anim=null;
-  const portrait=()=>innerWidth<=760&&innerHeight>innerWidth;
+  const portrait=()=>innerHeight>innerWidth&&innerWidth<=1100; /* phones and tablets held upright: full height, swipe across */
   function frame(){ const w=innerWidth,h=innerHeight; S=Math.max(w/W0,h/H0);
     if(portrait()){ pan=Math.max(0,Math.min(Math.max(0,W0-w/S),pan)); OX=-pan*S; OY=(h-H0*S)*.55; } else { S=window.MSFit(w,h,W0,H0); const lb=W0*S<w-1||H0*S<h-1; OX=(w-W0*S)*(lb?.5:.35); OY=(h-H0*S)*(lb?.5:.6); }
     if(!anim) cam.style.transform=`translate(${OX}px,${OY}px) scale(${S})`; }
@@ -2319,7 +2319,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   const tall=()=>false;
   window.MSBand=()=>{ const st=$("stage"), W=st.clientWidth,H=st.clientHeight; if(!tall()) return null; const s=Math.max(W/941,H/1672), ox=(W-941*s)*px, oy=(H-1672*s)*py; return {left:ox+s*MP.tx,top:oy+s*MP.ty,width:1672*s*MP.s,height:941*s*MP.s,px,py}; };
   const stage=$("stage"), fly=$("flyer");
-  const phone=()=>matchMedia("(max-width:760px)").matches;
+  const phone=()=>innerWidth<=760||(innerHeight>innerWidth&&innerWidth<=1100); /* phones + upright tablets: fill the height, swipe sideways */
   const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
   let px=0.5, py=0.42;
   let lastPlace="";
