@@ -274,7 +274,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <button class="pk img" id="pk-gnome" style="left:248px;top:560px;width:100px;height:90px;background-position:-248px -560px;transform-origin:50% 90%" aria-label="Garden gnome"></button>
     <button class="pk" id="pk-reset" style="left:186px;top:476px;width:38px;height:46px" aria-label="Reset button: start the roof over"></button>
     <a class="show-sign" id="show-sign" href="#shows" data-open="shows" hidden aria-label="Next show"><small id="ss-a"></small><b id="ss-b"></b></a>
-    <div class="fanwall" id="fanwall" aria-label="Fan wall"></div>
+    <div class="fanwall" id="fanwall" aria-hidden="true"></div><button class="fw-empty" id="fw-empty" aria-label="Sign the wall: spray your name on the roof">Sign the wall <i>→ tap</i></button>
     <button class="spray" id="spray" aria-label="Spray your name on the wall"><svg viewBox="0 0 24 40" aria-hidden="true"><rect x="9" y="1" width="6" height="5" rx="1" fill="#ddd"/><rect x="10.5" y="0" width="3" height="2" fill="#ff3d7f"/><rect x="4" y="6" width="16" height="32" rx="4" fill="#ff3d7f"/><rect x="4" y="15" width="16" height="9" fill="#14040b"/><text x="12" y="22" font-size="6" text-anchor="middle" fill="#ffd36a" font-family="monospace">MS</text><ellipse cx="12" cy="37" rx="8" ry="2" fill="rgba(0,0,0,.4)"/></svg></button>
     <div class="jar-glow" id="jar-glow" aria-hidden="true"></div><div class="jar-help" id="jar-help" aria-hidden="true">help!</div>
     <button class="pk girl-jar" data-girl="megan" style="left:1272px;top:504px;width:37px;height:60px;background-image:url(img/girls/megan-jar.webp)" aria-label="A jar labeled MEGAN. Someone is trapped inside"></button>
@@ -617,20 +617,24 @@ body.jx-zoom .welcome,body.jx-zoom .sec-pop,body.jx-zoom .jar-help{opacity:0!imp
 @media (max-width:760px){ .top .hunt{margin:0;padding:6px 10px!important;font-size:10px!important} .sec-note,.sec-pop{right:12px!important;top:calc(50px + env(safe-area-inset-top,0px))!important} }
 .gr-toast{top:calc(58px + env(safe-area-inset-top,0px));bottom:auto!important}
 /* next-show neon on a skyline building */
-.show-sign{position:absolute;left:806px;top:300px;width:150px;z-index:4;display:flex;flex-direction:column;align-items:center;gap:1px;text-decoration:none;color:#fff;font-family:var(--tube);text-align:center;transform:rotate(-2deg);-webkit-tap-highlight-color:transparent;animation:ssFlick 6s infinite}
+.show-sign{position:absolute;left:806px;top:300px;width:150px;z-index:4;pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:1px;text-decoration:none;color:#fff;font-family:var(--tube);text-align:center;transform:rotate(-2deg);-webkit-tap-highlight-color:transparent;animation:ssFlick 6s infinite}
 .show-sign[hidden]{display:none}
 .show-sign small{font:700 12px/1.1 var(--mono);white-space:nowrap;letter-spacing:.12em;text-transform:uppercase;color:#46dcff;text-shadow:0 0 6px #46dcff}
 .show-sign b{font-weight:400;font-size:30px;line-height:1;color:#fff;text-shadow:0 0 6px #ff3d7f,0 0 14px #ff3d7f,0 0 26px #ff3d7f;white-space:nowrap}
 @keyframes ssFlick{0%,92%,100%{opacity:1}93%{opacity:.4}94%{opacity:1}96%{opacity:.6}}
 /* fan wall: approved names sprayed on the parapet */
 .fanwall{position:absolute;left:478px;top:506px;width:250px;height:84px;z-index:3;pointer-events:none}
+.fw-empty{position:absolute;left:492px;top:526px;z-index:110;pointer-events:auto;cursor:pointer;padding:4px 6px;border:0;background:none;-webkit-tap-highlight-color:transparent;transform:rotate(-5deg);font-style:normal;font-family:var(--tube);font-size:30px;line-height:1;color:#ff4fa3;text-shadow:0 0 6px #ff3d7f,0 0 16px #ff3d7f;white-space:nowrap;animation:fwGlow 2.2s ease-in-out infinite}
+.fw-empty i{font-style:normal;font-size:18px;color:#ffd36a;text-shadow:0 0 8px #ffb03d}
+@keyframes fwGlow{50%{opacity:.6}}
+.fw-empty.has{left:612px;top:584px;font-size:16px}
 .fanwall span{position:absolute;white-space:nowrap;font-family:var(--tube);font-size:17px;line-height:1;opacity:.92;mix-blend-mode:screen;filter:blur(.25px)}
 .fanwall .c-pink{color:#ff4fa3;text-shadow:0 0 6px #ff3d7f}.fanwall .c-cyan{color:#46dcff;text-shadow:0 0 6px #46dcff}.fanwall .c-yellow{color:#ffd36a;text-shadow:0 0 6px #ffb03d}.fanwall .c-green{color:#5dff9e;text-shadow:0 0 6px #2cff7a}.fanwall .c-white{color:#fff;text-shadow:0 0 6px #fff}
 .fanwall span.new{animation:spIn 1.2s ease-out}
 @keyframes spIn{0%{opacity:0;filter:blur(6px)}100%{opacity:.92;filter:blur(.25px)}}
-.spray{position:absolute;left:700px;top:548px;width:28px;height:48px;z-index:5;padding:0;border:0;background:none;cursor:pointer;transform:rotate(-14deg);filter:drop-shadow(0 0 6px rgba(255,61,127,.7));-webkit-tap-highlight-color:transparent;animation:spBob 3s ease-in-out infinite}
+.spray{position:absolute;left:696px;top:536px;width:34px;height:58px;pointer-events:auto;z-index:110!important;z-index:5;padding:0;border:0;background:none;cursor:pointer;transform:rotate(-14deg);filter:drop-shadow(0 0 6px rgba(255,61,127,.7));-webkit-tap-highlight-color:transparent;animation:spBob 3s ease-in-out infinite}
 .spray svg{width:100%;height:100%;display:block}
-@keyframes spBob{50%{transform:rotate(-8deg) translateY(-2px)}}
+@keyframes spBob{50%{transform:rotate(-8deg) translateY(-3px);filter:drop-shadow(0 0 12px rgba(255,61,127,1))}}
 /* little paper cards (pigeon mail, spray your name) */
 .card-note{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-1deg);z-index:97;width:min(340px,calc(100vw - 32px));box-sizing:border-box;padding:18px 18px 14px;border-radius:6px;background:#f3ead7;color:#1c1420;box-shadow:0 18px 50px rgba(0,0,0,.6);font:14px/1.4 var(--mono)}
 .card-note[hidden]{display:none}
@@ -652,7 +656,7 @@ body.jx-zoom .welcome,body.jx-zoom .sec-pop,body.jx-zoom .jar-help{opacity:0!imp
 .stage.tod-late::after{opacity:.45;background:rgba(0,0,20,.6);mix-blend-mode:multiply}
 .wx-read{font-size:inherit;color:var(--fog);margin-left:14px}
 @media (max-width:760px){.wx-read{display:none}}
-body.jx-zoom .show-sign,body.jx-zoom .spray,body.jx-zoom .fanwall,body.jx-zoom .wx{opacity:0!important;pointer-events:none!important}
+body.jx-zoom .show-sign,body.jx-zoom .spray,body.jx-zoom .fanwall,body.jx-zoom .fw-empty,body.jx-zoom .wx{opacity:0!important;pointer-events:none!important}
 .gr-walk{position:absolute;z-index:200;pointer-events:none;transform-origin:50% 100%;filter:drop-shadow(0 0 4px rgba(255,70,200,.95)) drop-shadow(0 0 10px rgba(255,190,90,.6))}
 .gr-trail{position:absolute;z-index:199;width:5px;height:5px;border-radius:50%;pointer-events:none;background:#ff46c8;box-shadow:0 0 8px #ff46c8;transition:transform 1s ease-out,opacity 1s}
 .bm,.bm-sh,.bm-rf,.bm-kit{transition:opacity .35s}
@@ -718,6 +722,9 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 .gr-ask-h{font:700 20px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#fff;text-shadow:0 0 10px #000,0 0 4px #000}
 #gr-partner{position:absolute;z-index:5;display:none;pointer-events:none;transform-origin:50% 100%}
 #gr-wrap #gr-partner img{display:block}
+#gr-wrap img.gr-girl.own{filter:none!important}
+#gr-wrap img.gr-res{position:absolute;display:block;pointer-events:auto;cursor:pointer;transform-origin:50% 100%;transition:left .45s ease,top .45s ease,opacity .4s;-webkit-tap-highlight-color:transparent}
+#gr-wrap img.gr-res.twirl{animation:grTw .5s ease-in-out}
 #gr-wrap img.gr-girl{display:block;pointer-events:none;transform-origin:50% 100%;filter:brightness(0) drop-shadow(0 0 2px #ff46c8) drop-shadow(0 0 7px #ff46c8) drop-shadow(0 0 16px rgba(199,125,255,.7));transition:opacity .4s}
 #gr-pshadow{position:absolute;display:none;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0))}
 #gr-partner img{position:absolute;left:0;top:0;width:100%;height:100%}
@@ -1929,12 +1936,12 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function girlsStart(){ if(girls||duet||!big||!floorOn()) return; ask.classList.remove("on"); wanderId++;
     const id=Math.random(); girls={id,list:[],b:0,r:-1};
     for(let i=0;i<3;i++){ const img=document.createElement("img"); img.className="gr-girl"; img.alt=""; img.style.opacity="0"; $("gr-wrap").appendChild(img);
-      const c=onFloor(FX+[-1,1,1.7][i]*HF(FY)*.7,FY-25); girls.list.push({img,x:c[0],y:c[1],tx:c[0],ty:c[1],fi:(i*3+1)%8,flip:i%2===0,op:1,sc:1,rot:0}); }
+      const c=onFloor(FX+[-1,1,1.7][i]*HF(FY)*.7,FY-25), who=["megan","gianna","sophia"][i]; if(FREED.has(who)) img.classList.add("own"); girls.list.push({img,who,x:c[0],y:c[1],tx:c[0],ty:c[1],fi:(i*3+1)%8,flip:i%2===0,op:1,sc:1,rot:0}); }
     girls.grace={tx:FX,ty:FY,op:1,sc:1,rot:0};
     girls.list.forEach(g=>{ placeGirl(g); requestAnimationFrame(()=>{ g.img.style.opacity="1"; }); });
     say(FX,FY-DH-12,["Girls night!","Come on, ladies!","Hit it!"]); for(let i=0;i<6;i++) setTimeout(()=>heart(FX+(Math.random()*160-80),FY-DH*.8),i*120);
     choreo(id); beatLoop(id); }
-  function placeGirl(g){ const i=g.fi, h=HF(g.y)*.93*g.sc, w=W[i]*h/600; g.img.src=FR[i];
+  function placeGirl(g){ const i=g.fi, h=HF(g.y)*.93*g.sc, w=W[i]*h/600; g.img.src=FREED.has(g.who)?`img/girls/${g.who}-d${i+1}.webp`:FR[i];
     Object.assign(g.img.style,{position:"absolute",left:(g.x-AX[i]*w)+"px",top:(g.y-h)+"px",width:w+"px",height:h+"px",zIndex:String(Math.round(g.y)),
       transform:`${g.flip?"scaleX(-1) ":""}rotate(${g.rot.toFixed(2)}deg)`,opacity:String(g.op)}); }
   function caption(r){ const ui=document.querySelector(".lg-ui"); let c=document.getElementById("gr-cap");
@@ -1978,11 +1985,33 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function girlsEnd(id){ if(!girls||(id&&girls.id!==id)) return; const L=girls.list; girls=null;
     L.forEach(g=>{ g.img.style.opacity="0"; setTimeout(()=>g.img.remove(),450); }); if(!game) window.MSFloorGame=null; dance.style.opacity=""; dance.style.transform=""; { const c=document.getElementById("gr-cap"); if(c) c.style.opacity="0"; } if(big) setTimeout(()=>{ if(big&&!girls&&!duet) wander(); },600);
     if(big){ setTimeout(()=>{ if(big&&!duet&&!girls){ placeAsk(); ask.classList.add("on"); say(FX,FY-DH-12,["More of us are still stuck in jars…","Find the others!"]); } },500); } }
+
+  /* freed jar girls live in the lounge: dance near Grace when the floor is on, hang out on the furniture when it's off */
+  const RES={megan:{off:[300,612,46],on:[-1.15,14],c:"#ff3b48",say:["Drinks are on me. (They're not.)","I was never stuck, for the record.","Room 217? Still never heard of it."]},
+    gianna:{off:[560,566,40],on:[1.05,-14],c:"#2cff9a",say:["Right on time!","Don't waste a minute, dance!","Tick tock, let's go!"]},
+    sophia:{off:[688,598,42],on:[1.8,22],c:"#ff963c",say:["Back where I belong!","Get back on that floor!","Spin something good!"]}};
+  const resEl={}; let resT=0;
+  function resTick(){ const inL=L.classList.contains("on"); resT++;
+    for(const g of Object.keys(RES)){ if(!FREED.has(g)) continue; let el=resEl[g];
+      if(!el){ el=document.createElement("img"); el.className="gr-res"; el.alt=g[0].toUpperCase()+g.slice(1); el.dataset.f="0"; el.style.opacity="0"; el.style.filter=`drop-shadow(0 0 6px ${RES[g].c})`; $("gr-wrap").appendChild(el); resEl[g]=el;
+        el.addEventListener("click",e=>{ e.stopPropagation(); el.classList.remove("twirl"); void el.offsetWidth; el.classList.add("twirl"); const r=RES[g]; say(parseFloat(el.style.left)+parseFloat(el.style.width)/2,parseFloat(el.style.top)-12,r.say); heart(parseFloat(el.style.left)+10,parseFloat(el.style.top)+10); });
+        requestAnimationFrame(()=>el.style.opacity="1"); }
+      if(!inL) continue;
+      el.style.opacity=girls?"0":"1"; el.style.pointerEvents=girls?"none":"auto"; if(girls) continue;
+      const R0=RES[g]; let x,y,h,f=+el.dataset.f;
+      if(floorOn()){ const span=Math.max(70,Math.min(DH,160)); const c=onFloor(FX+R0.on[0]*span*.8,FY+R0.on[1]); x=c[0]; y=c[1]; h=HF(y)*.151; f=(f+1+Math.floor(Math.random()*3))%8; }
+      else { [x,y,h]=R0.off; if(resT%6===0) f=f===0?6:0; }
+      el.dataset.f=f; const w=W[f]*h/600; el.src=`img/girls/${g}-d${f+1}.webp`;
+      Object.assign(el.style,{left:(x-AX[f]*w)+"px",top:(y-h)+"px",width:w+"px",height:h+"px",zIndex:String(Math.round(y))}); }
+    const song=audio&&!audio.paused; let ms=song&&floorOn()?470:700;
+    if(song&&/dont-mind-it/.test(audio.src)){ const t=BEATS.find(t=>t>audio.currentTime+.05); if(t) ms=Math.max(150,(t-audio.currentTime)*1000/(audio.playbackRate||1)); }
+    setTimeout(resTick,ms); }
+  setTimeout(resTick,800);
   window.__grWin=()=>{ won=true; };
   window.__gs=()=>({big,FX,FY,DH,fi,duet:duet?{who:duet.who,x:duet.x,y:duet.y}:null,girls:girls?girls.list.length:0,game:!!game,floor:floorOn(),inL:L.classList.contains("on"),
     dance:dance.style.display,partner:pEl.style.display,pshadow:$("gr-pshadow").style.display,girlImgs:document.querySelectorAll(".gr-girl").length,ask:ask.classList.contains("on"),shadow:shadow.style.display});
   $("gr-girls").addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); girlsStart(); });
-  function hint(){ if(freed||hint.done||!L.classList.contains("on")||!floorOn()) return; hint.done=1;
+  function hint(){ if(freed||FREED.size||hint.done||!L.classList.contains("on")||!floorOn()) return; hint.done=1;
     setTimeout(()=>{ if(!L.classList.contains("on")) return; $("gr-h").textContent="Nobody’s dancing…"; toast.querySelector("img").src="img/grace/jar.webp"+V; $("gr-go").hidden=true;
       showToast("Someone’s stuck in a jar up on the roof. Find her and set her free."); },1800); }
   lever.addEventListener("click",()=>setTimeout(hint,0));
@@ -3091,12 +3120,12 @@ window.MST=(()=>{
   const COLS={pink:"#ff4fa3",cyan:"#46dcff",yellow:"#ffd36a",green:"#5dff9e",white:"#ffffff"}; let col="pink";
   $("sp-cols").innerHTML=Object.entries(COLS).map(([k,v])=>`<button type="button" role="radio" aria-label="${k}" aria-checked="${k===col}" data-c="${k}" style="background:${v}"></button>`).join("");
   $("sp-cols").addEventListener("click",e=>{ const b=e.target.closest("[data-c]"); if(!b) return; col=b.dataset.c; $("sp-cols").querySelectorAll("button").forEach(x=>x.setAttribute("aria-checked",x===b)); });
-  $("spray").addEventListener("click",e=>{ e.stopPropagation(); openCard("sp-card"); });
+  $("spray").addEventListener("click",e=>{ e.stopPropagation(); openCard("sp-card"); }); $("fw-empty").addEventListener("click",e=>{ e.stopPropagation(); openCard("sp-card"); });
   $("sp-form").addEventListener("submit",async e=>{ e.preventDefault(); const m=$("sp-msg"); m.className="cn-msg"; m.textContent="Shaking the can…";
     const d=await post("/api/wall",{name:$("sp-name").value,color:col,hp:e.target.hp.value});
     if(d.ok){ m.textContent="Sent! It goes up once the band approves it."; e.target.querySelector("button:last-child").disabled=true; } else { m.className="cn-msg err"; m.textContent=d.error||"Try again."; } });
   const seed=s=>{ let h=2166136261; for(const c of s) h=Math.imul(h^c.charCodeAt(0),16777619); return (h>>>0)/4294967296; };
-  fetch("/api/wall").then(r=>r.json()).then(d=>{ const w=$("fanwall"); if(!d||!d.names) return;
+  fetch("/api/wall").then(r=>r.json()).then(d=>{ const w=$("fanwall"); if(!d||!d.names||!d.names.length) return; const em=$("fw-empty"); em.classList.add("has"); em.innerHTML="+ add yours";
     const rows=[[2,0],[38,0],[18,1],[56,1]]; w.innerHTML=d.names.slice(0,8).map((x,i)=>{ const r=seed(x.id), row=i%4, y=6+row*19+r*6, xx=(i>>2)*120+(row%2?60:0)+r*30, rot=-8+r*14;
       return `<span class="c-${x.c}" style="left:${xx}px;top:${y}px;transform:rotate(${rot.toFixed(1)}deg)">${x.n.replace(/[&<>]/g,"")}</span>`; }).join(""); }).catch(()=>{});
   // ---- real NYC weather + time of day (open-meteo, no key)
