@@ -273,6 +273,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <button class="pk" id="pk-amp" style="left:805px;top:500px;width:72px;height:92px" aria-label="Amp"></button>
     <button class="pk img" id="pk-gnome" style="left:248px;top:560px;width:100px;height:90px;background-position:-248px -560px;transform-origin:50% 90%" aria-label="Garden gnome"></button>
     <button class="pk" id="pk-reset" style="left:186px;top:476px;width:38px;height:46px" aria-label="Reset button: start the roof over"></button>
+    <div class="jar-glow" id="jar-glow" aria-hidden="true"></div><div class="jar-help" id="jar-help" aria-hidden="true">help!</div>
     <button class="pk" id="pk-jar" style="left:733px;top:434px;width:37px;height:60px" aria-label="A jar on the ledge. Someone is trapped inside. Open it up close" hidden></button>
     <button class="pk" id="pk-cooler" style="left:1225px;top:550px;width:140px;height:90px" aria-label="Cooler"></button>
     <div id="roof-glass" aria-hidden="true"></div>
@@ -285,7 +286,9 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <div id="tags"></div>
   </div>
   <div class="flash" id="flash"></div>
-  <div class="hunt" id="hunt"></div>
+  <button class="hunt on" id="hunt" aria-haspopup="dialog" aria-label="Roof secrets"></button>
+  <div class="sec-pop" id="sec-pop" hidden role="dialog" aria-label="Roof secrets"><b>Roof secrets</b><ul id="sec-list"></ul><small>Tap things. Everything on the roof does something.</small></div>
+  <div class="welcome" id="welcome" aria-live="polite"><b>Welcome to the roof.</b><span>Tap anything. Find the secrets. Someone’s stuck in a jar…</span></div>
 <div class="jz" id="jz" hidden role="button" tabindex="0" aria-label="A jar on the ledge with someone inside. Tap to look closer"><button class="pill jx-x" id="jz-x" style="--c:var(--cyan)">✕ Back</button><div class="jz-say">Wait… is someone in there?</div><b class="jz-tip">Tap the jar to look closer</b></div>
 <div class="jx" id="jx" hidden role="dialog" aria-label="Grace is stuck in a jar on the roof ledge"><div class="jx-bg"></div>
   <button class="pill jx-x" id="jx-x" style="--c:var(--cyan)">✕ Not now</button>
@@ -560,6 +563,36 @@ body.in-room .mini{display:none}
   .lg-panel{padding:10px 14px!important;gap:4px!important}.lg-panel small{display:none}.lg-panel b{font-size:20px!important}.lg-panel .row{font-size:12px!important}
 }
 body.jx-zoom .lng-edge,body.in-room .lng-edge{opacity:0!important;pointer-events:none!important}
+/* first-visit welcome line */
+.welcome{position:absolute;left:50%;top:clamp(150px,30%,260px);transform:translate(-50%,8px);z-index:5;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;padding:12px 18px;border-radius:16px;background:rgba(8,6,16,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,61,127,.45);box-shadow:0 0 24px rgba(255,61,127,.25);color:#fff;opacity:0;pointer-events:none;transition:opacity .6s,transform .6s;max-width:min(88vw,420px)}
+.welcome b{font-family:var(--tube);font-weight:400;font-size:24px;text-shadow:0 0 10px var(--pink)}
+.welcome span{font:13px/1.35 var(--mono);color:#e9e3f2}
+.welcome.on{opacity:1;transform:translate(-50%,0)}
+/* roof secrets chip + list */
+.hunt{cursor:pointer;font:inherit;font:11px var(--mono)!important;background:rgba(8,6,16,.55)}
+.hunt.on{display:block}
+.sec-pop{position:absolute;right:max(16px,env(safe-area-inset-right,0px));top:78px;z-index:9;width:min(300px,86vw);padding:14px 16px;border-radius:12px;background:rgba(8,6,16,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(93,255,158,.4);color:#fff;font:13px/1.4 var(--mono)}
+.sec-pop[hidden]{display:none}
+.sec-pop b{display:block;font-family:var(--tube);font-weight:400;font-size:20px;color:var(--green);margin-bottom:6px}
+.sec-pop ul{list-style:none;margin:0 0 8px;padding:0;display:grid;gap:5px}
+.sec-pop li{display:flex;gap:8px}.sec-pop li i{font-style:normal;width:14px;flex:none}
+.sec-pop li.got{color:var(--green)}.sec-pop li:not(.got){color:#b9b2c6}
+.sec-pop small{color:#8d86a0;font-size:11px}
+.hunt.pop{animation:secPop .6s}
+@keyframes secPop{40%{transform:scale(1.2);box-shadow:0 0 16px var(--green)}}
+/* Grace hook on the roof: spotlight + help bubble */
+.jar-glow{position:absolute;left:690px;top:380px;width:124px;height:150px;border-radius:50%;pointer-events:none;background:radial-gradient(ellipse at 50% 60%,rgba(255,200,120,.45),rgba(255,120,180,.18) 45%,transparent 70%);animation:jarGlow 2.6s ease-in-out infinite}
+@keyframes jarGlow{50%{opacity:.45;transform:scale(.9)}}
+.jar-help{position:absolute;left:752px;top:404px;transform:translate(-50%,-100%) scale(.6);opacity:0;pointer-events:none;z-index:7;padding:3px 9px;border-radius:10px;background:#fff;color:#14040b;font:700 17px/1.1 var(--mono);white-space:nowrap;box-shadow:0 0 10px rgba(255,70,200,.7);transition:opacity .25s,transform .25s}
+.jar-help::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-top-color:#fff;border-bottom:0}
+.jar-help.on{opacity:1;transform:translate(-50%,-100%) scale(1)}
+.jar-glow.gone,.jar-help.gone{display:none}
+@media (max-width:760px){
+  .hunt{top:calc(10px + env(safe-area-inset-top,0px))!important;right:12px!important;padding:6px 10px!important;font-size:10px!important;z-index:6}
+  .sec-pop{top:calc(46px + env(safe-area-inset-top,0px))}
+  .welcome{top:24%;width:min(300px,84vw)}.welcome b{font-size:22px;white-space:nowrap}.welcome span{font-size:12px}
+}
+body.jx-zoom .welcome,body.jx-zoom .sec-pop,body.jx-zoom .jar-help{opacity:0!important;pointer-events:none!important}
 .gr-walk{position:absolute;z-index:200;pointer-events:none;transform-origin:50% 100%;filter:drop-shadow(0 0 4px rgba(255,70,200,.95)) drop-shadow(0 0 10px rgba(255,190,90,.6))}
 .gr-trail{position:absolute;z-index:199;width:5px;height:5px;border-radius:50%;pointer-events:none;background:#ff46c8;box-shadow:0 0 8px #ff46c8;transition:transform 1s ease-out,opacity 1s}
 .bm,.bm-sh,.bm-rf,.bm-kit{transition:opacity .35s}
@@ -1481,7 +1514,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     }catch(e){} }
   function setOn(v){ on=v; plOn.style.opacity=v?"1":"0";
     lever.setAttribute("aria-pressed",v); lever.setAttribute("aria-label","Dance floor power: "+(v?"on":"off")); step=-1; kick(); }
-  lever.addEventListener("click",e=>{ e.stopPropagation(); setOn(!on); clunk(); });
+  lever.addEventListener("click",e=>{ e.stopPropagation(); setOn(!on); clunk(); if(on) window.MSSecret&&window.MSSecret("floor"); });
   const playing=()=>!!(window.MSLgPlaying&&window.MSLgPlaying());
   let raf=0, last=0;
   function draw(now){
@@ -1554,7 +1587,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   $("gr-x").addEventListener("click",()=>toast.hidden=true);
   $("gr-go").addEventListener("click",()=>{ toast.hidden=true; const a=document.querySelector(".pill[data-lounge]"); a&&a.click(); });
   jar.hidden=freed;
-  function freeGrace(){ freed=true; preload(); jar.classList.add("smash"); setTimeout(()=>{ jar.hidden=true; },460);
+  function freeGrace(){ freed=true; window.MSSecret&&window.MSSecret("grace"); ['jar-glow','jar-help'].forEach(i=>{ const e=$(i); e&&e.classList.add('gone'); }); preload(); jar.classList.add("smash"); setTimeout(()=>{ jar.hidden=true; },460);
     setTimeout(()=>walkToLounge(()=>{ $("gr-h").textContent="Grace is free!"; toast.querySelector("img").src=FR[6]; $("gr-go").hidden=false; showToast("She’s headed down to the Smile Lounge. Meet her on the dance floor!"); }),1200); render(); }
   /* ---------- jar close-up: tap the glass until it breaks ---------- */
   const JX=$("jx"), jxBox=$("jx-box"), jxCr=$("jx-cracks"), HITS=6; let hits=0, jxBusy=false;
@@ -2211,9 +2244,17 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const KEY="ms-tags"; let found=[]; try{ localStorage.removeItem(KEY); }catch(e){}
     const hunt=$("hunt"), box=$("tags");
     found=found.filter(n=>TAGS.some(t=>t[0]===n));
-    const showHunt=()=>{ hunt.textContent=`Tags found ${found.length}/${TAGS.length}`; hunt.classList.toggle("on",found.length>0); };
+    /* roof secrets: Grace, the 5 tags, the band, the dance floor */
+    const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"]];
+    const got=new Set();
+    const showHunt=()=>{ hunt.textContent=`★ Roof secrets ${got.size}/${SEC.length}`;
+      $("sec-list").innerHTML=SEC.map(([k,a,h])=>`<li class="${got.has(k)?"got":""}"><i>${got.has(k)?"✓":"?"}</i><span>${got.has(k)?a:h}</span></li>`).join(""); };
+    window.MSSecret=k=>{ if(got.has(k)||!SEC.some(s=>s[0]===k)) return; got.add(k); showHunt(); hunt.classList.remove("pop"); void hunt.offsetWidth; hunt.classList.add("pop");
+      if(got.size===SEC.length) setTimeout(()=>{ const pp=$("sec-pop"); pp.hidden=false; },600); };
+    hunt.addEventListener("click",e=>{ e.stopPropagation(); const pp=$("sec-pop"); pp.hidden=!pp.hidden; });
+    addEventListener("pointerdown",e=>{ const pp=$("sec-pop"); if(!pp.hidden&&!e.target.closest("#sec-pop,#hunt")) pp.hidden=true; });
     const hitTag=(name,b,where,x,y,w,h)=>{ const g=document.createElement("div"); g.className="tag-found"; Object.assign(g.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); where.appendChild(g); setTimeout(()=>g.remove(),1500);
-        const isNew=!found.includes(name); if(isNew){ found.push(name); }
+        const isNew=!found.includes(name); if(isNew){ found.push(name); window.MSSecret&&window.MSSecret("tag:"+name); }
         say(b,isNew?`Found: "${name}"`:`"${name}" (already found)`); showHunt();
         if(isNew&&found.length===TAGS.length) setTimeout(()=>say(b,`All ${TAGS.length} found. Respect.`),3000); };
     window.MSPlay.hitTag=hitTag;
@@ -2843,7 +2884,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       await wait(300); [el,rf,sh].forEach(e=>{ e.style.transition="opacity .45s"; e.style.opacity=0; }); await wait(480);
       vis(false); [el,rf,sh].forEach(e=>{ e.style.transition=""; e.style.opacity=""; });
       m.spot=-1; await wait(700+Math.random()*600); await appear(); m.busy=false; schedule(); }
-    el.addEventListener("click",zap);
+    el.addEventListener("click",()=>window.MSSecret&&window.MSSecret("band")); el.addEventListener("click",zap);
     // dancing with Grace: swap poses on the beat with a neon pop (the drummer plays the kit instead)
     m.where=()=>m.seated&&S?{x:S.x+S.w*.5,f:S.y+S.h-8,seated:true}:(m.spot>=0?{x:SPOTS[m.spot][0],f:SPOTS[m.spot][1]}:null);
     m.jam=async ms=>{ if(m.busy||gagOn) return false; if(m.seated&&S){ playKit(); return true; }
@@ -2944,6 +2985,17 @@ window.MST=(()=>{
 </script>
 
 <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "0e0692ebea4745b9bfc9459f56956fc4"}'></script><!-- End Cloudflare Web Analytics -->
+<script>
+/* first visit cues: welcome line + Grace's "help!" from the jar */
+(()=>{ const w=document.getElementById("welcome"); if(!w) return; let gone=false;
+  const hide=()=>{ if(gone) return; gone=true; w.classList.remove("on"); };
+  setTimeout(()=>{ if(!gone&&!document.body.classList.contains("in-room")) w.classList.add("on"); },900);
+  setTimeout(hide,6500); addEventListener("pointerdown",()=>setTimeout(hide,250),{once:true});
+  const h=document.getElementById("jar-help"), jar=document.getElementById("pk-jar"), LINES=["help!","help!!","psst… up here","get me out!","hello??"]; let i=0;
+  setInterval(()=>{ if(!h||h.classList.contains("gone")||jar.hidden||document.body.classList.contains("in-room")||document.body.classList.contains("jx-zoom")) return;
+    h.textContent=LINES[i++%LINES.length]; h.classList.add("on"); setTimeout(()=>h.classList.remove("on"),1800); },7000);
+})();
+</script>
 
 </body>
 </html>
