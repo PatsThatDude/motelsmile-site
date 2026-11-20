@@ -3007,7 +3007,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     async function flicker(n){ for(let i=0;i<n;i++){ neon(1); await wait(40+Math.random()*60); neon(0); await wait(30+Math.random()*80); } }
     async function appear(){ if(S&&!m.wasSeated&&Math.random()<S.p){ m.wasSeated=true; return sit(); } m.wasSeated=false; m.spot=freeSpot(m);
       let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===m.pose&&POSES.length>1); m.pose=np;
-      setPose(m.pose); place(true); await wait(80); neon(1); vis(true); await wait(90); await flicker(5); }
+      setPose(m.pose); place(); await wait(80); neon(1); vis(true); await wait(90); await flicker(5); }
     async function teleport(){ if(m.busy||document.hidden||gagOn||window.MSAway()) return;
       if(performance.now()-(window.__msTp||0)<1500){ schedule(1500); return new Promise(()=>{}); } window.__msTp=performance.now(); m.busy=true;
       if(m.seated){ await stand(); await wait(500+Math.random()*700); await appear(); m.busy=false; return; }
@@ -3039,14 +3039,14 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     m.where=()=>m.seated&&S?{x:S.x+S.w*.5,f:S.y+S.h-8,seated:true}:(m.spot>=0?{x:SPOTS[m.spot][0],f:SPOTS[m.spot][1]}:null);
     m.jam=async ms=>{ if(m.busy||gagOn) return false; if(m.seated&&S){ playKit(); return true; }
       m.busy=true; clearTimeout(wT); const end=performance.now()+ms; let k=0;
-      while(performance.now()<end&&!gagOn){ let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===m.pose&&POSES.length>1); m.pose=np; setPose(np); place(true);
+      while(performance.now()<end&&!gagOn){ let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===m.pose&&POSES.length>1); m.pose=np; setPose(np); place();
         neon(1); inner.style.transform=`translateY(${k%2?-7:0}px)`; await wait(90); neon(0); await wait(380); k++; }
       inner.style.transform=""; m.busy=false; schedule(); return true; };
     [...POSES,ZAP,FRIED,...(GG?[GA,GB]:[])].forEach((p,i)=>["real","neon"].forEach(t=>window.MSIdleLoad(p[t],i<2)));
     MEMBERS.push(m);
     if(S&&S.start){ m.wasSeated=true; m.pose=POSES[0]; setPose(m.pose); kimg[0].onload=()=>{ sit(); }; schedule(16000+(cfg.offset||0)); return m; }
     m.spot=freeSpot(m); m.pose=POSES[Math.floor(Math.random()*POSES.length)];
-    ir.onload=()=>{ ir.onload=null; vis(true); }; setPose(m.pose); place(true); schedule(cfg.offset||0);
+    ir.onload=()=>{ ir.onload=null; vis(true); }; setPose(m.pose); place(); schedule(cfg.offset||0);
     return m;
   }
   const PAT=Member({name:"Pat",pre:"p",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,gag:"pat",
