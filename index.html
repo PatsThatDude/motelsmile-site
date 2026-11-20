@@ -113,7 +113,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 @media (max-width:760px){.stage{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}}
 #play{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;z-index:3;pointer-events:none}
 #play .pk,#lg-play .pk{appearance:none;-webkit-appearance:none;background-color:transparent;border:0;padding:0;margin:0;color:transparent;position:absolute;pointer-events:auto;cursor:pointer;border-radius:8px;-webkit-tap-highlight-color:transparent}
-#play .pk.img{background-image:url(img/roof-main.webp?v=c1);background-size:1672px 941px;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%)}
+#play .pk.img{background-image:url(img/roof-main.webp?v=c2);background-size:1672px 941px;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%)}
 #roof-fx{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:60}
 #roof-glass{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:60;opacity:0;background:#ff3fd0;-webkit-mask:url(img/roof-glass.webp?v=1) 0 0/1672px 941px;mask:url(img/roof-glass.webp?v=1) 0 0/1672px 941px;mix-blend-mode:screen}
 #play a.pk{display:block}
@@ -274,7 +274,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <button class="pk img" id="pk-gnome" style="left:248px;top:560px;width:100px;height:90px;background-position:-248px -560px;transform-origin:50% 90%" aria-label="Garden gnome"></button>
     <button class="pk" id="pk-reset" style="left:186px;top:476px;width:38px;height:46px" aria-label="Reset button: start the roof over"></button>
     <a class="show-sign" id="show-sign" href="#shows" data-open="shows" hidden aria-label="Next show"><small id="ss-a"></small><b id="ss-b"></b></a>
-    <button class="binoc" id="binoc" aria-label="Coin-op binoculars: look across the street"><span class="bn-tag">Look ↗</span><img src="img/binoc/viewer.webp" alt=""></button>
+    <button class="binoc" id="binoc" aria-label="Coin-op binoculars: look across the street"><span class="bn-tag">Look ↗</span></button>
     <div class="jar-glow" id="jar-glow" aria-hidden="true"></div><div class="jar-help" id="jar-help" aria-hidden="true">help!</div>
     <button class="pk girl-jar" data-girl="megan" style="left:1272px;top:504px;width:37px;height:60px;background-image:url(img/girls/megan-jar.webp)" aria-label="A jar labeled MEGAN. Someone is trapped inside"></button>
     <button class="pk girl-jar" data-girl="gianna" style="left:152px;top:446px;width:37px;height:60px;background-image:url(img/girls/gianna-jar.webp)" aria-label="A jar labeled GIANNA. Someone is trapped inside"></button>
@@ -346,7 +346,7 @@ body.in-room #stage>:is(.top,#flyer,#play,#hunt,.sky,.bar) *{animation-play-stat
 body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-state:paused!important}
 .lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=b1) 40% 50%/cover;filter:blur(22px) brightness(.45)}
 .lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
-.lg-cam{z-index:8}.lg-hero{z-index:2;background:url(img/roof-main.webp?v=c1) 0 0/1672px 941px;pointer-events:none}
+.lg-cam{z-index:8}.lg-hero{z-index:2;background:url(img/roof-main.webp?v=c2) 0 0/1672px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
 .lg-bg{left:0;top:0;width:1672px;height:941px}
 .lg-front{left:341px;top:489px;width:886px;height:405px;pointer-events:none}
@@ -1438,7 +1438,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 .arcade:not(.on){visibility:hidden}
 .ac-fill{position:absolute;inset:-40px;background:url(img/game-corner.webp?v=c1) 30% 50%/cover;filter:blur(22px) brightness(.45)}
 .ac-cam,.ac-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
-.ac-cam{z-index:8}.ac-hero{z-index:2;background:url(img/roof-main.webp?v=c1) 0 0/1672px 941px;pointer-events:none;display:none}
+.ac-cam{z-index:8}.ac-hero{z-index:2;background:url(img/roof-main.webp?v=c2) 0 0/1672px 941px;pointer-events:none;display:none}
 .ac-cam>img{position:absolute;left:0;top:0;width:1672px;height:941px;user-select:none;-webkit-user-drag:none}
 #pb{position:fixed;inset:0;z-index:95;background:#05060a;display:none;touch-action:none;user-select:none;-webkit-user-select:none}
 #pb.on{display:block}
@@ -2424,7 +2424,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function render(c){
     seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${(c.images&&c.images.hero)||"img/roof-main.webp?v=c1"}")`;
+    $("stage").style.backgroundImage=`url("${(c.images&&c.images.hero)||"img/roof-main.webp?v=c2"}")`;
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
@@ -3150,11 +3150,11 @@ window.MST=(()=>{
 </script>
 <style>
 /* rooftop binoculars */
-.binoc{position:absolute;left:528px;top:462px;width:66px;height:142px;z-index:70;pointer-events:auto;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;filter:drop-shadow(0 6px 6px rgba(0,0,0,.55))}
+.binoc{position:absolute;left:505px;top:428px;width:82px;height:182px;z-index:70;pointer-events:auto;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:30px}
 .binoc img{width:100%;height:100%;object-fit:contain;display:block}
-.binoc::after{content:"";position:absolute;left:30%;top:14%;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,#fff 0,rgba(120,240,255,.9) 30%,transparent 70%);animation:bnGlint 3.2s ease-in-out infinite}
-.binoc .bn-tag{position:absolute;left:50%;top:-30px;transform:translateX(-50%) rotate(-4deg);white-space:nowrap;font-family:var(--tube);font-size:17px;color:#7af0ff;text-shadow:0 0 8px #3ddcff;pointer-events:none;opacity:.95}
-.binoc:hover,.binoc:focus-visible{filter:drop-shadow(0 0 10px #46dcff) drop-shadow(0 6px 6px rgba(0,0,0,.55))}
+.binoc::after{content:"";position:absolute;left:52%;top:8%;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,#fff 0,rgba(120,240,255,.9) 30%,transparent 70%);animation:bnGlint 3.2s ease-in-out infinite}
+.binoc .bn-tag{position:absolute;left:50%;top:-24px;transform:translateX(-50%) rotate(-4deg);white-space:nowrap;font-family:var(--tube);font-size:17px;color:#7af0ff;text-shadow:0 0 8px #3ddcff;pointer-events:none;opacity:.95}
+.binoc:hover,.binoc:focus-visible{box-shadow:0 0 0 2px rgba(70,220,255,.5),0 0 24px rgba(70,220,255,.35)}
 @keyframes bnGlint{0%,70%,100%{opacity:0;transform:scale(.4)}78%{opacity:1;transform:scale(1.1)}86%{opacity:0;transform:scale(.6)}}
 body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
 .bx{position:fixed;inset:0;z-index:85;background:#020205;opacity:0;transition:opacity .45s;touch-action:none;-webkit-user-select:none;user-select:none;overflow:clip}
