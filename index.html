@@ -2093,9 +2093,9 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       o.connect(f).connect(g).connect(a.destination); o.start(t); o.stop(t+.55); } }catch(_){}
     document.body.style.transition="opacity .35s"; setTimeout(()=>document.body.style.opacity="0",250);
     // forget everything the roof remembers: freed girls, Jill, windows seen, secrets, floor, tags…
-    try{ Object.keys(localStorage).filter(k=>/^ms-/.test(k)).forEach(k=>localStorage.removeItem(k)); }catch(_){}
-    try{ Object.keys(sessionStorage).filter(k=>/^ms-/.test(k)).forEach(k=>sessionStorage.removeItem(k)); }catch(_){}
-    setTimeout(()=>location.replace(location.pathname+location.search),600); });
+    try{ localStorage.clear(); }catch(_){} try{ sessionStorage.clear(); }catch(_){}
+    setTimeout(()=>{ try{ localStorage.clear(); }catch(_){} location.replace(location.pathname+"?fresh="+Date.now()); },600); });
+  if(/[?&]fresh=/.test(location.search)) try{ history.replaceState(null,"",location.pathname); }catch(_){}
 })();
 </script>
 </main>
