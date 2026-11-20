@@ -302,7 +302,8 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
 /* speed: load what the current view needs now; everything else trickles in one file at a time while the page is idle, or when you open that view */
 (function(){ const q=[]; let busy=false, started=false;
   const idle=window.requestIdleCallback||(f=>setTimeout(()=>f({timeRemaining:()=>8}),200));
-  function pump(){ if(busy||!q.length) return; if(document.hidden){ setTimeout(pump,1500); return; } busy=true; const s=q.shift(); const i=new Image(); i.onload=i.onerror=()=>{ busy=false; idle(pump); }; i.src=s; }
+  const nc=navigator.connection, lean=!!(nc&&(nc.saveData||/2g|3g/.test(nc.effectiveType||""))); /* data saver / slow network: no background trickle, things load when they are shown */
+  function pump(){ if(busy||!q.length||lean) return; if(document.hidden){ setTimeout(pump,1500); return; } busy=true; const s=q.shift(); const i=new Image(); i.onload=i.onerror=()=>{ busy=false; idle(pump); }; i.src=s; }
   window.MSIdleLoad=(s,now)=>{ if(now){ const i=new Image(); i.src=s; return; } q.push(s); if(started) idle(pump); };
   addEventListener("load",()=>setTimeout(()=>{ started=true; idle(pump); },2500));
   window.MSLazy=root=>{ (root||document).querySelectorAll("[data-src]").forEach(el=>{ el.src=el.dataset.src; el.removeAttribute("data-src"); }); };
@@ -355,11 +356,12 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
 #play .girl-jar{display:none!important}
 .lounge:not(.on):not(.moving) *,.arcade:not(.on) *{animation-play-state:paused!important}
 body.bx-on #stage *,body.jx-on:not(.jx-zoom) #stage *{animation-play-state:paused!important}
+body.bx-cover #stage,body.bx-cover .lounge,body.bx-cover .arcade{visibility:hidden!important}
 .bx[hidden] *,.jx[hidden] *{animation:none!important}
 body.in-room #stage>:is(.top,#flyer,#play,#flash,#hunt,#pan-hint,#lounge-hot,.sky,.sheet,.bar,.gagfx){visibility:hidden;content-visibility:hidden}
 body.in-room #stage>:is(.top,#flyer,#play,#hunt,.sky,.bar) *{animation-play-state:paused!important}
 body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-state:paused!important}
-.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=b1) 40% 50%/cover;filter:blur(22px) brightness(.45)}
+.lounge:not(.on):not(.moving) .lg-fill{background:none}.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=b1) 40% 50%/cover;filter:blur(22px) brightness(.45)}
 .lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
 .lg-cam{z-index:8}.lg-hero{z-index:2;background:url(img/roof-main.webp?v=c3) 0 0/1672px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
@@ -510,7 +512,7 @@ body.in-room .mini{display:none}
 .dig-row[disabled]{cursor:default;color:var(--fog)}.dig-row[disabled] em{color:var(--fog)}
 .dig-row:not([disabled]):hover{background:rgba(255,61,127,.12)}
 @media (max-width:760px){.dig-head h3{visibility:hidden}.dig-foot{flex-wrap:wrap;justify-content:center;border-radius:18px;width:calc(100% - 24px);padding:10px 12px;row-gap:8px}.dig-foot b{order:-1;flex:1 0 100%;text-align:center;font-size:18px}}
-.cr-fill{position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=b1) 40% 50%/cover;filter:blur(24px) brightness(.4)}
+.cr-fill{position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=b1) 40% 50%/cover;filter:blur(24px) brightness(.4)}.dig:not(.open) .cr-fill{background:none}
 @media (max-width:760px) and (orientation:portrait){
   .lg-panel{position:absolute;pointer-events:auto;left:12px;right:12px;top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));width:auto;height:auto;transform:none;background:var(--glass);border-color:var(--line);padding:14px 16px;gap:8px}
   .lg-panel small{font-size:11px}.lg-panel b{font-size:24px}.lg-panel .row{font-size:13px}
@@ -797,7 +799,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
         <g id="lg-guy-rim" filter="url(#lg-rim)" stroke="#ff3d7f" stroke-opacity=".75" fill="#ff3d7f" fill-opacity=".75" stroke-linecap="round" stroke-linejoin="round"></g>
         <g id="lg-guy-body" stroke="#07070b" fill="#07070b" stroke-linecap="round" stroke-linejoin="round"></g>
       </g>
-      <g id="lg-sleeve" opacity="0"><rect x="-88" y="0" width="176" height="176" rx="3" fill="#0b0b12" stroke="#ff3d7f" stroke-opacity=".6" stroke-width="2"/><image href="img/smile-logo.webp" x="-48" y="26" width="96" height="96"/><text x="0" y="158" text-anchor="middle" font-family="Yellowtail, cursive" font-size="26" fill="#fff">Don't Mind It</text></g>
+      <g id="lg-sleeve" opacity="0"><rect x="-88" y="0" width="176" height="176" rx="3" fill="#0b0b12" stroke="#ff3d7f" stroke-opacity=".6" stroke-width="2"/><image href="img/smile-logo-256.webp" x="-48" y="26" width="96" height="96"/><text x="0" y="158" text-anchor="middle" font-family="Yellowtail, cursive" font-size="26" fill="#fff">Don't Mind It</text></g>
       </g>
     </svg>
     <svg aria-hidden="true"><g id="lg-hold"></g></svg>
@@ -907,7 +909,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function loadC(){
     const inl=document.getElementById("content-inline");
     if(inl){try{return Promise.resolve(JSON.parse(inl.textContent))}catch(e){}}
-    return fetch("content.json",{cache:"no-store"}).then(r=>r.json()).catch(()=>({}));
+    window.MSContent=window.MSContent||fetch("content.json",{cache:"no-store"}).then(r=>r.json()); return window.MSContent.catch(()=>({}));
   }
   loadC().then(c=>{REC=records(c);drawCrate();});
   /* ---------- the crate: real photos of the crate in three states (upright / tipping / leaning) ---------- */
@@ -925,7 +927,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   }
   const poly=q=>"polygon("+q.map(p=>p[0]+"px "+p[1]+"px").join(",")+")";
   const esc2=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-  function artHTML(r){ if(!r) return ""; return r.soon?`<em>${esc2(r.title)}</em><b>COMING<br>SOON</b>`:`<img src="img/smile-logo.webp" alt=""><em>${esc2(r.title)}</em><small>Motel Smile</small>`; }
+  function artHTML(r){ if(!r) return ""; return r.soon?`<em>${esc2(r.title)}</em><b>COMING<br>SOON</b>`:`<img src="img/smile-logo-256.webp" alt=""><em>${esc2(r.title)}</em><small>Motel Smile</small>`; }
   function paintArt(el,r){ el.className="cr-art"+(r&&r.soon?" soon":""); el.innerHTML=artHTML(r); }
   function tape(t,rot,txt){ const el=document.createElement("div"); el.className="cr-tape";
     Object.assign(el.style,{left:(t[0]-t[2]/2)+"px",top:(t[1]-t[3]/2)+"px",width:t[2]+"px",height:t[3]+"px",fontSize:(t[3]*.58)+"px",transform:`rotate(${rot}deg)`});
@@ -935,19 +937,19 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   // build a scene: state photo, cover art on the record face, scene texture, tape labels, crate rim on top
   function scene(id,state,i){
     const sc=$(id), img=`img/crate-${state}.webp?v=c1`; sc.innerHTML="";
-    const ph=document.createElement("img"); ph.src=img; ph.alt=""; sc.appendChild(ph);
+    const ph=document.createElement("img"); if(crOpen) ph.src=img; else ph.dataset.src=img; ph.alt=""; sc.appendChild(ph);
     const face=state==="A"?QA:QU, faceRec=state==="B"?i+1:i;
     const clip=document.createElement("div"); clip.className="cr-layer"; clip.style.clipPath=poly(face);
     const art=document.createElement("div"); art.style.transform=homog(1000,1000,face); paintArt(art,REC[faceRec]); clip.appendChild(art); sc.appendChild(clip);
     const sh=document.createElement("div"); sh.className="cr-layer cr-shade"; sh.style.clipPath=poly(face); sc.appendChild(sh);
-    const tx=document.createElement("img"); tx.src=img; tx.className="cr-layer cr-tex"; tx.style.clipPath=poly(face); sc.appendChild(tx);
+    const tx=document.createElement("img"); if(crOpen) tx.src=img; else tx.dataset.src=img; tx.className="cr-layer cr-tex"; tx.style.clipPath=poly(face); sc.appendChild(tx);
     const tp=document.createElement("div"); tp.className="cr-layer"; sc.appendChild(tp);
     const first=state==="U"?i:i+1;
     BACK.forEach((t,k)=>tp.appendChild(tape(t,-1.5,TT(first+1+k))));
     if(state==="A"){ tp.appendChild(tape(T_FRONT,-1.5,TT(i+1))); tp.appendChild(tape(T_TIP,-1,TT(i))); }
     else if(state==="B"){ tp.appendChild(tape(T_FRONT,-1.5,TT(i+1))); }
     else tp.appendChild(tape(T_FRONT,-1.5,TT(i)));
-    const rim=document.createElement("img"); rim.src=img; rim.className="cr-rim"; rim.alt=""; rim.style.clipPath=RIM; sc.appendChild(rim);
+    const rim=document.createElement("img"); if(crOpen) rim.src=img; else rim.dataset.src=img; rim.className="cr-rim"; rim.alt=""; rim.style.clipPath=RIM; sc.appendChild(rim);
     if(state==="B") tp.parentNode.appendChild((()=>{const w=document.createElement("div"); w.className="cr-layer"; w.appendChild(tape(T_LEAN,-2,TT(i))); return w;})());
     requestAnimationFrame(()=>fitTapes(sc));
   }
@@ -1111,7 +1113,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       cam.style.transform=`translate(${sxA+(sxB-sxA)*e-ax*s}px,${syA+(syB-syA)*e-ay*s}px) scale(${s})`; },done); };
   let crOpen=false;
   function openCrate(){
-    if(crOpen||anim) return; crOpen=true;
+    if(crOpen||anim) return; crOpen=true; window.MSLazy&&window.MSLazy($("dig"));
     show(); setMode("list"); $("lg-tag").hidden=true;
     $("dig").classList.add("open"); $("dig").setAttribute("aria-hidden","false");
     setTimeout(()=>{ const f=$("dig-list").querySelector(".dig-row:not([disabled])"); f&&f.focus({preventScroll:true}); },200);
@@ -2059,7 +2061,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   lever.addEventListener("click",()=>setTimeout(hint,0));
   addEventListener("ms-view",()=>{ if(!L.classList.contains("on")&&duet){ duet=null; pEl.style.display="none"; pSh.style.display="none"; } if(!L.classList.contains("on")&&girls) girlsEnd(); if(L.classList.contains("on")&&!floorOn()) pickPose(); render(); hint(); });
   // main roof: her shadow on the front skylight glass while the floor is lit
-  const mcv=$("gr-roof"), mx=mcv.getContext("2d"), gm=new Image(); gm.src="img/roof-glass.webp?v=1";
+  const mcv=$("gr-roof"), mx=mcv.getContext("2d"), gm=new Image(); gm.crossOrigin="anonymous"; gm.src="img/roof-glass.webp?v=1";
   const tmp=document.createElement("canvas"); tmp.width=260; tmp.height=220; const tx=tmp.getContext("2d");
   let si=0, sT=0;
   function roofShadow(now){
@@ -2320,7 +2322,9 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   const phone=()=>matchMedia("(max-width:760px)").matches;
   const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
   let px=0.5, py=0.42;
-  function place(){
+  let lastPlace="";
+  function place(force){
+    const key=stage.clientWidth+"x"+stage.clientHeight+":"+px.toFixed(4)+":"+py.toFixed(4); if(!force&&key===lastPlace) return; lastPlace=key;
     const TL=tall(); stage.classList.toggle("tall",TL); IMG.w=TL?941:1672; IMG.h=TL?1672:941;
     const W=stage.clientWidth,H=stage.clientHeight, s0=phone()?Math.max(W/IMG.w,H/IMG.h):window.MSFit(W,H,IMG.w,IMG.h);
     const ox0=(W-IMG.w*s0)*px, oy0=(H-IMG.h*s0)*py;
@@ -2430,7 +2434,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     if(tall()) py=0.5;
     place(); if(window.MSAway&&window.MSAway()) setTimeout(()=>requestAnimationFrame(tick),400); else requestAnimationFrame(tick);
   }
-  requestAnimationFrame(tick); addEventListener("resize",place);
+  requestAnimationFrame(tick); addEventListener("resize",()=>place(true));
   // stunts can steer the phone camera: MSCam(plateX) pans there; returns where it was
   window.MSCam=c=>{ const was=cxT; if(phone()&&c!=null){ cxT=clampC(c); hinted=true; } return phone()?was:null; };
   const setBarH=()=>{ const h=$("bar").offsetHeight+"px"; $("stage").style.setProperty("--barh",h); document.documentElement.style.setProperty("--barh",h); };
@@ -2511,7 +2515,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function loadContent(){
     const inl=document.getElementById("content-inline");
     if(inl){ try{ return Promise.resolve(JSON.parse(inl.textContent)); }catch(e){} }
-    return fetch("content.json",{cache:"no-store"}).then(r=>r.json());
+    window.MSContent=window.MSContent||fetch("content.json",{cache:"no-store"}).then(r=>r.json()); return window.MSContent;
   }
   loadContent().then(c=>{ LIVE=c; render(c); if(location.hash==="#backstage") openBackstage(); }).catch(()=>{});
 
@@ -3003,7 +3007,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     async function flicker(n){ for(let i=0;i<n;i++){ neon(1); await wait(40+Math.random()*60); neon(0); await wait(30+Math.random()*80); } }
     async function appear(){ if(S&&!m.wasSeated&&Math.random()<S.p){ m.wasSeated=true; return sit(); } m.wasSeated=false; m.spot=freeSpot(m);
       let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===m.pose&&POSES.length>1); m.pose=np;
-      setPose(m.pose); place(); await wait(80); neon(1); vis(true); await wait(90); await flicker(5); }
+      setPose(m.pose); place(true); await wait(80); neon(1); vis(true); await wait(90); await flicker(5); }
     async function teleport(){ if(m.busy||document.hidden||gagOn||window.MSAway()) return;
       if(performance.now()-(window.__msTp||0)<1500){ schedule(1500); return new Promise(()=>{}); } window.__msTp=performance.now(); m.busy=true;
       if(m.seated){ await stand(); await wait(500+Math.random()*700); await appear(); m.busy=false; return; }
@@ -3035,14 +3039,14 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     m.where=()=>m.seated&&S?{x:S.x+S.w*.5,f:S.y+S.h-8,seated:true}:(m.spot>=0?{x:SPOTS[m.spot][0],f:SPOTS[m.spot][1]}:null);
     m.jam=async ms=>{ if(m.busy||gagOn) return false; if(m.seated&&S){ playKit(); return true; }
       m.busy=true; clearTimeout(wT); const end=performance.now()+ms; let k=0;
-      while(performance.now()<end&&!gagOn){ let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===m.pose&&POSES.length>1); m.pose=np; setPose(np); place();
+      while(performance.now()<end&&!gagOn){ let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===m.pose&&POSES.length>1); m.pose=np; setPose(np); place(true);
         neon(1); inner.style.transform=`translateY(${k%2?-7:0}px)`; await wait(90); neon(0); await wait(380); k++; }
       inner.style.transform=""; m.busy=false; schedule(); return true; };
     [...POSES,ZAP,FRIED,...(GG?[GA,GB]:[])].forEach((p,i)=>["real","neon"].forEach(t=>window.MSIdleLoad(p[t],i<2)));
     MEMBERS.push(m);
     if(S&&S.start){ m.wasSeated=true; m.pose=POSES[0]; setPose(m.pose); kimg[0].onload=()=>{ sit(); }; schedule(16000+(cfg.offset||0)); return m; }
     m.spot=freeSpot(m); m.pose=POSES[Math.floor(Math.random()*POSES.length)];
-    ir.onload=()=>{ ir.onload=null; vis(true); }; setPose(m.pose); place(); schedule(cfg.offset||0);
+    ir.onload=()=>{ ir.onload=null; vis(true); }; setPose(m.pose); place(true); schedule(cfg.offset||0);
     return m;
   }
   const PAT=Member({name:"Pat",pre:"p",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,gag:"pat",
@@ -3109,7 +3113,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
 <div class="ms-warp" id="ms-warp" aria-hidden="true"></div><div class="ms-flash" id="ms-flash" aria-hidden="true"></div>
 <script>
 /* shared "travel" effect for going to the lounge / arcade: speed lines, flash, whoosh */
-window.MSAway=()=>document.body.classList.contains("in-room");
+window.MSAway=()=>{ const c=document.body.classList; return c.contains("in-room")||c.contains("bx-on")||c.contains("jx-on"); };
 window.MST=(()=>{
   const W=document.getElementById("ms-warp"), F=document.getElementById("ms-flash");
   function aim(x,y,c){ [W,F].forEach(e=>{ e.style.setProperty("--x",x+"px"); e.style.setProperty("--y",y+"px"); e.style.setProperty("--wc",c); }); }
@@ -3167,7 +3171,7 @@ window.MST=(()=>{
   const run=()=>{ if(!mode||matchMedia("(prefers-reduced-motion: reduce)").matches) return; const ctx=cv.getContext("2d");
     const fit=()=>{ cv.width=st.clientWidth; cv.height=st.clientHeight; }; fit(); addEventListener("resize",fit);
     const N=mode==="rain"?140:90; drops=Array.from({length:N},()=>({x:Math.random(),y:Math.random(),v:.4+Math.random()*.6,s:Math.random()}));
-    (function f(){ if(document.hidden||document.body.classList.contains("in-room")){ requestAnimationFrame(f); return; }
+    (function f(){ if(document.hidden||(window.MSAway&&window.MSAway())){ setTimeout(()=>requestAnimationFrame(f),400); return; }
       const W=cv.width,H=cv.height; ctx.clearRect(0,0,W,H);
       if(mode==="rain"){ ctx.strokeStyle="rgba(200,220,255,.35)"; ctx.lineWidth=1; ctx.beginPath();
         for(const d of drops){ d.y+=.018*d.v; d.x-=.002*d.v; if(d.y>1){ d.y=-.05; d.x=Math.random()*1.1; } const x=d.x*W,y=d.y*H; ctx.moveTo(x,y); ctx.lineTo(x-3,y+14+10*d.v); } ctx.stroke(); }
@@ -3182,8 +3186,11 @@ window.MST=(()=>{
     st.classList.add("tod-"+tod); run();
     const words={rain:"rain",snow:"snow"}[mode]||(tod==="day"?"clear":"night");
     if(temp!=null){ const sp=document.querySelector(".top span"); if(sp){ const r=document.createElement("i"); r.className="wx-read"; r.style.fontStyle="normal"; r.textContent=`NYC ${Math.round(temp)}° · ${words}`; sp.insertBefore(r,sp.querySelector(".bs-link")||null); } } };
-  fetch("https://api.open-meteo.com/v1/forecast?latitude=40.71&longitude=-74.0&current=weather_code,temperature_2m,is_day&daily=sunrise,sunset&timezone=UTC&temperature_unit=fahrenheit&forecast_days=1")
-    .then(r=>r.json()).then(d=>{ const c=d.current||{}, ss=d.daily&&d.daily.sunset&&Date.parse(d.daily.sunset[0]+"Z"), sr=d.daily&&d.daily.sunrise&&Date.parse(d.daily.sunrise[0]+"Z");
+  /* one weather call per 20 minutes per tab */
+  const WXK="ms-wx", wxGet=()=>{ try{ const c=JSON.parse(sessionStorage.getItem(WXK)||"null"); if(c&&Date.now()-c.t<12e5) return Promise.resolve(c.d); }catch(_){} 
+    return fetch("https://api.open-meteo.com/v1/forecast?latitude=40.71&longitude=-74.0&current=weather_code,temperature_2m,is_day&daily=sunrise,sunset&timezone=UTC&temperature_unit=fahrenheit&forecast_days=1")
+      .then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(d=>{ try{ sessionStorage.setItem(WXK,JSON.stringify({t:Date.now(),d})); }catch(_){} return d; }); };
+  wxGet().then(d=>{ const c=d.current||{}, ss=d.daily&&d.daily.sunset&&Date.parse(d.daily.sunset[0]+"Z"), sr=d.daily&&d.daily.sunrise&&Date.parse(d.daily.sunrise[0]+"Z");
       apply(c.weather_code,!!c.is_day,c.temperature_2m,ss,sr); }).catch(()=>apply(null,false,null));
 })();
 </script>
@@ -3205,10 +3212,10 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
 .bx-pan>img{display:block;width:100%;height:100%;-webkit-user-drag:none;pointer-events:none}
 .bx-lens::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 62%,rgba(0,0,0,.35) 100%)}
 .bx-win{position:absolute;border:0;padding:0;background:transparent;cursor:pointer;border-radius:3px;-webkit-tap-highlight-color:transparent}
-.bx-win::before{content:"";position:absolute;inset:-8%;border-radius:4px;box-shadow:0 0 0 1.5px rgba(255,236,170,.0),0 0 18px rgba(255,210,120,.0);animation:bxW 2.8s ease-in-out infinite;animation-delay:var(--d,0s)}
-.bx-win.seen::before{animation:none;box-shadow:0 0 0 1.5px rgba(120,240,255,.55)}
+.bx-win::before{content:"";position:absolute;inset:-8%;border-radius:4px;box-shadow:0 0 0 1.5px rgba(255,236,170,.55),0 0 18px rgba(255,210,120,.45);opacity:0;will-change:opacity;animation:bxW 2.8s ease-in-out infinite;animation-delay:var(--d,0s)}
+.bx-win.seen::before{animation:none;opacity:1;box-shadow:0 0 0 1.5px rgba(120,240,255,.55)}
 .bx-win.dark{background:rgba(5,5,10,.86);transition:background .25s}
-@keyframes bxW{0%,100%{box-shadow:0 0 0 1.5px rgba(255,236,170,0),0 0 14px rgba(255,210,120,0)}50%{box-shadow:0 0 0 1.5px rgba(255,236,170,.55),0 0 18px rgba(255,210,120,.45)}}
+@keyframes bxW{0%,100%{opacity:0}50%{opacity:1}}
 .bx-scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .45s;background:#000}
 .bx.inwin .bx-scene{opacity:1;pointer-events:auto}
 .bx-scene img,.bx-scene video{width:100%;height:100%;object-fit:cover;display:block}
@@ -3259,8 +3266,8 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
   const apply=(ms)=>{ pan.style.transition=ms?`transform ${ms}ms cubic-bezier(.3,.1,.2,1)`:"none"; pan.style.width=PW+"px"; pan.style.height=PH+"px"; pan.style.transform=`translate(${ox}px,${oy}px) scale(${S})`; };
   const centerOn=(x,y)=>{ ox=innerWidth/2-x*S; oy=innerHeight/2-y*S; clamp(); };
   const count=()=>{ $("bx-count").textContent=`Windows ${[...seen].filter(k=>WIN.some(w=>w.k===k)).length}/${WIN.length}`; };
-  function open(){ window.MSAC&&window.MSAC(); window.MSBxSfx&&window.MSBxSfx("amb"); window.MSLazy&&window.MSLazy(bx); bx.hidden=false; S=fitS(); centerOn(PW*.55,PH*.5); apply(0); count(); requestAnimationFrame(()=>bx.classList.add("open")); document.body.classList.add("bx-on"); $("bx-x").focus({preventScroll:true}); }
-  function close(){ leave(true); window.MSBxSfx&&window.MSBxSfx("amb",false); bx.classList.remove("open"); document.body.classList.remove("bx-on"); setTimeout(()=>{ if(!bx.classList.contains("open")) bx.hidden=true; },460); }
+  function open(){ window.MSAC&&window.MSAC(); window.MSBxSfx&&window.MSBxSfx("amb"); window.MSLazy&&window.MSLazy(bx); bx.hidden=false; S=fitS(); centerOn(PW*.55,PH*.5); apply(0); count(); requestAnimationFrame(()=>bx.classList.add("open")); document.body.classList.add("bx-on"); clearTimeout(open.t); open.t=setTimeout(()=>{ if(bx.classList.contains("open")) document.body.classList.add("bx-cover"); },520); $("bx-x").focus({preventScroll:true}); }
+  function close(){ leave(true); window.MSBxSfx&&window.MSBxSfx("amb",false); clearTimeout(open.t); document.body.classList.remove("bx-cover"); bx.classList.remove("open"); document.body.classList.remove("bx-on"); setTimeout(()=>{ if(!bx.classList.contains("open")) bx.hidden=true; },460); }
   let cur=null;
   function enter(w){ cur=w; const s0=S; window.MSBxSfx&&window.MSBxSfx("whoosh"); const cx=w.x+w.w/2, cy=w.y+w.h/2;
     // fly into the window, then cut to the scene inside
@@ -3372,7 +3379,6 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
   const stat=()=>{ $("sl-hits").textContent=`Hits ${Math.min(hits,5)}/5 · Shots ${shots}`; $("sl-wind").textContent=wind===0?"No wind":`Wind ${wind<0?"←":"→"} ${Math.abs(Math.round(wind/6))}`; };
   const newWind=()=>{ wind=Math.round((Math.random()-.5)*60); };
   function canSling(){ bx.classList.remove("can-sling"); } /* slingshot parked for now (Pat 11-20): Jill is freed by tapping her jar inside her window */
-  setInterval(()=>{ if(!bx.hidden) canSling(); },800);
   function enterSling(){ if(freedJ) return; window.MSLazy&&window.MSLazy(inset); fit(); bx.classList.add("sling"); inset.style.display="block"; newWind(); stat();
     const S=Math.max(innerWidth/B.PW,innerHeight/B.PH)*1.9; B.setView(S,innerWidth/2-(JW.x+JW.w/2)*S,innerHeight*.34-(JW.y+JW.h/2)*S,600);
     say("Pull back, aim, let go",1800); }
