@@ -2014,7 +2014,9 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   /* freed jar girls live in the lounge: dance near Grace when the floor is on, hang out on the furniture when it's off */
   const RES={megan:{off:[300,612,46],on:[-1.15,14],c:"#ff3b48",say:["Drinks are on me. (They're not.)","I was never stuck, for the record.","Room 217? Still never heard of it."]},
     gianna:{off:[560,566,40],on:[1.05,-14],c:"#2cff9a",say:["Right on time!","Don't waste a minute, dance!","Tick tock, let's go!"]},
-    sophia:{off:[688,598,42],on:[1.8,22],c:"#ff963c",say:["Back where I belong!","Get back on that floor!","Spin something good!"]}};
+    sophia:{off:[688,598,42],on:[1.8,22],c:"#ff963c",say:["Back where I belong!","Get back on that floor!","Spin something good!"]},
+    jill:{off:[430,596,44],on:[-.45,26],c:"#ffd36a",say:["Thanks for the rescue, sharpshooter.","That was the craziest commute of my life.","Who threw the tomato?"]}};
+  window.MSJillFree=()=>{ FREED.add("jill"); };
   const resEl={}; let resT=0;
   function resTick(){ const inL=L.classList.contains("on"); resT++;
     for(const g of Object.keys(RES)){ if(!FREED.has(g)) continue; let el=resEl[g];
@@ -2365,12 +2367,12 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const hunt=$("hunt"), box=$("tags");
     found=found.filter(n=>TAGS.some(t=>t[0]===n));
     /* roof secrets: Grace, the 5 tags, the band, the dance floor */
-    const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["megan","Free Megan","Another jar… near the drinks"],["gianna","Free Gianna","A jar up on the old AC unit"],["sophia","Free Sophia","A jar on the ledge past the drums"],["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"],["windows","Peek in every window","The binoculars by the wall see a lot"]];
+    const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["megan","Free Megan","Another jar… near the drinks"],["gianna","Free Gianna","A jar up on the old AC unit"],["sophia","Free Sophia","A jar on the ledge past the drums"],["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"],["windows","Peek in every window","The binoculars by the wall see a lot"],["jill","Free Jill","Across the street… bring a slingshot"],["jill5","Sharpshooter","Free Jill in 5 shots or fewer"]];
     const got=new Set();
     const showHunt=()=>{ hunt.innerHTML=`★ <i class="hr">Roof </i>secrets <b>${got.size}/${SEC.length}</b>`;
       $("sec-list").innerHTML=SEC.map(([k,a,h])=>`<li class="${got.has(k)?"got":""}"><i>${got.has(k)?"✓":"?"}</i><span>${got.has(k)?a:h}</span></li>`).join(""); };
     { const sp=document.querySelector(".top span"); if(sp) sp.insertBefore(hunt,sp.firstChild); }
-    const NOTE={grace:"Grace is free! She’s headed down to the lounge.",megan:"Megan is free! (She says she was never stuck.)",gianna:"Gianna is free! Right on time.",sophia:"Sophia is free! She’s getting back to the lounge.",band:"You messed with the band.",floor:"The dance floor is lit."};
+    const NOTE={grace:"Grace is free! She’s headed down to the lounge.",megan:"Megan is free! (She says she was never stuck.)",gianna:"Gianna is free! Right on time.",sophia:"Sophia is free! She’s getting back to the lounge.",band:"You messed with the band.",floor:"The dance floor is lit.",windows:"You peeked in every window. Nosy.",jill:"Jill is free! She’s on her way to the lounge.",jill5:"Sharpshooter: Jill freed in 5 shots or fewer."};
     let noteT=0; const note=(t)=>{ const n=$("sec-note"); n.innerHTML=`<b>★ Secret found · ${got.size}/${SEC.length}</b>${t}`; n.classList.add("on"); clearTimeout(noteT); noteT=setTimeout(()=>n.classList.remove("on"),3800); };
     window.MSSecret=k=>{ if(got.has(k)||!SEC.some(s=>s[0]===k)) return; got.add(k); showHunt(); hunt.classList.remove("pop"); void hunt.offsetWidth; hunt.classList.add("pop");
       note(k.startsWith("tag:")?`Song tag: “${k.slice(4)}”`:NOTE[k]);
@@ -3269,7 +3271,196 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
   bx.addEventListener("keydown",e=>{ const b=e.target.closest&&e.target.closest(".bx-win:not(.decoy)"); if(b&&(e.key==="Enter"||e.key===" ")){ e.preventDefault(); enter(WIN.find(w=>w.k===b.dataset.k)); } });
   [bx,lens].forEach(el=>el.addEventListener("scroll",()=>{ el.scrollTop=0; el.scrollLeft=0; }));
   window.MSBinoc=open;
+  window.__bx={S:()=>S,ox:()=>ox,oy:()=>oy,PW,PH,pan,WIN,DECOY,fit:fitS,seen:()=>seen,
+    setView:(s,x,y,ms)=>{ S=s; ox=x; oy=y; clamp(); apply(ms); },
+    setJillBroke:()=>{ const w=WIN.find(w=>w.k==="jar"); w.img="img/binoc/w5-broke.webp"; w.cap="The jar’s smashed. Jill made it out. She’s in the Smile Lounge."; }};
   const bn=$("binoc"); if(bn) bn.addEventListener("click",e=>{ e.stopPropagation(); window.MSLedge?window.MSLedge(bn):open(); });
+})();
+</script>
+<style>
+/* slingshot across the street: free Jill */
+.bx-sling{display:none}.bx.can-sling:not(.inwin):not(.sling) .bx-sling{display:inline-flex}
+.bx.sling .bx-hint,.bx.sling .bx-count{display:none}
+.sl{position:absolute;inset:0;z-index:5;display:none;touch-action:none}
+.bx.sling .sl{display:block}
+.bx.sl-cut .sl-fork,.bx.sl-cut .sl-ammo{display:none}
+.sl canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sl-fork{position:absolute;left:50%;bottom:-6px;width:min(36vw,230px);transform:translateX(-50%);pointer-events:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6))}
+.sl-top{position:absolute;left:0;right:0;top:calc(14px + env(safe-area-inset-top,0px));z-index:1;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:0 120px;pointer-events:none}
+.sl-stat{font-family:var(--tube);font-size:clamp(14px,2.2vw,18px);color:#ffd36a;text-shadow:0 0 8px #ff9a3d;white-space:nowrap}
+.sl-ammo{position:absolute;left:50%;bottom:calc(min(36vw,230px)*1.05 + 8px);transform:translateX(-50%);display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:94vw}
+.sl-ammo button{font:600 12px/1 var(--mono,ui-monospace);color:#fff;background:rgba(5,6,10,.6);border:1.5px solid rgba(255,255,255,.25);border-radius:999px;padding:7px 10px;cursor:pointer}
+.sl-ammo button[aria-pressed="true"]{border-color:#ffd36a;box-shadow:0 0 10px rgba(255,211,106,.6)}
+.sl-msg{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);font-family:var(--tube);font-size:clamp(20px,4vw,34px);color:#fff;text-shadow:0 0 14px #ff3d7f;pointer-events:none;white-space:nowrap;opacity:0;transition:opacity .25s}
+.sl-msg.on{opacity:1}
+.sl-win{position:absolute;pointer-events:none}
+.sl-win img{width:100%;height:100%;display:block;object-fit:cover}
+.sl-win svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.sl-win svg path{fill:none;stroke:rgba(240,248,255,.95);stroke-width:1.2;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 1px #9cf)}
+.sl-splat{position:absolute;border-radius:50%;pointer-events:none;opacity:.85}
+.sl-cyoa{position:absolute;inset:0;z-index:8;display:none;align-items:center;justify-content:center;background:rgba(3,3,8,.72);padding:16px}
+.sl-cyoa.on{display:flex}
+.sl-card{max-width:620px;width:100%;text-align:center;display:flex;flex-direction:column;gap:12px}
+.sl-card h3{margin:0;font-family:var(--tube);font-weight:400;font-size:clamp(22px,4vw,32px);color:#fff;text-shadow:0 0 14px #ff3d7f}
+.sl-card p{margin:0;color:#dfe;font-size:14px}
+.sl-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.sl-opts button{text-align:left;padding:12px 14px;border-radius:12px;border:1.5px solid rgba(70,220,255,.45);background:rgba(10,12,20,.85);color:#fff;cursor:pointer;font:500 14px/1.3 system-ui}
+.sl-opts button b{display:block;font-family:var(--tube);font-weight:400;font-size:18px;color:#7af0ff;margin-bottom:3px}
+.sl-opts button:hover,.sl-opts button:focus-visible{border-color:#ffd36a;box-shadow:0 0 14px rgba(255,211,106,.4)}
+.sl-actor{position:absolute;pointer-events:none;transform-origin:50% 100%;will-change:transform}
+.sl-bal{position:absolute;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:none;align-items:center;gap:10px;z-index:9}
+.sl-bal.on{display:flex}
+.sl-bal .bar{width:min(52vw,280px);height:12px;border-radius:6px;background:linear-gradient(90deg,#ff3d7f,#ffd36a 30%,#5fd18a 45%,#5fd18a 55%,#ffd36a 70%,#ff3d7f);position:relative}
+.sl-bal .bar i{position:absolute;top:-6px;width:4px;height:24px;margin-left:-2px;background:#fff;border-radius:2px;box-shadow:0 0 8px #fff}
+@media (max-width:640px){.sl-top{top:calc(62px + env(safe-area-inset-top,0px));padding:0 12px}}
+@media (prefers-reduced-motion:reduce){.sl-msg{transition:none}}
+</style>
+<script>
+(function(){
+  const $=id=>document.getElementById(id), bx=$("bx"); if(!bx||!window.__bx) return;
+  const B=window.__bx; // {get S/ox/oy, PW, PH, pan, setView(S,ox,oy,ms), WIN, fit}
+  const J=B.WIN.find(w=>w.k==="jar"); const JW={x:J.x,y:J.y,w:J.w,h:J.h};
+  const ui=bx.querySelector(".bx-ui");
+  const sb=document.createElement("button"); sb.className="pill bx-sling"; sb.id="bx-sling"; sb.style.setProperty("--c","#ffd36a"); sb.textContent="Slingshot → free Jill"; ui.appendChild(sb);
+  const sl=document.createElement("div"); sl.className="sl"; sl.innerHTML=`<canvas></canvas>
+    <svg class="sl-fork" viewBox="0 0 200 170" aria-hidden="true"><defs><linearGradient id="slw" x1="0" x2="1"><stop offset="0" stop-color="#5a3519"/><stop offset=".5" stop-color="#a8692f"/><stop offset="1" stop-color="#4a2a12"/></linearGradient></defs>
+      <path d="M86 170 L92 98 Q60 80 44 20 Q40 6 52 6 Q62 8 64 22 Q74 62 100 82 Q126 62 136 22 Q138 8 148 6 Q160 6 156 20 Q140 80 108 98 L114 170 Z" fill="url(#slw)" stroke="#2a1608" stroke-width="2"/>
+      <rect x="40" y="14" width="26" height="10" rx="3" fill="#3a3a3a"/><rect x="134" y="14" width="26" height="10" rx="3" fill="#3a3a3a"/></svg>
+    <div class="sl-top"><span class="sl-stat" id="sl-hits"></span><span class="sl-stat" id="sl-wind"></span></div>
+    <div class="sl-ammo" id="sl-ammo" role="group" aria-label="What to fire"></div>
+    <div class="sl-msg" id="sl-msg"></div>
+    <div class="sl-bal" id="sl-bal"><button class="pill" id="sl-bl" style="--c:var(--cyan)">◀ Lean</button><div class="bar"><i id="sl-needle"></i></div><button class="pill" id="sl-br" style="--c:var(--cyan)">Lean ▶</button></div>
+    <div class="sl-cyoa" id="sl-cyoa"><div class="sl-card"><h3>Jill’s jar is smashed!</h3><p>How does she get over to our roof? You pick.</p><div class="sl-opts" id="sl-opts"></div></div></div>`;
+  bx.appendChild(sl);
+  const cv=sl.querySelector("canvas"), ctx=cv.getContext("2d"); const fit=()=>{ const d=Math.min(2,devicePixelRatio||1); cv.width=innerWidth*d; cv.height=innerHeight*d; ctx.setTransform(d,0,0,d,0,0); }; fit(); addEventListener("resize",fit);
+  const pig=new Image(); pig.src="img/pigeon2.webp";
+  const AMMO=[["cap","Bottle cap"],["pizza","Pizza slice"],["stick","Drumstick"],["pick","Guitar pick"],["tomato","Tomato"],["pigeon","The pigeon"]];
+  let ammo="cap", pigeonAsked=false;
+  $("sl-ammo").innerHTML=AMMO.map(([k,n])=>`<button data-a="${k}" aria-pressed="${k===ammo}">${n}</button>`).join("");
+  $("sl-ammo").addEventListener("click",e=>{ const b=e.target.closest("[data-a]"); if(!b) return; ammo=b.dataset.a; $("sl-ammo").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b)); pigeonAsked=false; });
+  // Jill's window inset (comic jar) + cracks, inside the pan so it moves with the street
+  const inset=document.createElement("div"); inset.className="sl-win"; Object.assign(inset.style,{left:JW.x/B.PW*100+"%",top:JW.y/B.PH*100+"%",width:JW.w/B.PW*100+"%",height:JW.h/B.PH*100+"%"});
+  inset.innerHTML=`<img src="img/binoc/jill-win.webp" alt=""><svg viewBox="0 0 100 100" preserveAspectRatio="none"></svg>`; inset.style.display="none"; B.pan.appendChild(inset);
+  const crk=inset.querySelector("svg");
+  let hits=0, shots=0, wind=0, busy=false, freedJ=false;
+  try{ freedJ=localStorage.getItem("ms-jill-free")==="1"; }catch(e){}
+  const say=(t,ms=1300)=>{ const m=$("sl-msg"); m.textContent=t; m.classList.add("on"); clearTimeout(say.t); say.t=setTimeout(()=>m.classList.remove("on"),ms); };
+  const stat=()=>{ $("sl-hits").textContent=`Hits ${Math.min(hits,5)}/5 · Shots ${shots}`; $("sl-wind").textContent=wind===0?"No wind":`Wind ${wind<0?"←":"→"} ${Math.abs(Math.round(wind/6))}`; };
+  const newWind=()=>{ wind=Math.round((Math.random()-.5)*60); };
+  function canSling(){ bx.classList.toggle("can-sling",!freedJ&&(B.seen().has("jar"))); }
+  setInterval(canSling,800);
+  function enterSling(){ if(freedJ) return; bx.classList.add("sling"); inset.style.display="block"; newWind(); stat();
+    const S=Math.max(innerWidth/B.PW,innerHeight/B.PH)*1.9; B.setView(S,innerWidth/2-(JW.x+JW.w/2)*S,innerHeight*.34-(JW.y+JW.h/2)*S,600);
+    say("Pull back, aim, let go",1800); }
+  function exitSling(){ bx.classList.remove("sling","sl-cut"); inset.style.display="none"; ctx.clearRect(0,0,innerWidth,innerHeight); B.setView(B.fit(),B.ox(),B.oy(),400); }
+  sb.addEventListener("click",e=>{ e.stopPropagation(); enterSling(); });
+  // back / close leave sling mode first
+  $("bx-x").addEventListener("click",()=>{ if(bx.classList.contains("sling")) exitSling(); },true);
+  // ---- aiming
+  const L=()=>({x:innerWidth/2,y:innerHeight-Math.min(innerWidth*.36,230)*.78});
+  let drag=null, pull={x:0,y:0};
+  sl.addEventListener("pointerdown",e=>{ if(busy||e.target.closest("button")) return; const l=L(); if(Math.hypot(e.clientX-l.x,e.clientY-l.y)>Math.max(90,innerWidth*.18)) return;
+    drag={x:e.clientX,y:e.clientY}; sl.setPointerCapture&&sl.setPointerCapture(e.pointerId); e.preventDefault(); });
+  sl.addEventListener("pointermove",e=>{ if(!drag) return; let dx=e.clientX-drag.x, dy=e.clientY-drag.y; const m=Math.hypot(dx,dy), M=140; if(m>M){ dx*=M/m; dy*=M/m; } pull={x:dx,y:dy}; draw(); });
+  sl.addEventListener("pointerup",()=>{ if(!drag) return; drag=null; const p=pull; pull={x:0,y:0}; if(Math.hypot(p.x,p.y)<18){ draw(); return; } fire(p); });
+  function target(p){ const l=L(), pow=ammo==="stick"?1.12:1; return {x:l.x-p.x*3.1*pow+wind, y:l.y-Math.max(0,p.y)*4.3*pow+Math.min(0,p.y)*.5}; }
+  function draw(){ ctx.clearRect(0,0,innerWidth,innerHeight); const l=L();
+    const pouch={x:l.x+pull.x,y:l.y+pull.y}; const fw=Math.min(innerWidth*.36,230);
+    ctx.strokeStyle="#5b3b1e"; ctx.lineWidth=5; ctx.lineCap="round"; ctx.beginPath(); ctx.moveTo(l.x-fw*.28,l.y-fw*.38); ctx.lineTo(pouch.x,pouch.y); ctx.lineTo(l.x+fw*.28,l.y-fw*.38); ctx.stroke();
+    ctx.fillStyle="#3b2412"; ctx.beginPath(); ctx.ellipse(pouch.x,pouch.y,14,9,0,0,7); ctx.fill(); sprite(pouch.x,pouch.y-4,1,0);
+    if(Math.hypot(pull.x,pull.y)>18){ const t=target(pull); ctx.fillStyle="rgba(255,255,255,.85)";
+      for(let i=1;i<14;i++){ const u=i/14, q=bez(pouch,t,u); ctx.globalAlpha=1-u*.6; ctx.beginPath(); ctx.arc(q.x,q.y,Math.max(1.4,4*(1-u)),0,7); ctx.fill(); } ctx.globalAlpha=1; } }
+  function bez(a,b,u){ const c={x:(a.x+b.x)/2,y:Math.min(a.y,b.y)-Math.abs(a.y-b.y)*.55-60}; return {x:(1-u)*(1-u)*a.x+2*(1-u)*u*c.x+u*u*b.x, y:(1-u)*(1-u)*a.y+2*(1-u)*u*c.y+u*u*b.y}; }
+  function sprite(x,y,s,rot){ ctx.save(); ctx.translate(x,y); ctx.rotate(rot); ctx.scale(s,s);
+    if(ammo==="cap"){ ctx.fillStyle="#c9cbd1"; ctx.beginPath(); for(let i=0;i<21;i++){ const a=i/21*Math.PI*2, r=i%2?11:12.5; ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r); } ctx.fill(); ctx.fillStyle="#d43a3a"; ctx.beginPath(); ctx.arc(0,0,8,0,7); ctx.fill(); }
+    else if(ammo==="pizza"){ ctx.fillStyle="#f3b33d"; ctx.beginPath(); ctx.moveTo(-12,-10); ctx.lineTo(14,-6); ctx.lineTo(0,16); ctx.fill(); ctx.fillStyle="#c96a1d"; ctx.fillRect(-13,-12,28,5); ctx.fillStyle="#b3241c"; [[-3,-2],[5,0],[1,7]].forEach(([a,b])=>{ ctx.beginPath(); ctx.arc(a,b,2.6,0,7); ctx.fill(); }); }
+    else if(ammo==="stick"){ ctx.strokeStyle="#d9b27a"; ctx.lineWidth=4; ctx.lineCap="round"; ctx.beginPath(); ctx.moveTo(-18,0); ctx.lineTo(18,0); ctx.stroke(); ctx.fillStyle="#f0d3a3"; ctx.beginPath(); ctx.ellipse(19,0,3.5,2.6,0,0,7); ctx.fill(); }
+    else if(ammo==="pick"){ ctx.fillStyle="#ff4fa3"; ctx.beginPath(); ctx.moveTo(0,13); ctx.quadraticCurveTo(-13,-2,-8,-9); ctx.quadraticCurveTo(0,-14,8,-9); ctx.quadraticCurveTo(13,-2,0,13); ctx.fill(); }
+    else if(ammo==="tomato"){ ctx.fillStyle="#e2382c"; ctx.beginPath(); ctx.arc(0,0,11,0,7); ctx.fill(); ctx.fillStyle="#3c9a3a"; ctx.beginPath(); ctx.ellipse(0,-10,6,2.5,0,0,7); ctx.fill(); }
+    else if(ammo==="pigeon"&&pig.complete){ ctx.drawImage(pig,-22,-18,44,36); }
+    ctx.restore(); }
+  function fire(p){ if(ammo==="pigeon"&&!pigeonAsked){ pigeonAsked=true; say("Coo?… (it doesn’t want to)"); draw(); return; }
+    busy=true; shots++; stat(); const l=L(), a={x:l.x+p.x,y:l.y+p.y}; let t=target(p); const wob=ammo==="pizza"||ammo==="pigeon"?28:0; t.x+=(Math.random()-.5)*wob*2;
+    const t0=performance.now(), ms=ammo==="pizza"||ammo==="pigeon"?950:720;
+    (function f(now){ const u=Math.min(1,(now-t0)/ms); ctx.clearRect(0,0,innerWidth,innerHeight); const q=bez(a,t,u);
+      const rot=ammo==="stick"?u*18:ammo==="pizza"?Math.sin(u*14)*.6:ammo==="cap"?u*10:0; sprite(q.x+(wob?Math.sin(u*12)*wob*.4:0),q.y,1.4*(1-u)+.22,rot);
+      if(u<1) requestAnimationFrame(f); else land(t); })(t0); }
+  function toPano(pt){ return {x:(pt.x-B.ox())/B.S(),y:(pt.y-B.oy())/B.S()}; }
+  const inR=(p,r,pad=0)=>p.x>=r.x-pad&&p.x<=r.x+r.w+pad&&p.y>=r.y-pad&&p.y<=r.y+r.h+pad;
+  const AC=[[557,405],[48,380],[144,684],[560,790],[403,985],[945,990],[1125,481],[1365,668],[945,405]];
+  function splat(p,col){ const d=document.createElement("i"); d.className="sl-splat"; const r=ammo==="tomato"?9:5; Object.assign(d.style,{left:(p.x-r)/B.PW*100+"%",top:(p.y-r)/B.PH*100+"%",width:r*2/B.PW*100+"%",height:r*2/B.PH*100+"%",background:col}); B.pan.appendChild(d); setTimeout(()=>d.remove(),12000); }
+  function land(t,bounced){ const p=toPano(t);
+    if(inR(p,JW,8)){ return hit(bounced); }
+    if(ammo==="pick"&&!bounced){ const c={x:B.ox()+(JW.x+JW.w/2)*B.S(),y:B.oy()+(JW.y+JW.h/2)*B.S()}; const nt={x:t.x+(c.x-t.x)*.45,y:t.y+(c.y-t.y)*.45}; say("Boing!",700); return setTimeout(()=>land(nt,true),380); }
+    const w=B.WIN.find(w=>w.k!=="jar"&&inR(p,w,6)); let msg="";
+    if(w){ msg={cat:"Meatball caught it. Mrs. Delgado says thanks.",pizza:ammo==="pizza"?"He ate it. Of course he ate it.":"He didn’t even look up.",guitar:"Rock on, man!",dance:"They didn’t even notice.",mirror:"She’s busy. Try again."}[w.k]||"Missed!"; }
+    else if(B.DECOY.some(d=>inR(p,d,4))){ msg="HEY! Knock it off up there!"; const i=B.DECOY.findIndex(d=>inR(p,d,4)); const el=[...B.pan.querySelectorAll(".decoy")][i]; el&&el.classList.add("dark"); setTimeout(()=>el&&el.classList.remove("dark"),2400); }
+    else if(AC.some(([x,y])=>Math.hypot(p.x-x,p.y-y)<34)) msg="CLANG!";
+    else { msg=ammo==="tomato"?"Splat.":p.y<160?"Over the roof…":"Missed. Brick."; splat(p,ammo==="tomato"?"rgba(220,40,30,.85)":ammo==="pizza"?"rgba(240,170,60,.8)":"rgba(255,255,255,.5)"); }
+    say(msg,1500); ctx.clearRect(0,0,innerWidth,innerHeight); setTimeout(()=>{ busy=false; newWind(); stat(); draw(); },700); }
+  const CR=["M50 40 L38 28 M50 40 L64 30 M50 40 L46 58","M46 58 L30 66 M46 58 L60 74 M64 30 L78 22","M38 28 L22 34 M60 74 L72 88 M30 66 L18 80","M50 40 L54 12 M22 34 L14 18 M72 88 L84 82","M78 22 L90 34 M18 80 L32 92 M54 12 L40 6"];
+  function hit(bounced){ const dmg=ammo==="stick"?2:1; const from=hits; hits=Math.min(5,hits+dmg);
+    for(let i=from;i<hits;i++){ const pth=document.createElementNS("http://www.w3.org/2000/svg","path"); pth.setAttribute("d",CR[i]); crk.appendChild(pth); }
+    if(ammo==="tomato") splat({x:JW.x+JW.w*(.3+Math.random()*.4),y:JW.y+JW.h*(.3+Math.random()*.4)},"rgba(220,40,30,.85)");
+    inset.animate([{transform:"translateX(0)"},{transform:"translateX(-3px)"},{transform:"translateX(3px)"},{transform:"translateX(0)"}],{duration:260});
+    if(navigator.vibrate) try{ navigator.vibrate(30); }catch(e){}
+    ctx.clearRect(0,0,innerWidth,innerHeight); stat();
+    if(hits<5){ say((bounced?"Lucky bounce! ":"")+(dmg>1?"Double crack! ":"Crack! ")+`${hits}/5`,1300); return setTimeout(()=>{ busy=false; newWind(); stat(); draw(); },800); }
+    say("SMASH!",1200); inset.querySelector("img").src="img/binoc/jill-win-broke.webp"; crk.innerHTML="";
+    window.MSSecret&&window.MSSecret("jill"); if(shots<=5) window.MSSecret&&window.MSSecret("jill5");
+    setTimeout(cyoa,1300); }
+  // ---- choose how she gets over
+  const OPTS=[["zip","Zip-line","She ties her curtains into a rope. You fire it across, she rides a coat hanger down."],["pigeon","Pigeon express","The roof pigeon flies over and hauls her back. Barely."],["plank","Plank walk","The band shoves a plank across. Keep her balanced."],["escape","Fire-escape dash","Down the fire escape, across the street, dodge the taxi."],["fling","Fling herself","She grabs your trick and slingshots herself over."]];
+  $("sl-opts").innerHTML=OPTS.map(([k,t,d])=>`<button data-o="${k}"><b>${t}</b>${d}</button>`).join("");
+  function cyoa(){ $("sl-cyoa").classList.add("on"); setTimeout(()=>$("sl-opts").querySelector("button").focus({preventScroll:true}),50); }
+  $("sl-opts").addEventListener("click",e=>{ const b=e.target.closest("[data-o]"); if(!b) return; $("sl-cyoa").classList.remove("on"); bx.classList.add("sl-cut"); RUN[b.dataset.o](); });
+  const WO=()=>({x:B.ox()+(JW.x+JW.w/2)*B.S(),y:B.oy()+(JW.y+JW.h*.85)*B.S()}), ROOF=()=>({x:innerWidth/2,y:innerHeight+40});
+  function actor(src,h){ const im=document.createElement("img"); im.src=src; im.className="sl-actor"; im.style.height=h+"px"; sl.appendChild(im); return im; }
+  const place=(el,x,y,s,r=0)=>{ el.style.left=(x-el.offsetWidth/2)+"px"; el.style.top=(y-el.offsetHeight)+"px"; el.style.transform=`scale(${s}) rotate(${r}deg)`; };
+  function tween(ms,fn){ return new Promise(res=>{ const t0=performance.now(); (function f(n){ const u=Math.min(1,(n-t0)/ms); fn(u); if(u<1) requestAnimationFrame(f); else res(); })(t0); }); }
+  const ease=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+  function rope(a,b,sag,col="#e9dcc4",w=2){ ctx.strokeStyle=col; ctx.lineWidth=w; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.quadraticCurveTo((a.x+b.x)/2,(a.y+b.y)/2+sag,b.x,b.y); ctx.stroke(); }
+  const qp=(a,b,sag,u)=>{ const c={x:(a.x+b.x)/2,y:(a.y+b.y)/2+sag}; return {x:(1-u)*(1-u)*a.x+2*(1-u)*u*c.x+u*u*b.x,y:(1-u)*(1-u)*a.y+2*(1-u)*u*c.y+u*u*b.y}; };
+  const BASEH=()=>JW.h*B.S()*.42;
+  const RUN={
+    async zip(){ const a=WO(), b=ROOF(), j=actor("img/binoc/jill.webp",BASEH()); say("Rope’s across!",1200);
+      await tween(900,u=>{ ctx.clearRect(0,0,innerWidth,innerHeight); rope(b,{x:b.x+(a.x-b.x)*u,y:b.y+(a.y-b.y)*u},0); });
+      await tween(2300,u=>{ const e=ease(u), p=qp(a,b,60,e); ctx.clearRect(0,0,innerWidth,innerHeight); rope(a,b,60); place(j,p.x,p.y+BASEH()*.95,1+e*4,Math.sin(u*20)*6); });
+      j.remove(); done("Zip! Jill’s on the roof."); },
+    async pigeon(){ const a=WO(), b=ROOF(), p=actor("img/pigeon2.webp",60), j=actor("img/binoc/jill.webp",BASEH()); j.style.opacity=0; say("Coo!",900);
+      await tween(1400,u=>{ const e=ease(u); place(p,b.x+(a.x-b.x)*e,b.y+(a.y-b.y)*e-Math.sin(e*Math.PI)*80,1.6-e*1.2,Math.sin(u*30)*10); });
+      j.style.opacity=1;
+      await tween(2600,u=>{ const e=ease(u), x=a.x+(b.x-a.x)*e, y=a.y+(b.y-a.y)*e-Math.sin(e*Math.PI)*120+Math.sin(u*26)*10, s=.4+e*3.6; place(p,x,y,s,Math.sin(u*30)*12); place(j,x,y+BASEH()*s*.9+18*s,s*.95,Math.sin(u*14)*8); });
+      p.remove(); j.remove(); done("Special delivery: one Jill."); },
+    plank(){ return new Promise(res=>{ const a=WO(), b=ROOF(), j=actor("img/binoc/jill.webp",BASEH()); say("Keep her balanced!",1500);
+      const bal=$("sl-bal"), nd=$("sl-needle"); bal.classList.add("on"); let tilt=0, vel=0, prog=0, last=performance.now(), alive=true, push=0;
+      const lean=d=>{ push+=d*.9; }; const bl=()=>lean(-1), br=()=>lean(1); $("sl-bl").onclick=bl; $("sl-br").onclick=br;
+      const key=e=>{ if(e.key==="ArrowLeft") bl(); if(e.key==="ArrowRight") br(); }; addEventListener("keydown",key);
+      (function f(n){ if(!alive) return; const dt=Math.min(.05,(n-last)/1000); last=n;
+        vel+=((Math.random()-.5)*1.7+tilt*1.0)*dt+push*.55; push=0; vel*=.96; tilt+=vel*dt*2; prog+=dt/6;
+        if(Math.abs(tilt)>1){ say("Whoa! Back to the start.",1300); tilt=0; vel=0; prog=Math.max(0,prog-.35); }
+        nd.style.left=(50+tilt*50)+"%"; const e=Math.min(1,prog), p={x:a.x+(b.x-a.x)*e,y:a.y+(b.y-a.y)*e};
+        ctx.clearRect(0,0,innerWidth,innerHeight); ctx.strokeStyle="#8a5a2b"; ctx.lineWidth=Math.max(4,10*(.3+e)); ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        place(j,p.x,p.y,1+e*4,tilt*28);
+        if(prog>=1){ alive=false; bal.classList.remove("on"); removeEventListener("keydown",key); j.remove(); done("She made it across!"); res(); return; }
+        requestAnimationFrame(f); })(last); }); },
+    async escape(){ const a=WO(), j=actor("img/binoc/jill.webp",BASEH()); const S=B.S(), X=x=>B.ox()+x*S, Y=y=>B.oy()+y*S;
+      const path=[[JW.x+JW.w/2,JW.y+JW.h],[JW.x-10,JW.y+JW.h+70],[JW.x+40,JW.y+JW.h+170],[JW.x-10,JW.y+JW.h+270],[JW.x+40,JW.y+JW.h+370],[JW.x,B.PH+30]];
+      say("Down the fire escape!",1300);
+      for(let i=1;i<path.length;i++){ const p0=path[i-1],p1=path[i]; await tween(420,u=>place(j,X(p0[0]+(p1[0]-p0[0])*u),Y(p0[1]+(p1[1]-p0[1])*u),1,Math.sin(u*Math.PI*4)*8)); }
+      const street=innerHeight*.86, taxi=document.createElement("div"); taxi.className="sl-actor"; taxi.innerHTML=`<svg width="190" height="80" viewBox="0 0 190 80"><rect x="10" y="30" width="170" height="34" rx="10" fill="#f4c21b"/><path d="M45 30 L62 8 H128 L146 30Z" fill="#f4c21b"/><path d="M58 28 L70 13 H95 V28Z M100 28 V13 H124 L135 28Z" fill="#9fd3ef"/><rect x="80" y="2" width="30" height="8" rx="2" fill="#222"/><circle cx="48" cy="66" r="12" fill="#222"/><circle cx="146" cy="66" r="12" fill="#222"/><rect x="10" y="44" width="170" height="5" fill="#222" opacity=".4"/></svg>`; sl.appendChild(taxi);
+      say("TAXI!",900);
+      await tween(1700,u=>{ const jx=X(JW.x)+(innerWidth*.5-X(JW.x))*u, jy=street-(u>.4&&u<.68?Math.sin((u-.4)/.28*Math.PI)*90:0); place(j,jx,jy,2.2,0); place(taxi,innerWidth*1.2-u*innerWidth*1.6,street+20,1.4,0); });
+      taxi.remove(); await tween(700,u=>place(j,innerWidth/2,street+u*innerHeight*.4,2.2+u*3,0)); j.remove(); done("She’s at our roof door!"); },
+    async fling(){ const a=WO(), b={x:innerWidth/2,y:innerHeight*.75}, j=actor("img/binoc/jill.webp",BASEH()); say("3… 2… 1…",1100); await tween(1000,u=>place(j,a.x,a.y,1,-u*14));
+      say("Wheeee!",1400); await tween(1500,u=>{ const e=ease(u); const p={x:a.x+(b.x-a.x)*e,y:a.y+(b.y-a.y)*e-Math.sin(e*Math.PI)*innerHeight*.35}; place(j,p.x,p.y,1+e*9,u*720); });
+      bx.animate([{background:"#fff"},{background:"#020205"}],{duration:450}); j.remove(); done("Bullseye. She landed on the lounge couch."); }
+  };
+  function done(msg){ ctx.clearRect(0,0,innerWidth,innerHeight); freedJ=true; try{ localStorage.setItem("ms-jill-free","1"); }catch(e){}
+    window.MSJillFree&&window.MSJillFree(); B.setJillBroke(); say(msg+" She’s in the Smile Lounge.",3200);
+    setTimeout(()=>{ exitSling(); busy=false; canSling(); },2600); }
+  if(freedJ){ B.setJillBroke(); setTimeout(()=>window.MSJillFree&&window.MSJillFree(true),1200); }
+  window.__sl={state:()=>({hits,shots,wind,freedJ,mode:bx.classList.contains("sling")}),force:(k)=>RUN[k](),hit:()=>hit(false)};
 })();
 </script>
 
