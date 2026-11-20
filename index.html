@@ -155,7 +155,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .bm .r{left:0;top:0;width:100%;height:100%}.bm .n{opacity:0;mix-blend-mode:screen}
 .bm-rf{position:absolute;pointer-events:none;opacity:.3;filter:blur(1.5px);transform:scaleY(-1);-webkit-mask-image:linear-gradient(to top,#000,transparent 55%);mask-image:linear-gradient(to top,#000,transparent 55%);visibility:hidden}
 .bm-rf img{position:absolute;inset:0;width:100%;height:100%}
-.bm-kit{position:absolute;pointer-events:none;visibility:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}.bm-kit.on{pointer-events:auto}.bm-kit.hit{animation:kithit .12s}@keyframes kithit{0%{translate:0 1.5px}100%{translate:0 0}}.bm-kit img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;user-select:none;-webkit-user-drag:none;opacity:0}.bm-kit img.cur{opacity:1}
+.bm-kit{position:absolute;pointer-events:none;visibility:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}.bm-kit.on{pointer-events:none}.bm-kit .kit-hit{position:absolute;pointer-events:none}.bm-kit.on .kit-hit{pointer-events:auto;cursor:pointer}.bm-kit.hit{animation:kithit .12s}@keyframes kithit{0%{translate:0 1.5px}100%{translate:0 0}}.bm-kit img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;user-select:none;-webkit-user-drag:none;opacity:0}.bm-kit img.cur{opacity:1}
 .gagfx{position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden}.gagfx canvas{position:absolute;inset:0;width:100%;height:100%}.gagfx img{position:absolute;left:0;top:0;transform-origin:50% 50%;will-change:transform}
 .sign .zapM{animation:zapM .07s steps(2) infinite!important}@keyframes zapM{0%{opacity:1;filter:brightness(2.2)}100%{opacity:.15;text-shadow:none}}
 .sign .gone,.pill.gone{visibility:hidden}.pill.flying{pointer-events:none;transition:none}
@@ -277,6 +277,9 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <div class="fanwall" id="fanwall" aria-label="Fan wall"></div>
     <button class="spray" id="spray" aria-label="Spray your name on the wall"><svg viewBox="0 0 24 40" aria-hidden="true"><rect x="9" y="1" width="6" height="5" rx="1" fill="#ddd"/><rect x="10.5" y="0" width="3" height="2" fill="#ff3d7f"/><rect x="4" y="6" width="16" height="32" rx="4" fill="#ff3d7f"/><rect x="4" y="15" width="16" height="9" fill="#14040b"/><text x="12" y="22" font-size="6" text-anchor="middle" fill="#ffd36a" font-family="monospace">MS</text><ellipse cx="12" cy="37" rx="8" ry="2" fill="rgba(0,0,0,.4)"/></svg></button>
     <div class="jar-glow" id="jar-glow" aria-hidden="true"></div><div class="jar-help" id="jar-help" aria-hidden="true">help!</div>
+    <button class="pk girl-jar" data-girl="megan" style="left:1272px;top:504px;width:37px;height:60px;background-image:url(img/girls/megan-jar.webp)" aria-label="A jar labeled MEGAN. Someone is trapped inside"></button>
+    <button class="pk girl-jar" data-girl="gianna" style="left:152px;top:446px;width:37px;height:60px;background-image:url(img/girls/gianna-jar.webp)" aria-label="A jar labeled GIANNA. Someone is trapped inside"></button>
+    <button class="pk girl-jar" data-girl="sophia" style="left:1172px;top:432px;width:37px;height:60px;background-image:url(img/girls/sophia-jar.webp)" aria-label="A jar labeled SOPHIA. Someone is trapped inside"></button>
     <button class="pk" id="pk-jar" style="left:733px;top:434px;width:37px;height:60px" aria-label="A jar on the ledge. Someone is trapped inside. Open it up close" hidden></button>
     <button class="pk" id="pk-cooler" style="left:1225px;top:550px;width:140px;height:90px" aria-label="Cooler"></button>
     <div id="roof-glass" aria-hidden="true"></div>
@@ -519,6 +522,8 @@ body.in-room .mini{display:none}
 @keyframes graySay{0%{opacity:0;margin-top:8px}12%{opacity:1;margin-top:0}80%{opacity:1}100%{opacity:0}}
 .lg-hot.lever.nudge{animation:lvNudge .9s ease-in-out 2}
 @keyframes lvNudge{50%{box-shadow:0 0 0 4px var(--cyan),0 0 30px var(--cyan)}}
+.girl-jar{background:50% 100%/contain no-repeat;filter:brightness(.85) saturate(.95) drop-shadow(0 0 5px rgba(255,190,90,.3));transform-origin:50% 100%;animation:jarwob 7s ease-in-out infinite}
+.girl-jar.smash{animation:jarsmash .5s forwards}
 #pk-jar{background:url(img/grace/jar.webp?v=2) 50% 100%/contain no-repeat;filter:brightness(.82) saturate(.9) drop-shadow(0 0 6px rgba(255,190,90,.35));transform-origin:50% 100%;animation:jarwob 6s ease-in-out infinite}
 #pk-jar:hover,#pk-jar:focus-visible{filter:brightness(1.05) drop-shadow(0 0 10px rgba(255,190,90,.8))}
 @keyframes jarwob{0%,86%,100%{transform:rotate(0)}89%{transform:rotate(-4deg)}92%{transform:rotate(4deg)}95%{transform:rotate(-2deg)}}
@@ -1656,16 +1661,18 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     [["s5-1", "One more hit!"]],
     [["free-1", "I'm free! Meet me on the dance floor!"]]
   ].map(st=>st.map(([n,t])=>({src:"img/grace/ledge-"+n+".webp",say:t})));
-  const jxPick=s=>{ const a=JX_SET[s]; return a[Math.floor(Math.random()*a.length)]; };
+  /* placeholder jar girls (neon silhouettes) share the same break-out */
+  const SETS={grace:JX_SET,...{"megan": [[{"src": "img/girls/megan-ledge-s0-1.webp", "say": "I'm not stuck. I'm… resting."}, {"src": "img/girls/megan-ledge-s0-2.webp", "say": "Room 217? Never heard of it."}], [{"src": "img/girls/megan-ledge-s1-1.webp", "say": "That wasn't me, I swear!"}, {"src": "img/girls/megan-ledge-s1-2.webp", "say": "Okay, maybe I'm a little stuck."}], [{"src": "img/girls/megan-ledge-s2-1.webp", "say": "Harder! I'll pay you back. Probably."}, {"src": "img/girls/megan-ledge-s2-2.webp", "say": "Come on, break it!"}], [{"src": "img/girls/megan-ledge-s3-1.webp", "say": "Watch the glass!"}, {"src": "img/girls/megan-ledge-s3-2.webp", "say": "Easy, easy!"}], [{"src": "img/girls/megan-ledge-s4-1.webp", "say": "You're doing amazing. Not lying."}, {"src": "img/girls/megan-ledge-s4-2.webp", "say": "Almost there!"}], [{"src": "img/girls/megan-ledge-s5-1.webp", "say": "One more. Cross my heart."}, {"src": "img/girls/megan-ledge-s5-2.webp", "say": "Last one, promise!"}], [{"src": "img/girls/megan-ledge-free-1.webp", "say": "Free! Drinks are on me. (They're not.)"}]], "gianna": [[{"src": "img/girls/gianna-ledge-s0-1.webp", "say": "How long have I been in here?"}, {"src": "img/girls/gianna-ledge-s0-2.webp", "say": "Tick tock… anyone?"}], [{"src": "img/girls/gianna-ledge-s1-1.webp", "say": "Finally! I was counting the seconds."}, {"src": "img/girls/gianna-ledge-s1-2.webp", "say": "It's about time!"}], [{"src": "img/girls/gianna-ledge-s2-1.webp", "say": "Faster! We're losing time!"}, {"src": "img/girls/gianna-ledge-s2-2.webp", "say": "Come on, hurry!"}], [{"src": "img/girls/gianna-ledge-s3-1.webp", "say": "Careful, careful!"}, {"src": "img/girls/gianna-ledge-s3-2.webp", "say": "Watch my watch!"}], [{"src": "img/girls/gianna-ledge-s4-1.webp", "say": "Just a matter of time now!"}, {"src": "img/girls/gianna-ledge-s4-2.webp", "say": "Keep going!"}], [{"src": "img/girls/gianna-ledge-s5-1.webp", "say": "One more! Right on time."}, {"src": "img/girls/gianna-ledge-s5-2.webp", "say": "Now!"}], [{"src": "img/girls/gianna-ledge-free-1.webp", "say": "Free at last. Let's not waste a minute!"}]], "sophia": [[{"src": "img/girls/sophia-ledge-s0-1.webp", "say": "Get me back to the band!"}, {"src": "img/girls/sophia-ledge-s0-2.webp", "say": "Psst! Over here!"}], [{"src": "img/girls/sophia-ledge-s1-1.webp", "say": "Whoa! Was that you?"}, {"src": "img/girls/sophia-ledge-s1-2.webp", "say": "It cracked!"}], [{"src": "img/girls/sophia-ledge-s2-1.webp", "say": "Yes! Again!"}, {"src": "img/girls/sophia-ledge-s2-2.webp", "say": "Hit it!"}], [{"src": "img/girls/sophia-ledge-s3-1.webp", "say": "Eek, that was close!"}, {"src": "img/girls/sophia-ledge-s3-2.webp", "say": "Mind my hair!"}], [{"src": "img/girls/sophia-ledge-s4-1.webp", "say": "I can almost feel the breeze!"}, {"src": "img/girls/sophia-ledge-s4-2.webp", "say": "Keep going!"}], [{"src": "img/girls/sophia-ledge-s5-1.webp", "say": "One more and I'm gone!"}, {"src": "img/girls/sophia-ledge-s5-2.webp", "say": "Do it!"}], [{"src": "img/girls/sophia-ledge-free-1.webp", "say": "Back where I belong! Lounge, here I come!"}]]}}, GIRLS={"megan": {"name": "Megan", "col": "#ff3b48"}, "gianna": {"name": "Gianna", "col": "#2cff9a"}, "sophia": {"name": "Sophia", "col": "#ff963c"}}, FREED=new Set(); let GIRL="grace", CJ=jar;
+  const jxPick=s=>{ const a=SETS[GIRL][s]; return a[Math.floor(Math.random()*a.length)]; };
   /* each crack state loops through its shots like animation frames */
   let jxCyc=0, jxFront=0;
-  const jxLoad=s=>{ (JX_SET[s]||[]).forEach(v=>{ const i=new Image(); i.src=v.src; }); };
+  const jxLoad=s=>{ (SETS[GIRL][s]||[]).forEach(v=>{ const i=new Image(); i.src=v.src; }); };
   function jxFrame(src){ const im=[$("jx-img"),$("jx-img2")], back=im[1-jxFront], front=im[jxFront];
     const swap=()=>{ back.style.zIndex=1; front.style.zIndex=0; back.style.transition=""; back.style.opacity=1; jxFront=1-jxFront;
       clearTimeout(jxFrame.t); jxFrame.t=setTimeout(()=>{ front.style.transition="none"; front.style.opacity=0; },650); };
     back.style.transition="none"; back.style.opacity=0; void back.offsetWidth;
     back.src=src; (back.decode?back.decode():Promise.resolve()).then(swap,swap); }
-  function jxShow(s){ clearInterval(jxCyc); const a=JX_SET[s].slice().sort(()=>Math.random()-.5); let i=0;
+  function jxShow(s){ clearInterval(jxCyc); const a=SETS[GIRL][s].slice().sort(()=>Math.random()-.5); let i=0;
     jxFrame(a[0].src); jxSay(a[0].say); jxLoad(s+1);
     if(a.length>1&&!still) jxCyc=setInterval(()=>{ i=(i+1)%a.length; jxFrame(a[i].src); },s===6?1300:1500); }
   /* roof camera pushes in on the jar sitting on the ledge */
@@ -1674,7 +1681,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     if(on) rzOrig={tf:st.style.transform, to:st.style.transformOrigin};
     const O=rzOrig, fin=()=>{ if(!on){ st.style.transform=O?O.tf:""; st.style.transformOrigin=O?O.to:""; rzOrig=null; } done&&done(); };
     if(!O){ fin(); return; } if(still) ms=1;
-    const r=jar.getBoundingClientRect(), P={x:r.left+r.width/2,y:r.top+r.height*.55}, C={x:innerWidth/2,y:innerHeight*.47}, K=Math.max(1.5,Math.min(8,innerHeight*.5/Math.max(10,r.height)));
+    const r=CJ.getBoundingClientRect(), P={x:r.left+r.width/2,y:r.top+r.height*.55}, C={x:innerWidth/2,y:innerHeight*.47}, K=Math.max(1.5,Math.min(8,innerHeight*.5/Math.max(10,r.height)));
     if(on) roofZoom.v=roofZoom.next||{P,C,K}; roofZoom.next=null; const V=roofZoom.v||{P,C,K};
     st.style.transformOrigin=`${V.P.x}px ${V.P.y}px`;
     const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2, t0=performance.now();
@@ -1682,11 +1689,11 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       st.style.transform=`translate(${(V.C.x-V.P.x)*e}px,${(V.C.y-V.P.y)*e}px) scale(${1+(V.K-1)*e})`;
       if(t<1) requestAnimationFrame(f); else fin(); })(t0); }
   /* free: tiny Grace dances along the roof from the jar into the lounge */
-  function walkToLounge(done){ const host=$("play"); if(!host||still){ done&&done(); return; }
+  function walkToLounge(done,frames,start){ frames=frames||FR; const host=$("play"); if(!host||still){ done&&done(); return; }
     const g=document.createElement("img"); g.className="gr-walk"; g.alt=""; host.appendChild(g);
-    const A={x:752,y:494,h:44}, B={x:1430,y:700,h:62}, ms=4600, t0=performance.now(); let fi=0, last=0;
+    const A={x:(start||{}).x||752,y:(start||{}).y||494,h:44}, B={x:1430,y:700,h:62}, ms=4600, t0=performance.now(); let fi=0, last=0;
     (function f(now){ const t=Math.min(1,(now-t0)/ms), e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
-      if(now-last>190){ fi=(fi+1)%8; last=now; g.src=FR[fi]; if(t<.9){ const d=document.createElement('i'); d.className='gr-trail'; d.style.left=(A.x+(B.x-A.x)*e)+'px'; d.style.top=(A.y+(B.y-A.y)*e-6)+'px'; host.appendChild(d); requestAnimationFrame(()=>{ d.style.transform=`translate(${(Math.random()-.5)*20}px,${-14-Math.random()*16}px) scale(.3)`; d.style.opacity=0; }); setTimeout(()=>d.remove(),1100); } }
+      if(now-last>190){ fi=(fi+1)%8; last=now; g.src=frames[fi]; if(t<.9){ const d=document.createElement('i'); d.className='gr-trail'; d.style.left=(A.x+(B.x-A.x)*e)+'px'; d.style.top=(A.y+(B.y-A.y)*e-6)+'px'; host.appendChild(d); requestAnimationFrame(()=>{ d.style.transform=`translate(${(Math.random()-.5)*20}px,${-14-Math.random()*16}px) scale(.3)`; d.style.opacity=0; }); setTimeout(()=>d.remove(),1100); } }
       const x=A.x+(B.x-A.x)*e, y=A.y+(B.y-A.y)*e-Math.abs(Math.sin(t*Math.PI*9))*3, h=A.h+(B.h-A.h)*e, w=h*W[fi]/600;
       Object.assign(g.style,{height:h+"px",left:(x-w*AX[fi])+"px",top:(y-h)+"px",opacity:t>.9?(1-t)/.1:1,transform:t>.9?`scale(${1-(t-.9)*4})`:""});
       if(t<1) requestAnimationFrame(f); else { g.remove(); done&&done(); } })(t0); }
@@ -1703,7 +1710,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     jxCr.appendChild(g); }
   function jxSay(t){ const b=$("jx-say"); b.textContent=t; b.classList.remove("on"); void b.offsetWidth; b.classList.add("on"); }
   /* push in: the roof camera moves in on the jar, and the ledge shot fades in over it, jar on jar */
-  function pushIn(){ const r=jar.getBoundingClientRect(), stg=JX.querySelector(".jx-stage"), bgL=JX.querySelector(".jx-bg"), st=$("stage");
+  function pushIn(){ const r=CJ.getBoundingClientRect(), stg=JX.querySelector(".jx-stage"), bgL=JX.querySelector(".jx-bg"), st=$("stage");
     JX.hidden=false; jxShow(0); stg.style.transition="none"; stg.style.transform="none"; JX.classList.add("open","pushing"); JX.style.transition="none"; JX.style.opacity=1;
     const J=jxCr.getBoundingClientRect(), Cj={x:J.left+J.width/2,y:J.top+J.height/2}, Pr={x:r.left+r.width/2,y:r.top+r.height/2};
     const s0=Math.max(.04,Math.min(1,r.height/J.height)), K=1/s0, ms=still?1:1300;
@@ -1719,7 +1726,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     (function f(now){ const t=Math.min(1,(now-t0)/ms); set(ease(t)); if(t<1) requestAnimationFrame(f); else {
       stg.style.transition=stg.style.transform=stg.style.opacity=stg.style.transformOrigin=""; JX.style.background=JX.style.transition=JX.style.opacity=""; bgL.style.opacity="";
       JX.classList.remove("pushing"); jxBusy=false; jxBox.focus({preventScroll:true}); } })(t0); }
-  function openJar(){ if(freed||rzOrig||JX.classList.contains("open")) return; window.MSAC&&window.MSAC(); hits=0; jxBusy=false; jxCr.innerHTML=""; $("jx-meter").style.width="0%";
+  function openJar(g,el){ GIRL=g||"grace"; CJ=el||jar; if((GIRL==="grace"&&freed)||FREED.has(GIRL)||rzOrig||JX.classList.contains("open")) return; window.MSAC&&window.MSAC(); hits=0; jxBusy=false; jxCr.innerHTML=""; $("jx-meter").style.width="0%";
     JX.classList.remove("broke"); jxLoad(0); jxLoad(1); jxBusy=true; document.body.classList.add("jx-zoom"); document.documentElement.classList.add("jx-zoom"); whenStill(pushIn); document.body.classList.add("jx-on");
     $("jx-tip").textContent="Tap the glass to break her out"; }
   // phones pan the roof toward a tapped thing: wait until it settles before the camera pushes in
@@ -1731,13 +1738,16 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   $("jz").addEventListener("click",e=>{ if(e.target.id==="jz-x"){ e.stopPropagation(); jzBack(); return; } jzGo(); });
   $("jz").addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); jzGo(); } if(e.key==="Escape") jzBack(); });
   function closeJar(){ clearInterval(jxCyc); JX.classList.remove("open"); document.body.classList.remove("jx-on"); setTimeout(()=>{ if(!JX.classList.contains("open")) JX.hidden=true; roofZoom(false,700,()=>{ document.body.classList.remove("jx-zoom"); document.documentElement.classList.remove("jx-zoom"); }); },350); }
-  function hit(x,y){ if(jxBusy||freed) return; hits++; const k=hits; tink(k); crackAt(x,y,k);
+  function hit(x,y){ if(jxBusy||FREED.has(GIRL)||(GIRL==="grace"&&freed)) return; hits++; const k=hits; tink(k); crackAt(x,y,k);
     jxBox.classList.remove("hit"); void jxBox.offsetWidth; jxBox.classList.add("hit"); $("jx-meter").style.width=(k/HITS*100)+"%";
     if(navigator.vibrate) try{ navigator.vibrate(k<HITS?18:[30,40,60]); }catch(e){}
     if(k<HITS){ jxShow(k); $("jx-tip").textContent=`${HITS-k} more`; return; }
     jxBusy=true; $("jx-tip").textContent="";
     setTimeout(()=>{ shatter(); JX.classList.add("broke"); jxShards(); setTimeout(()=>jxShow(6),160);
-      setTimeout(()=>{ closeJar(); freeGrace(); },2800); },120); }
+      setTimeout(()=>{ closeJar(); if(GIRL==="grace") freeGrace(); else freeGirl(GIRL,CJ); },2800); },120); }
+  function freeGirl(g,el){ FREED.add(g); window.MSSecret&&window.MSSecret(g); el.classList.add("smash"); setTimeout(()=>{ el.hidden=true; },460);
+    const sx=parseFloat(el.style.left)+18, sy=parseFloat(el.style.top)+60, fr=[1,2,3,4,5,6,7,8].map(i=>`img/girls/${g}-d${i}.webp`);
+    setTimeout(()=>walkToLounge(null,fr,{x:sx,y:sy}),1200); }
   function jxShards(){ if(still) return; const r=jxBox.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height*.55;
     for(let i=0;i<40;i++){ const s=document.createElement("i"), a=Math.random()*Math.PI*2, d=120+Math.random()*Math.max(innerWidth,innerHeight)*.55, big=Math.random()<.55, w=big?8+Math.random()*18:4;
       s.className="jx-shard"; s.style.cssText=`left:${cx+(Math.random()-.5)*r.width*.6}px;top:${cy+(Math.random()-.5)*r.height*.6}px;width:${w}px;height:${big?w*(.4+Math.random()*.8):4}px;${big?"":`background:${["#ff46c8","#46dcff","#ffd36a"][i%3]};border-radius:4px;`}`;
@@ -1746,7 +1756,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   jxBox.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); hit(35+Math.random()*30,40+Math.random()*35); } });
   $("jx-x").addEventListener("click",closeJar); JX.addEventListener("pointerdown",e=>{ if(e.target===JX) closeJar(); });
   addEventListener("keydown",e=>{ if(e.key==="Escape"&&JX.classList.contains("open")&&!jxBusy) closeJar(); });
-  jar.addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); if(freed) return; openJar(); });
+  jar.addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); if(freed) return; openJar("grace",jar); });
+  document.querySelectorAll(".girl-jar").forEach(b=>b.addEventListener("click",e=>{ e.preventDefault(); e.stopPropagation(); openJar(b.dataset.girl,b); }));
   // lounge
   let pk=null, fi=-1, lastSwap=0;
   function pickPose(){ const k=Object.keys(POSES); pk=k[Math.floor(Math.random()*k.length)]; const b=POSES[pk];
@@ -2300,16 +2311,16 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const hunt=$("hunt"), box=$("tags");
     found=found.filter(n=>TAGS.some(t=>t[0]===n));
     /* roof secrets: Grace, the 5 tags, the band, the dance floor */
-    const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"]];
+    const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["megan","Free Megan","Another jar… near the drinks"],["gianna","Free Gianna","A jar up on the old AC unit"],["sophia","Free Sophia","A jar on the ledge past the drums"],["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"]];
     const got=new Set();
     const showHunt=()=>{ hunt.innerHTML=`★ <i class="hr">Roof </i>secrets <b>${got.size}/${SEC.length}</b>`;
       $("sec-list").innerHTML=SEC.map(([k,a,h])=>`<li class="${got.has(k)?"got":""}"><i>${got.has(k)?"✓":"?"}</i><span>${got.has(k)?a:h}</span></li>`).join(""); };
     { const sp=document.querySelector(".top span"); if(sp) sp.insertBefore(hunt,sp.firstChild); }
-    const NOTE={grace:"Grace is free! She’s headed down to the lounge.",band:"You messed with the band.",floor:"The dance floor is lit."};
+    const NOTE={grace:"Grace is free! She’s headed down to the lounge.",megan:"Megan is free! (She says she was never stuck.)",gianna:"Gianna is free! Right on time.",sophia:"Sophia is free! She’s getting back to the lounge.",band:"You messed with the band.",floor:"The dance floor is lit."};
     let noteT=0; const note=(t)=>{ const n=$("sec-note"); n.innerHTML=`<b>★ Secret found · ${got.size}/${SEC.length}</b>${t}`; n.classList.add("on"); clearTimeout(noteT); noteT=setTimeout(()=>n.classList.remove("on"),3800); };
     window.MSSecret=k=>{ if(got.has(k)||!SEC.some(s=>s[0]===k)) return; got.add(k); showHunt(); hunt.classList.remove("pop"); void hunt.offsetWidth; hunt.classList.add("pop");
       note(k.startsWith("tag:")?`Song tag: “${k.slice(4)}”`:NOTE[k]);
-      if(got.size===SEC.length) setTimeout(()=>note("All 8 roof secrets found. Respect."),4200); };
+      if(got.size===SEC.length) setTimeout(()=>note(`All ${SEC.length} roof secrets found. Respect.`),4200); };
     hunt.addEventListener("click",e=>{ e.stopPropagation(); const pp=$("sec-pop"); pp.hidden=!pp.hidden; });
     addEventListener("pointerdown",e=>{ const pp=$("sec-pop"); if(!pp.hidden&&!e.target.closest("#sec-pop,#hunt")) pp.hidden=true; });
     const hitTag=(name,b,where,x,y,w,h)=>{ const g=document.createElement("div"); g.className="tag-found"; Object.assign(g.style,{left:x+"px",top:y+"px",width:w+"px",height:h+"px"}); where.appendChild(g); setTimeout(()=>g.remove(),1500);
@@ -2864,6 +2875,8 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     if(S){ kitEl=document.createElement("div"); kitEl.className="bm-kit"; kitEl.setAttribute("role","button"); kitEl.setAttribute("aria-label",cfg.name+" at the kit (tap to hear him play)");
       Object.assign(kitEl.style,{left:S.x+"px",top:S.y+"px",width:S.w+"px",height:S.h+"px",zIndex:S.z});
       kimg=S.frames.map(f=>{ const i=document.createElement("img"); i.alt=""; i.src=`img/band/${S.pre}${f}.webp?v=4`; kitEl.appendChild(i); return i; });
+      // only Jacob himself is tappable, not the whole kit picture
+      const hit=document.createElement("i"); hit.className="kit-hit"; Object.assign(hit.style,{left:(S.hit?S.hit[0]:S.w*.41)+"px",top:(S.hit?S.hit[1]:S.h*.17)+"px",width:(S.hit?S.hit[2]:S.w*.3)+"px",height:(S.hit?S.hit[3]:S.h*.46)+"px"}); kitEl.appendChild(hit);
       play.insertBefore(kitEl,cv); }
     const frame=f=>kimg.forEach((im,i)=>im.classList.toggle("cur",S.frames[i]===f));
     const has=f=>S.frames.includes(f);
@@ -2965,7 +2978,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     ar:{1:0.6404,2:0.6635,3:0.5712,4:0.5865,5:0.5096,6:0.5,7:0.5308,8:0.4615,9:0.6538,10:0.5173,g1:.6096,g2:.5769},f:{2:.9,3:.97,9:1.36,g1:1.04,g2:1.1}});
   // Jacob: drummer, shots v2/v3 from his master sheet (face-locked)
   const JACOB=Member({name:"Jacob",pre:"jb",v:"?v=4",gag:"jacob",sound:"drums",anim:"zz",flash:"#ff6ae6",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:2700,scale:.98,
-    seat:{pre:"jbk",frames:[1,2,3,4],idle:1,x:778,y:309,w:433,h:338,z:74,p:.5,start:true},
+    seat:{pre:"jbk",frames:[1,2,3,4],idle:1,x:778,y:309,w:433,h:338,z:74,p:.5,start:true,hit:[182,58,118,150]},
     ar:{1:.4673,2:.3846,3:.2962,4:.3558,5:.5269,6:.3346,7:.3615,8:.6077,9:.6154,10:.3423,g1:.5115,g2:.4269},f:{1:1.12,7:1.14,8:.68,9:1.06,10:1.08,g1:1,g2:1.29}});
   // every so often one of them pulls a stunt; ?gag=pat|jordan|jacob runs one right away
   const CREW={pat:PAT,jordan:JORDAN,jacob:JACOB}; window.MSGag=n=>CREW[n]&&CREW[n].gag();
