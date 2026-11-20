@@ -3246,7 +3246,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
   ];
   const DECOY=[{x:240,y:475,w:57,h:115},{x:20,y:475,w:55,h:115},{x:1085,y:760,w:60,h:130},{x:652,y:878,w:58,h:122}];
   const pan=$("bx-pan"), lens=$("bx-lens"), scene=$("bx-scene");
-  let seen=new Set(); try{ seen=new Set(JSON.parse(localStorage.getItem("ms-bx-seen")||"[]")); }catch(e){}
+  let seen=new Set(); try{ localStorage.removeItem("ms-bx-seen"); }catch(e){} /* like the rest of the roof: a refresh starts the building over */
   const save=()=>{ try{ localStorage.setItem("ms-bx-seen",JSON.stringify([...seen])); }catch(e){} };
   WIN.forEach((w,i)=>{ const b=document.createElement("button"); b.className="bx-win"+(seen.has(w.k)?" seen":""); b.dataset.k=w.k; b.setAttribute("aria-label","Lit window "+(i+1));
     Object.assign(b.style,{left:w.x/PW*100+"%",top:w.y/PH*100+"%",width:w.w/PW*100+"%",height:w.h/PH*100+"%"}); b.style.setProperty("--d",(i*.47)+"s"); pan.appendChild(b); w.el=b; });
@@ -3367,7 +3367,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
   inset.innerHTML=`<img data-src="img/binoc/jill-win.webp" alt=""><svg viewBox="0 0 100 100" preserveAspectRatio="none"></svg>`; inset.style.display="none"; B.pan.appendChild(inset);
   const crk=inset.querySelector("svg");
   let hits=0, shots=0, wind=0, busy=false, freedJ=false;
-  try{ freedJ=localStorage.getItem("ms-jill-free")==="1"; }catch(e){}
+  try{ localStorage.removeItem("ms-jill-free"); }catch(e){}
   const say=(t,ms=1300)=>{ const m=$("sl-msg"); m.textContent=t; m.classList.add("on"); clearTimeout(say.t); say.t=setTimeout(()=>m.classList.remove("on"),ms); };
   const stat=()=>{ $("sl-hits").textContent=`Hits ${Math.min(hits,5)}/5 · Shots ${shots}`; $("sl-wind").textContent=wind===0?"No wind":`Wind ${wind<0?"←":"→"} ${Math.abs(Math.round(wind/6))}`; };
   const newWind=()=>{ wind=Math.round((Math.random()-.5)*60); };
