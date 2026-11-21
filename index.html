@@ -3670,7 +3670,7 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
     {k:"tags",c:"var(--green)",ic:"tag",t:"Find the song tags",p:"Five Motel Smile song titles are sprayed around the roof. Tap the graffiti.",go:null},
     {k:"lounge",c:"#b07cff",ic:"rec",t:"The Smile Lounge",p:"Dig through the crate, drop the needle, hear the record.",go:()=>click("#lng-sign")},
     {k:"floor",c:"var(--pink)",ic:"floor",t:"Light up the dance floor",p:"Down in the lounge. Flip the switch and see who shows up.",go:()=>click("#lng-sign")},
-    {k:"games",c:"var(--cyan)",ic:"game",t:"Band Games",p:"Load-In, Setlist Shuffle, Bartender Rush… with more on the way.",go:()=>window.MSGames&&window.MSGames.open()},
+    {k:"games",c:"var(--cyan)",ic:"game",t:"Band Games",p:"Seven games: Dance-Off, Load-In, Bartender Rush, Soundcheck, Window Watch and more.",go:()=>window.MSGames&&window.MSGames.open()},
     {k:"arcade",c:"var(--blue)",ic:"game",t:"Game Corner",p:"The arcade by the shack. Every cabinet is a game. Pinball soon.",go:()=>click("#pk-arcade")}
   ];
   const state=()=>{ const g=window.MSGot?window.MSGot():new Set(), tags=[...g].filter(k=>k.startsWith("tag:")).length, nT=window.MSSecList?window.MSSecList().filter(k=>k.startsWith("tag:")).length:5;
@@ -3739,7 +3739,7 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
 /* ===== Band games shell: window.MSGames.register(game), .open(id?) ===== */
 (()=>{
   const $=id=>document.getElementById(id), gm=$("gm"), play=$("gm-play"), hud=$("gm-hud");
-  const GAMES=[], SOON=[["Spot the Difference","Same window, a few seconds apart. What changed?","#b07cff"],["Fill Battle","Jacob plays a fill. Play it back.","#ff6ae6"],["Bend It","Bend Jordan’s notes into tune.","#ff6a3d"],["Lock In","Land Pat’s bass on the kick.","#5dff9e"],["Hit the Note","Sing the chorus. In tune.","#3ca8ff"]];
+  const GAMES=[], SOON=[["Fill Battle","Jacob plays a fill. Play it back.","#ff6ae6"],["Bend It","Bend Jordan’s notes into tune.","#ff6a3d"],["Lock In","Land Pat’s bass on the kick.","#5dff9e"],["Hit the Note","Sing the chorus. In tune.","#3ca8ff"]];
   let cur=null, stopFn=null, sc=0;
   const best=id=>{ try{ return +localStorage.getItem("ms-best-"+id)||0; }catch(_){ return 0; } };
   const setBest=(id,v)=>{ try{ localStorage.setItem("ms-best-"+id,String(v)); }catch(_){} };
@@ -4197,6 +4197,75 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
       function mv(e){ const r=dr.t.getBoundingClientRect(); let v=1-((e.clientY-r.top)/r.height-.06)/.88; v=Math.max(0,Math.min(1,v)); mine[dr.i]=v; if(ref){ ref=false; $("sc-me").classList.add("on"); $("sc-ref").classList.remove("on"); } apply(); }
       newRound();
       return ()=>{ alive=false; clearInterval(tk); try{ master.gain.setTargetAtTime(0,a.currentTime,.05); setTimeout(()=>master.disconnect(),400); }catch(_){} };
+    }});
+})();
+</script>
+<style>
+.sd2{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:4px 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.sd2-pair{display:flex;gap:14px;align-items:center;justify-content:center;width:100%;flex:1;min-height:0}
+.sd2-f{position:relative;flex:1;max-width:640px;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:3px solid #2a2333;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 14px 30px rgba(0,0,0,.6);background:#000;cursor:crosshair}
+.sd2-f canvas{display:block;width:100%;height:100%}
+.sd2-f b{position:absolute;left:8px;top:6px;font:600 10px var(--mono);letter-spacing:.18em;color:#fff;text-shadow:0 1px 3px #000;z-index:2}
+.sd2-o{position:absolute;border:3px solid #5dff9e;border-radius:50%;box-shadow:0 0 12px #5dff9e;transform:translate(-50%,-50%);pointer-events:none;animation:sdO .35s cubic-bezier(.2,.9,.3,1.4)}
+.sd2-o.miss{border-color:#ff3d3d;box-shadow:0 0 12px #ff3d3d;animation:sdX .6s forwards}
+.sd2-o.show{border-color:#ffd36a;box-shadow:0 0 12px #ffd36a;border-style:dashed}
+@keyframes sdO{from{transform:translate(-50%,-50%) scale(1.6);opacity:0}}
+@keyframes sdX{to{opacity:0;transform:translate(-50%,-50%) scale(.6)}}
+.sd2-dots{display:flex;gap:6px}.sd2-dots i{width:14px;height:14px;border-radius:50%;border:2px solid #5dff9e;opacity:.5}.sd2-dots i.on{background:#5dff9e;opacity:1;box-shadow:0 0 8px #5dff9e}
+.sd2-bar{width:min(640px,100%);height:6px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden}.sd2-bar i{display:block;height:100%;background:linear-gradient(90deg,#b07cff,#ff3d7f)}
+@media (max-aspect-ratio:1/1){.sd2-pair{flex-direction:column;gap:10px}.sd2-f{flex:none;width:100%;max-width:520px}}
+</style>
+<script>
+(()=>{ if(!window.MSGames) return;
+  const PICS=[["img/binoc/w1.webp","The guitar guy"],["img/binoc/w2.webp","Mrs. Delgado & Meatball"],["img/binoc/w3.webp","Spaghetti slow dance"],["img/binoc/w4.webp","2 a.m. slice"],["img/binoc/w5.webp?v=2","Jill’s window"]];
+  const N=5;
+  function load(src){ return new Promise(r=>{ const i=new Image(); i.onload=()=>r(i); i.onerror=()=>r(null); i.src=src; }); }
+  function stamp(x,kind,cx,cy,s){ x.save(); x.translate(cx,cy); x.lineWidth=s*.08; x.strokeStyle="#1b1020";
+    if(kind==="star"){ x.fillStyle="#ffd36a"; x.beginPath(); for(let i=0;i<10;i++){ const r=i%2?s*.22:s*.5, a=i/10*Math.PI*2-Math.PI/2; x.lineTo(Math.cos(a)*r,Math.sin(a)*r); } x.closePath(); x.fill(); x.stroke(); }
+    else if(kind==="clock"){ x.fillStyle="#f4efe2"; x.beginPath(); x.arc(0,0,s*.45,0,7); x.fill(); x.stroke(); x.beginPath(); x.moveTo(0,0); x.lineTo(0,-s*.3); x.moveTo(0,0); x.lineTo(s*.2,0); x.stroke(); }
+    else if(kind==="frame"){ x.fillStyle="#c9822c"; x.fillRect(-s*.4,-s*.32,s*.8,s*.64); x.fillStyle="#3ca8ff"; x.fillRect(-s*.3,-s*.22,s*.6,s*.44); x.fillStyle="#5dff9e"; x.beginPath(); x.moveTo(-s*.3,s*.22); x.lineTo(-s*.05,-s*.05); x.lineTo(s*.3,s*.22); x.fill(); x.strokeRect(-s*.4,-s*.32,s*.8,s*.64); }
+    else if(kind==="heart"){ x.fillStyle="#ff3d7f"; x.beginPath(); x.moveTo(0,s*.35); x.bezierCurveTo(-s*.6,-s*.05,-s*.25,-s*.5,0,-s*.15); x.bezierCurveTo(s*.25,-s*.5,s*.6,-s*.05,0,s*.35); x.fill(); x.stroke(); }
+    else if(kind==="plant"){ x.fillStyle="#b4532a"; x.fillRect(-s*.18,s*.05,s*.36,s*.35); x.fillStyle="#3c9a3a"; [[-.2,-.15],[.2,-.18],[0,-.35]].forEach(([a,b])=>{ x.beginPath(); x.ellipse(a*s,b*s,s*.14,s*.24,a*3,0,7); x.fill(); }); }
+    x.restore(); }
+  window.MSGames.register({id:"spot",title:"Spot the Difference",color:"#b07cff",blurb:"Same window, a few seconds apart. Find the five things that changed.",
+    how:`<p>Two shots of the same window across the street. <b>Five things changed.</b></p><p>Tap them on either picture. Wrong taps cost time.</p><p>Five windows. The faster you are, the more you score.</p>`,
+    start(root,api){
+      root.innerHTML=`<div class="sd2"><div class="sd2-dots" id="sd-d"></div><div class="sd2-pair"><div class="sd2-f" id="sd-a"><b>BEFORE</b><canvas></canvas></div><div class="sd2-f" id="sd-b"><b>AFTER</b><canvas></canvas></div></div><div class="sd2-bar"><i id="sd-t"></i></div></div>`;
+      const $=id=>root.querySelector("#"+id), A=$("sd-a"), Bf=$("sd-b"), ca=A.querySelector("canvas"), cb=Bf.querySelector("canvas");
+      let round=0, score=0, diffs=[], found=0, alive=true, raf=0, tEnd=0, TL=45000, order=PICS.map((_,i)=>i).sort(()=>Math.random()-.5);
+      const hud=()=>api.hud([["Window",`${round}/${PICS.length}`],["Score",score]]);
+      async function next(){ if(round>=PICS.length){ finish("Every window checked"); return; } const [src,name]=PICS[order[round]]; round++; hud();
+        const img=await load(src); if(!alive) return; if(!img){ next(); return; }
+        const W=1280,H=720; [ca,cb].forEach(c=>{ c.width=W; c.height=H; }); const xa=ca.getContext("2d"), xb=cb.getContext("2d"); xa.drawImage(img,0,0,W,H); xb.drawImage(img,0,0,W,H);
+        diffs=[]; let tries=0; const kinds=["hue","clone","add","hue","clone"].sort(()=>Math.random()-.5);
+        // detail map: pick spots with real stuff in them (edges), not flat wall
+        const sm=document.createElement("canvas"); sm.width=128; sm.height=72; const sx2=sm.getContext("2d",{willReadFrequently:true}); sx2.drawImage(img,0,0,128,72); const g=sx2.getImageData(0,0,128,72).data;
+        const L=(x,y)=>{ const i=(y*128+x)*4; return g[i]*.3+g[i+1]*.59+g[i+2]*.11; }, detail=(cx,cy,r)=>{ let s=0,n=0; const x0=Math.max(1,Math.floor((cx-r)/10)), x1=Math.min(126,Math.floor((cx+r)/10)), y0=Math.max(1,Math.floor((cy-r)/10)), y1=Math.min(70,Math.floor((cy+r)/10)); for(let y=y0;y<=y1;y++) for(let x=x0;x<=x1;x++){ s+=Math.abs(L(x+1,y)-L(x-1,y))+Math.abs(L(x,y+1)-L(x,y-1)); n++; } return s/Math.max(1,n); };
+        const id0=xa.getImageData(0,0,W,H);
+        const feather=(cx,cy,r,draw)=>{ const o=document.createElement("canvas"); o.width=W; o.height=H; const ox=o.getContext("2d"); draw(ox); ox.globalCompositeOperation="destination-in"; const gr=ox.createRadialGradient(cx,cy,r*.45,cx,cy,r); gr.addColorStop(0,"#000"); gr.addColorStop(1,"rgba(0,0,0,0)"); ox.fillStyle=gr; ox.fillRect(0,0,W,H); xb.drawImage(o,0,0); };
+        while(diffs.length<N&&tries++<600){ const r=55+Math.random()*40, cx=r+150+Math.random()*(W-2*r-300), cy=r+50+Math.random()*(H-2*r-100); if(diffs.some(d=>Math.hypot(d.x-cx,d.y-cy)<d.r+r+50)) continue;
+          const k=kinds[diffs.length%kinds.length]; if(k!=="add"&&detail(cx,cy,r)<(tries<300?38:22)) continue;
+          if(k==="hue"){ const d=xb.getImageData(cx-r,cy-r,2*r,2*r), px=d.data, rot=(.33+Math.random()*.34); let hits=0;
+            for(let y=0;y<2*r;y++) for(let x=0;x<2*r;x++){ const dd=Math.hypot(x-r,y-r)/r; if(dd>1) continue; const i=(y*2*r+x)*4; let R=px[i]/255,G=px[i+1]/255,B=px[i+2]/255; const mx=Math.max(R,G,B), mn=Math.min(R,G,B), sat=mx?(mx-mn)/mx:0; if(sat<.35||mx<.25) continue;
+              let h=0; const c=mx-mn; if(c){ h=mx===R?((G-B)/c)%6:mx===G?(B-R)/c+2:(R-G)/c+4; h/=6; } h=(h+rot+1)%1; const w=Math.min(1,(1-dd)*3); const f=(n)=>{ const k=(n+h*6)%6; return mx-c*Math.max(0,Math.min(k,4-k,1)); };
+              px[i]=px[i]*(1-w)+f(5)*255*w; px[i+1]=px[i+1]*(1-w)+f(3)*255*w; px[i+2]=px[i+2]*(1-w)+f(1)*255*w; hits++; }
+            if(hits<2*r*r*.25) continue; xb.putImageData(d,cx-r,cy-r); }
+          else if(k==="clone"){ const dx=(Math.random()<.5?-1:1)*r*(1.8+Math.random()), sxx=Math.max(0,Math.min(W-2*r,cx-r+dx)), syy=Math.max(0,Math.min(H-2*r,cy-r+(Math.random()-.5)*r)); feather(cx,cy,r,ox=>ox.drawImage(img,sxx,syy,2*r,2*r,cx-r,cy-r,2*r,2*r)); }
+          else { stamp(xb,["star","clock","frame","heart","plant"][Math.floor(Math.random()*5)],cx,cy,r*.9); }
+          diffs.push({x:cx,y:cy,r:Math.max(70,r),hit:false}); }
+        found=0; $("sd-d").innerHTML=diffs.map(()=>"<i></i>").join(""); root.querySelectorAll(".sd2-o").forEach(o=>o.remove());
+        api.toast(name); tEnd=performance.now()+TL; cancelAnimationFrame(raf); tick(); }
+      function tick(){ if(!alive) return; const left=tEnd-performance.now(); $("sd-t").style.width=Math.max(0,left/TL*100)+"%"; if(left<=0){ reveal(); return; } raf=requestAnimationFrame(tick); }
+      function ring(frame,d,cls){ [A,Bf].forEach(f=>{ const o=document.createElement("div"); o.className="sd2-o "+(cls||""); const R=f.getBoundingClientRect(), k=R.width/1280; Object.assign(o.style,{left:d.x*k+"px",top:d.y*k+"px",width:d.r*2*k+"px",height:d.r*2*k+"px"}); f.appendChild(o); }); }
+      function reveal(){ cancelAnimationFrame(raf); diffs.filter(d=>!d.hit).forEach(d=>ring(null,d,"show")); api.sfx("thud"); api.toast(`Missed ${N-found}`); setTimeout(()=>{ if(alive) next(); },2200); }
+      function tap(e){ if(!alive||performance.now()>tEnd) return; const f=e.currentTarget, R=f.getBoundingClientRect(), k=1280/R.width, x=(e.clientX-R.left)*k, y=(e.clientY-R.top)*k;
+        const d=diffs.find(d=>!d.hit&&Math.hypot(d.x-x,d.y-y)<d.r); if(d){ d.hit=true; found++; ring(f,d); $("sd-d").children[found-1].classList.add("on"); const left=Math.max(0,tEnd-performance.now()); score+=100+Math.round(left/TL*100); api.sfx("tick"); hud();
+          if(found===N){ cancelAnimationFrame(raf); const bonus=Math.round((tEnd-performance.now())/100); score+=bonus; hud(); api.toast(`All five! +${bonus}`); api.sfx("tada"); setTimeout(()=>{ if(alive) next(); },1300); } }
+        else { tEnd-=3000; api.sfx("slam"); const o=document.createElement("div"); o.className="sd2-o miss"; Object.assign(o.style,{left:(x/k)+"px",top:(y/k)+"px",width:"40px",height:"40px"}); f.appendChild(o); setTimeout(()=>o.remove(),600); } }
+      [A,Bf].forEach(f=>f.addEventListener("pointerdown",tap));
+      function finish(line){ if(!alive) return; alive=false; cancelAnimationFrame(raf); api.end(score,line); }
+      hud(); next();
+      return ()=>{ alive=false; cancelAnimationFrame(raf); };
     }});
 })();
 </script>
