@@ -288,7 +288,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <a class="pk" id="pk-floor" href="#lounge" data-lounge style="left:1850px;top:578px;width:436px;height:74px;clip-path:polygon(2% 0,100% 0,89% 100%,0 100%)" aria-label="Dance floor: go to the Smile Lounge"></a>
     <a class="pk" id="pk-bar" href="#lounge" data-lounge style="left:1648px;top:428px;width:206px;height:192px" aria-label="The bar: go to the Smile Lounge"></a>
     <a class="pk" id="pk-couch" href="#lounge" data-lounge style="left:1860px;top:400px;width:440px;height:178px" aria-label="The lounge: record player and couch"></a>
-    <button class="pk" id="pk-lngsign" style="left:1376px;top:420px;width:162px;height:60px" aria-label="Lounge sign: look over at the lounge"></button>
+    <button class="pk" id="pk-lngsign" style="left:1322px;top:408px;width:175px;height:58px" aria-label="Lounge sign: look over at the lounge"></button>
     <a class="pk" id="pk-arcade" hidden href="#arcade" data-arcade style="display:none;left:335px;top:318px;width:128px;height:245px" aria-label="Arcade: go to the game corner"></a>
     <canvas id="pat-fx" width="1672" height="941"></canvas>
     <div id="tags"></div>
@@ -2482,7 +2482,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function render(c){
     seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=4"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
+    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=5"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
