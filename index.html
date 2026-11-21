@@ -2743,7 +2743,8 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const hFor=f=>1.48*(f-420);
   const MEMBERS=[], taken=()=>MEMBERS.map(m=>m.spot);
   function freeSpot(self){ const busy=taken().filter((s,i)=>MEMBERS[i]!==self && s>=0);
-    const ok=SPOTS.map((s,i)=>i).filter(i=>i!==self.spot && busy.every(j=>Math.hypot(SPOTS[j][0]-SPOTS[i][0],(SPOTS[j][1]-SPOTS[i][1])*1.5)>230));
+    const kit=MEMBERS.some(m=>m.seated&&m!==self); /* nobody stands in front of Jacob while he is at the kit (it blocks tapping him) */
+    const ok=SPOTS.map((s,i)=>i).filter(i=>i!==self.spot && !(kit&&(i===4||i===8)) && busy.every(j=>Math.hypot(SPOTS[j][0]-SPOTS[i][0],(SPOTS[j][1]-SPOTS[i][1])*1.5)>230));
     return ok.length?ok[Math.floor(Math.random()*ok.length)]:self.spot; }
   // shared fx: bolts + smoke on one canvas inside #play
   let smoke=[], sparks=[], raf=0;
