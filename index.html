@@ -2418,7 +2418,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
-  const PSP=[{x:250,n:"Shack"},{x:640,n:"The jar"},{x:1010,n:"The band"},{x:1440,n:"Lounge"}]; window.MSPhSpots=PSP; let spot=2;
+  const PSP=[{x:250,n:"Shack"},{x:640,n:"The jar"},{x:1060,n:"The band"},{x:1440,n:"Lounge"}]; window.MSPhSpots=PSP; let spot=2;
   let cx=PSP[2].x, cxT=PSP[2].x, drag=null, hinted=true, t0=performance.now();
   window.MSPhGo=(i,d)=>{ if(i==null) i=spot+d; spot=Math.max(0,Math.min(PSP.length-1,i)); cxT=PSP[spot].x; window.MSPhSpot&&window.MSPhSpot(spot); };
   const span=()=>{ const W=stage.clientWidth,H=stage.clientHeight,s=Math.max(W/IMG.w,H/IMG.h)*PZ; return {W,s,half:W/2/s}; };
@@ -2747,7 +2747,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   // feet positions in main-shot coords (1672x941); height follows the floor's perspective (scaled to the drum kit)
   // far (back by the wall), mid (by the kit), close (foreground)
-  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [862,706],[1158,708]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit */
+  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit */
   const hFor=f=>1.48*(f-420);
   const MEMBERS=[], taken=()=>MEMBERS.map(m=>m.spot);
   function freeSpot(self){ const busy=taken().filter((s,i)=>MEMBERS[i]!==self && s>=0);
