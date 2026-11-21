@@ -1709,7 +1709,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     back.src=src; (back.decode?back.decode():Promise.resolve()).then(swap,swap); }
   function jxShow(s){ clearInterval(jxCyc); const a=SETS[GIRL][s].slice().sort(()=>Math.random()-.5); let i=0;
     jxFrame(a[0].src); jxSay(a[0].say); jxLoad(s+1);
-    if(a.length>1&&!still) jxCyc=setInterval(()=>{ i=(i+1)%a.length; jxFrame(a[i].src); },s===6?650:750); }
+    if(a.length>1&&!still) jxCyc=setInterval(()=>{ i=(i+1)%a.length; jxFrame(a[i].src); },900); }
   /* roof camera pushes in on the jar sitting on the ledge */
   let rzOrig=null; document.body.appendChild(JX); document.body.appendChild($("jz"));
   function roofZoom(on,ms,done){ const st=$("stage");
