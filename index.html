@@ -2327,7 +2327,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   const stage=$("stage"), fly=$("flyer");
   const phone=()=>innerWidth<=760||(innerHeight>innerWidth&&innerWidth<=1100); /* phones + upright tablets: fill the height, swipe sideways */
   const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
-  let px=0.5, py=0.42; const PZ=1.1; /* phones: a touch closer so the band and props read bigger */
+  let px=0.5, py=0.42; const PZ=.82; /* phones: a touch closer so the band and props read bigger */
   let lastPlace="";
   function place(force){
     const key=stage.clientWidth+"x"+stage.clientHeight+":"+px.toFixed(4)+":"+py.toFixed(4); if(!force&&key===lastPlace) return; lastPlace=key;
@@ -2420,11 +2420,11 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
-  const PSP=[{x:330,n:"Hangout"},{x:1060,n:"The band"},{x:2000,n:"Lounge"}], DSP=[{x:-175,n:"Hangout"},{x:1000,n:"The band"},{x:2400,n:"Lounge"}]; window.MSPhSpots=PSP; let spot=1, dspot=1; /* 3 stops everywhere: sitting area, band (default), partial lounge */
+  const PSP=[{x:290,n:"Hangout"},{x:1030,n:"The band"},{x:1930,n:"Lounge"}], DSP=[{x:-175,n:"Hangout"},{x:1000,n:"The band"},{x:2400,n:"Lounge"}]; window.MSPhSpots=PSP; let spot=1, dspot=1; /* 3 stops everywhere: sitting area, band (default), partial lounge */
   const SPS=()=>phone()?PSP:DSP;
   const spx=p=>p.x+OFF;
   let cx=(phone()?PSP[1].x:DSP[1].x)+OFF, cxT=cx, drag=null, hinted=true, t0=performance.now();
-  window.MSPhGo=(i,d)=>{ const L=SPS(); let cur=phone()?spot:dspot; if(i==null) i=cur+d; i=Math.max(0,Math.min(L.length-1,i)); if(phone()) spot=i; else dspot=i; cxT=clampC(spx(L[i])); window.MSPhSpot&&window.MSPhSpot(i); };
+  window.MSPhGo=(i,d)=>{ const L=SPS(); let cur=phone()?spot:dspot; if(i==null) i=cur+d; i=Math.max(0,Math.min(L.length-1,i)); if(phone()) spot=i; else dspot=i; cxT=clampC(spx(L[i])); window.MSPhSpot&&window.MSPhSpot(i); window.dispatchEvent(new CustomEvent("msview",{detail:i})); };
   const span=()=>{ const W=stage.clientWidth,H=stage.clientHeight,s=Math.max(W/IMG.w,H/IMG.h)*(phone()?PZ:1); return {W,s,half:W/2/s}; };
   const clampC=c=>{ const {half}=span(); return Math.max(half,Math.min(IMG.w-half,c)); };
   const toPx=c=>{ const {W,s}=span(), iw=IMG.w*s; return iw<=W?0.5:Math.max(0,Math.min(1,(W/2-c*s)/(W-iw))); };
@@ -2751,12 +2751,12 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   // feet positions in main-shot coords (1672x941); height follows the floor's perspective (scaled to the drum kit)
   // far (back by the wall), mid (by the kit), close (foreground)
-  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit */
+  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [480,724],[770,646],[1830,602],[1480,642]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (sofa, binoculars, bar, by the bar) */
   const hFor=f=>1.48*(f-420);
   const MEMBERS=[], taken=()=>MEMBERS.map(m=>m.spot);
   function freeSpot(self){ const busy=taken().filter((s,i)=>MEMBERS[i]!==self && s>=0);
     const kit=MEMBERS.some(m=>m.seated&&m!==self); /* nobody stands in front of Jacob while he is at the kit (it blocks tapping him) */
-    const ok=SPOTS.map((s,i)=>i).filter(i=>i!==self.spot && !(kit&&(i===4||i===8)) && busy.every(j=>Math.hypot(SPOTS[j][0]-SPOTS[i][0],(SPOTS[j][1]-SPOTS[i][1])*1.5)>230));
+    const ok=SPOTS.map((s,i)=>i).filter(i=>i<11 && i!==self.spot && !(kit&&(i===4||i===8)) && busy.every(j=>Math.hypot(SPOTS[j][0]-SPOTS[i][0],(SPOTS[j][1]-SPOTS[i][1])*1.5)>230));
     return ok.length?ok[Math.floor(Math.random()*ok.length)]:self.spot; }
   // shared fx: bolts + smoke on one canvas inside #play
   let smoke=[], sparks=[], raf=0;
@@ -3021,7 +3021,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     async function appear(){ if(S&&!m.wasSeated&&Math.random()<S.p){ m.wasSeated=true; return sit(); } m.wasSeated=false; m.spot=freeSpot(m);
       let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===m.pose&&POSES.length>1); m.pose=np;
       setPose(m.pose); place(); await wait(80); neon(1); vis(true); await wait(90); await flicker(5); }
-    async function teleport(){ if(m.busy||document.hidden||gagOn||window.MSAway()) return;
+    async function teleport(){ if(m.busy||m.directed||document.hidden||gagOn||window.MSAway()) return;
       if(performance.now()-(window.__msTp||0)<1500){ schedule(1500); return new Promise(()=>{}); } window.__msTp=performance.now(); m.busy=true;
       if(m.seated){ await stand(); await wait(500+Math.random()*700); await appear(); m.busy=false; return; }
       await m.buzz("buzz",true); [el,rf,sh].forEach(e=>{ e.style.transition="opacity .4s"; e.style.opacity=0; }); await wait(420);
@@ -3056,16 +3056,28 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
         neon(1); inner.style.transform=`translateY(${k%2?-7:0}px)`; await wait(90); neon(0); await wait(380); k++; }
       inner.style.transform=""; m.busy=false; schedule(); return true; };
     [...POSES,ZAP,FRIED,...(GG?[GA,GB]:[])].forEach((p,i)=>["real","neon"].forEach(t=>window.MSIdleLoad(p[t],i<2)));
+    // walk across the roof to a blocking spot (crossover between views): glide with a step bob, walking pose when heading right
+    m.walkTo=async t=>{ if(S&&m.seated) return; for(let n=0;m.busy&&n<40;n++) await wait(150); if(m.busy||gagOn) return; if(m.spot===t){ m.directed=true; clearTimeout(wT); return; }
+      m.busy=true; m.directed=true; clearTimeout(wT);
+      if(m.spot<0){ m.spot=t; setPose(POSES[0]); m.pose=POSES[0]; place(); vis(true); await flicker(3); m.busy=false; return; }
+      const [x0,f0]=SPOTS[m.spot], [x1,f1]=SPOTS[t], dist=Math.hypot(x1-x0,(f1-f0)*2), dur=Math.max(1100,dist/170*1000);
+      const wk=x1>=x0&&cfg.walkR?P(cfg.walkR):POSES[0]; setPose(wk); m.pose=wk; const t0=performance.now();
+      await new Promise(res=>{ const st=()=>{ const u=Math.min(1,(performance.now()-t0)/dur), e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2, x=x0+(x1-x0)*e, f=f0+(f1-f0)*e, h=hFor(f)*wk.f, w=h*wk.ar;
+          Object.assign(el.style,{left:x-w/2+"px",top:f-h+"px",width:w+"px",height:h+"px",zIndex:10+Math.round(f/10)}); Object.assign(rf.style,{left:x-w/2+"px",top:f+"px",width:w+"px",height:h+"px"});
+          const sw=Math.min(w,hFor(f)*.42); Object.assign(sh.style,{left:x-sw*.9+"px",top:f-11+"px",width:sw*1.8+"px"});
+          inner.style.transform=`translateY(${-Math.abs(Math.sin(u*dur/1000*Math.PI*1.9))*hFor(f)*.018}px)`; if(u<1) requestAnimationFrame(st); else res(); }; st(); });
+      inner.style.transform=""; m.spot=t; m.pose=POSES[cfg.rest||0]; setPose(m.pose); place(); m.busy=false; };
+    m.resume=()=>{ m.directed=false; schedule(4000); };
     MEMBERS.push(m);
     if(S&&S.start){ m.wasSeated=true; m.pose=POSES[0]; setPose(m.pose); kimg[0].onload=()=>{ sit(); }; schedule(16000+(cfg.offset||0)); return m; }
     m.spot=cfg.home!=null?cfg.home:freeSpot(m); m.pose=cfg.home!=null?POSES[0]:POSES[Math.floor(Math.random()*POSES.length)];
     ir.onload=()=>{ ir.onload=null; vis(true); }; setPose(m.pose); place(); schedule((cfg.offset||0)+(cfg.home!=null?9000:0));
     return m;
   }
-  const PAT=Member({name:"Pat",home:9,pre:"p",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,gag:"pat",
+  const PAT=Member({name:"Pat",home:9,pre:"p",walkR:4,poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,gag:"pat",
     ar:{1:.5135,2:.5269,3:.5462,4:.5308,5:.6558,6:.8077,7:.5346,8:.4692,9:.5981,10:.3962,g1:.6346,g2:.6404},f:{1:1.05,6:.78,9:1.3,10:1.05,g1:.92,g2:1}});
   // Jordan: shots v3, made from his character master sheet
-  const JORDAN=Member({name:"Jordan",home:10,pre:"jj",gag:"jordan",sound:"chord",anim:"zj",sparky:true,flash:"#37e0ff",bolts:["#7ff3ff","#fff6a0","#22c8ff"],poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:5500,scale:.97,
+  const JORDAN=Member({name:"Jordan",home:10,pre:"jj",walkR:5,gag:"jordan",sound:"chord",anim:"zj",sparky:true,flash:"#37e0ff",bolts:["#7ff3ff","#fff6a0","#22c8ff"],poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:5500,scale:.97,
     ar:{1:0.6404,2:0.6635,3:0.5712,4:0.5865,5:0.5096,6:0.5,7:0.5308,8:0.4615,9:0.6538,10:0.5173,g1:.6096,g2:.5769},f:{2:.9,3:.97,9:1.36,g1:1.04,g2:1.1}});
   // Jacob: drummer, shots v2/v3 from his master sheet (face-locked)
   const JACOB=Member({name:"Jacob",pre:"jb",v:"?v=4",gag:"jacob",sound:"drums",anim:"zz",flash:"#ff6ae6",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:2700,scale:.98,
@@ -3073,6 +3085,10 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     ar:{1:.4673,2:.3846,3:.2962,4:.3558,5:.5269,6:.3346,7:.3615,8:.6077,9:.6154,10:.3423,g1:.5115,g2:.4269},f:{1:1.12,7:1.14,8:.68,9:1.06,10:1.08,g1:1,g2:1.29}});
   // every so often one of them pulls a stunt; ?gag=pat|jordan|jacob runs one right away
   const CREW={pat:PAT,jordan:JORDAN,jacob:JACOB}; window.MSGag=n=>CREW[n]&&CREW[n].gag();
+  // the band follows the camera: Hangout = Pat to the sofa, Jordan by the binoculars; Lounge = Jordan to the bar, Pat by the bar; band view = back to the kit
+  { const PLAN={0:[[PAT,11],[JORDAN,12]],1:[[PAT,9],[JORDAN,10]],2:[[JORDAN,13],[PAT,14]]}; let vT=0, gen=0;
+    addEventListener("msview",e=>{ clearTimeout(vT); const v=e.detail, g=++gen; vT=setTimeout(async()=>{ if(still) return;
+      for(const [mb,sp] of PLAN[v]||[]){ if(g!==gen) return; mb.walkTo(sp).then(()=>{ if(v===1&&g===gen) mb.resume(); }); await wait(1300); } },650); }); }
   // Grace on the roof: comes up off the dance floor full size and dances with each of the band
   window.MSGraceRoof=(()=>{
     const FR=[1,2,3,4,5,6,7,8].map(i=>"img/grace/d"+i+".webp?v=2"), W=[170,233,186,254,206,231,224,222], AX=[.406,.387,.397,.575,.382,.571,.418,.504];
