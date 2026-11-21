@@ -288,9 +288,9 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <a class="pk" id="pk-floor" href="#lounge" data-lounge style="left:1850px;top:578px;width:436px;height:74px;clip-path:polygon(2% 0,100% 0,89% 100%,0 100%)" aria-label="Dance floor: go to the Smile Lounge"></a>
     <a class="pk" id="pk-bar" href="#lounge" data-lounge style="left:1648px;top:428px;width:206px;height:192px" aria-label="The bar: go to the Smile Lounge"></a>
     <a class="pk" id="pk-couch" href="#lounge" data-lounge style="left:1860px;top:400px;width:440px;height:178px" aria-label="The lounge: record player and couch"></a>
-    <button class="pk ns" id="ns-live" style="left:986px;top:225px;width:103px;height:40px" aria-label="Live music: shows"></button>
-    <button class="pk ns" id="ns-games" style="left:1092px;top:225px;width:111px;height:40px" aria-label="Play games"></button>
-    <button class="pk ns" id="ns-listen" style="left:1206px;top:225px;width:174px;height:40px" aria-label="Listen in the lounge"></button>
+    <button class="pk ns" id="ns-live" style="left:1289px;top:231px;width:137px;height:46px" aria-label="Live music: shows"></button>
+    <button class="pk ns" id="ns-games" style="left:1287px;top:294px;width:142px;height:50px" aria-label="Play games"></button>
+    <button class="pk ns" id="ns-listen" style="left:1246px;top:362px;width:231px;height:51px" aria-label="Listen in the lounge"></button>
     <a class="pk" id="pk-arcade" hidden href="#arcade" data-arcade style="display:none;left:335px;top:318px;width:128px;height:245px" aria-label="Arcade: go to the game corner"></a>
     <canvas id="pat-fx" width="1672" height="941"></canvas>
     <div id="tags"></div>
@@ -2484,7 +2484,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function render(c){
     seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=7"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
+    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=8"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
@@ -4314,7 +4314,7 @@ body.ph #bar,body.ph .sky .pills,body.ph #lng-edge,body.ph #pan-hint{display:non
 body.ph .sign{font-size:clamp(40px,12.5vw,66px)!important;margin-top:4px}
 body.ph .welcome{top:auto!important;bottom:calc(92px + env(safe-area-inset-bottom,0px));width:min(320px,88vw)}
 .ph-dots,.ph-menu{display:none}
-.dk-arw{position:absolute;top:50%;z-index:6;width:46px;height:74px;transform:translateY(-50%);border:1.5px solid rgba(255,255,255,.25);background:rgba(8,6,16,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#fff;font:300 40px/1 system-ui;cursor:pointer;transition:opacity .3s,border-color .2s}
+.dk-arw{position:absolute;top:64%;z-index:6;width:46px;height:74px;transform:translateY(-50%);border:1.5px solid rgba(255,255,255,.25);background:rgba(8,6,16,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#fff;font:300 40px/1 system-ui;cursor:pointer;transition:opacity .3s,border-color .2s}
 .dk-arw:hover{border-color:var(--pink);box-shadow:0 0 14px rgba(255,61,127,.45)}.dk-arw.l{left:0;border-radius:0 14px 14px 0;border-left:0}.dk-arw.r{right:0;border-radius:14px 0 0 14px;border-right:0}
 .dk-arw.off{opacity:0;pointer-events:none}
 body.ph .dk-arw,body.in-room .dk-arw,body.jx-zoom .dk-arw,body.bx-on .dk-arw{display:none}
@@ -4410,7 +4410,19 @@ body.ph #enter-lng{bottom:84px;font-size:15px;padding:10px 18px}
   b.addEventListener("click",e=>{ e.stopPropagation(); b.classList.remove("on"); const a=document.querySelector(".pill[data-lounge]"); a&&a.click(); });
   addEventListener("hashchange",()=>{ if(location.hash!=="#lounge") set(window.MSView); }); })();
 </script>
-<style>#play .ns{border-radius:999px}#play .ns:hover,#play .ns:focus-visible{box-shadow:0 0 22px 6px rgba(255,255,255,.35);outline:none}
+<style>
+/* in-scene neon signs: idle they sit half-lit like a real sign at rest; hover/focus flickers the tube on around the edge and throws glow */
+#play .ns{border-radius:6px;background:rgba(6,4,12,.42);transition:background .25s;outline:none}
+#play .ns::before{content:"";position:absolute;inset:-1px;border-radius:inherit;border:2.5px solid var(--nc);box-shadow:0 0 6px var(--nc),0 0 16px var(--nc),inset 0 0 8px var(--nc);opacity:0;mix-blend-mode:screen;pointer-events:none}
+#play .ns::after{content:"";position:absolute;inset:-26px -30px;border-radius:40px;background:radial-gradient(closest-side,color-mix(in srgb,var(--nc) 38%,transparent),transparent);opacity:0;mix-blend-mode:screen;pointer-events:none;transition:opacity .3s}
+#play .ns:hover,#play .ns:focus-visible{background:transparent}
+#play .ns:hover::before,#play .ns:focus-visible::before{animation:nsOn .55s steps(1,end) forwards}
+#play .ns:hover::after,#play .ns:focus-visible::after{opacity:1}
+#ns-live{--nc:#3ce6ff}#ns-games{--nc:#5dff9e}#ns-listen{--nc:#ff3d7f}
+@keyframes nsOn{0%{opacity:.9}12%{opacity:.1}22%{opacity:1}34%{opacity:.25}46%{opacity:1}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){#play .ns:hover::before,#play .ns:focus-visible::before{animation:none;opacity:1}}
+@media (hover:none){#play .ns{background:transparent}}
+
 body:not(.ph) .sky .pills{visibility:hidden}body.ph #play .ns{display:none}</style>
 <script>
 /* the three buttons are neon signs hanging from the pole arm (desktop + iPad); phone keeps the on-screen row */
