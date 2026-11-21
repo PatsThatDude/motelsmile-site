@@ -119,21 +119,21 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 #play a.pk{display:block}
 #play .pk:focus-visible,#lg-play .pk:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
 @media (hover:hover){#play .pk:hover,#lg-play .pk:hover{filter:brightness(1.25) drop-shadow(0 0 6px rgba(255,61,127,.6))}}
-.lt-glow{position:absolute;left:-315px;top:210px;width:80px;height:80px;border-radius:50%;pointer-events:none;
+.lt-glow{position:absolute;left:203px;top:252px;width:80px;height:80px;border-radius:50%;pointer-events:none;
   background:radial-gradient(circle,rgba(255,190,90,.55) 0,rgba(255,150,60,.22) 30%,rgba(255,120,40,0) 70%);mix-blend-mode:screen;animation:flick 2.3s infinite steps(1)}
 .lt-flame{display:none;position:absolute;left:1243px;top:466px;width:6px;height:9px;border-radius:50% 50% 45% 45%;pointer-events:none;
   background:radial-gradient(circle at 50% 70%,#fff6d0,#ffb347 55%,rgba(255,120,0,0) 75%);mix-blend-mode:screen;animation:flick2 .9s infinite alternate}
 @keyframes flick{0%{opacity:.9}11%{opacity:.75}23%{opacity:1}37%{opacity:.82}52%{opacity:.95}64%{opacity:.7}79%{opacity:1}91%{opacity:.85}}
 @keyframes flick2{0%{transform:scale(1,1)}40%{transform:scale(.9,1.15) translateX(.4px)}100%{transform:scale(1.05,.9) translateX(-.4px)}}
-.lt-out{position:absolute;left:-298px;top:224px;width:46px;height:50px;pointer-events:none;background:radial-gradient(ellipse 40% 42% at 50% 55%,rgba(14,10,18,.82) 0,rgba(14,10,18,.55) 45%,rgba(14,10,18,0) 100%);opacity:0;transition:opacity .2s}
-.lt-warm{position:absolute;left:-342px;top:202px;width:134px;height:96px;pointer-events:none;background:radial-gradient(ellipse 50% 50% at 50% 45%,rgba(255,170,80,.18),rgba(255,170,80,0) 70%);mix-blend-mode:screen;transition:opacity .2s}
+.lt-out{position:absolute;left:220px;top:266px;width:46px;height:50px;pointer-events:none;background:radial-gradient(ellipse 40% 42% at 50% 55%,rgba(14,10,18,.82) 0,rgba(14,10,18,.55) 45%,rgba(14,10,18,0) 100%);opacity:0;transition:opacity .2s}
+.lt-warm{position:absolute;left:176px;top:244px;width:134px;height:96px;pointer-events:none;background:radial-gradient(ellipse 50% 50% at 50% 45%,rgba(255,170,80,.18),rgba(255,170,80,0) 70%);mix-blend-mode:screen;transition:opacity .2s}
 .dark .lt-warm{opacity:0}
 .dark .lt-glow,.dark .lt-flame{opacity:0;animation:none;transition:opacity .15s}
 .dark .lt-out{opacity:1}
 .smoke{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(220,220,230,.5);filter:blur(2px);pointer-events:none;animation:smoke 1.6s ease-out forwards}
 @keyframes smoke{to{transform:translate(4px,-38px) scale(4);opacity:0}}
-.pg-gone{position:absolute;left:-250px;top:110px;width:84px;height:76px;background:url(img/pigeon2-gone-b.webp?v=1) 0 0/84px 76px;opacity:0;pointer-events:none;transition:opacity .08s}
-.pg-fly{position:absolute;left:-250px;top:110px;width:84px;height:76px;background:url(img/pigeon2.webp?v=1) 0 0/84px 76px;pointer-events:none;opacity:0}
+.pg-gone{position:absolute;left:255px;top:155px;width:84px;height:76px;background:url(img/pigeon2-gone.webp?v=1) 0 0/84px 76px;opacity:0;pointer-events:none;transition:opacity .08s}
+.pg-fly{position:absolute;left:255px;top:155px;width:84px;height:76px;background:url(img/pigeon2.webp?v=1) 0 0/84px 76px;pointer-events:none;opacity:0}
 #play.flown .pg-gone{opacity:1}
 #play.flown .pg-fly{animation:fly 1.4s cubic-bezier(.3,0,.7,1) forwards}
 @keyframes fly{0%{opacity:1;transform:none}15%{transform:translate(6px,-10px) rotate(-8deg)}100%{opacity:0;transform:translate(420px,-260px) rotate(-20deg) scale(.4)}}
@@ -265,14 +265,14 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
   <div id="play" aria-label="Things on the roof">
     <div class="lt-warm"></div><div class="lt-glow"></div><div class="lt-flame"></div><div class="lt-out"></div>
     <div class="pg-gone"></div><div class="pg-fly"></div>
-    <button class="pk" id="pk-lantern" style="left:-300px;top:222px;width:50px;height:62px" aria-label="Lamp over the door"></button>
-    <button class="pk" id="pk-pigeon" style="left:-248px;top:112px;width:80px;height:68px" aria-label="Pigeon"></button>
+    <button class="pk" id="pk-lantern" style="left:220px;top:266px;width:46px;height:52px" aria-label="Wall lamp"></button>
+    <button class="pk" id="pk-pigeon" style="left:258px;top:158px;width:80px;height:68px" aria-label="Pigeon"></button>
     <button class="pk img" id="pk-kick" style="left:960px;top:518px;width:120px;height:120px;border-radius:50%;background-position:-960px -518px" aria-label="Kick drum"></button>
     <button class="pk" id="pk-cym1" style="left:872px;top:440px;width:90px;height:26px" aria-label="Cymbal"></button>
     <button class="pk" id="pk-cym2" style="left:1080px;top:436px;width:90px;height:26px" aria-label="Cymbal"></button>
     <button class="pk" id="pk-amp" style="left:805px;top:500px;width:72px;height:92px" aria-label="Amp"></button>
-    <button class="pk img" id="pk-gnome" style="left:-186px;top:522px;width:70px;height:134px;background-image:url(img/roof-full.webp?v=1);background-size:2823px 941px;background-position:-225px -522px;transform-origin:50% 90%" aria-label="Garden gnome"></button>
-    <button class="pk" id="pk-reset" style="left:-212px;top:396px;width:32px;height:38px" aria-label="Reset button: start the roof over"></button>
+    <button class="pk img" id="pk-gnome" style="left:248px;top:560px;width:100px;height:90px;background-position:-248px -560px;transform-origin:50% 90%" aria-label="Garden gnome"></button>
+    <button class="pk" id="pk-reset" style="left:186px;top:476px;width:38px;height:46px" aria-label="Reset button: start the roof over"></button>
     <a class="show-sign" id="show-sign" href="#shows" data-open="shows" hidden aria-label="Next show"><small id="ss-a"></small><b id="ss-b"></b></a>
     <button class="binoc" id="binoc" aria-label="Coin-op binoculars on the ledge: go to the ledge"><span class="bn-tag">Look ↗</span></button>
     <div class="jar-glow" id="jar-glow" aria-hidden="true"></div><div class="jar-help" id="jar-help" aria-hidden="true">help!</div>
@@ -288,13 +288,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <a class="pk" id="pk-floor" href="#lounge" data-lounge style="left:1850px;top:578px;width:436px;height:74px;clip-path:polygon(2% 0,100% 0,89% 100%,0 100%)" aria-label="Dance floor: go to the Smile Lounge"></a>
     <a class="pk" id="pk-bar" href="#lounge" data-lounge style="left:1648px;top:428px;width:206px;height:192px" aria-label="The bar: go to the Smile Lounge"></a>
     <a class="pk" id="pk-couch" href="#lounge" data-lounge style="left:1860px;top:400px;width:440px;height:178px" aria-label="The lounge: record player and couch"></a>
-    <a class="pk" id="pk-arcade" href="#arcade" data-arcade style="left:322px;top:230px;width:150px;height:180px" aria-label="Arcade kiosk: go to the game corner"></a>
-    <button class="pk cab" data-g="loadin" style="left:-143px;top:355px;width:112px;height:270px" aria-label="Rocket Runner cabinet: play Load-In"></button>
-    <button class="pk cab" data-g="setlist" style="left:-38px;top:360px;width:92px;height:250px" aria-label="Night Striker cabinet: play Setlist Shuffle"></button>
-    <button class="pk cab" data-g="bar" style="left:44px;top:365px;width:80px;height:205px" aria-label="Pixel Outlaw cabinet: play Bartender Rush"></button>
-    <button class="pk cab" data-g="" data-pin="1" style="left:124px;top:385px;width:145px;height:205px" aria-label="Better Free pinball machine"></button>
-    <button class="pk cab" data-g="" style="left:294px;top:418px;width:148px;height:100px" aria-label="Old TV: all the band games"></button>
-    <button class="pk" id="pk-door" style="left:-374px;top:276px;width:133px;height:408px" aria-label="A door. It's locked, for now"></button>
+    <a class="pk" id="pk-arcade" href="#arcade" data-arcade style="left:335px;top:318px;width:128px;height:245px" aria-label="Arcade: go to the game corner"></a>
     <canvas id="pat-fx" width="1672" height="941"></canvas>
     <div id="tags"></div>
   </div>
@@ -2324,7 +2318,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   const ext=u=>`href="${esc(u)}" target="_blank" rel="noopener"`;
   const PLAT={spotify:"Spotify",apple:"Apple Music",youtube:"YouTube",bandcamp:"Bandcamp"};
   // flyer hotspot: follows the flyer painted on the door, whatever the crop
-  const OFF=411; /* play-space x 0 sits 411px into the wide plate (arcade side added on the left) */ const IMG={w:2823,h:941}, FLY={x:-900,y:0,w:41,h:61}, LNG={x:-900,y:0,w:10,h:10};
+  const IMG={w:2412,h:941}, FLY={x:-900,y:0,w:41,h:61}, LNG={x:-900,y:0,w:10,h:10};
   // tall phones use a vertical version of the roof; the main shot sits inside it at this scale/offset
   const MP={s:.9063,tx:-292.6,ty:393};
   // phones now use the same wide roof as desktop (drag sideways to look around); vertical version retired
@@ -2337,12 +2331,12 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   let lastPlace="";
   function place(force){
     const key=stage.clientWidth+"x"+stage.clientHeight+":"+px.toFixed(4)+":"+py.toFixed(4); if(!force&&key===lastPlace) return; lastPlace=key;
-    const TL=tall(); stage.classList.toggle("tall",TL); IMG.w=TL?941:2823; IMG.h=TL?1672:941;
+    const TL=tall(); stage.classList.toggle("tall",TL); IMG.w=TL?941:2412; IMG.h=TL?1672:941;
     const W=stage.clientWidth,H=stage.clientHeight, s0=Math.max(W/IMG.w,H/IMG.h)*(phone()?PZ:1); /* cover; the wide roof pans on every screen */
     const ox0=(W-IMG.w*s0)*px, oy0=(H-IMG.h*s0)*py;
-    window.MSRoofBox={s:s0,ox:ox0+OFF*s0,oy:oy0};
+    window.MSRoofBox={s:s0,ox:ox0,oy:oy0};
     // everything below is placed in main-shot coordinates
-    const s=TL?s0*MP.s:s0, ox=TL?ox0+s0*MP.tx:ox0+OFF*s0, oy=TL?oy0+s0*MP.ty:oy0;
+    const s=TL?s0*MP.s:s0, ox=TL?ox0+s0*MP.tx:ox0, oy=TL?oy0+s0*MP.ty:oy0;
     stage.style.backgroundPosition=`${ox0.toFixed(1)}px ${oy0.toFixed(1)}px`; stage.style.backgroundSize=`${(IMG.w*s0).toFixed(1)}px ${(IMG.h*s0).toFixed(1)}px`;
     const fill=$("stage-fill"); if(fill){ const lb=IMG.w*s0<W-1||IMG.h*s0<H-1; fill.style.display=lb?"block":"none"; if(lb) fill.style.backgroundImage=stage.style.backgroundImage; stage.style.backgroundColor=lb?"transparent":""; }
     const L=ox+FLY.x*s, T=oy+FLY.y*s;
@@ -2355,7 +2349,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   /* ---------- play: the roof reacts ---------- */
   (()=>{
-    const TAGS=[["Watch Your Tone", -357, 424, 118, 59], ["Never Ever Be", 1396, 532, 98, 58], ["Been Wrong", 1512, 528, 98, 60], ["Matter Of Time", 1358, 772, 108, 78], ["Sometimes", 1502, 792, 158, 62]], play=$("play");
+    const TAGS=[["Watch Your Tone", 48, 422, 104, 62], ["Never Ever Be", 1396, 532, 98, 58], ["Been Wrong", 1512, 528, 98, 60], ["Matter Of Time", 1358, 772, 108, 78], ["Sometimes", 1502, 792, 158, 62]], play=$("play");
     const ac=()=>window.MSAC&&window.MSAC();
     const noise=(dur)=>{ const a=ac(); if(!a) return null; const b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; const s=a.createBufferSource(); s.buffer=b; return s; };
     const env=(g,t,a,peak,rel)=>{ g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(peak,t+a); g.gain.exponentialRampToValueAtTime(.0001,t+a+rel); };
@@ -2426,10 +2420,10 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
-  const PSP=[{x:-150,n:"Arcade"},{x:560,n:"The jar"},{x:1060,n:"The band"},{x:1760,n:"The bar"},{x:2150,n:"Lounge"}], DSP=[{x:-411,n:"Arcade"},{x:1480,n:"Band & lounge"}]; window.MSPhSpots=PSP; let spot=2, dspot=1;
+  const PSP=[{x:250,n:"Shack"},{x:640,n:"The jar"},{x:1060,n:"The band"},{x:1760,n:"The bar"},{x:2150,n:"Lounge"}], DSP=[{x:0,n:"Shack & band"},{x:1480,n:"Band & lounge"}]; window.MSPhSpots=PSP; let spot=2, dspot=1;
   const SPS=()=>phone()?PSP:DSP;
-  const spx=p=>p.x+OFF;
-  let cx=(phone()?PSP[2].x:DSP[1].x)+OFF, cxT=cx, drag=null, hinted=true, t0=performance.now();
+  const spx=p=>p.x;
+  let cx=phone()?PSP[2].x:DSP[1].x, cxT=cx, drag=null, hinted=true, t0=performance.now();
   window.MSPhGo=(i,d)=>{ const L=SPS(); let cur=phone()?spot:dspot; if(i==null) i=cur+d; i=Math.max(0,Math.min(L.length-1,i)); if(phone()) spot=i; else dspot=i; cxT=clampC(spx(L[i])); window.MSPhSpot&&window.MSPhSpot(i); };
   const span=()=>{ const W=stage.clientWidth,H=stage.clientHeight,s=Math.max(W/IMG.w,H/IMG.h)*(phone()?PZ:1); return {W,s,half:W/2/s}; };
   const clampC=c=>{ const {half}=span(); return Math.max(half,Math.min(IMG.w-half,c)); };
@@ -2454,7 +2448,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   }
   requestAnimationFrame(tick); addEventListener("resize",()=>place(true));
   // stunts can steer the phone camera: MSCam(plateX) pans there; returns where it was
-  window.MSCam=c=>{ const was=cxT-OFF; if(c!=null){ cxT=clampC(c+OFF); hinted=true; } return was; };
+  window.MSCam=c=>{ const was=cxT; if(c!=null){ cxT=clampC(c); hinted=true; } return was; };
   const setBarH=()=>{ const h=$("bar").offsetHeight+"px"; $("stage").style.setProperty("--barh",h); document.documentElement.style.setProperty("--barh",h); };
   addEventListener("resize",setBarH); setBarH();
   function closeAll(){document.querySelectorAll(".sheet").forEach(s=>s.classList.remove("open"));document.querySelectorAll(".tile").forEach(t=>t.setAttribute("aria-expanded","false"));}
@@ -2485,7 +2479,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function render(c){
     seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${"img/roof-full.webp?v=1"}")`; /* full roof 2823x941: arcade side (left, 411px) + original + lounge; content.json hero is the old 1672 plate */
+    $("stage").style.backgroundImage=`url("${"img/roof-wide.webp?v=1"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
@@ -4351,17 +4345,6 @@ body.ph.in-room .ph-dots,body.ph.in-room .ph-menu,body.ph.jx-zoom .ph-dots,body.
       else if(a==="guide"){ window.MSGuide&&window.MSGuide(); }
       else { const t=document.querySelector(`#bar [data-open="${a}"]`); t&&t.click(); } },200); });
   addEventListener("keydown",e=>{ if(e.key==="Escape"&&!sh.hidden) close(); });
-})();
-</script>
-<script>
-/* arcade side of the roof: cabinets open their game, pinball says soon, the TV opens the menu, the door is locked (for now) */
-(()=>{ const bub=(el,t)=>{ const r=el.getBoundingClientRect(), d=document.createElement("div"); d.className="bubble"; d.style.position="fixed"; d.style.zIndex=30; d.textContent=t; document.body.appendChild(d);
-    d.style.left=Math.max(10,Math.min(innerWidth-230,r.left+r.width/2-110))+"px"; d.style.top=Math.max(60,r.top+20)+"px"; d.style.opacity=1; setTimeout(()=>d.remove(),2600); };
-  document.querySelectorAll("#play .cab").forEach(b=>b.addEventListener("click",e=>{ e.stopPropagation(); window.MSBxSfx&&window.MSBxSfx("tick");
-    if(b.dataset.pin){ bub(b,"Better Free pinball is getting its last coat of paint. Coming soon."); return; }
-    window.MSGames&&window.MSGames.open(b.dataset.g||undefined); }));
-  const door=document.getElementById("pk-door"); const LINES=["Locked. For now.","Something’s behind this door…","You hear music on the other side.","Not yet."]; let i=0;
-  door&&door.addEventListener("click",e=>{ e.stopPropagation(); window.MSBxSfx&&window.MSBxSfx("click"); door.animate([{transform:"translateX(0)"},{transform:"translateX(-3px)"},{transform:"translateX(3px)"},{transform:"translateX(0)"}],{duration:200}); bub(door,LINES[i++%LINES.length]); });
 })();
 </script>
 <script>
