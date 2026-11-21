@@ -2041,10 +2041,10 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     if(big){ setTimeout(()=>{ if(big&&!duet&&!girls){ placeAsk(); ask.classList.add("on"); say(FX,FY-DH-12,["More of us are still stuck in jars…","Find the others!"]); } },500); } }
 
   /* freed jar girls live in the lounge: dance near Grace when the floor is on, hang out on the furniture when it's off */
-  const RES={megan:{off:[300,612,46],on:[-1.15,14],c:"#ff3b48",say:["Drinks are on me. (They're not.)","I was never stuck, for the record.","Room 217? Still never heard of it."]},
-    gianna:{off:[560,566,40],on:[1.05,-14],c:"#2cff9a",say:["Right on time!","Don't waste a minute, dance!","Tick tock, let's go!"]},
-    sophia:{off:[688,598,42],on:[1.8,22],c:"#ff963c",say:["Back where I belong!","Get back on that floor!","Spin something good!"]},
-    jill:{off:[430,596,44],on:[-.45,26],c:"#ffd36a",say:["Thanks for the rescue, sharpshooter.","That was the craziest commute of my life.","Who threw the tomato?"]}};
+  const RES={megan:{off:[300,612,62],on:[-1.15,14],c:"#ff3b48",say:["Drinks are on me. (They're not.)","I was never stuck, for the record.","Room 217? Still never heard of it."]},
+    gianna:{off:[560,566,54],on:[1.05,-14],c:"#2cff9a",say:["Right on time!","Don't waste a minute, dance!","Tick tock, let's go!"]},
+    sophia:{off:[688,598,57],on:[1.8,22],c:"#ff963c",say:["Back where I belong!","Get back on that floor!","Spin something good!"]},
+    jill:{off:[430,596,59],on:[-.45,26],c:"#ffd36a",say:["Thanks for the rescue, sharpshooter.","That was the craziest commute of my life.","Who threw the tomato?"]}};
   window.MSJillFree=()=>{ FREED.add("jill"); };
   const resEl={}; let resT=0;
   function resTick(){ const inL=L.classList.contains("on"); resT++;
@@ -2055,7 +2055,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       if(!inL) continue;
       el.style.opacity=girls?"0":"1"; el.style.pointerEvents=girls?"none":"auto"; if(girls) continue;
       const R0=RES[g]; let x,y,h,f=+el.dataset.f;
-      if(floorOn()){ const span=Math.max(70,Math.min(DH,160)); const c=onFloor(FX+R0.on[0]*span*.8,FY+R0.on[1]); x=c[0]; y=c[1]; h=HF(y)*.151; f=(f+1+Math.floor(Math.random()*3))%8; }
+      if(floorOn()){ const span=Math.max(70,Math.min(DH,160)); const c=onFloor(FX+R0.on[0]*span*.8,FY+R0.on[1]); x=c[0]; y=c[1]; h=HF(y)*.2; f=(f+1+Math.floor(Math.random()*3))%8; }
       else { [x,y,h]=R0.off; if(resT%6===0) f=f===0?6:0; }
       el.dataset.f=f; const w=W[f]*h/600; el.src=`img/girls/${g}-d${f+1}.webp`;
       Object.assign(el.style,{left:(x-AX[f]*w)+"px",top:(y-h)+"px",width:w+"px",height:h+"px",zIndex:String(Math.round(y))}); }
