@@ -4411,17 +4411,15 @@ body.ph #enter-lng{bottom:84px;font-size:15px;padding:10px 18px}
   addEventListener("hashchange",()=>{ if(location.hash!=="#lounge") set(window.MSView); }); })();
 </script>
 <style>
-/* in-scene neon signs: idle they sit half-lit like a real sign at rest; hover/focus flickers the tube on around the edge and throws glow */
-#play .ns{border-radius:6px;background:rgba(6,4,12,.42);transition:background .25s;outline:none}
+/* in-scene neon signs: idle they show as painted in the scene; hover/focus flickers the tube on around the edge and throws glow */
+#play .ns{border-radius:6px;background:transparent;outline:none}
 #play .ns::before{content:"";position:absolute;inset:-1px;border-radius:inherit;border:2.5px solid var(--nc);box-shadow:0 0 6px var(--nc),0 0 16px var(--nc),inset 0 0 8px var(--nc);opacity:0;mix-blend-mode:screen;pointer-events:none}
 #play .ns::after{content:"";position:absolute;inset:-26px -30px;border-radius:40px;background:radial-gradient(closest-side,color-mix(in srgb,var(--nc) 38%,transparent),transparent);opacity:0;mix-blend-mode:screen;pointer-events:none;transition:opacity .3s}
-#play .ns:hover,#play .ns:focus-visible{background:transparent}
 #play .ns:hover::before,#play .ns:focus-visible::before{animation:nsOn .55s steps(1,end) forwards}
 #play .ns:hover::after,#play .ns:focus-visible::after{opacity:1}
 #ns-live{--nc:#3ce6ff}#ns-games{--nc:#5dff9e}#ns-listen{--nc:#ff3d7f}
 @keyframes nsOn{0%{opacity:.9}12%{opacity:.1}22%{opacity:1}34%{opacity:.25}46%{opacity:1}100%{opacity:1}}
 @media (prefers-reduced-motion:reduce){#play .ns:hover::before,#play .ns:focus-visible::before{animation:none;opacity:1}}
-@media (hover:none){#play .ns{background:transparent}}
 
 body:not(.ph) .sky .pills{visibility:hidden}body.ph #play .ns{display:none}</style>
 <script>
