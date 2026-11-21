@@ -3739,7 +3739,7 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
 /* ===== Band games shell: window.MSGames.register(game), .open(id?) ===== */
 (()=>{
   const $=id=>document.getElementById(id), gm=$("gm"), play=$("gm-play"), hud=$("gm-hud");
-  const GAMES=[], SOON=[["Soundcheck","Push the faders until the mix sounds right.","#3ce6ff"],["Window Watch","Tap the weird neighbors before they duck.","#ffd36a"],["Spot the Difference","Same window, a few seconds apart. What changed?","#b07cff"],["Fill Battle","Jacob plays a fill. Play it back.","#ff6ae6"],["Bend It","Bend Jordan’s notes into tune.","#ff6a3d"],["Lock In","Land Pat’s bass on the kick.","#5dff9e"],["Hit the Note","Sing the chorus. In tune.","#3ca8ff"]];
+  const GAMES=[], SOON=[["Soundcheck","Push the faders until the mix sounds right.","#3ce6ff"],["Spot the Difference","Same window, a few seconds apart. What changed?","#b07cff"],["Fill Battle","Jacob plays a fill. Play it back.","#ff6ae6"],["Bend It","Bend Jordan’s notes into tune.","#ff6a3d"],["Lock In","Land Pat’s bass on the kick.","#5dff9e"],["Hit the Note","Sing the chorus. In tune.","#3ca8ff"]];
   let cur=null, stopFn=null, sc=0;
   const best=id=>{ try{ return +localStorage.getItem("ms-best-"+id)||0; }catch(_){ return 0; } };
   const setBest=(id,v)=>{ try{ localStorage.setItem("ms-best-"+id,String(v)); }catch(_){} };
@@ -4054,6 +4054,75 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
       pads.forEach(b=>{ b.addEventListener("pointerdown",e=>{ e.preventDefault(); b.classList.add("down"); hit(+b.dataset.l); }); ["pointerup","pointerleave","pointercancel"].forEach(t=>b.addEventListener(t,()=>b.classList.remove("down"))); });
       hud(); api.toast("Ready…"); setTimeout(()=>alive&&api.toast("Dance!"),LEAD*1000); raf=requestAnimationFrame(loop);
       return ()=>{ alive=false; cancelAnimationFrame(raf); removeEventListener("keydown",key); try{ out.gain.setTargetAtTime(0,a.currentTime,.05); setTimeout(()=>out.disconnect(),400); }catch(_){} };
+    }});
+})();
+</script>
+<style>
+.ww2{position:absolute;inset:0;overflow:hidden;display:grid;place-items:center;background:#05040a}
+.ww2-st{position:relative;background:url(img/binoc/street.webp?v=1) no-repeat;overflow:hidden;box-shadow:0 0 40px rgba(0,0,0,.8)}
+.ww2-st::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 62% at 50% 50%,transparent 62%,rgba(0,0,0,.75) 100%)}
+.ww2-w{position:absolute;overflow:hidden;cursor:crosshair;border-radius:2px}
+.ww2-w .lit{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 70%,rgba(255,200,120,.75),rgba(255,140,60,.25) 70%);opacity:0;transition:opacity .15s}
+.ww2-w.up .lit{opacity:1}
+.ww2-w svg{position:absolute;left:5%;width:90%;bottom:0;height:88%;transform:translateY(105%);transition:transform .16s cubic-bezier(.2,.9,.3,1.3)}
+.ww2-w.up svg{transform:translateY(0)}
+.ww2-w.hit svg{transform:translateY(0) scale(1.1);filter:brightness(1.6) drop-shadow(0 0 6px #5dff9e)}
+.ww2-w.bad{box-shadow:inset 0 0 0 3px #ff3d3d}
+.ww2-pop{position:absolute;z-index:3;transform:translate(-50%,-100%);pointer-events:none;font:400 clamp(14px,2.6vw,20px)/1.1 var(--tube);color:#fff;white-space:nowrap;text-shadow:0 0 8px var(--pc),0 0 18px var(--pc);animation:wwP .9s forwards}
+@keyframes wwP{0%{opacity:0;margin-top:6px}15%{opacity:1;margin-top:0}100%{opacity:0;margin-top:-26px}}
+.ww2-leg{position:absolute;left:50%;bottom:calc(10px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:4;padding:6px 12px;border-radius:999px;background:rgba(8,6,16,.75);font:12px var(--mono);color:#cfc6dc;white-space:nowrap}
+.ww2-leg b{color:#5dff9e;font-weight:500}@media (max-width:520px){.ww2-leg{font-size:10px;padding:5px 10px}}.ww2-leg i{color:#ff6a6a;font-style:normal}
+</style>
+<script>
+(()=>{ if(!window.MSGames) return;
+  // windows in street.webp px (1536x1024)
+  const COLS={L:[[20,56],[118,56],[238,58],[372,56]],M:[[531,57],[652,56],[778,56],[909,57]],R:[[1083,63],[1214,62],[1335,62],[1462,62]]};
+  const ROWS={L:[[278,112],[473,117],[671,124],[876,118]],M:[[304,108],[486,114],[677,121],[877,121]],R:[[374,116],[561,119],[758,132]]};
+  const WINS=[]; for(const b of ["L","M","R"]) for(const [y,h] of ROWS[b]) for(const [x,w] of COLS[b]) WINS.push({x,y,w,h,b});
+  const sil=(body)=>`<svg viewBox="0 0 60 100" preserveAspectRatio="xMidYMax meet">${body}</svg>`;
+  const NORMAL=[
+    sil(`<circle cx="30" cy="38" r="13" fill="#1a120c"/><path d="M6 100 Q8 58 30 56 Q52 58 54 100Z" fill="#1a120c"/>`),
+    sil(`<circle cx="30" cy="40" r="12" fill="#1a120c"/><path d="M17 36 Q18 20 30 22 Q44 22 44 40 L46 60 Q30 50 14 60Z" fill="#120c08"/><path d="M8 100 Q10 60 30 58 Q50 60 52 100Z" fill="#1a120c"/>`),
+    sil(`<circle cx="30" cy="40" r="12" fill="#1a120c"/><rect x="20" y="26" width="20" height="5" rx="2" fill="#120c08"/><rect x="24" y="16" width="12" height="11" fill="#120c08"/><path d="M8 100 Q10 60 30 58 Q50 60 52 100Z" fill="#1a120c"/>`),
+    sil(`<circle cx="30" cy="42" r="12" fill="#1a120c"/><path d="M8 100 Q10 62 30 60 Q50 62 52 100Z" fill="#1a120c"/><rect x="36" y="64" width="14" height="10" rx="2" fill="#3a2a18"/><path d="M40 62 q2 -6 0 -10 M45 62 q2 -6 0 -10" stroke="#cbb" stroke-width="1.2" fill="none" opacity=".6"/>`)];
+  const WEIRD=[
+    {n:"Alien!",c:"#5dff9e",s:sil(`<path d="M30 70 L30 76" stroke="#3c8" stroke-width="6"/><ellipse cx="30" cy="44" rx="17" ry="22" fill="#6be36b"/><ellipse cx="22" cy="44" rx="6" ry="9" fill="#000" transform="rotate(-20 22 44)"/><ellipse cx="38" cy="44" rx="6" ry="9" fill="#000" transform="rotate(20 38 44)"/><path d="M22 24 L16 8 M38 24 L44 8" stroke="#6be36b" stroke-width="2.5"/><circle cx="16" cy="8" r="3" fill="#ff3d7f"/><circle cx="44" cy="8" r="3" fill="#ff3d7f"/><path d="M10 100 Q12 74 30 72 Q48 74 50 100Z" fill="#3c8"/>`)},
+    {n:"Cool cat",c:"#ffd36a",s:sil(`<path d="M12 30 L16 10 L26 24 L34 24 L44 10 L48 30 Q52 56 30 58 Q8 56 12 30Z" fill="#e8913a"/><rect x="13" y="32" width="15" height="9" rx="3" fill="#000"/><rect x="32" y="32" width="15" height="9" rx="3" fill="#000"/><rect x="27" y="34" width="6" height="2" fill="#000"/><path d="M30 46 l-3 3 h6z" fill="#ff6a8a"/><path d="M8 100 Q12 60 30 60 Q48 60 52 100Z" fill="#e8913a"/>`)},
+    {n:"Robot",c:"#3ce6ff",s:sil(`<rect x="14" y="24" width="32" height="30" rx="4" fill="#9fb3c8"/><rect x="19" y="32" width="8" height="8" fill="#3ce6ff"/><rect x="33" y="32" width="8" height="8" fill="#3ce6ff"/><rect x="22" y="45" width="16" height="3" fill="#455"/><path d="M30 24 V12" stroke="#9fb3c8" stroke-width="3"/><circle cx="30" cy="10" r="4" fill="#ff3d3d"/><rect x="10" y="58" width="40" height="42" rx="4" fill="#7f93a8"/>`)},
+    {n:"Ghost!",c:"#e8f7ff",s:sil(`<path d="M10 100 L10 42 Q10 16 30 16 Q50 16 50 42 L50 100 L44 92 L38 100 L32 92 L26 100 L20 92 L14 100Z" fill="#f2f6ff" opacity=".92"/><ellipse cx="23" cy="42" rx="4" ry="6" fill="#111"/><ellipse cx="37" cy="42" rx="4" ry="6" fill="#111"/><ellipse cx="30" cy="58" rx="5" ry="7" fill="#111"/>`)},
+    {n:"Clown!",c:"#ff3d7f",s:sil(`<circle cx="30" cy="42" r="15" fill="#fff4ea"/><circle cx="12" cy="34" r="9" fill="#ff6a3d"/><circle cx="48" cy="34" r="9" fill="#ff6a3d"/><circle cx="30" cy="45" r="4.5" fill="#e3123d"/><path d="M21 52 Q30 60 39 52" stroke="#e3123d" stroke-width="3" fill="none"/><circle cx="24" cy="38" r="2.2" fill="#000"/><circle cx="36" cy="38" r="2.2" fill="#000"/><path d="M8 100 Q12 60 30 60 Q48 60 52 100Z" fill="#7a3cff"/><circle cx="30" cy="74" r="3" fill="#ffd36a"/><circle cx="30" cy="86" r="3" fill="#ffd36a"/>`)},
+    {n:"Jar guy?!",c:"#ffd36a",s:sil(`<circle cx="30" cy="50" r="8" fill="#1a120c"/><path d="M18 100 Q20 66 30 64 Q40 66 42 100Z" fill="#1a120c"/><rect x="10" y="22" width="40" height="78" rx="9" fill="rgba(200,240,255,.25)" stroke="#dff" stroke-width="2.5"/><rect x="13" y="14" width="34" height="9" rx="2" fill="#c9a35a"/><rect x="17" y="40" width="26" height="9" fill="#f4efe2"/><text x="30" y="47.5" font-size="6.5" text-anchor="middle" font-family="sans-serif" fill="#222">HELP</text>`)},
+    {n:"Big eye",c:"#ff6a3d",s:sil(`<ellipse cx="30" cy="56" rx="26" ry="22" fill="#fff"/><circle cx="30" cy="56" r="12" fill="#2a8"/><circle cx="30" cy="56" r="6" fill="#000"/><circle cx="26" cy="52" r="2.5" fill="#fff"/><path d="M6 50 Q30 26 54 50" stroke="#c33" stroke-width="2" fill="none"/>`)},
+    {n:"Gorilla",c:"#b07cff",s:sil(`<ellipse cx="30" cy="40" rx="16" ry="15" fill="#2a2a2e"/><ellipse cx="30" cy="46" rx="10" ry="7" fill="#6b5a52"/><circle cx="24" cy="38" r="2" fill="#fff"/><circle cx="36" cy="38" r="2" fill="#fff"/><path d="M2 100 Q4 58 30 56 Q56 58 58 100Z" fill="#2a2a2e"/>`)}];
+  const NOPE=["That’s just Mrs. Delgado.","Creep.","He was just doing dishes.","Leave her alone!","Totally normal guy."];
+  window.MSGames.register({id:"watch",title:"Window Watch",color:"#ffd36a",blurb:"Neighbors pop up in the windows across the street. Tap only the weird ones.",
+    how:`<p>People pop up in the windows across the street. <b>Tap only the weird ones</b>: aliens, ghosts, a cat in shades, a guy in a jar…</p><p>Tap a normal neighbor and you’re the creep. Let a weirdo duck away and it gets away with it.</p><p>Three strikes. It gets faster.</p>`,
+    start(root,api){
+      root.innerHTML=`<div class="ww2"><div class="ww2-st" id="ww-st"></div><div class="ww2-leg"><b>Tap the weird ones</b> · <i>leave the normal people alone</i></div></div>`;
+      const st=root.querySelector("#ww-st"); let crop=null, els=[];
+      function layout(){ const W=root.clientWidth, H=root.clientHeight-40; const portrait=W/H<1.05; crop=portrait?{x:470,y:150,w:570,h:874}:{x:0,y:150,w:1536,h:874};
+        const s=Math.min(W/crop.w,H/crop.h)*.98; st.style.width=crop.w*s+"px"; st.style.height=crop.h*s+"px"; st.style.backgroundSize=`${1536*s}px ${1024*s}px`; st.style.backgroundPosition=`${-crop.x*s}px ${-crop.y*s}px`;
+        els.forEach(o=>{ const w=o.w; const vis=w.x>=crop.x-4&&w.x+w.w<=crop.x+crop.w+4; o.el.style.display=vis?"":"none"; o.vis=vis; Object.assign(o.el.style,{left:(w.x-crop.x)*s+"px",top:(w.y-crop.y)*s+"px",width:w.w*s+"px",height:w.h*s+"px"}); }); }
+      els=WINS.map(w=>{ const el=document.createElement("div"); el.className="ww2-w"; el.innerHTML='<div class="lit"></div>'; st.appendChild(el); return {w,el,busy:false}; });
+      let score=0, lives=3, combo=0, alive=true, timers=[], t0=performance.now(), spawned=0;
+      const T=(f,ms)=>{ const id=setTimeout(f,ms); timers.push(id); return id; };
+      const hud=()=>api.hud([["Score",score],["Strikes",("✕".repeat(3-lives)+"·".repeat(lives))]]);
+      function pop(o,txt,c){ const p=document.createElement("div"); p.className="ww2-pop"; p.textContent=txt; p.style.setProperty("--pc",c); p.style.left=(parseFloat(o.el.style.left)+parseFloat(o.el.style.width)/2)+"px"; p.style.top=o.el.style.top; st.appendChild(p); setTimeout(()=>p.remove(),900); }
+      function strike(o,txt){ lives--; combo=0; hud(); api.sfx("slam"); if(o){ o.el.classList.add("bad"); setTimeout(()=>o.el.classList.remove("bad"),500); pop(o,txt,"#ff3d3d"); } if(lives<=0) over(); }
+      function spawn(){ if(!alive) return; const el=(performance.now()-t0)/1000, free=els.filter(o=>o.vis&&!o.busy); if(free.length){
+          const o=free[Math.floor(Math.random()*free.length)], weird=Math.random()<Math.min(.55,.32+el/220), W=weird?WEIRD[Math.floor(Math.random()*WEIRD.length)]:null;
+          o.busy=true; o.weird=!!W; o.kind=W; o.tapped=false; o.el.insertAdjacentHTML("beforeend",W?W.s:NORMAL[Math.floor(Math.random()*NORMAL.length)]); requestAnimationFrame(()=>o.el.classList.add("up")); spawned++;
+          const stay=Math.max(650,1500-el*11)+(W?0:300);
+          o.tid=T(()=>{ duck(o); if(o.weird&&!o.tapped&&alive) strike(o,`${W.n.replace(/!$/,"")} got away`); },stay); }
+        T(spawn,Math.max(320,950-el*9)*(.6+Math.random()*.8)); }
+      function duck(o){ o.el.classList.remove("up","hit"); setTimeout(()=>{ const s=o.el.querySelector("svg"); s&&s.remove(); o.busy=false; },180); }
+      st.addEventListener("pointerdown",e=>{ if(!alive) return; const w=e.target.closest(".ww2-w"); const o=w&&els.find(x=>x.el===w); if(!o||!o.busy||o.tapped||!o.el.classList.contains("up")) return; o.tapped=true; clearTimeout(o.tid);
+        if(o.weird){ combo++; const pts=100+Math.min(5,Math.floor(combo/3))*25; score+=pts; hud(); o.el.classList.add("hit"); pop(o,`${o.kind.n} +${pts}`,o.kind.c); api.sfx(o.kind.n.startsWith("Cool")?"meow":"crack"); setTimeout(()=>duck(o),240); }
+        else { strike(o,NOPE[Math.floor(Math.random()*NOPE.length)]); setTimeout(()=>duck(o),300); } });
+      function over(){ if(!alive) return; alive=false; timers.forEach(clearTimeout); api.end(score,score>=3000?"Neighborhood watch captain":score>=1200?"Nosy, but effective":"The weirdos win tonight"); }
+      const ro=new ResizeObserver(layout); ro.observe(root); layout(); hud(); T(spawn,700);
+      T(()=>{ if(alive){ api.toast("Last 15 seconds!"); } },75000); T(()=>{ if(alive){ alive=false; timers.forEach(clearTimeout); api.end(score+lives*300,"Shift’s over. Nice watching"); } },90000);
+      return ()=>{ alive=false; timers.forEach(clearTimeout); ro.disconnect(); };
     }});
 })();
 </script>
