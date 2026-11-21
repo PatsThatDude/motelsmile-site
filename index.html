@@ -3739,7 +3739,7 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
 /* ===== Band games shell: window.MSGames.register(game), .open(id?) ===== */
 (()=>{
   const $=id=>document.getElementById(id), gm=$("gm"), play=$("gm-play"), hud=$("gm-hud");
-  const GAMES=[], SOON=[["Dance-Off","Hit the arrows on the beat. Grace and Jill dance better the better you do.","#ff3d7f"],["Soundcheck","Push the faders until the mix sounds right.","#3ce6ff"],["Window Watch","Tap the weird neighbors before they duck.","#ffd36a"],["Spot the Difference","Same window, a few seconds apart. What changed?","#b07cff"],["Fill Battle","Jacob plays a fill. Play it back.","#ff6ae6"],["Bend It","Bend Jordan’s notes into tune.","#ff6a3d"],["Lock In","Land Pat’s bass on the kick.","#5dff9e"],["Hit the Note","Sing the chorus. In tune.","#3ca8ff"]];
+  const GAMES=[], SOON=[["Soundcheck","Push the faders until the mix sounds right.","#3ce6ff"],["Window Watch","Tap the weird neighbors before they duck.","#ffd36a"],["Spot the Difference","Same window, a few seconds apart. What changed?","#b07cff"],["Fill Battle","Jacob plays a fill. Play it back.","#ff6ae6"],["Bend It","Bend Jordan’s notes into tune.","#ff6a3d"],["Lock In","Land Pat’s bass on the kick.","#5dff9e"],["Hit the Note","Sing the chorus. In tune.","#3ca8ff"]];
   let cur=null, stopFn=null, sc=0;
   const best=id=>{ try{ return +localStorage.getItem("ms-best-"+id)||0; }catch(_){ return 0; } };
   const setBest=(id,v)=>{ try{ localStorage.setItem("ms-best-"+id,String(v)); }catch(_){} };
@@ -3969,6 +3969,91 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
       $("br-r").addEventListener("click",()=>{ const c=document.createElement("div"); c.className="gm-card2"; c.innerHTML=`<div style="text-align:left"><h3 style="text-align:center">Recipes</h3>${DR.map(([d,r])=>`<p style="margin:4px 0"><b style="font:400 16px var(--tube)">${d}</b><br><span style="font:12px var(--mono);color:#a59db5">${r.join(" · ")}</span></p>`).join("")}<div class="row"><button class="gm-btn">Back to the bar</button></div></div>`; root.appendChild(c); c.querySelector("button").onclick=()=>c.remove(); });
       drawGlass(); hud(); raf=requestAnimationFrame(loop);
       return ()=>{ alive=false; cancelAnimationFrame(raf); };
+    }});
+})();
+</script>
+<style>
+.dn2{position:absolute;inset:0;overflow:hidden;background:radial-gradient(80% 60% at 50% 100%,rgba(255,61,127,.25),transparent 70%)}
+.dn2-floor{position:absolute;left:-20%;right:-20%;bottom:-6%;height:46%;transform:perspective(500px) rotateX(58deg);transform-origin:50% 100%;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(5,1fr);gap:4px;opacity:.75}
+.dn2-floor i{background:#1a1024;border-radius:3px;transition:background .12s,box-shadow .12s}
+.dn2-floor i.on{background:var(--tc);box-shadow:0 0 18px var(--tc)}
+.dn2-girl{position:absolute;bottom:6%;height:min(62%,520px);aspect-ratio:170/600;background:50% 100%/contain no-repeat;filter:drop-shadow(0 0 12px rgba(255,61,127,.35));transition:filter .2s,transform .1s;z-index:1}
+.dn2-girl.l{left:4%}.dn2-girl.r{right:4%}
+.dn2-girl.hot{filter:drop-shadow(0 0 16px #ffd36a) drop-shadow(0 0 34px #ff3d7f) brightness(1.1)}
+.dn2-girl.oops{transform:rotate(-6deg) translateY(6px);filter:grayscale(.6) brightness(.7)}
+.dn2-tr{position:absolute;left:50%;top:0;bottom:0;width:min(420px,72vw);transform:translateX(-50%);display:grid;grid-template-columns:repeat(4,1fr);z-index:2}
+.dn2-lane{position:relative;border-left:1px solid rgba(255,255,255,.05)}
+.dn2-lane:last-child{border-right:1px solid rgba(255,255,255,.05)}
+.dn2-tgt{position:absolute;left:50%;top:9%;width:72%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:16px;border:2.5px solid rgba(255,255,255,.35);display:grid;place-items:center;color:rgba(255,255,255,.5);font:700 28px/1 system-ui;transition:transform .08s,box-shadow .1s,border-color .1s}
+.dn2-tgt.hit{transform:translate(-50%,-50%) scale(1.15);border-color:var(--lc);box-shadow:0 0 22px var(--lc),inset 0 0 14px var(--lc);color:#fff}
+.dn2-n{position:absolute;left:50%;width:72%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:16px;background:var(--lc);box-shadow:0 0 16px var(--lc);display:grid;place-items:center;color:#14081c;font:800 26px/1 system-ui;will-change:top}
+.dn2-n.gone{opacity:0;transition:opacity .15s}
+.dn2-j{position:absolute;left:50%;top:22%;transform:translateX(-50%);z-index:4;font:400 clamp(24px,5vw,38px)/1 var(--tube);text-shadow:0 0 12px var(--jc,#ff3d7f),0 0 28px var(--jc,#ff3d7f);pointer-events:none;white-space:nowrap}
+.dn2-cb{position:absolute;left:50%;top:30%;transform:translateX(-50%);z-index:4;font:600 13px var(--mono);letter-spacing:.2em;color:#ffd36a;pointer-events:none}
+.dn2-pad{position:absolute;left:50%;bottom:calc(10px + env(safe-area-inset-bottom,0px));width:min(420px,96vw);transform:translateX(-50%);display:grid;grid-template-columns:repeat(4,1fr);gap:8px;z-index:5}
+.dn2-pad button{all:unset;cursor:pointer;display:grid;place-items:center;height:70px;border-radius:18px;border:2px solid var(--lc);background:color-mix(in srgb,var(--lc) 14%,#0d0a16);font:800 28px/1 system-ui;color:#fff;touch-action:manipulation}
+.dn2-pad button.down{background:color-mix(in srgb,var(--lc) 45%,#0d0a16);box-shadow:0 0 18px var(--lc)}
+@media (hover:hover) and (min-width:900px){.dn2-pad button{height:54px;font-size:22px}}
+@media (max-width:760px){.dn2-girl{height:44%;opacity:.55}.dn2-girl.l{left:-6%}.dn2-girl.r{right:-6%}}
+</style>
+<script>
+(()=>{ if(!window.MSGames) return;
+  const LC=["#ff3d7f","#3ce6ff","#5dff9e","#ffd36a"], AR=["←","↓","↑","→"], KEYS={ArrowLeft:0,ArrowDown:1,ArrowUp:2,ArrowRight:3,d:0,f:1,j:2,k:3,a:0,s:1,w:2};
+  window.MSGames.register({id:"dance",title:"Dance-Off",color:"#ff3d7f",blurb:"Hit the arrows on the beat. Grace and Jill dance better the better you do.",
+    how:`<p>Arrows rise up the floor. Hit them <b>right as they reach the top boxes</b>.</p><p>Phone: tap the four pads. Keyboard: arrow keys (or D F J K).</p><p>Build a streak and Grace and Jill really go for it. Miss and they stumble.</p>`,
+    start(root,api){
+      const a=window.MSAC&&window.MSAC(); if(!a){ api.end(0,"No sound on this device"); return; }
+      root.innerHTML=`<div class="dn2"><div class="dn2-floor" id="dn-f"></div><div class="dn2-girl l" id="dn-g"></div><div class="dn2-girl r" id="dn-jl"></div>
+        <div class="dn2-tr" id="dn-tr">${LC.map((c,i)=>`<div class="dn2-lane" style="--lc:${c}"><div class="dn2-tgt" data-l="${i}">${AR[i]}</div></div>`).join("")}</div>
+        <div class="dn2-j" id="dn-j"></div><div class="dn2-cb" id="dn-cb"></div>
+        <div class="dn2-pad">${LC.map((c,i)=>`<button data-l="${i}" style="--lc:${c}" aria-label="${["Left","Down","Up","Right"][i]}">${AR[i]}</button>`).join("")}</div></div>`;
+      const $=id=>root.querySelector("#"+id), lanes=[...root.querySelectorAll(".dn2-lane")], tg=[...root.querySelectorAll(".dn2-tgt")], pads=[...root.querySelectorAll(".dn2-pad button")];
+      $("dn-f").innerHTML=Array.from({length:40},()=>"<i></i>").join(""); const tiles=[...$("dn-f").children];
+      const gEl=$("dn-g"), jEl=$("dn-jl"); for(let i=1;i<=8;i++){ new Image().src=`img/grace/d${i}.webp`; new Image().src=`img/girls/jill-d${i}.webp`; }
+      gEl.style.backgroundImage="url(img/grace/d1.webp)"; jEl.style.backgroundImage="url(img/girls/jill-d1.webp)";
+      // ---- song: 112 bpm, 32 bars of synth groove (stand-in until the real stems arrive)
+      const BPM=112, B=60/BPM, BARS=30, LEAD=4*B, t0=a.currentTime+.6+LEAD, END=t0+BARS*4*B;
+      const out=a.createGain(); out.gain.value=.55; out.connect(a.destination); let nb=a.createBuffer(1,a.sampleRate,a.sampleRate); const nd=nb.getChannelData(0); for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;
+      const tone=(t,f,d,type,g,f2)=>{ const o=a.createOscillator(), v=a.createGain(); o.type=type; o.frequency.setValueAtTime(f,t); if(f2) o.frequency.exponentialRampToValueAtTime(f2,t+d); v.gain.setValueAtTime(g,t); v.gain.exponentialRampToValueAtTime(.001,t+d); o.connect(v).connect(out); o.start(t); o.stop(t+d+.02); };
+      const nz=(t,f,d,g,type="highpass")=>{ const s=a.createBufferSource(); s.buffer=nb; const fl=a.createBiquadFilter(); fl.type=type; fl.frequency.value=f; const v=a.createGain(); v.gain.setValueAtTime(g,t); v.gain.exponentialRampToValueAtTime(.001,t+d); s.connect(fl).connect(v).connect(out); s.start(t); s.stop(t+d+.02); };
+      const PROG=[[110,220,261.6,329.6],[87.3,174.6,220,261.6],[130.8,261.6,329.6,392],[98,196,246.9,293.7]]; // Am F C G
+      let schedBar=0; function sched(upto){ while(schedBar<BARS&&t0+schedBar*4*B<upto+1.5){ const bt=t0+schedBar*4*B, ch=PROG[schedBar%4], big=schedBar>=4;
+          for(let q=0;q<4;q++){ const t=bt+q*B; tone(t,150,.28,"sine",.9,45); if(q%2) nz(t,1800,.16,big?.45:.25,"bandpass"); nz(t+B/2,7000,.05,.12); if(big) nz(t,7000,.04,.08);
+            tone(t,ch[0]/2,B*.9,"sawtooth",.13); tone(t+B/2,ch[0],B*.4,"square",.05); }
+          if(big) ch.slice(1).forEach(f=>tone(bt,f,4*B*.95,"triangle",.035));
+          schedBar++; } }
+      // ---- chart: notes on beats/half-beats, denser later
+      const notes=[]; let prev=-1; for(let bar=1;bar<BARS-1;bar++){ const dens=bar<6?.0:bar<14?.35:bar<22?.55:.7;
+        for(let e=0;e<8;e++){ const onBeat=e%2===0; if(!onBeat&&Math.random()>dens) continue; if(onBeat&&bar<3&&e%4) continue;
+          let l; do{ l=Math.floor(Math.random()*4); }while(l===prev&&Math.random()<.6); prev=l;
+          notes.push({t:t0+bar*4*B+e*B/2,l,el:null,done:false});
+          if(bar>16&&onBeat&&Math.random()<.12){ let l2=(l+2)%4; notes.push({t:t0+bar*4*B+e*B/2,l:l2,el:null,done:false}); } } }
+      let score=0, combo=0, maxc=0, hits=0, miss=0, alive=true, raf=0, fr=0, lastBeat=-1;
+      const TRAVEL=1.6, PERF=.055, GOOD=.12;
+      const hud=()=>api.hud([["Score",score],["Combo",combo]]);
+      function judge(txt,c){ const j=$("dn-j"); j.textContent=txt; j.style.setProperty("--jc",c); j.animate([{transform:"translateX(-50%) scale(1.25)",opacity:1},{transform:"translateX(-50%) scale(1)",opacity:1,offset:.3},{opacity:0}],{duration:650,fill:"forwards"}); $("dn-cb").textContent=combo>=5?combo+" COMBO":""; }
+      function dancers(){ const lv=Math.min(3,Math.floor(combo/8)); [gEl,jEl].forEach(e=>{ e.classList.toggle("hot",lv>=2); }); }
+      function hit(l){ if(!alive) return; const now=a.currentTime; tg[l].classList.add("hit"); setTimeout(()=>tg[l].classList.remove("hit"),110);
+        let best=null, bd=9; notes.forEach(n=>{ if(!n.done&&n.l===l){ const d=Math.abs(n.t-now); if(d<bd){ bd=d; best=n; } } });
+        if(best&&bd<=GOOD){ best.done=true; best.el&&best.el.classList.add("gone"); combo++; maxc=Math.max(maxc,combo); hits++; const p=bd<=PERF;
+          score+=(p?300:120)*(1+Math.min(4,Math.floor(combo/10))); judge(p?"PERFECT":"GOOD",p?"#ffd36a":"#3ce6ff"); step(Math.min(3,1+Math.floor(combo/8))); }
+        else { tone(now,90,.12,"square",.08); } hud(); dancers(); }
+      function step(n){ fr=(fr+n)%8; gEl.style.backgroundImage=`url(img/grace/d${fr+1}.webp)`; jEl.style.backgroundImage=`url(img/girls/jill-d${((fr+3)%8)+1}.webp)`; [gEl,jEl].forEach(e=>e.classList.remove("oops")); }
+      function missed(n){ n.done=true; miss++; combo=0; judge("MISS","#ff3d3d"); [gEl,jEl].forEach(e=>e.classList.add("oops")); setTimeout(()=>[gEl,jEl].forEach(e=>e.classList.remove("oops")),350); hud(); dancers(); }
+      function loop(){ if(!alive) return; const now=a.currentTime; sched(now); const H=lanes[0].clientHeight, top=H*.09, bot=H+40;
+        notes.forEach(n=>{ if(n.done&&!n.el) return; const dt=n.t-now; if(dt>TRAVEL||(n.done&&n.el&&dt<-.25)){ if(n.el&&n.done){ n.el.remove(); n.el=null; } return; }
+          if(!n.el&&!n.done){ n.el=document.createElement("div"); n.el.className="dn2-n"; n.el.textContent=AR[n.l]; lanes[n.l].appendChild(n.el); }
+          if(n.el) n.el.style.top=(top+(dt/TRAVEL)*(bot-top))+"px";
+          if(!n.done&&dt<-GOOD) missed(n); });
+        const beat=Math.floor((now-t0)/B); if(beat!==lastBeat&&now>=t0){ lastBeat=beat; const c=LC[beat%4]; tiles.forEach((t,i)=>{ const on=Math.random()<(.18+Math.min(.5,combo/40)); t.style.setProperty("--tc",c); t.classList.toggle("on",on); });
+          if(combo>=3&&beat%2===0) step(1); }
+        if(now>END+.4){ finish(); return; } raf=requestAnimationFrame(loop); }
+      function finish(){ if(!alive) return; alive=false; cancelAnimationFrame(raf); const acc=Math.round(hits/Math.max(1,hits+miss)*100); score+=maxc*20;
+        api.end(score,acc>=95?"Floor’s on fire!":acc>=80?"Grace approves":acc>=55?"Not bad, two left feet":"Grace is embarrassed for you"); }
+      const key=e=>{ const l=KEYS[e.key]; if(l!==undefined&&!e.repeat){ e.preventDefault(); hit(l); } }; addEventListener("keydown",key);
+      pads.forEach(b=>{ b.addEventListener("pointerdown",e=>{ e.preventDefault(); b.classList.add("down"); hit(+b.dataset.l); }); ["pointerup","pointerleave","pointercancel"].forEach(t=>b.addEventListener(t,()=>b.classList.remove("down"))); });
+      hud(); api.toast("Ready…"); setTimeout(()=>alive&&api.toast("Dance!"),LEAD*1000); raf=requestAnimationFrame(loop);
+      return ()=>{ alive=false; cancelAnimationFrame(raf); removeEventListener("keydown",key); try{ out.gain.setTargetAtTime(0,a.currentTime,.05); setTimeout(()=>out.disconnect(),400); }catch(_){} };
     }});
 })();
 </script>
