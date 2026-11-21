@@ -575,7 +575,7 @@ body.in-room .mini{display:none}
 .jx.open .jx-stage{transform:none}
 .jx-box{position:relative;height:min(68vh,620px);aspect-ratio:496/900;cursor:pointer;touch-action:manipulation;outline:none;-webkit-tap-highlight-color:transparent;filter:drop-shadow(0 0 30px rgba(255,190,90,.25))}
 .jx-box:focus-visible{filter:drop-shadow(0 0 0 2px var(--cyan)) drop-shadow(0 0 18px var(--cyan))}
-.jx-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;transition:opacity .6s}
+.jx-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;transition:opacity .28s}
 .jz{position:fixed;inset:0;z-index:79;cursor:pointer;-webkit-tap-highlight-color:transparent;opacity:0;transition:opacity .4s}
 .jz.on{opacity:1}
 .jz-say{position:absolute;left:50%;top:14%;transform:translateX(-50%);background:#fff;color:#111;font:700 14px/1.2 ui-monospace,Menlo,monospace;padding:8px 12px;border-radius:12px;white-space:nowrap;box-shadow:0 6px 24px rgba(0,0,0,.5)}
@@ -1704,12 +1704,12 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   const jxLoad=s=>{ (SETS[GIRL][s]||[]).forEach(v=>{ const i=new Image(); i.src=v.src; }); };
   function jxFrame(src){ const im=[$("jx-img"),$("jx-img2")], back=im[1-jxFront], front=im[jxFront];
     const swap=()=>{ back.style.zIndex=1; front.style.zIndex=0; back.style.transition=""; back.style.opacity=1; jxFront=1-jxFront;
-      clearTimeout(jxFrame.t); jxFrame.t=setTimeout(()=>{ front.style.transition="none"; front.style.opacity=0; },650); };
+      clearTimeout(jxFrame.t); jxFrame.t=setTimeout(()=>{ front.style.transition="none"; front.style.opacity=0; },320); };
     back.style.transition="none"; back.style.opacity=0; void back.offsetWidth;
     back.src=src; (back.decode?back.decode():Promise.resolve()).then(swap,swap); }
   function jxShow(s){ clearInterval(jxCyc); const a=SETS[GIRL][s].slice().sort(()=>Math.random()-.5); let i=0;
     jxFrame(a[0].src); jxSay(a[0].say); jxLoad(s+1);
-    if(a.length>1&&!still) jxCyc=setInterval(()=>{ i=(i+1)%a.length; jxFrame(a[i].src); },s===6?1300:1500); }
+    if(a.length>1&&!still) jxCyc=setInterval(()=>{ i=(i+1)%a.length; jxFrame(a[i].src); },s===6?650:750); }
   /* roof camera pushes in on the jar sitting on the ledge */
   let rzOrig=null; document.body.appendChild(JX); document.body.appendChild($("jz"));
   function roofZoom(on,ms,done){ const st=$("stage");
