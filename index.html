@@ -2327,7 +2327,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   const stage=$("stage"), fly=$("flyer");
   const phone=()=>innerWidth<=760||(innerHeight>innerWidth&&innerWidth<=1100); /* phones + upright tablets: fill the height, swipe sideways */
   const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
-  let px=0.5, py=0.42, ZC=1, ZT=1; const PZ=.82; /* phones: a touch closer so the band and props read bigger */
+  let px=0.5, py=0.42, ZC=1, ZT=1, PYC=.5, PYT=.5; const PZ=.82; /* phones: a touch closer so the band and props read bigger */
   let lastPlace="";
   function place(force){
     const key=stage.clientWidth+"x"+stage.clientHeight+":"+px.toFixed(4)+":"+py.toFixed(4)+":"+ZC.toFixed(4); if(!force&&key===lastPlace) return; lastPlace=key;
@@ -2420,13 +2420,13 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
-  const PSP=[{x:288,z:1,n:"Hangout"},{x:1122,z:1,n:"The band"},{x:1864,z:1,n:"Lounge"}] /* phone: same view centres as the view bars, roof fills the full screen height (Pat 11-21) */, DSP=[{x:288,z:1.63,n:"Hangout"},{x:1122,z:1.21,n:"The band"},{x:1864,z:1.69,n:"Lounge"}]; /* desktop: Pat's locked view bars (centre in play px, zoom) */ window.MSPhSpots=PSP; let spot=1, dspot=1; /* 3 stops everywhere: sitting area, band (default), partial lounge */
-  const TSP=[{x:288,z:1.46,n:"Hangout"},{x:1122,z:1.08,n:"The band"},{x:1864,z:1.51,n:"Lounge"}]; /* tablets (touch, landscape): Pat's iPad view bars */
+  const PSP=[{x:288,z:1,n:"Sofa"},{x:1122,z:1,n:"The band"},{x:1864,z:1,n:"Lounge"}] /* phone: same view centres as the view bars, roof fills the full screen height (Pat 11-21) */, DSP=[{x:833,z:1.165,y:0,n:"The band"},{x:1878,z:1.6,y:.246,n:"Lounge"}]; /* desktop: Pat's 2 sections (main = band + sofa, top-anchored; lounge peek) */ /* desktop: Pat's locked view bars (centre in play px, zoom) */ window.MSPhSpots=PSP; let spot=1, dspot=0; /* 3 stops everywhere: sitting area, band (default), partial lounge */
+  const TSP=[{x:833,z:1.165,y:0,n:"The band"},{x:1878,z:1.6,y:.246,n:"Lounge"}]; /* tablets (touch, landscape): Pat's iPad view bars */
   const tablet=()=>!phone()&&innerWidth<1300&&matchMedia("(pointer:coarse)").matches;
   const SPS=()=>phone()?PSP:tablet()?TSP:DSP;
   const spx=p=>p.x+OFF;
-  ZC=ZT=SPS()[1].z||1; let cx=SPS()[1].x+OFF, cxT=cx, drag=null, hinted=true, t0=performance.now();
-  window.MSPhGo=(i,d)=>{ const L=SPS(); let cur=phone()?spot:dspot; if(i==null) i=cur+d; i=Math.max(0,Math.min(L.length-1,i)); if(phone()) spot=i; else dspot=i; ZT=L[i].z||1; cxT=clampC(spx(L[i])); window.MSPhSpot&&window.MSPhSpot(i); window.dispatchEvent(new CustomEvent("msview",{detail:i})); };
+  const S0=SPS()[phone()?1:0]; ZC=ZT=S0.z||1; PYC=PYT=S0.y??.5; let cx=S0.x+OFF, cxT=cx, drag=null, hinted=true, t0=performance.now();
+  window.MSPhGo=(i,d)=>{ const L=SPS(); let cur=phone()?spot:dspot; if(i==null) i=cur+d; i=Math.max(0,Math.min(L.length-1,i)); if(phone()) spot=i; else dspot=i; ZT=L[i].z||1; PYT=L[i].y??.5; cxT=clampC(spx(L[i])); window.MSPhSpot&&window.MSPhSpot(i); window.MSView=L[i].n; window.dispatchEvent(new CustomEvent("msview",{detail:L[i].n})); };
   const span=()=>{ const W=stage.clientWidth,H=stage.clientHeight,s=Math.max(W/IMG.w,H/IMG.h)*ZC; return {W,s,half:W/2/s}; };
   const clampC=c=>{ const {half}=span(); return Math.max(half,Math.min(IMG.w-half,c)); };
   const toPx=c=>{ const {W,s}=span(), iw=IMG.w*s; return iw<=W?0.5:Math.max(0,Math.min(1,(W/2-c*s)/(W-iw))); };
@@ -2444,7 +2444,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       ZC+=(ZT-ZC)*0.14; if(Math.abs(ZT-ZC)<.002) ZC=ZT; cxT=clampC(cxT); cx+= (cxT-cx)*(drag?0.6:0.16); py=0.5; px=toPx(cx);
       const h=$("pan-hint"); if(h) h.style.opacity=(!hinted&&t-t0>1000)?"1":"0";
       const le=$("lng-edge"), fl=$("pk-floor"); if(le&&fl){ const r=fl.getBoundingClientRect(); le.classList.toggle("off", r.left+r.width*.5 < stage.clientWidth-20); }
-    } else { ZC+=(ZT-ZC)*0.12; if(Math.abs(ZT-ZC)<.002) ZC=ZT; cxT=clampC(cxT); cx+=(cxT-cx)*(drag?0.6:0.12); py=0.5; px=toPx(cx); }
+    } else { ZC+=(ZT-ZC)*0.12; if(Math.abs(ZT-ZC)<.002) ZC=ZT; cxT=clampC(cxT); cx+=(cxT-cx)*(drag?0.6:0.12); PYC+=(PYT-PYC)*0.12; py=PYC; px=toPx(cx); }
     if(tall()) py=0.5;
     place(); if(window.MSAway&&window.MSAway()) setTimeout(()=>requestAnimationFrame(tick),400); else requestAnimationFrame(tick);
   }
@@ -3090,9 +3090,15 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   // every so often one of them pulls a stunt; ?gag=pat|jordan|jacob runs one right away
   const CREW={pat:PAT,jordan:JORDAN,jacob:JACOB}; window.MSGag=n=>CREW[n]&&CREW[n].gag();
   // the band follows the camera: Hangout = Pat to the sofa, Jordan by the binoculars; Lounge = Jordan to the bar, Pat by the bar; band view = back to the kit
-  { const PLAN={0:[[PAT,11,"sit"],[JORDAN,12,"sit"]],1:[[PAT,9],[JORDAN,10]],2:[[JORDAN,13,"bar"],[PAT,14,"bar"]]}; let vT=0, gen=0;
+  { const PLAN={"Sofa":[[PAT,11,"sit"],[JORDAN,12,"sit"]],"The band":[[PAT,9],[JORDAN,10]],"Lounge":[[JORDAN,13,"bar"],[PAT,14,"bar"]]}; let vT=0, gen=0;
     addEventListener("msview",e=>{ clearTimeout(vT); const v=e.detail, g=++gen; vT=setTimeout(async()=>{ if(still) return;
-      for(const [mb,sp,end] of PLAN[v]||[]){ if(g!==gen) return; mb.walkTo(sp,end).then(()=>{ if(v===1&&g===gen) mb.resume(); }); await wait(1300); } },650); }); }
+      for(const [mb,sp,end] of PLAN[v]||[]){ if(g!==gen) return; mb.walkTo(sp,end).then(()=>{ if(v==="The band"&&g===gen) mb.resume(); }); await wait(1300); } },650); });
+    // desktop main view shows the sofa: now and then one of them wanders over, sits a while, then heads back to the kit
+    const isPh=()=>innerWidth<=760||(innerHeight>innerWidth&&innerWidth<=1100); let lounging=null;
+    setInterval(async()=>{ if(still||isPh()||gagOn||lounging||document.hidden||(window.MSView&&window.MSView!=="The band")||Math.random()>.45) return;
+      const mb=Math.random()<.5?PAT:JORDAN; if(mb.busy) return; const g=gen; lounging=mb;
+      await mb.walkTo(mb===PAT?11:12,"sit"); await wait(11000+Math.random()*8000);
+      if(g===gen&&(!window.MSView||window.MSView==="The band")) await mb.walkTo(mb===PAT?9:10); if(g===gen) mb.resume(); lounging=null; },26000); }
   // Grace on the roof: comes up off the dance floor full size and dances with each of the band
   window.MSGraceRoof=(()=>{
     const FR=[1,2,3,4,5,6,7,8].map(i=>"img/grace/d"+i+".webp?v=2"), W=[170,233,186,254,206,231,224,222], AX=[.406,.387,.397,.575,.382,.571,.418,.504];
@@ -4351,8 +4357,8 @@ body.ph.in-room .ph-dots,body.ph.in-room .ph-menu,body.ph.jx-zoom .ph-dots,body.
   // spots
   const SP=window.MSPhSpots||[], dd=$("ph-dd");
   dd.style.display="inline-flex"; dd.style.gap="6px"; dd.innerHTML=SP.map((s,i)=>`<button data-i="${i}" aria-label="${s.n}"></button>`).join("");
-  const show=i=>{ [...dd.children].forEach((b,k)=>b.classList.toggle("on",k===i)); $("ph-nm").textContent=SP[i]?SP[i].n:""; $("dk-l").classList.toggle("off",!isPh()&&i===0); $("dk-r").classList.toggle("off",!isPh()&&i>=2); };
-  window.MSPhSpot=show; show(1);
+  const show=i=>{ [...dd.children].forEach((b,k)=>b.classList.toggle("on",k===i)); $("ph-nm").textContent=SP[i]?SP[i].n:""; $("dk-l").classList.toggle("off",!isPh()&&i===0); $("dk-r").classList.toggle("off",!isPh()&&i>=1); };
+  window.MSPhSpot=show; show(isPh()?1:0);
   $("ph-dots").addEventListener("click",e=>{ e.stopPropagation(); const b=e.target.closest("button"); if(!b||!window.MSPhGo) return; if(b.dataset.i!=null) window.MSPhGo(+b.dataset.i); else window.MSPhGo(null,+b.dataset.d); });
   // menu
   function open(){ const np=$("t-listen"), ns=$("t-shows"); if(np) $("ph-np").textContent=np.textContent.replace(/\s*▸$/,"")+" ▸"; if(ns) $("ph-sh-shows").textContent=ns.textContent; sh.hidden=false; requestAnimationFrame(()=>sh.classList.add("on")); }
@@ -4385,6 +4391,21 @@ body.ph.in-room .ph-dots,body.ph.in-room .ph-menu,body.ph.jx-zoom .ph-dots,body.
     const u=through(el,e); if(u&&u!==el&&!el.contains(u)) u.click(); },true);
   document.addEventListener("mousemove",e=>{ const el=e.target.closest&&e.target.closest(".bm"); if(!el) return; el.style.cursor=solid(el,e.clientX,e.clientY)?"pointer":"default"; },{passive:true});
 })();
+</script>
+<style>
+#enter-lng{position:absolute;left:50%;bottom:calc(var(--barh,0px) + 28px);transform:translate(-50%,12px);z-index:40;display:flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;border:2px solid #ff3d7f;background:rgba(14,8,20,.72);color:#fff;font:500 17px/1 "Outfit",system-ui,sans-serif;letter-spacing:.02em;cursor:pointer;box-shadow:0 0 16px rgba(255,61,127,.6),inset 0 0 12px rgba(255,61,127,.35);opacity:0;pointer-events:none;transition:opacity .35s,transform .35s;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+#enter-lng.on{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+#enter-lng b{font-weight:400;color:#ff9ac4}
+#enter-lng:hover,#enter-lng:focus-visible{box-shadow:0 0 24px rgba(255,61,127,.9),inset 0 0 14px rgba(255,61,127,.5);outline:none}
+body.ph #enter-lng{bottom:84px;font-size:15px;padding:10px 18px}
+@media (prefers-reduced-motion:reduce){#enter-lng{transition:none}}
+</style>
+<script>
+/* lounge peek: from the roof you look over at the lounge; this button takes you inside (the lounge's own fly-in does the travel) */
+(()=>{ const st=document.getElementById("stage"); if(!st) return; const b=document.createElement("button"); b.id="enter-lng"; b.type="button"; b.innerHTML='Enter the lounge <b>↘</b>'; st.appendChild(b);
+  const set=v=>b.classList.toggle("on",v==="Lounge"); addEventListener("msview",e=>set(e.detail));
+  b.addEventListener("click",e=>{ e.stopPropagation(); b.classList.remove("on"); const a=document.querySelector(".pill[data-lounge]"); a&&a.click(); });
+  addEventListener("hashchange",()=>{ if(location.hash!=="#lounge") set(window.MSView); }); })();
 </script>
 
 </body>
