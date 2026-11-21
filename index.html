@@ -2420,10 +2420,10 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
-  const PSP=[{x:200,n:"Hangout"},{x:640,n:"The jar"},{x:1060,n:"The band"},{x:1760,n:"The bar"},{x:2150,n:"Lounge"}], DSP=[{x:-175,n:"Hangout & band"},{x:1480,n:"Band & lounge"}]; window.MSPhSpots=PSP; let spot=2, dspot=1;
+  const PSP=[{x:330,n:"Hangout"},{x:1060,n:"The band"},{x:2000,n:"Lounge"}], DSP=[{x:-175,n:"Hangout"},{x:1000,n:"The band"},{x:2400,n:"Lounge"}]; window.MSPhSpots=PSP; let spot=1, dspot=1; /* 3 stops everywhere: sitting area, band (default), partial lounge */
   const SPS=()=>phone()?PSP:DSP;
   const spx=p=>p.x+OFF;
-  let cx=(phone()?PSP[2].x:DSP[1].x)+OFF, cxT=cx, drag=null, hinted=true, t0=performance.now();
+  let cx=(phone()?PSP[1].x:DSP[1].x)+OFF, cxT=cx, drag=null, hinted=true, t0=performance.now();
   window.MSPhGo=(i,d)=>{ const L=SPS(); let cur=phone()?spot:dspot; if(i==null) i=cur+d; i=Math.max(0,Math.min(L.length-1,i)); if(phone()) spot=i; else dspot=i; cxT=clampC(spx(L[i])); window.MSPhSpot&&window.MSPhSpot(i); };
   const span=()=>{ const W=stage.clientWidth,H=stage.clientHeight,s=Math.max(W/IMG.w,H/IMG.h)*(phone()?PZ:1); return {W,s,half:W/2/s}; };
   const clampC=c=>{ const {half}=span(); return Math.max(half,Math.min(IMG.w-half,c)); };
@@ -4331,8 +4331,8 @@ body.ph.in-room .ph-dots,body.ph.in-room .ph-menu,body.ph.jx-zoom .ph-dots,body.
   // spots
   const SP=window.MSPhSpots||[], dd=$("ph-dd");
   dd.style.display="inline-flex"; dd.style.gap="6px"; dd.innerHTML=SP.map((s,i)=>`<button data-i="${i}" aria-label="${s.n}"></button>`).join("");
-  const show=i=>{ [...dd.children].forEach((b,k)=>b.classList.toggle("on",k===i)); $("ph-nm").textContent=SP[i]?SP[i].n:""; $("dk-l").classList.toggle("off",!isPh()&&i===0); $("dk-r").classList.toggle("off",!isPh()&&i>=1); };
-  window.MSPhSpot=show; show(isPh()?2:1);
+  const show=i=>{ [...dd.children].forEach((b,k)=>b.classList.toggle("on",k===i)); $("ph-nm").textContent=SP[i]?SP[i].n:""; $("dk-l").classList.toggle("off",!isPh()&&i===0); $("dk-r").classList.toggle("off",!isPh()&&i>=2); };
+  window.MSPhSpot=show; show(1);
   $("ph-dots").addEventListener("click",e=>{ e.stopPropagation(); const b=e.target.closest("button"); if(!b||!window.MSPhGo) return; if(b.dataset.i!=null) window.MSPhGo(+b.dataset.i); else window.MSPhGo(null,+b.dataset.d); });
   // menu
   function open(){ const np=$("t-listen"), ns=$("t-shows"); if(np) $("ph-np").textContent=np.textContent.replace(/\s*▸$/,"")+" ▸"; if(ns) $("ph-sh-shows").textContent=ns.textContent; sh.hidden=false; requestAnimationFrame(()=>sh.classList.add("on")); }
