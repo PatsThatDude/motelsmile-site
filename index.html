@@ -113,8 +113,8 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 @media (max-width:760px){.stage{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}}
 #play{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;z-index:3;pointer-events:none}
 #play .pk,#lg-play .pk{appearance:none;-webkit-appearance:none;background-color:transparent;border:0;padding:0;margin:0;color:transparent;position:absolute;pointer-events:auto;cursor:pointer;border-radius:8px;-webkit-tap-highlight-color:transparent}
-#play .pk.img{background-image:url(img/roof-main.webp?v=c3);background-size:1672px 941px;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%)}
-#roof-fx{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:60}
+#play .pk.img{background-image:url(img/roof-wide.webp?v=1);background-size:2412px 941px;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%)}
+#roof-fx{position:absolute;left:0;top:0;width:2412px;height:941px;pointer-events:none;z-index:60}
 #roof-glass{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:60;opacity:0;background:#ff3fd0;-webkit-mask:url(img/roof-glass.webp?v=1) 0 0/1672px 941px;mask:url(img/roof-glass.webp?v=1) 0 0/1672px 941px;mix-blend-mode:screen}
 #play a.pk{display:block}
 #play .pk:focus-visible,#lg-play .pk:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
@@ -282,10 +282,12 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <button class="pk" id="pk-jar" style="left:590px;top:434px;width:37px;height:60px" aria-label="A jar on the ledge. Someone is trapped inside. Open it up close" hidden></button>
     <button class="pk" id="pk-cooler" style="left:1225px;top:550px;width:140px;height:90px" aria-label="Cooler"></button>
     <div id="roof-glass" aria-hidden="true"></div>
-    <canvas id="roof-fx" width="1672" height="941" aria-hidden="true"></canvas>
+    <canvas id="roof-fx" width="2412" height="941" aria-hidden="true"></canvas>
     <canvas id="gr-roof" width="1672" height="941" aria-hidden="true" style="position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:60"></canvas>
     <a class="lng-sign" id="lng-sign" href="#lounge" data-lounge aria-label="Smile Lounge: go downstairs"><span>Smile Lounge</span><i>↓</i></a>
-    <a class="pk" id="pk-floor" href="#lounge" data-lounge style="left:1337px;top:665px;width:185px;height:51px;clip-path:polygon(3.2% 11.8%,55.7% 88.2%,96.8% 11.8%)" aria-label="Dance floor: go to the Smile Lounge"></a>
+    <a class="pk" id="pk-floor" href="#lounge" data-lounge style="left:1850px;top:578px;width:436px;height:74px;clip-path:polygon(2% 0,100% 0,89% 100%,0 100%)" aria-label="Dance floor: go to the Smile Lounge"></a>
+    <a class="pk" id="pk-bar" href="#lounge" data-lounge style="left:1648px;top:428px;width:206px;height:192px" aria-label="The bar: go to the Smile Lounge"></a>
+    <a class="pk" id="pk-couch" href="#lounge" data-lounge style="left:1860px;top:400px;width:440px;height:178px" aria-label="The lounge: record player and couch"></a>
     <a class="pk" id="pk-arcade" href="#arcade" data-arcade style="left:335px;top:318px;width:128px;height:245px" aria-label="Arcade: go to the game corner"></a>
     <canvas id="pat-fx" width="1672" height="941"></canvas>
     <div id="tags"></div>
@@ -582,14 +584,14 @@ body.in-room .mini{display:none}
 .jz-tip{position:absolute;left:50%;bottom:9%;transform:translateX(-50%);color:#fff;font-size:15px;text-shadow:0 2px 10px #000;white-space:nowrap;animation:jzp 1.6s ease-in-out infinite}
 @keyframes jzp{50%{opacity:.45}}
 /* lounge entrance: neon sign over the skylight + phone edge chip when it's off screen */
-.lng-sign{position:absolute;left:1352px;top:598px;width:160px;z-index:6;display:flex;flex-direction:column;align-items:center;text-decoration:none;font-family:var(--tube);color:#fff;-webkit-tap-highlight-color:transparent;animation:lngGlow 2.4s ease-in-out infinite}
+.lng-sign{position:absolute;left:2056px;top:326px;width:160px;z-index:6;display:flex;flex-direction:column;align-items:center;text-decoration:none;font-family:var(--tube);color:#fff;-webkit-tap-highlight-color:transparent;animation:lngGlow 2.4s ease-in-out infinite}
 .lng-sign span{font-size:26px;line-height:1;white-space:nowrap;text-shadow:0 0 6px #ff3d7f,0 0 16px #ff3d7f,0 0 30px #ff3d7f}
 .lng-sign i{font-style:normal;font-size:28px;line-height:1;margin-top:2px;color:#ffd36a;text-shadow:0 0 10px #ffb03d;animation:lngBob 1.2s ease-in-out infinite}
 @keyframes lngGlow{50%{filter:brightness(1.35)}}
 @keyframes lngBob{50%{transform:translateY(6px)}}
 .lng-edge{display:none}
 @media (max-width:760px){
-  .lng-sign span{font-size:32px}.lng-sign{left:1335px;width:194px;top:582px}
+  .lng-sign span{font-size:32px}.lng-sign{left:2039px;width:194px;top:312px}
   .lng-edge{display:flex;align-items:center;gap:4px;position:absolute;right:0;top:46%;z-index:6;padding:10px 10px 10px 14px;border-radius:22px 0 0 22px;background:rgba(10,8,18,.72);border:1.5px solid var(--pink);border-right:0;color:#fff;font:600 15px/1 var(--sans,system-ui);text-decoration:none;box-shadow:0 0 14px rgba(255,61,127,.55);transition:opacity .3s,transform .3s;-webkit-tap-highlight-color:transparent}
   .lng-edge b{font-size:22px;line-height:.8;color:var(--pink)}
   .lng-edge.off{opacity:0;transform:translateX(100%);pointer-events:none}
@@ -604,7 +606,7 @@ body.jx-zoom .lng-edge,body.in-room .lng-edge{opacity:0!important;pointer-events
 .welcome b{font-family:var(--tube);font-weight:400;font-size:24px;text-shadow:0 0 10px var(--pink)}
 .welcome span{font:13px/1.35 var(--mono);color:#e9e3f2}
 .welcome.on{opacity:1;transform:translate(-50%,0)}
-@media (min-width:761px) and (min-aspect-ratio:1/1){body:not(.ph) .welcome{left:27%}}
+@media (min-width:761px) and (min-aspect-ratio:1/1){body:not(.ph) .welcome{left:50%;top:auto;bottom:calc(var(--barh,84px) + 22px)}}
 /* roof secrets chip + list */
 .hunt{cursor:pointer;font:inherit;font:11px var(--mono)!important;background:rgba(8,6,16,.55)}
 .hunt.on{display:block}
@@ -1581,7 +1583,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 /* ---------- the dance floor: lever in the Smile Lounge, glow + beams carry over to the main roof ---------- */
 (()=>{
   const $=id=>document.getElementById(id), still=matchMedia("(prefers-reduced-motion:reduce)").matches;
-  const LT=[[[675.7, 766.2], [834.2, 751.2], [881.0, 776.1], [714.8, 794.5], 0, 0], [[834.2, 751.2], [970.1, 738.3], [1022.1, 760.5], [881.0, 776.1], 1, 0], [[970.1, 738.3], [1088.0, 727.1], [1143.4, 747.0], [1022.1, 760.5], 2, 0], [[1088.0, 727.1], [1191.2, 717.3], [1248.8, 735.4], [1143.4, 747.0], 3, 0], [[1191.2, 717.3], [1282.3, 708.6], [1341.1, 725.2], [1248.8, 735.4], 4, 0], [[1282.3, 708.6], [1363.4, 700.9], [1422.8, 716.1], [1341.1, 725.2], 5, 0], [[1363.4, 700.9], [1435.9, 694.0], [1495.5, 708.1], [1422.8, 716.1], 6, 0], [[714.8, 794.5], [881.0, 776.1], [934.9, 804.7], [760.2, 827.4], 0, 1], [[881.0, 776.1], [1022.1, 760.5], [1081.4, 785.7], [934.9, 804.7], 1, 1], [[1022.1, 760.5], [1143.4, 747.0], [1205.9, 769.6], [1081.4, 785.7], 2, 1], [[1143.4, 747.0], [1248.8, 735.4], [1313.2, 755.6], [1205.9, 769.6], 3, 1], [[1248.8, 735.4], [1341.1, 725.2], [1406.4, 743.5], [1313.2, 755.6], 4, 1], [[1341.1, 725.2], [1422.8, 716.1], [1488.3, 732.9], [1406.4, 743.5], 5, 1], [[1422.8, 716.1], [1495.5, 708.1], [1560.8, 723.5], [1488.3, 732.9], 6, 1], [[760.2, 827.4], [934.9, 804.7], [997.5, 838.0], [813.8, 866.1], 0, 2], [[934.9, 804.7], [1081.4, 785.7], [1149.3, 814.7], [997.5, 838.0], 1, 2], [[1081.4, 785.7], [1205.9, 769.6], [1276.9, 795.1], [1149.3, 814.7], 2, 2], [[1205.9, 769.6], [1313.2, 755.6], [1385.6, 778.4], [1276.9, 795.1], 3, 2], [[1313.2, 755.6], [1406.4, 743.5], [1479.4, 764.1], [1385.6, 778.4], 4, 2], [[1406.4, 743.5], [1488.3, 732.9], [1561.1, 751.5], [1479.4, 764.1], 5, 2], [[1488.3, 732.9], [1560.8, 723.5], [1632.9, 740.5], [1561.1, 751.5], 6, 2], [[813.8, 866.1], [997.5, 838.0], [1071.1, 877.1], [877.9, 912.5], 0, 3], [[997.5, 838.0], [1149.3, 814.7], [1228.1, 848.3], [1071.1, 877.1], 1, 3], [[1149.3, 814.7], [1276.9, 795.1], [1358.3, 824.4], [1228.1, 848.3], 2, 3], [[1276.9, 795.1], [1385.6, 778.4], [1467.9, 804.3], [1358.3, 824.4], 3, 3], [[1385.6, 778.4], [1479.4, 764.1], [1561.4, 787.1], [1467.9, 804.3], 4, 3], [[1479.4, 764.1], [1561.1, 751.5], [1642.3, 772.3], [1561.4, 787.1], 5, 3], [[1561.1, 751.5], [1632.9, 740.5], [1712.8, 759.4], [1642.3, 772.3], 6, 3], [[877.9, 912.5], [1071.1, 877.1], [1158.9, 923.7], [955.9, 969.0], 0, 4], [[1071.1, 877.1], [1228.1, 848.3], [1320.6, 887.7], [1158.9, 923.7], 1, 4], [[1228.1, 848.3], [1358.3, 824.4], [1452.4, 858.3], [1320.6, 887.7], 2, 4], [[1358.3, 824.4], [1467.9, 804.3], [1561.9, 833.9], [1452.4, 858.3], 3, 4], [[1467.9, 804.3], [1561.4, 787.1], [1654.4, 813.3], [1561.9, 833.9], 4, 4], [[1561.4, 787.1], [1642.3, 772.3], [1733.4, 795.7], [1654.4, 813.3], 5, 4], [[1642.3, 772.3], [1712.8, 759.4], [1801.8, 780.4], [1733.4, 795.7], 6, 4], [[955.9, 969.0], [1158.9, 923.7], [1265.4, 980.3], [1052.9, 1039.2], 0, 5], [[1158.9, 923.7], [1320.6, 887.7], [1430.5, 934.6], [1265.4, 980.3], 1, 5], [[1320.6, 887.7], [1452.4, 858.3], [1562.5, 898.0], [1430.5, 934.6], 2, 5], [[1452.4, 858.3], [1561.9, 833.9], [1670.5, 868.1], [1562.5, 898.0], 3, 5], [[1561.9, 833.9], [1654.4, 813.3], [1760.5, 843.1], [1670.5, 868.1], 4, 5], [[1654.4, 813.3], [1733.4, 795.7], [1836.6, 822.1], [1760.5, 843.1], 5, 5], [[1733.4, 795.7], [1801.8, 780.4], [1901.7, 804.0], [1836.6, 822.1], 6, 5], [[1052.9, 1039.2], [1265.4, 980.3], [1397.3, 1050.4], [1176.8, 1128.9], 0, 6], [[1265.4, 980.3], [1430.5, 934.6], [1563.5, 991.2], [1397.3, 1050.4], 1, 6], [[1430.5, 934.6], [1562.5, 898.0], [1693.2, 945.0], [1563.5, 991.2], 2, 6], [[1562.5, 898.0], [1670.5, 868.1], [1797.4, 908.0], [1693.2, 945.0], 3, 6], [[1670.5, 868.1], [1760.5, 843.1], [1882.8, 877.5], [1797.4, 908.0], 4, 6], [[1760.5, 843.1], [1836.6, 822.1], [1954.1, 852.1], [1882.8, 877.5], 5, 6], [[1836.6, 822.1], [1901.7, 804.0], [2014.6, 830.6], [1954.1, 852.1], 6, 6], [[1176.8, 1128.9], [1397.3, 1050.4], [1564.9, 1139.5], [1340.7, 1247.6], 0, 7], [[1397.3, 1050.4], [1563.5, 991.2], [1727.5, 1061.2], [1564.9, 1139.5], 1, 7], [[1563.5, 991.2], [1693.2, 945.0], [1850.8, 1001.8], [1727.5, 1061.2], 2, 7], [[1693.2, 945.0], [1797.4, 908.0], [1947.5, 955.2], [1850.8, 1001.8], 3, 7], [[1797.4, 908.0], [1882.8, 877.5], [2025.4, 917.7], [1947.5, 955.2], 4, 7], [[1882.8, 877.5], [1954.1, 852.1], [2089.4, 886.8], [2025.4, 917.7], 5, 7], [[1954.1, 852.1], [2014.6, 830.6], [2143.1, 860.9], [2089.4, 886.8], 6, 7]], MT=[[[1461.2, 718.2], [1546.6, 718.2], [1606.3, 739.1], [1513.8, 739.1], 0, 0], [[1416.2, 700.4], [1495.4, 700.4], [1546.6, 718.2], [1461.2, 718.2], 0, 1], [[1377.3, 684.9], [1451.1, 684.9], [1495.4, 700.4], [1416.2, 700.4], 0, 2], [[1343.2, 671.4], [1412.4, 671.4], [1451.1, 684.9], [1377.3, 684.9], 0, 3], [[1546.6, 718.2], [1631.9, 718.2], [1698.8, 739.1], [1606.3, 739.1], 1, 0], [[1495.4, 700.4], [1574.6, 700.4], [1631.9, 718.2], [1546.6, 718.2], 1, 1], [[1451.1, 684.9], [1525.0, 684.9], [1574.6, 700.4], [1495.4, 700.4], 1, 2], [[1412.4, 671.4], [1481.7, 671.4], [1525.0, 684.9], [1451.1, 684.9], 1, 3], [[1631.9, 718.2], [1717.2, 718.2], [1791.4, 739.1], [1698.8, 739.1], 2, 0], [[1574.6, 700.4], [1653.8, 700.4], [1717.2, 718.2], [1631.9, 718.2], 2, 1], [[1525.0, 684.9], [1598.9, 684.9], [1653.8, 700.4], [1574.6, 700.4], 2, 2], [[1481.7, 671.4], [1550.9, 671.4], [1598.9, 684.9], [1525.0, 684.9], 2, 3], [[1717.2, 718.2], [1802.6, 718.2], [1883.9, 739.1], [1791.4, 739.1], 3, 0], [[1653.8, 700.4], [1733.0, 700.4], [1802.6, 718.2], [1717.2, 718.2], 3, 1], [[1598.9, 684.9], [1672.8, 684.9], [1733.0, 700.4], [1653.8, 700.4], 3, 2], [[1550.9, 671.4], [1620.1, 671.4], [1672.8, 684.9], [1598.9, 684.9], 3, 3], [[1802.6, 718.2], [1887.9, 718.2], [1976.4, 739.1], [1883.9, 739.1], 4, 0], [[1733.0, 700.4], [1812.2, 700.4], [1887.9, 718.2], [1802.6, 718.2], 4, 1], [[1672.8, 684.9], [1746.6, 684.9], [1812.2, 700.4], [1733.0, 700.4], 4, 2], [[1620.1, 671.4], [1689.3, 671.4], [1746.6, 684.9], [1672.8, 684.9], 4, 3]];
+  const LT=[[[675.7, 766.2], [834.2, 751.2], [881.0, 776.1], [714.8, 794.5], 0, 0], [[834.2, 751.2], [970.1, 738.3], [1022.1, 760.5], [881.0, 776.1], 1, 0], [[970.1, 738.3], [1088.0, 727.1], [1143.4, 747.0], [1022.1, 760.5], 2, 0], [[1088.0, 727.1], [1191.2, 717.3], [1248.8, 735.4], [1143.4, 747.0], 3, 0], [[1191.2, 717.3], [1282.3, 708.6], [1341.1, 725.2], [1248.8, 735.4], 4, 0], [[1282.3, 708.6], [1363.4, 700.9], [1422.8, 716.1], [1341.1, 725.2], 5, 0], [[1363.4, 700.9], [1435.9, 694.0], [1495.5, 708.1], [1422.8, 716.1], 6, 0], [[714.8, 794.5], [881.0, 776.1], [934.9, 804.7], [760.2, 827.4], 0, 1], [[881.0, 776.1], [1022.1, 760.5], [1081.4, 785.7], [934.9, 804.7], 1, 1], [[1022.1, 760.5], [1143.4, 747.0], [1205.9, 769.6], [1081.4, 785.7], 2, 1], [[1143.4, 747.0], [1248.8, 735.4], [1313.2, 755.6], [1205.9, 769.6], 3, 1], [[1248.8, 735.4], [1341.1, 725.2], [1406.4, 743.5], [1313.2, 755.6], 4, 1], [[1341.1, 725.2], [1422.8, 716.1], [1488.3, 732.9], [1406.4, 743.5], 5, 1], [[1422.8, 716.1], [1495.5, 708.1], [1560.8, 723.5], [1488.3, 732.9], 6, 1], [[760.2, 827.4], [934.9, 804.7], [997.5, 838.0], [813.8, 866.1], 0, 2], [[934.9, 804.7], [1081.4, 785.7], [1149.3, 814.7], [997.5, 838.0], 1, 2], [[1081.4, 785.7], [1205.9, 769.6], [1276.9, 795.1], [1149.3, 814.7], 2, 2], [[1205.9, 769.6], [1313.2, 755.6], [1385.6, 778.4], [1276.9, 795.1], 3, 2], [[1313.2, 755.6], [1406.4, 743.5], [1479.4, 764.1], [1385.6, 778.4], 4, 2], [[1406.4, 743.5], [1488.3, 732.9], [1561.1, 751.5], [1479.4, 764.1], 5, 2], [[1488.3, 732.9], [1560.8, 723.5], [1632.9, 740.5], [1561.1, 751.5], 6, 2], [[813.8, 866.1], [997.5, 838.0], [1071.1, 877.1], [877.9, 912.5], 0, 3], [[997.5, 838.0], [1149.3, 814.7], [1228.1, 848.3], [1071.1, 877.1], 1, 3], [[1149.3, 814.7], [1276.9, 795.1], [1358.3, 824.4], [1228.1, 848.3], 2, 3], [[1276.9, 795.1], [1385.6, 778.4], [1467.9, 804.3], [1358.3, 824.4], 3, 3], [[1385.6, 778.4], [1479.4, 764.1], [1561.4, 787.1], [1467.9, 804.3], 4, 3], [[1479.4, 764.1], [1561.1, 751.5], [1642.3, 772.3], [1561.4, 787.1], 5, 3], [[1561.1, 751.5], [1632.9, 740.5], [1712.8, 759.4], [1642.3, 772.3], 6, 3], [[877.9, 912.5], [1071.1, 877.1], [1158.9, 923.7], [955.9, 969.0], 0, 4], [[1071.1, 877.1], [1228.1, 848.3], [1320.6, 887.7], [1158.9, 923.7], 1, 4], [[1228.1, 848.3], [1358.3, 824.4], [1452.4, 858.3], [1320.6, 887.7], 2, 4], [[1358.3, 824.4], [1467.9, 804.3], [1561.9, 833.9], [1452.4, 858.3], 3, 4], [[1467.9, 804.3], [1561.4, 787.1], [1654.4, 813.3], [1561.9, 833.9], 4, 4], [[1561.4, 787.1], [1642.3, 772.3], [1733.4, 795.7], [1654.4, 813.3], 5, 4], [[1642.3, 772.3], [1712.8, 759.4], [1801.8, 780.4], [1733.4, 795.7], 6, 4], [[955.9, 969.0], [1158.9, 923.7], [1265.4, 980.3], [1052.9, 1039.2], 0, 5], [[1158.9, 923.7], [1320.6, 887.7], [1430.5, 934.6], [1265.4, 980.3], 1, 5], [[1320.6, 887.7], [1452.4, 858.3], [1562.5, 898.0], [1430.5, 934.6], 2, 5], [[1452.4, 858.3], [1561.9, 833.9], [1670.5, 868.1], [1562.5, 898.0], 3, 5], [[1561.9, 833.9], [1654.4, 813.3], [1760.5, 843.1], [1670.5, 868.1], 4, 5], [[1654.4, 813.3], [1733.4, 795.7], [1836.6, 822.1], [1760.5, 843.1], 5, 5], [[1733.4, 795.7], [1801.8, 780.4], [1901.7, 804.0], [1836.6, 822.1], 6, 5], [[1052.9, 1039.2], [1265.4, 980.3], [1397.3, 1050.4], [1176.8, 1128.9], 0, 6], [[1265.4, 980.3], [1430.5, 934.6], [1563.5, 991.2], [1397.3, 1050.4], 1, 6], [[1430.5, 934.6], [1562.5, 898.0], [1693.2, 945.0], [1563.5, 991.2], 2, 6], [[1562.5, 898.0], [1670.5, 868.1], [1797.4, 908.0], [1693.2, 945.0], 3, 6], [[1670.5, 868.1], [1760.5, 843.1], [1882.8, 877.5], [1797.4, 908.0], 4, 6], [[1760.5, 843.1], [1836.6, 822.1], [1954.1, 852.1], [1882.8, 877.5], 5, 6], [[1836.6, 822.1], [1901.7, 804.0], [2014.6, 830.6], [1954.1, 852.1], 6, 6], [[1176.8, 1128.9], [1397.3, 1050.4], [1564.9, 1139.5], [1340.7, 1247.6], 0, 7], [[1397.3, 1050.4], [1563.5, 991.2], [1727.5, 1061.2], [1564.9, 1139.5], 1, 7], [[1563.5, 991.2], [1693.2, 945.0], [1850.8, 1001.8], [1727.5, 1061.2], 2, 7], [[1693.2, 945.0], [1797.4, 908.0], [1947.5, 955.2], [1850.8, 1001.8], 3, 7], [[1797.4, 908.0], [1882.8, 877.5], [2025.4, 917.7], [1947.5, 955.2], 4, 7], [[1882.8, 877.5], [1954.1, 852.1], [2089.4, 886.8], [2025.4, 917.7], 5, 7], [[1954.1, 852.1], [2014.6, 830.6], [2143.1, 860.9], [2089.4, 886.8], 6, 7]], MT=[[[1858.0, 580.0], [1911.0, 580.0], [1904.6, 615.0], [1854.0, 615.0], 0, 0], [[1911.0, 580.0], [1964.0, 580.0], [1955.2, 615.0], [1904.6, 615.0], 1, 0], [[1964.0, 580.0], [2017.0, 580.0], [2005.9, 615.0], [1955.2, 615.0], 2, 0], [[2017.0, 580.0], [2070.0, 580.0], [2056.5, 615.0], [2005.9, 615.0], 3, 0], [[2070.0, 580.0], [2123.0, 580.0], [2107.1, 615.0], [2056.5, 615.0], 4, 0], [[2123.0, 580.0], [2176.0, 580.0], [2157.8, 615.0], [2107.1, 615.0], 5, 0], [[2176.0, 580.0], [2229.0, 580.0], [2208.4, 615.0], [2157.8, 615.0], 6, 0], [[2229.0, 580.0], [2282.0, 580.0], [2259.0, 615.0], [2208.4, 615.0], 7, 0], [[1854.0, 615.0], [1904.6, 615.0], [1898.2, 650.0], [1850.0, 650.0], 0, 1], [[1904.6, 615.0], [1955.2, 615.0], [1946.5, 650.0], [1898.2, 650.0], 1, 1], [[1955.2, 615.0], [2005.9, 615.0], [1994.8, 650.0], [1946.5, 650.0], 2, 1], [[2005.9, 615.0], [2056.5, 615.0], [2043.0, 650.0], [1994.8, 650.0], 3, 1], [[2056.5, 615.0], [2107.1, 615.0], [2091.2, 650.0], [2043.0, 650.0], 4, 1], [[2107.1, 615.0], [2157.8, 615.0], [2139.5, 650.0], [2091.2, 650.0], 5, 1], [[2157.8, 615.0], [2208.4, 615.0], [2187.8, 650.0], [2139.5, 650.0], 6, 1], [[2208.4, 615.0], [2259.0, 615.0], [2236.0, 650.0], [2187.8, 650.0], 7, 1]];
   const lcv=$("lg-fx"), lx=lcv.getContext("2d"), mcv=$("roof-fx"), mx=mcv.getContext("2d"), glass=$("roof-glass"), plOn=$("pl-on"), lever=$("lg-lever");
   const occ=new Image(); occ.src="img/roof-occ.webp?v=1";
   const PAL=["#ff46c8","#46dcff","#ffaa46","#aa5aff"];
@@ -1601,7 +1603,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       ctx.fillStyle=g; ctx.beginPath(); ctx.moveTo(ex,ey); ctx.lineTo(ex+L*Math.cos(a-sp),ey+L*Math.sin(a-sp)); ctx.lineTo(ex+L*Math.cos(a+sp),ey+L*Math.sin(a+sp)); ctx.closePath(); ctx.fill();
       if(c.lens){ const r=ctx.createRadialGradient(ex,ey,0,ex,ey,22); r.addColorStop(0,"rgba(255,255,255,"+a0+")"); r.addColorStop(.3,c.col+(a0*.8)+")"); r.addColorStop(1,c.col+"0)"); ctx.fillStyle=r; ctx.beginPath(); ctx.arc(ex,ey,22,0,7); ctx.fill(); } } }
   const LCANS=[{x:268,y:314,tx:1000,ty:860,lo:38,len:1100,sp:.1,sw:.16,ph:0,col:"rgba(255,90,210,",lens:true},{x:1046,y:312,tx:1300,ty:820,lo:38,len:1100,sp:.1,sw:.16,ph:1.7,col:"rgba(90,220,255,",lens:true}];
-  const MCANS=[{x:1470,y:545,tx:1470-400*Math.cos(.43),ty:545-900,lo:0,len:900,sp:.08,sw:.3,ph:0,col:"rgba(255,90,210,",lens:false},{x:1600,y:540,tx:1600+300,ty:-300,lo:0,len:900,sp:.08,sw:.3,ph:2.1,col:"rgba(90,220,255,",lens:false}];
+  const MCANS=[{x:1980,y:470,tx:1980-400*Math.cos(.43),ty:470-900,lo:0,len:900,sp:.08,sw:.3,ph:0,col:"rgba(255,90,210,",lens:false},{x:2160,y:470,tx:2160+300,ty:-300,lo:0,len:900,sp:.08,sw:.3,ph:2.1,col:"rgba(90,220,255,",lens:false}];
   function clunk(){ try{ const a=window.MSAC(); if(!a) return; const t=a.currentTime, o=a.createOscillator(), g=a.createGain();
     o.frequency.setValueAtTime(90,t); o.frequency.exponentialRampToValueAtTime(40,t+.18); g.gain.setValueAtTime(.6,t); g.gain.exponentialRampToValueAtTime(.001,t+.25); o.connect(g).connect(a.destination); o.start(t); o.stop(t+.3);
     const n=a.createBuffer(1,a.sampleRate*.12,a.sampleRate), d=n.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);
@@ -1631,12 +1633,12 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       sx.clearRect(0,0,209,118); sx.globalCompositeOperation="lighter"; tiles(sx,LT,lvl,.125); lx.globalAlpha=.85; lx.drawImage(sm,0,0,1672,941); lx.drawImage(sm,0,0,1672,941); lx.globalAlpha=1;
       beams(lx,LCANS,now,on?.9:amp); lx.globalCompositeOperation="source-over"; }
     // main roof
-    mx.clearRect(0,0,1672,941); glass.style.opacity="0";
+    mx.clearRect(0,0,2412,941); glass.style.opacity="0";
     if(!inL&&!inA&&lvl){ mx.globalCompositeOperation="lighter"; tiles(mx,MT,lvl,1);
       if(occ.complete&&occ.naturalWidth){ mx.globalCompositeOperation="destination-out"; mx.drawImage(occ,0,0,1672,941); }
       mx.globalCompositeOperation="lighter";
       if(on){ beams(mx,MCANS,now,.55); const c=PAL[step%4]; glass.style.background=c; glass.style.opacity=String(.28+.3*amp);
-        const r=mx.createRadialGradient(1433,703,0,1433,703,200); r.addColorStop(0,c+"55"); r.addColorStop(1,c+"00"); mx.fillStyle=r; mx.beginPath(); mx.ellipse(1433,703,200,50,0,0,7); mx.fill(); }
+        const r=mx.createRadialGradient(2066,615,0,2066,615,250); r.addColorStop(0,c+"55"); r.addColorStop(1,c+"00"); mx.fillStyle=r; mx.beginPath(); mx.ellipse(2066,615,250,48,0,0,7); mx.fill(); }
       mx.globalCompositeOperation="source-over"; }
     if((on||P||stut||window.MSFloorGame)&&!(window.MSAway&&window.MSAway()&&!inL)) kick();
   }
@@ -2316,7 +2318,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   const ext=u=>`href="${esc(u)}" target="_blank" rel="noopener"`;
   const PLAT={spotify:"Spotify",apple:"Apple Music",youtube:"YouTube",bandcamp:"Bandcamp"};
   // flyer hotspot: follows the flyer painted on the door, whatever the crop
-  const IMG={w:1672,h:941}, FLY={x:-900,y:0,w:41,h:61}, LNG={x:-900,y:0,w:10,h:10};
+  const IMG={w:2412,h:941}, FLY={x:-900,y:0,w:41,h:61}, LNG={x:-900,y:0,w:10,h:10};
   // tall phones use a vertical version of the roof; the main shot sits inside it at this scale/offset
   const MP={s:.9063,tx:-292.6,ty:393};
   // phones now use the same wide roof as desktop (drag sideways to look around); vertical version retired
@@ -2329,8 +2331,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   let lastPlace="";
   function place(force){
     const key=stage.clientWidth+"x"+stage.clientHeight+":"+px.toFixed(4)+":"+py.toFixed(4); if(!force&&key===lastPlace) return; lastPlace=key;
-    const TL=tall(); stage.classList.toggle("tall",TL); IMG.w=TL?941:1672; IMG.h=TL?1672:941;
-    const W=stage.clientWidth,H=stage.clientHeight, s0=phone()?Math.max(W/IMG.w,H/IMG.h)*PZ:window.MSFit(W,H,IMG.w,IMG.h);
+    const TL=tall(); stage.classList.toggle("tall",TL); IMG.w=TL?941:2412; IMG.h=TL?1672:941;
+    const W=stage.clientWidth,H=stage.clientHeight, s0=Math.max(W/IMG.w,H/IMG.h)*(phone()?PZ:1); /* cover; the wide roof pans on every screen */
     const ox0=(W-IMG.w*s0)*px, oy0=(H-IMG.h*s0)*py;
     window.MSRoofBox={s:s0,ox:ox0,oy:oy0};
     // everything below is placed in main-shot coordinates
@@ -2418,17 +2420,18 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
-  const PSP=[{x:250,n:"Shack"},{x:640,n:"The jar"},{x:1060,n:"The band"},{x:1440,n:"Lounge"}]; window.MSPhSpots=PSP; let spot=2;
-  let cx=PSP[2].x, cxT=PSP[2].x, drag=null, hinted=true, t0=performance.now();
-  window.MSPhGo=(i,d)=>{ if(i==null) i=spot+d; spot=Math.max(0,Math.min(PSP.length-1,i)); cxT=PSP[spot].x; window.MSPhSpot&&window.MSPhSpot(spot); };
-  const span=()=>{ const W=stage.clientWidth,H=stage.clientHeight,s=Math.max(W/IMG.w,H/IMG.h)*PZ; return {W,s,half:W/2/s}; };
+  const PSP=[{x:250,n:"Shack"},{x:640,n:"The jar"},{x:1060,n:"The band"},{x:1760,n:"The bar"},{x:2150,n:"Lounge"}], DSP=[{x:0,n:"Shack & band"},{x:1480,n:"Band & lounge"}]; window.MSPhSpots=PSP; let spot=2, dspot=1;
+  const SPS=()=>phone()?PSP:DSP;
+  let cx=phone()?PSP[2].x:DSP[1].x, cxT=cx, drag=null, hinted=true, t0=performance.now();
+  window.MSPhGo=(i,d)=>{ const L=SPS(); let cur=phone()?spot:dspot; if(i==null) i=cur+d; i=Math.max(0,Math.min(L.length-1,i)); if(phone()) spot=i; else dspot=i; cxT=clampC(L[i].x); window.MSPhSpot&&window.MSPhSpot(i); };
+  const span=()=>{ const W=stage.clientWidth,H=stage.clientHeight,s=Math.max(W/IMG.w,H/IMG.h)*(phone()?PZ:1); return {W,s,half:W/2/s}; };
   const clampC=c=>{ const {half}=span(); return Math.max(half,Math.min(IMG.w-half,c)); };
   const toPx=c=>{ const {W,s}=span(), iw=IMG.w*s; return iw<=W?0.5:Math.max(0,Math.min(1,(W/2-c*s)/(W-iw))); };
   stage.style.touchAction="pan-y";
-  stage.addEventListener("pointerdown",e=>{ if(!phone()||e.target.closest(".sheet,.bar,.pill,button,.top")) return; drag={x:e.clientX,c:cxT,moved:false}; });
+  stage.addEventListener("pointerdown",e=>{ if(e.target.closest(".sheet,.bar,.pill,button,.top,.gd-btn,.ph-menu,.ph-dots,.dk-arw")) return; drag={x:e.clientX,c:cxT,moved:false}; });
   addEventListener("pointermove",e=>{ if(!drag) return; const dx=e.clientX-drag.x; if(Math.abs(dx)>6) drag.moved=true; cxT=clampC(drag.c-dx/span().s); hinted=true; });
-  addEventListener("pointerup",e=>{ const d=drag; drag=null; if(!d||!d.moved||!phone()) return; const dx=e.clientX-d.x;
-    if(Math.abs(dx)>40) window.MSPhGo(null,dx<0?1:-1); else { let b=0; PSP.forEach((p,i)=>{ if(Math.abs(p.x-cxT)<Math.abs(PSP[b].x-cxT)) b=i; }); window.MSPhGo(b); } });
+  addEventListener("pointerup",e=>{ const d=drag; drag=null; if(!d||!d.moved) return; const dx=e.clientX-d.x;
+    if(Math.abs(dx)>40) window.MSPhGo(null,dx<0?1:-1); else { const L=SPS(); let b=0; L.forEach((p,i)=>{ if(Math.abs(clampC(p.x)-cxT)<Math.abs(clampC(L[b].x)-cxT)) b=i; }); window.MSPhGo(b); } });
   addEventListener("pointercancel",()=>{ drag=null; });
   stage.addEventListener("click",e=>{ if(drag&&drag.moved){ e.preventDefault(); e.stopPropagation(); } },true);
   function tick(t){
@@ -2438,13 +2441,13 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       cxT=clampC(cxT); cx+= (cxT-cx)*(drag?0.6:0.16); py=0.56; px=toPx(cx);
       const h=$("pan-hint"); if(h) h.style.opacity=(!hinted&&t-t0>1000)?"1":"0";
       const le=$("lng-edge"), fl=$("pk-floor"); if(le&&fl){ const r=fl.getBoundingClientRect(); le.classList.toggle("off", r.left+r.width*.5 < stage.clientWidth-20); }
-    } else { px=0.5; py=0.42; }
+    } else { cxT=clampC(cxT); cx+=(cxT-cx)*(drag?0.6:0.12); py=0.42; px=toPx(cx); }
     if(tall()) py=0.5;
     place(); if(window.MSAway&&window.MSAway()) setTimeout(()=>requestAnimationFrame(tick),400); else requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick); addEventListener("resize",()=>place(true));
   // stunts can steer the phone camera: MSCam(plateX) pans there; returns where it was
-  window.MSCam=c=>{ const was=cxT; if(phone()&&c!=null){ cxT=clampC(c); hinted=true; } return phone()?was:null; };
+  window.MSCam=c=>{ const was=cxT; if(c!=null){ cxT=clampC(c); hinted=true; } return was; };
   const setBarH=()=>{ const h=$("bar").offsetHeight+"px"; $("stage").style.setProperty("--barh",h); document.documentElement.style.setProperty("--barh",h); };
   addEventListener("resize",setBarH); setBarH();
   function closeAll(){document.querySelectorAll(".sheet").forEach(s=>s.classList.remove("open"));document.querySelectorAll(".tile").forEach(t=>t.setAttribute("aria-expanded","false"));}
@@ -2475,7 +2478,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function render(c){
     seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${(c.images&&c.images.hero)||"img/roof-main.webp?v=c3"}")`;
+    $("stage").style.backgroundImage=`url("${"img/roof-wide.webp?v=1"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
@@ -3670,7 +3673,7 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
   const click=sel=>{ const e=document.querySelector(sel); if(e) e.click(); };
   const binoc=then=>{ if(window.MSBinoc){ window.MSBinoc(); if(then) setTimeout(then,700); } };
   const ITEMS=[
-    {k:"grace",c:"var(--pink)",ic:"jar",t:"Free Grace",p:"Someone’s stuck in a jar on the ledge. Tap the glass until it breaks.",go:()=>click("#pk-jar")},
+    {k:"grace",c:"var(--pink)",ic:"jar",t:"Free Grace",p:"Someone’s stuck in a jar on the ledge. Tap the glass until it breaks.",go:()=>{ window.MSCam&&window.MSCam(640); setTimeout(()=>click("#pk-jar"),900); }},
     {k:"windows",c:"var(--cyan)",ic:"bino",t:"The binoculars",p:"Spy on the building across the street. Six lit windows. Don’t get caught.",go:()=>binoc()},
     {k:"jill",c:"#ffd36a",ic:"win",t:"Free Jill",p:"There’s another girl in a jar, in a window across the street.",go:()=>binoc(()=>window.__bx&&window.__bx.enter("jar"))},
     {k:"band",c:"#ff6a3d",ic:"band",t:"Mess with the band",p:"Tap Pat, Jordan or Jacob. At your own risk.",go:()=>document.querySelectorAll(".bm").forEach(el=>el.animate&&el.animate([{filter:"none"},{filter:"drop-shadow(0 0 10px #ff6a3d) drop-shadow(0 0 22px #ff6a3d) brightness(1.25)"},{filter:"none"}],{duration:900,iterations:3}))},
@@ -4282,6 +4285,10 @@ body.ph #bar,body.ph .sky .pills,body.ph #lng-edge,body.ph #pan-hint{display:non
 body.ph .sign{font-size:clamp(40px,12.5vw,66px)!important;margin-top:4px}
 body.ph .welcome{top:auto!important;bottom:calc(92px + env(safe-area-inset-bottom,0px));width:min(320px,88vw)}
 .ph-dots,.ph-menu{display:none}
+.dk-arw{position:absolute;top:50%;z-index:6;width:46px;height:74px;transform:translateY(-50%);border:1.5px solid rgba(255,255,255,.25);background:rgba(8,6,16,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#fff;font:300 40px/1 system-ui;cursor:pointer;transition:opacity .3s,border-color .2s}
+.dk-arw:hover{border-color:var(--pink);box-shadow:0 0 14px rgba(255,61,127,.45)}.dk-arw.l{left:0;border-radius:0 14px 14px 0;border-left:0}.dk-arw.r{right:0;border-radius:14px 0 0 14px;border-right:0}
+.dk-arw.off{opacity:0;pointer-events:none}
+body.ph .dk-arw,body.in-room .dk-arw,body.jx-zoom .dk-arw,body.bx-on .dk-arw{display:none}
 body.ph .ph-dots{display:flex;position:absolute;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:7;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(8,6,16,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1)}
 @media (max-width:420px){body.ph .ph-dots{left:12px;transform:none}}@media (max-width:360px){.ph-dots .nm{display:none}}
 .ph-dots button{all:unset;cursor:pointer;width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);transition:width .25s,background .25s}
@@ -4303,6 +4310,7 @@ body.ph.in-room .ph-dots,body.ph.in-room .ph-menu,body.ph.jx-zoom .ph-dots,body.
 .ph-it span{flex:1}.ph-it em{font-style:normal;color:var(--c);font:400 18px/1 system-ui}
 .ph-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 </style>
+<button class="dk-arw l" id="dk-l" aria-label="Look left">‹</button><button class="dk-arw r" id="dk-r" aria-label="Look right toward the lounge">›</button>
 <div class="ph-dots" id="ph-dots" aria-label="Roof spots"><button class="ph-arw" data-d="-1" aria-label="Previous spot">‹</button><span id="ph-dd"></span><span class="nm" id="ph-nm"></span><button class="ph-arw" data-d="1" aria-label="Next spot">›</button></div>
 <button class="ph-menu" id="ph-menu" type="button" aria-haspopup="dialog"><i><b></b><b></b><b></b></i>Menu</button>
 <div class="ph-sh" id="ph-sh" hidden role="dialog" aria-label="Menu"><div>
@@ -4316,14 +4324,15 @@ body.ph.in-room .ph-dots,body.ph.in-room .ph-menu,body.ph.jx-zoom .ph-dots,body.
 <script>
 (()=>{
   const $=id=>document.getElementById(id), stage=$("stage"), sh=$("ph-sh");
-  ["ph-dots","ph-menu"].forEach(id=>stage.appendChild($(id)));
+  ["ph-dots","ph-menu","dk-l","dk-r"].forEach(id=>stage.appendChild($(id)));
+  $("dk-l").addEventListener("click",e=>{ e.stopPropagation(); window.MSPhGo&&window.MSPhGo(null,-1); }); $("dk-r").addEventListener("click",e=>{ e.stopPropagation(); window.MSPhGo&&window.MSPhGo(null,1); });
   const isPh=()=>innerWidth<=760||(innerHeight>innerWidth&&innerWidth<=1100);
   const upd=()=>document.body.classList.toggle("ph",isPh()); upd(); addEventListener("resize",upd);
   // spots
   const SP=window.MSPhSpots||[], dd=$("ph-dd");
   dd.style.display="inline-flex"; dd.style.gap="6px"; dd.innerHTML=SP.map((s,i)=>`<button data-i="${i}" aria-label="${s.n}"></button>`).join("");
-  const show=i=>{ [...dd.children].forEach((b,k)=>b.classList.toggle("on",k===i)); $("ph-nm").textContent=SP[i]?SP[i].n:""; };
-  window.MSPhSpot=show; show(2);
+  const show=i=>{ [...dd.children].forEach((b,k)=>b.classList.toggle("on",k===i)); $("ph-nm").textContent=SP[i]?SP[i].n:""; $("dk-l").classList.toggle("off",!isPh()&&i===0); $("dk-r").classList.toggle("off",!isPh()&&i>=1); };
+  window.MSPhSpot=show; show(isPh()?2:1);
   $("ph-dots").addEventListener("click",e=>{ e.stopPropagation(); const b=e.target.closest("button"); if(!b||!window.MSPhGo) return; if(b.dataset.i!=null) window.MSPhGo(+b.dataset.i); else window.MSPhGo(null,+b.dataset.d); });
   // menu
   function open(){ const np=$("t-listen"), ns=$("t-shows"); if(np) $("ph-np").textContent=np.textContent.replace(/\s*▸$/,"")+" ▸"; if(ns) $("ph-sh-shows").textContent=ns.textContent; sh.hidden=false; requestAnimationFrame(()=>sh.classList.add("on")); }
