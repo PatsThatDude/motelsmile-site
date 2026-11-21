@@ -288,9 +288,9 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <a class="pk" id="pk-floor" href="#lounge" data-lounge style="left:1850px;top:578px;width:436px;height:74px;clip-path:polygon(2% 0,100% 0,89% 100%,0 100%)" aria-label="Dance floor: go to the Smile Lounge"></a>
     <a class="pk" id="pk-bar" href="#lounge" data-lounge style="left:1648px;top:428px;width:206px;height:192px" aria-label="The bar: go to the Smile Lounge"></a>
     <a class="pk" id="pk-couch" href="#lounge" data-lounge style="left:1860px;top:400px;width:440px;height:178px" aria-label="The lounge: record player and couch"></a>
-    <button class="pk ns" id="ns-live" style="left:1289px;top:231px;width:137px;height:46px" aria-label="Live music: shows"></button>
-    <button class="pk ns" id="ns-games" style="left:1287px;top:294px;width:142px;height:50px" aria-label="Play games"></button>
-    <button class="pk ns" id="ns-listen" style="left:1246px;top:362px;width:231px;height:51px" aria-label="Listen in the lounge"></button>
+    <button class="pk ns" id="ns-live" style="left:1285px;top:231px;width:144px;height:48px" aria-label="Live music: shows"></button>
+    <button class="pk ns" id="ns-games" style="left:1280px;top:295px;width:153px;height:49px" aria-label="Play games"></button>
+    <button class="pk ns" id="ns-listen" style="left:1239px;top:365px;width:240px;height:50px" aria-label="Listen in the lounge"></button>
     <a class="pk" id="pk-arcade" hidden href="#arcade" data-arcade style="display:none;left:335px;top:318px;width:128px;height:245px" aria-label="Arcade: go to the game corner"></a>
     <canvas id="pat-fx" width="1672" height="941"></canvas>
     <div id="tags"></div>
@@ -2484,7 +2484,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function render(c){
     seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=9"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
+    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=10"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
