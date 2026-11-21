@@ -3739,7 +3739,7 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
 /* ===== Band games shell: window.MSGames.register(game), .open(id?) ===== */
 (()=>{
   const $=id=>document.getElementById(id), gm=$("gm"), play=$("gm-play"), hud=$("gm-hud");
-  const GAMES=[], SOON=[["Soundcheck","Push the faders until the mix sounds right.","#3ce6ff"],["Spot the Difference","Same window, a few seconds apart. What changed?","#b07cff"],["Fill Battle","Jacob plays a fill. Play it back.","#ff6ae6"],["Bend It","Bend Jordan’s notes into tune.","#ff6a3d"],["Lock In","Land Pat’s bass on the kick.","#5dff9e"],["Hit the Note","Sing the chorus. In tune.","#3ca8ff"]];
+  const GAMES=[], SOON=[["Spot the Difference","Same window, a few seconds apart. What changed?","#b07cff"],["Fill Battle","Jacob plays a fill. Play it back.","#ff6ae6"],["Bend It","Bend Jordan’s notes into tune.","#ff6a3d"],["Lock In","Land Pat’s bass on the kick.","#5dff9e"],["Hit the Note","Sing the chorus. In tune.","#3ca8ff"]];
   let cur=null, stopFn=null, sc=0;
   const best=id=>{ try{ return +localStorage.getItem("ms-best-"+id)||0; }catch(_){ return 0; } };
   const setBest=(id,v)=>{ try{ localStorage.setItem("ms-best-"+id,String(v)); }catch(_){} };
@@ -4123,6 +4123,80 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
       const ro=new ResizeObserver(layout); ro.observe(root); layout(); hud(); T(spawn,700);
       T(()=>{ if(alive){ api.toast("Last 15 seconds!"); } },75000); T(()=>{ if(alive){ alive=false; timers.forEach(clearTimeout); api.end(score+lives*300,"Shift’s over. Nice watching"); } },90000);
       return ()=>{ alive=false; timers.forEach(clearTimeout); ro.disconnect(); };
+    }});
+})();
+</script>
+<style>
+.sc2{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:6px 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.sc2-desk{display:flex;gap:clamp(6px,2vw,16px);padding:16px clamp(10px,2.4vw,22px) 12px;border-radius:18px;background:linear-gradient(#22202a,#141219);border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 50px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06)}
+.sc2-ch{display:flex;flex-direction:column;align-items:center;gap:8px;width:clamp(52px,14vw,74px)}
+.sc2-ch b{font:600 10px var(--mono);letter-spacing:.14em;color:#cfc6dc;text-transform:uppercase}
+.sc2-trk{position:relative;width:100%;height:min(38vh,260px);touch-action:none;cursor:ns-resize}
+.sc2-trk::before{content:"";position:absolute;left:50%;top:6px;bottom:6px;width:6px;transform:translateX(-50%);border-radius:6px;background:#07060a;box-shadow:inset 0 1px 3px #000}
+.sc2-trk i{position:absolute;left:8%;right:8%;height:1px;background:rgba(255,255,255,.12)}
+.sc2-cap{position:absolute;left:50%;width:84%;height:34px;transform:translate(-50%,-50%);border-radius:7px;background:linear-gradient(#e9e6ef,#9a96a6);box-shadow:0 4px 10px rgba(0,0,0,.6);border-top:3px solid var(--cc)}
+.sc2-cap::after{content:"";position:absolute;left:12%;right:12%;top:50%;height:2px;background:#222;transform:translateY(-50%)}
+.sc2-ch{position:relative;padding-top:24px}.sc2-led{position:absolute;left:0;right:0;top:0;height:16px;text-align:center;font:700 13px/16px system-ui,sans-serif;color:#555}.sc2-desk{align-items:flex-start}
+.sc2-led.s-up{color:#ffd36a}.sc2-led.s-dn{color:#3ce6ff}.sc2-led.s-ok{color:#5dff9e}
+.sc2-ab{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}.sc2-ab button{white-space:nowrap}
+@media (max-width:520px){.sc2-ab button{padding:9px 12px;font-size:15px}.sc2-ab .gm-btn{padding:9px 14px;font-size:16px;margin-left:0!important}}
+@media (min-width:900px){.sc2-ch{width:84px}.sc2-trk{height:min(48vh,360px)}}
+.sc2-ab button{all:unset;cursor:pointer;padding:10px 16px;border-radius:12px;border:2px solid rgba(255,255,255,.2);font:400 16px/1 var(--tube);color:#cfc6dc}
+.sc2-ab button.on{border-color:var(--gc);color:#fff;box-shadow:0 0 14px color-mix(in srgb,var(--gc) 55%,transparent);text-shadow:0 0 8px var(--gc)}
+.sc2-msg{font:13px/1.4 var(--mono);color:#d6cfe2;text-align:center;min-height:18px;max-width:560px}
+</style>
+<script>
+(()=>{ if(!window.MSGames) return;
+  const CH=[["Drums","#ff6ae6"],["Bass","#5dff9e"],["Guitar","#ff6a3d"],["Keys","#b07cff"],["Vocal","#3ce6ff"]];
+  window.MSGames.register({id:"soundcheck",title:"Soundcheck",color:"#3ce6ff",blurb:"Push the faders until your mix sounds like the band’s. Ear training, Motel Smile style.",
+    how:`<p>The band’s playing a loop. Flip <b>Band mix</b> to hear how it should sound, then <b>Your mix</b> and push the faders until they match.</p><p>Hit <b>Check</b> for a hint on each fader (you get three per round). Closer mix, bigger score.</p><p>Three rounds. Headphones help. (Real Motel Smile stems are coming.)</p>`,
+    start(root,api){
+      const a=window.MSAC&&window.MSAC(); if(!a){ api.end(0,"No sound on this device"); return; }
+      root.innerHTML=`<div class="sc2"><div class="sc2-msg" id="sc-m"></div><div class="sc2-desk" id="sc-d"></div><div class="sc2-ab"><button id="sc-ref">Band mix</button><button id="sc-me" class="on">Your mix</button><button class="gm-btn" id="sc-ck" style="margin-left:6px">Check</button><button class="gm-btn ghost" id="sc-dn">Done</button></div></div>`;
+      const $=id=>root.querySelector("#"+id);
+      // ---- audio graph
+      const master=a.createGain(); master.gain.value=.8; master.connect(a.destination);
+      const ch=CH.map(()=>{ const g=a.createGain(); g.gain.value=.5; g.connect(master); return g; });
+      const nb=a.createBuffer(1,a.sampleRate,a.sampleRate), nd=nb.getChannelData(0); for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;
+      const ws=a.createWaveShaper(), cu=new Float32Array(512); for(let i=0;i<512;i++){ const x=i/256-1; cu[i]=Math.tanh(x*5); } ws.curve=cu; const wg=a.createGain(); wg.gain.value=.22; ws.connect(wg).connect(ch[2]);
+      const tone=(dst,t,f,d,type,g,f2,a0=.005)=>{ const o=a.createOscillator(), v=a.createGain(); o.type=type; o.frequency.setValueAtTime(f,t); if(f2) o.frequency.exponentialRampToValueAtTime(f2,t+d); v.gain.setValueAtTime(0,t); v.gain.linearRampToValueAtTime(g,t+a0); v.gain.exponentialRampToValueAtTime(.001,t+d); o.connect(v).connect(dst); o.start(t); o.stop(t+d+.02); return o; };
+      const nz=(dst,t,f,d,g,type)=>{ const s=a.createBufferSource(); s.buffer=nb; const fl=a.createBiquadFilter(); fl.type=type; fl.frequency.value=f; const v=a.createGain(); v.gain.setValueAtTime(g,t); v.gain.exponentialRampToValueAtTime(.001,t+d); s.connect(fl).connect(v).connect(dst); s.start(t); s.stop(t+d+.02); };
+      const B=60/104, PROG=[[110,220,261.6,329.6],[87.3,174.6,220,261.6],[130.8,261.6,329.6,392],[98,196,246.9,293.7]];
+      const MEL=[[0,659.3,1],[1,587.3,.5],[1.5,523.3,.5],[2,587.3,1.5],[4,523.3,1],[5,440,1],[6,392,2],[8,523.3,1],[9,587.3,1],[10,659.3,2],[12,587.3,1],[13,523.3,.5],[13.5,493.9,.5],[14,440,2]];
+      let bar=0, nextT=a.currentTime+.15, alive=true, tick=0;
+      function sched(){ while(nextT<a.currentTime+.6){ const bt=nextT, c=PROG[bar%4];
+          for(let q=0;q<4;q++){ const t=bt+q*B; tone(ch[0],t,150,.3,"sine",1,45); if(q%2) nz(ch[0],t,1900,.18,.55,"bandpass"); nz(ch[0],t,8000,.05,.18,"highpass"); nz(ch[0],t+B/2,8000,.05,.12,"highpass");
+            tone(ch[1],t,c[0]/2,B*.8,"sawtooth",.35); tone(ch[1],t+B/2,c[0]/2,B*.35,"sawtooth",.22);
+            [c[0],c[0]*1.5,c[0]*2].forEach(f=>tone(ws,t,f,B*.45,"sawtooth",.35)); tone(ws,t+B/2,c[0],B*.3,"sawtooth",.3); }
+          c.slice(1).forEach(f=>tone(ch[3],bt,f,4*B*.97,"triangle",.12,0,.08));
+          const half=bar%4; MEL.filter(m=>Math.floor(m[0]/4)===half).forEach(([b0,f,d])=>{ const t=bt+(b0-half*4)*B, o=tone(ch[4],t,f,d*B*.95,"sine",.32,0,.03); const l=a.createOscillator(), lg=a.createGain(); l.frequency.value=5.5; lg.gain.value=6; l.connect(lg).connect(o.frequency); l.start(t); l.stop(t+d*B); });
+          bar++; nextT+=4*B; } }
+      const tk=setInterval(()=>{ if(alive) sched(); },120); sched();
+      // ---- mixer
+      let round=0, target=[], mine=[], checks=3, score=0, ref=false;
+      $("sc-d").innerHTML=CH.map(([n,c],i)=>`<div class="sc2-ch" style="--cc:${c}"><div class="sc2-led" data-i="${i}">·</div><div class="sc2-trk" data-i="${i}">${[10,30,50,70,90].map(p=>`<i style="top:${p}%"></i>`).join("")}<div class="sc2-cap"></div></div><b>${n}</b></div>`).join("");
+      const trks=[...root.querySelectorAll(".sc2-trk")], leds=[...root.querySelectorAll(".sc2-led")];
+      const lvl=v=>v<=.02?0:Math.pow(v,2)*1.6; // fader → gain
+      function apply(){ ch.forEach((g,i)=>g.gain.setTargetAtTime(lvl(ref?target[i]:mine[i]),a.currentTime,.04)); trks.forEach((t,i)=>t.querySelector(".sc2-cap").style.top=((1-mine[i])*88+6)+"%"); }
+      function newRound(){ round++; checks=3; ref=false; $("sc-ref").classList.remove("on"); $("sc-me").classList.add("on");
+        target=CH.map(()=>.35+Math.random()*.6); if(round>=2) target[Math.floor(Math.random()*5)]=.12+Math.random()*.15; if(round>=3) target[Math.floor(Math.random()*5)]=.9+Math.random()*.1;
+        mine=CH.map(()=>.15+Math.random()*.8); leds.forEach(l=>{ l.className="sc2-led"; l.textContent="·"; });
+        $("sc-m").textContent=`Round ${round} of 3. Flip between the two mixes and match the faders.`; $("sc-ck").textContent=`Check (${checks})`; apply(); hud(); api.sfx("whoosh"); }
+      const hud=()=>api.hud([["Round",round+"/3"],["Score",score]]);
+      function err(){ return mine.reduce((s,v,i)=>s+Math.abs(v-target[i]),0)/CH.length; }
+      $("sc-ck").addEventListener("click",()=>{ if(!checks) return; checks--; $("sc-ck").textContent=`Check (${checks})`; api.sfx("tick");
+        leds.forEach((l,i)=>{ const d=target[i]-mine[i]; l.className="sc2-led s-"+(Math.abs(d)<.07?"ok":d>0?"up":"dn"); l.textContent=Math.abs(d)<.07?"✓":d>0?"▲":"▼"; });
+        const e=err(); $("sc-m").textContent=e<.05?"That’s the mix. Hit Done.":e<.12?"Close. Fine-tune it.":"Not yet. Listen again."; });
+      $("sc-ref").addEventListener("click",()=>{ ref=true; $("sc-ref").classList.add("on"); $("sc-me").classList.remove("on"); apply(); });
+      $("sc-me").addEventListener("click",()=>{ ref=false; $("sc-me").classList.add("on"); $("sc-ref").classList.remove("on"); apply(); });
+      $("sc-dn").addEventListener("click",()=>{ const e=err(), pts=Math.max(0,Math.round((1-e/.25)*1000))+(e<.12?checks*100:0); score+=pts; hud();
+        api.toast(e<.05?"Mix engineer!":e<.12?"Sounds good!":e<.22?"Eh, it’s a bar gig":"Who mixed this?!"); api.sfx(e<.12?"tada":"thud");
+        leds.forEach((l,i)=>{ const d=target[i]-mine[i]; l.className="sc2-led s-"+(Math.abs(d)<.07?"ok":d>0?"up":"dn"); l.textContent=Math.abs(d)<.07?"✓":d>0?"▲":"▼"; });
+        if(round>=3){ setTimeout(()=>api.end(score,score>=2600?"Golden ears":score>=1600?"Soundcheck passed":"The band wants a new sound guy"),1100); } else setTimeout(newRound,1400); });
+      let dr=null; trks.forEach((t,i)=>{ t.addEventListener("pointerdown",e=>{ e.preventDefault(); dr={i,t}; t.setPointerCapture&&t.setPointerCapture(e.pointerId); mv(e); }); t.addEventListener("pointermove",e=>{ if(dr&&dr.i===i) mv(e); }); t.addEventListener("pointerup",()=>dr=null); t.addEventListener("pointercancel",()=>dr=null); });
+      function mv(e){ const r=dr.t.getBoundingClientRect(); let v=1-((e.clientY-r.top)/r.height-.06)/.88; v=Math.max(0,Math.min(1,v)); mine[dr.i]=v; if(ref){ ref=false; $("sc-me").classList.add("on"); $("sc-ref").classList.remove("on"); } apply(); }
+      newRound();
+      return ()=>{ alive=false; clearInterval(tk); try{ master.gain.setTargetAtTime(0,a.currentTime,.05); setTimeout(()=>master.disconnect(),400); }catch(_){} };
     }});
 })();
 </script>
