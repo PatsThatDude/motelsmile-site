@@ -2751,7 +2751,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   // feet positions in main-shot coords (1672x941); height follows the floor's perspective (scaled to the drum kit)
   // far (back by the wall), mid (by the kit), close (foreground)
-  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [480,724],[770,646],[1830,602],[1480,642]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (sofa, binoculars, bar, by the bar) */
+  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [480,706],[300,702],[1830,602],[1480,656]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (Pat on the sofa, Jordan on the sofa, Jordan at the bar, Pat by the bar) */
   const hFor=f=>1.48*(f-420);
   const MEMBERS=[], taken=()=>MEMBERS.map(m=>m.spot);
   function freeSpot(self){ const busy=taken().filter((s,i)=>MEMBERS[i]!==self && s>=0);
@@ -3057,16 +3057,17 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       inner.style.transform=""; m.busy=false; schedule(); return true; };
     [...POSES,ZAP,FRIED,...(GG?[GA,GB]:[])].forEach((p,i)=>["real","neon"].forEach(t=>window.MSIdleLoad(p[t],i<2)));
     // walk across the roof to a blocking spot (crossover between views): glide with a step bob, walking pose when heading right
-    m.walkTo=async t=>{ if(S&&m.seated) return; for(let n=0;m.busy&&n<40;n++) await wait(150); if(m.busy||gagOn) return; if(m.spot===t){ m.directed=true; clearTimeout(wT); return; }
+    m.walkTo=async(t,end)=>{ if(S&&m.seated) return; for(let n=0;m.busy&&n<40;n++) await wait(150); if(m.busy||gagOn) return; if(m.spot===t){ m.directed=true; clearTimeout(wT); return; }
       m.busy=true; m.directed=true; clearTimeout(wT);
       if(m.spot<0){ m.spot=t; setPose(POSES[0]); m.pose=POSES[0]; place(); vis(true); await flicker(3); m.busy=false; return; }
       const [x0,f0]=SPOTS[m.spot], [x1,f1]=SPOTS[t], dist=Math.hypot(x1-x0,(f1-f0)*2), dur=Math.max(1100,dist/170*1000);
-      const wk=x1>=x0&&cfg.walkR?P(cfg.walkR):POSES[0]; setPose(wk); m.pose=wk; const t0=performance.now();
+      const wk=x1>=x0?(cfg.walkR?P(cfg.walkR):POSES[0]):(cfg.walkL?P(cfg.walkL):POSES[0]); setPose(wk); m.pose=wk; const t0=performance.now();
       await new Promise(res=>{ const st=()=>{ const u=Math.min(1,(performance.now()-t0)/dur), e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2, x=x0+(x1-x0)*e, f=f0+(f1-f0)*e, h=hFor(f)*wk.f, w=h*wk.ar;
           Object.assign(el.style,{left:x-w/2+"px",top:f-h+"px",width:w+"px",height:h+"px",zIndex:10+Math.round(f/10)}); Object.assign(rf.style,{left:x-w/2+"px",top:f+"px",width:w+"px",height:h+"px"});
           const sw=Math.min(w,hFor(f)*.42); Object.assign(sh.style,{left:x-sw*.9+"px",top:f-11+"px",width:sw*1.8+"px"});
           inner.style.transform=`translateY(${-Math.abs(Math.sin(u*dur/1000*Math.PI*1.9))*hFor(f)*.018}px)`; if(u<1) requestAnimationFrame(st); else res(); }; st(); });
-      inner.style.transform=""; m.spot=t; m.pose=POSES[cfg.rest||0]; setPose(m.pose); place(); m.busy=false; };
+      inner.style.transform=""; m.spot=t; m.pose=end&&cfg[end]?P(cfg[end]):POSES[cfg.rest||0]; setPose(m.pose); place(); if(end){ await flicker(2); } m.busy=false; };
+    [cfg.walkL,cfg.sit,cfg.bar].filter(Boolean).forEach(k=>{ const q=P(k); window.MSIdleLoad(q.real); window.MSIdleLoad(q.neon); });
     m.resume=()=>{ m.directed=false; schedule(4000); };
     MEMBERS.push(m);
     if(S&&S.start){ m.wasSeated=true; m.pose=POSES[0]; setPose(m.pose); kimg[0].onload=()=>{ sit(); }; schedule(16000+(cfg.offset||0)); return m; }
@@ -3074,11 +3075,11 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     ir.onload=()=>{ ir.onload=null; vis(true); }; setPose(m.pose); place(); schedule((cfg.offset||0)+(cfg.home!=null?9000:0));
     return m;
   }
-  const PAT=Member({name:"Pat",home:9,pre:"p",walkR:4,poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,gag:"pat",
-    ar:{1:.5135,2:.5269,3:.5462,4:.5308,5:.6558,6:.8077,7:.5346,8:.4692,9:.5981,10:.3962,g1:.6346,g2:.6404},f:{1:1.05,6:.78,9:1.3,10:1.05,g1:.92,g2:1}});
+  const PAT=Member({name:"Pat",home:9,pre:"p",walkR:4,walkL:11,sit:12,bar:13,poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,gag:"pat",
+    ar:{1:.5135,2:.5269,3:.5462,4:.5308,5:.6558,6:.8077,7:.5346,8:.4692,9:.5981,10:.3962,11:.6442,12:.6058,13:.4423,g1:.6346,g2:.6404},f:{1:1.05,6:.78,9:1.3,10:1.05,12:.74,g1:.92,g2:1}});
   // Jordan: shots v3, made from his character master sheet
-  const JORDAN=Member({name:"Jordan",home:10,pre:"jj",walkR:5,gag:"jordan",sound:"chord",anim:"zj",sparky:true,flash:"#37e0ff",bolts:["#7ff3ff","#fff6a0","#22c8ff"],poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:5500,scale:.97,
-    ar:{1:0.6404,2:0.6635,3:0.5712,4:0.5865,5:0.5096,6:0.5,7:0.5308,8:0.4615,9:0.6538,10:0.5173,g1:.6096,g2:.5769},f:{2:.9,3:.97,9:1.36,g1:1.04,g2:1.1}});
+  const JORDAN=Member({name:"Jordan",home:10,pre:"jj",walkR:5,walkL:11,sit:12,bar:13,gag:"jordan",sound:"chord",anim:"zj",sparky:true,flash:"#37e0ff",bolts:["#7ff3ff","#fff6a0","#22c8ff"],poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:5500,scale:.97,
+    ar:{1:0.6404,2:0.6635,3:0.5712,4:0.5865,5:0.5096,6:0.5,7:0.5308,8:0.4615,9:0.6538,10:0.5173,11:.6231,12:.5827,13:.3596,g1:.6096,g2:.5769},f:{2:.9,3:.97,9:1.36,12:.74,g1:1.04,g2:1.1}});
   // Jacob: drummer, shots v2/v3 from his master sheet (face-locked)
   const JACOB=Member({name:"Jacob",pre:"jb",v:"?v=4",gag:"jacob",sound:"drums",anim:"zz",flash:"#ff6ae6",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:2700,scale:.98,
     seat:{pre:"jbk",frames:[1,2,3,4],idle:1,x:778,y:309,w:433,h:338,z:74,p:.5,start:true,hit:[182,58,118,150]},
@@ -3086,9 +3087,9 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   // every so often one of them pulls a stunt; ?gag=pat|jordan|jacob runs one right away
   const CREW={pat:PAT,jordan:JORDAN,jacob:JACOB}; window.MSGag=n=>CREW[n]&&CREW[n].gag();
   // the band follows the camera: Hangout = Pat to the sofa, Jordan by the binoculars; Lounge = Jordan to the bar, Pat by the bar; band view = back to the kit
-  { const PLAN={0:[[PAT,11],[JORDAN,12]],1:[[PAT,9],[JORDAN,10]],2:[[JORDAN,13],[PAT,14]]}; let vT=0, gen=0;
+  { const PLAN={0:[[PAT,11,"sit"],[JORDAN,12,"sit"]],1:[[PAT,9],[JORDAN,10]],2:[[JORDAN,13,"bar"],[PAT,14,"bar"]]}; let vT=0, gen=0;
     addEventListener("msview",e=>{ clearTimeout(vT); const v=e.detail, g=++gen; vT=setTimeout(async()=>{ if(still) return;
-      for(const [mb,sp] of PLAN[v]||[]){ if(g!==gen) return; mb.walkTo(sp).then(()=>{ if(v===1&&g===gen) mb.resume(); }); await wait(1300); } },650); }); }
+      for(const [mb,sp,end] of PLAN[v]||[]){ if(g!==gen) return; mb.walkTo(sp,end).then(()=>{ if(v===1&&g===gen) mb.resume(); }); await wait(1300); } },650); }); }
   // Grace on the roof: comes up off the dance floor full size and dances with each of the band
   window.MSGraceRoof=(()=>{
     const FR=[1,2,3,4,5,6,7,8].map(i=>"img/grace/d"+i+".webp?v=2"), W=[170,233,186,254,206,231,224,222], AX=[.406,.387,.397,.575,.382,.571,.418,.504];
