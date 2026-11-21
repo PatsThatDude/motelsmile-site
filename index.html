@@ -555,7 +555,7 @@ body.in-room .mini{display:none}
 .jx.open .jx-stage{transform:none;opacity:1}
 .jx .jx-box{position:relative;flex:0 0 auto;width:max(100vw,min(150vh,230vw));height:auto;aspect-ratio:1536/1024;filter:none}
 .jx .jx-box img{object-fit:cover}
-.jx .jx-cracks{left:37.2%;top:13.4%;width:22.9%;height:59.2%;z-index:3}
+.jx .jx-cracks{left:37.2%;top:13.4%;width:22.9%;height:59.2%;z-index:3;-webkit-clip-path:polygon(6% 12%,94% 12%,98% 15%,100% 22%,100% 93%,97% 98%,90% 100%,10% 100%,3% 98%,0% 93%,0% 22%,2% 15%);clip-path:polygon(6% 12%,94% 12%,98% 15%,100% 22%,100% 93%,97% 98%,90% 100%,10% 100%,3% 98%,0% 93%,0% 22%,2% 15%)}
 .jx-box{transition:left .6s cubic-bezier(.3,.1,.2,1)}
 .jx-bn{position:absolute;left:67.3%;top:15.6%;width:26%;height:53.6%;z-index:4;border:0;padding:0;background:transparent;cursor:pointer;border-radius:18px;-webkit-tap-highlight-color:transparent}
 .jx-bn span{position:absolute;left:50%;top:-6%;transform:translate(-50%,-100%);white-space:nowrap;font-family:var(--tube);font-size:clamp(15px,2.2vw,20px);color:#7af0ff;text-shadow:0 0 8px #3ddcff;animation:jxbnP 2.4s ease-in-out infinite}
@@ -1769,6 +1769,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   $("jx-pan-l").addEventListener("click",e=>{ e.stopPropagation(); jxPan("jar"); }); $("jx-pan-r").addEventListener("click",e=>{ e.stopPropagation(); jxPan("bn"); });
   addEventListener("resize",()=>{ if(JX.classList.contains("open")) jxPan(jxAt,true); });
   $("jx-bn").addEventListener("pointerdown",e=>e.stopPropagation());
+  jxBox.addEventListener("mousemove",e=>{ if(jxFreed){ jxBox.style.cursor="pointer"; return; } const r=jxCr.getBoundingClientRect(); jxBox.style.cursor=inJar((e.clientX-r.left)/r.width*100,(e.clientY-r.top)/r.height*100)?"pointer":"default"; },{passive:true});
   $("jx-bn").addEventListener("click",e=>{ e.stopPropagation(); if(JX.classList.contains("pushing")) return; window.MSBinoc&&window.MSBinoc(); });
   window.MSLedge=(el)=>{ if(rzOrig||JX.classList.contains("open")) return; if(!freed){ openJar("grace",el,"bn"); return; } openJar("empty",el,"bn"); };
   function openJar(g,el,at){ GIRL=g||"grace"; CJ=el||jar; if((GIRL==="grace"&&freed)||FREED.has(GIRL)||rzOrig||JX.classList.contains("open")) return; jxWant=at||"jar"; $("jx-pan-l").hidden=$("jx-pan-r").hidden=true; window.MSAC&&window.MSAC(); hits=0; jxBusy=false; jxCr.innerHTML=""; $("jx-meter").style.width="0%";
@@ -1801,7 +1802,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     for(let i=0;i<40;i++){ const s=document.createElement("i"), a=Math.random()*Math.PI*2, d=120+Math.random()*Math.max(innerWidth,innerHeight)*.55, big=Math.random()<.55, w=big?8+Math.random()*18:4;
       s.className="jx-shard"; s.style.cssText=`left:${cx+(Math.random()-.5)*r.width*.6}px;top:${cy+(Math.random()-.5)*r.height*.6}px;width:${w}px;height:${big?w*(.4+Math.random()*.8):4}px;${big?"":`background:${["#ff46c8","#46dcff","#ffd36a"][i%3]};border-radius:4px;`}`;
       JX.appendChild(s); requestAnimationFrame(()=>{ s.style.transform=`translate(${Math.cos(a)*d}px,${Math.sin(a)*d+120}px) rotate(${(Math.random()-.5)*900}deg)`; s.style.opacity="0"; }); setTimeout(()=>s.remove(),1300); } }
-  jxBox.addEventListener("pointerdown",e=>{ e.preventDefault(); if(jxFreed){ jxGo(); return; } const r=jxCr.getBoundingClientRect(), x=(e.clientX-r.left)/r.width*100, y=(e.clientY-r.top)/r.height*100; if(x<-25||x>125||y<-15||y>115) return; hit(Math.max(4,Math.min(96,x)),Math.max(4,Math.min(96,y))); });
+  const JARP=[[6,12],[94,12],[98,15],[100,22],[100,93],[97,98],[90,100],[10,100],[3,98],[0,93],[0,22],[2,15]], inJar=(x,y)=>{ let c=false; for(let i=0,j=JARP.length-1;i<JARP.length;j=i++){ const [xi,yi]=JARP[i],[xj,yj]=JARP[j]; if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi) c=!c; } return c; }; /* the glass, in % of the crack box (lid excluded) */
+  jxBox.addEventListener("pointerdown",e=>{ e.preventDefault(); if(jxFreed){ jxGo(); return; } const r=jxCr.getBoundingClientRect(), x=(e.clientX-r.left)/r.width*100, y=(e.clientY-r.top)/r.height*100; if(!inJar(x,y)) return; hit(Math.max(5,Math.min(95,x)),Math.max(16,Math.min(96,y))); });
   jxBox.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); if(jxFreed){ jxGo(); return; } hit(35+Math.random()*30,40+Math.random()*35); } });
   const jxClose=()=>{ if(jxFreed) jxGo(); else closeJar(); };
   $("jx-x").addEventListener("click",jxClose); JX.addEventListener("pointerdown",e=>{ if(e.target===JX) jxClose(); });
