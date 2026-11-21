@@ -288,7 +288,9 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <a class="pk" id="pk-floor" href="#lounge" data-lounge style="left:1850px;top:578px;width:436px;height:74px;clip-path:polygon(2% 0,100% 0,89% 100%,0 100%)" aria-label="Dance floor: go to the Smile Lounge"></a>
     <a class="pk" id="pk-bar" href="#lounge" data-lounge style="left:1648px;top:428px;width:206px;height:192px" aria-label="The bar: go to the Smile Lounge"></a>
     <a class="pk" id="pk-couch" href="#lounge" data-lounge style="left:1860px;top:400px;width:440px;height:178px" aria-label="The lounge: record player and couch"></a>
-    <button class="pk" id="pk-lngsign" style="left:1322px;top:408px;width:175px;height:58px" aria-label="Lounge sign: look over at the lounge"></button>
+    <button class="pk ns" id="ns-live" style="left:986px;top:225px;width:103px;height:40px" aria-label="Live music: shows"></button>
+    <button class="pk ns" id="ns-games" style="left:1092px;top:225px;width:111px;height:40px" aria-label="Play games"></button>
+    <button class="pk ns" id="ns-listen" style="left:1206px;top:225px;width:174px;height:40px" aria-label="Listen in the lounge"></button>
     <a class="pk" id="pk-arcade" hidden href="#arcade" data-arcade style="display:none;left:335px;top:318px;width:128px;height:245px" aria-label="Arcade: go to the game corner"></a>
     <canvas id="pat-fx" width="1672" height="941"></canvas>
     <div id="tags"></div>
@@ -2482,7 +2484,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function render(c){
     seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=5"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
+    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=7"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
@@ -4408,12 +4410,13 @@ body.ph #enter-lng{bottom:84px;font-size:15px;padding:10px 18px}
   b.addEventListener("click",e=>{ e.stopPropagation(); b.classList.remove("on"); const a=document.querySelector(".pill[data-lounge]"); a&&a.click(); });
   addEventListener("hashchange",()=>{ if(location.hash!=="#lounge") set(window.MSView); }); })();
 </script>
-<style>#pk-lngsign{border-radius:8px;animation:lsPulse 2.4s ease-in-out infinite}#pk-lngsign:hover,#pk-lngsign:focus-visible{box-shadow:0 0 22px 6px rgba(255,61,127,.75);outline:none}
-@keyframes lsPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,61,127,0)}50%{box-shadow:0 0 18px 4px rgba(255,61,127,.45)}}@media (prefers-reduced-motion:reduce){#pk-lngsign{animation:none}}</style>
+<style>#play .ns{border-radius:999px}#play .ns:hover,#play .ns:focus-visible{box-shadow:0 0 22px 6px rgba(255,255,255,.35);outline:none}
+body:not(.ph) .sky .pills{visibility:hidden}body.ph #play .ns{display:none}</style>
 <script>
-/* the LOUNGE → sign on the pipe: takes the camera over to the lounge peek */
-(()=>{ const b=document.getElementById("pk-lngsign"); if(!b) return;
-  b.addEventListener("click",e=>{ e.stopPropagation(); window.MSBxSfx&&window.MSBxSfx("tick"); const L=window.MSSpots?window.MSSpots():null; let i=-1; if(L) i=L.findIndex(q=>q.n==="Lounge"); if(i<0) i=(innerWidth<=760||(innerHeight>innerWidth&&innerWidth<=1100))?2:1; window.MSPhGo&&window.MSPhGo(i); }); })();
+/* the three buttons are neon signs hanging from the pole arm (desktop + iPad); phone keeps the on-screen row */
+(()=>{ const go=(id,f)=>{ const b=document.getElementById(id); b&&b.addEventListener("click",e=>{ e.stopPropagation(); window.MSBxSfx&&window.MSBxSfx("tick"); f(); }); };
+  const pill=i=>()=>{ const p=document.querySelectorAll(".sky .pills .pill")[i]; p&&p.click(); };
+  go("ns-listen",pill(0)); go("ns-games",pill(1)); go("ns-live",pill(2)); })();
 </script>
 
 </body>
