@@ -148,7 +148,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 @keyframes found{0%{box-shadow:0 0 0 2px rgba(93,255,158,.9),0 0 24px rgba(93,255,158,.8)}100%{box-shadow:0 0 0 2px rgba(93,255,158,0),0 0 24px rgba(93,255,158,0)}}
 .hunt{position:absolute;right:max(16px,env(safe-area-inset-right,0px));top:46px;z-index:3;font:11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--green);padding:5px 10px;border:1px solid rgba(93,255,158,.4);border-radius:20px;background:rgba(5,6,10,.55);opacity:0;transition:opacity .4s;pointer-events:none}
 .hunt.on{opacity:1}
-.sign .dead{opacity:.12!important;text-shadow:none!important;animation:none!important}
+.sign .dead{opacity:1!important;color:#4a3f52!important;text-shadow:0 1px 0 rgba(255,255,255,.22),0 -1px 0 rgba(0,0,0,.6),0 0 3px rgba(0,0,0,.5)!important;-webkit-text-stroke:.5px rgba(255,255,255,.12);animation:none!important} /* unlit glass tube: letter shape stays readable */
 .sign span span{pointer-events:none} /* letters are hit-tested against their glyph shapes (see letterAt) */
 .bm{position:absolute;z-index:2;cursor:pointer;-webkit-tap-highlight-color:transparent;pointer-events:auto;visibility:hidden}
 .bm .in{position:absolute;inset:0}.bm img{position:absolute;pointer-events:none;user-select:none;-webkit-user-drag:none}
