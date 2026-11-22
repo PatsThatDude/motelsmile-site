@@ -2302,10 +2302,13 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 <script>
 /* iPhone: Web Audio is muted by the ring/silent switch unless the page plays as media. On the first touch, switch the audio session to playback and play a tiny silent clip so every sound on the roof is heard. */
 (()=>{
+  /* iPhone: the ringer switch mutes Web Audio unless the page is a "playback" session; set it before any AudioContext exists */
+  try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
   let CTX=null;
   window.MSAC=()=>{ try{ if(!CTX){ const C=window.AudioContext||window.webkitAudioContext; if(!C) return null; CTX=new C(); }
       if(CTX.state!=="running") CTX.resume().catch(()=>{}); }catch(e){} return CTX; };
-  const wake=()=>{ const c=window.MSAC(); if(!c) return; try{ const b=c.createBuffer(1,1,22050), s=c.createBufferSource(); s.buffer=b; s.connect(c.destination); s.start(0); }catch(e){} };
+  let keep=null; const keepAlive=()=>{ if(keep||navigator.audioSession) return; try{ keep=new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA="); keep.loop=true; keep.setAttribute("playsinline",""); keep.volume=0.01; keep.play().catch(()=>{ keep=null; }); }catch(e){ keep=null; } };
+  const wake=()=>{ keepAlive(); const c=window.MSAC(); if(!c) return; try{ const b=c.createBuffer(1,1,22050), s=c.createBufferSource(); s.buffer=b; s.connect(c.destination); s.start(0); }catch(e){} };
   ["pointerdown","touchend","click","keydown"].forEach(t=>addEventListener(t,wake,true));
   document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&CTX&&CTX.state!=="running") CTX.resume().catch(()=>{}); });
 })();
