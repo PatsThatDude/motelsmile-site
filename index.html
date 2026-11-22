@@ -2428,8 +2428,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
-  const PSP=[{x:647,z:1,n:"Walkway"},{x:1030,z:1,n:"The band"},{x:1941,z:1,n:"Lounge"}] /* phone only: swipe left/right from the band (Pat's artifact sections 11-22) */ /* phone: same view centres as the view bars, roof fills the full screen height (Pat 11-21) */, DSP=[{x:836,z:1,y:.5,n:"The band"}]; /* desktop: one view only, Pat's band bar (plate 599..1763 x 103..830, 11-22); walkway + lounge become their own scenes */ /* desktop: Pat's locked view bars (centre in play px, zoom) */ window.MSPhSpots=PSP; let spot=1, dspot=0; /* 3 stops everywhere: sitting area, band (default), partial lounge */
-  const TSP=[{x:836,z:1,y:.5,n:"The band"}]; /* tablets (touch, landscape): Pat's iPad view bars */
+  const PSP=[{x:647,z:1,n:"Walkway"},{x:1030,z:1,n:"The band"},{x:1941,z:1,n:"Lounge"}] /* phone only: swipe left/right from the band (Pat's artifact sections 11-22) */ /* phone: same view centres as the view bars, roof fills the full screen height (Pat 11-21) */, DSP=[{x:1081,z:1,y:.5,n:"The band"}]; /* desktop: one view only, Pat's band bar (plate 599..1763 x 103..830, 11-22); walkway + lounge become their own scenes */ /* desktop: Pat's locked view bars (centre in play px, zoom) */ window.MSPhSpots=PSP; let spot=1, dspot=0; /* 3 stops everywhere: sitting area, band (default), partial lounge */
+  const TSP=[{x:1053,z:1,y:.5,n:"The band"}]; /* tablets (touch, landscape): Pat's iPad view bars */
   const tablet=()=>!phone()&&innerWidth<1300&&matchMedia("(pointer:coarse)").matches;
   const SPS=()=>phone()?PSP:tablet()?TSP:DSP; window.MSSpots=SPS;
   const spx=p=>p.x+OFF;
