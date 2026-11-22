@@ -2409,7 +2409,19 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
           const X=P, Y=fs*1.3; cx2.fillText(sp.textContent,X,Y); cx2.strokeText(sp.textContent,X,Y); const qx=Math.round(X+tx), qy=Math.round(Y+ty);
           if(qx>=0&&qy>=0&&qx<W&&qy<H&&cx2.getImageData(qx,qy,1,1).data[3]>40) return sp; }
         return null; };
-      const kill=s=>{ s.classList.add("dead"); puff(); setTimeout(()=>s.classList.remove("dead"),2500+Math.random()*2500); };
+      // every letter out at once: the Smile signal lights up the clouds over the skyline
+      let sigOn=false;
+      const signal=()=>{ if(sigOn) return; sigOn=true; const st=document.getElementById("stage"), B=window.MSRoofBox||{s:1,ox:0,oy:0};
+        const cx=B.ox+(window.MSView==="Walkway"?560:760)*B.s, cy=B.oy+205*B.s, R=150*B.s;
+        const w=document.createElement("div"); w.className="smile-sig"; Object.assign(w.style,{position:"absolute",inset:0,pointerEvents:"none",zIndex:3,opacity:0,transition:"opacity .25s"});
+        const bx=Math.min(st.clientWidth*.18,cx-R*1.2), by=st.clientHeight+40;
+        w.innerHTML=`<svg width="100%" height="100%" style="position:absolute;inset:0;overflow:visible"><defs><linearGradient id="sgb" x1="${bx}" y1="${by}" x2="${cx}" y2="${cy}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff6c8" stop-opacity=".55"/><stop offset="1" stop-color="#fff6c8" stop-opacity=".08"/></linearGradient><filter id="sgf"><feGaussianBlur stdDeviation="6"/></filter></defs><polygon points="${bx-10},${by} ${bx+22},${by} ${cx+R*.95},${cy+R*.25} ${cx-R*.95},${cy-R*.25}" fill="url(#sgb)" filter="url(#sgf)"/></svg>
+          <div style="position:absolute;left:${cx-R*1.25}px;top:${cy-R*.95}px;width:${R*2.5}px;height:${R*1.9}px;border-radius:50%;background:radial-gradient(closest-side,#fff8d0,rgba(255,240,170,.95) 60%,rgba(255,226,140,.35) 85%,transparent);filter:blur(1.5px);mix-blend-mode:screen"></div>
+          <img src="img/smile-logo-256.webp" alt="" style="position:absolute;left:${cx-R*.72}px;top:${cy-R*.72}px;width:${R*1.44}px;height:${R*1.44}px;filter:grayscale(1) brightness(1.05) contrast(1.5) blur(.6px);opacity:.92;mix-blend-mode:multiply">`;
+        st.appendChild(w); try{ crash(); }catch(_){}
+        const fl=[1,.2,1,.4,1]; fl.forEach((o,i)=>setTimeout(()=>w.style.opacity=o,i*90)); window.MSSecret&&window.MSSecret("signal");
+        setTimeout(()=>{ w.style.transition="opacity 1.2s"; w.style.opacity=0; setTimeout(()=>{ w.remove(); sigOn=false; },1300); },9000); };
+      const kill=s=>{ s.classList.add("dead"); puff(); if(L.every(x=>x.classList.contains("dead"))) setTimeout(signal,350); setTimeout(()=>s.classList.remove("dead"),(L.filter(x=>x.classList.contains("dead")).length>6?5500:2500)+Math.random()*2500); };
       addEventListener("click",e=>{ if(e.target.closest&&e.target.closest("a,button,.pill,.sheet,.bar,.tile")) return; const sp=letterAt(e.clientX,e.clientY); if(sp){ e.stopPropagation(); e.preventDefault(); kill(sp); } },true);
       let mvT=0; addEventListener("pointermove",e=>{ if(e.pointerType!=="mouse") return; const n=performance.now(); if(n-mvT<60) return; mvT=n; document.documentElement.style.cursor=letterAt(e.clientX,e.clientY)?"pointer":""; },{passive:true});
       window.MSLetterAt=letterAt; }
@@ -2418,12 +2430,12 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const hunt=$("hunt"), box=$("tags");
     found=found.filter(n=>TAGS.some(t=>t[0]===n));
     /* roof secrets: Grace, the 5 tags, the band, the dance floor */
-    const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"],["windows","Peek in every window","The binoculars by the wall see a lot"],["jill","Free Jill","Someone else is trapped across the street"]];
+    const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"],["windows","Peek in every window","The binoculars by the wall see a lot"],["jill","Free Jill","Someone else is trapped across the street"],["signal","The Smile signal","Black out the whole neon sign"]];
     const got=new Set(); window.MSGot=()=>got; window.MSSecList=()=>SEC.map(x=>x[0]);
     const showHunt=()=>{ hunt.innerHTML=`★ <i class="hr">Roof </i>secrets <b>${got.size}/${SEC.length}</b>`;
       $("sec-list").innerHTML=SEC.map(([k,a,h])=>`<li class="${got.has(k)?"got":""}"><i>${got.has(k)?"✓":"?"}</i><span>${got.has(k)?a:h}</span></li>`).join(""); };
     { const sp=document.querySelector(".top span"); if(sp) sp.insertBefore(hunt,sp.firstChild); }
-    const NOTE={grace:"Grace is free! She’s headed down to the lounge.",megan:"Megan is free! (She says she was never stuck.)",gianna:"Gianna is free! Right on time.",sophia:"Sophia is free! She’s getting back to the lounge.",band:"You messed with the band.",floor:"The dance floor is lit.",windows:"You peeked in every window. Nosy.",jill:"Jill is free! She’s on her way to the lounge.",jill5:"Sharpshooter: Jill freed in 5 shots or fewer."};
+    const NOTE={signal:"The Smile signal is up over the city.",grace:"Grace is free! She’s headed down to the lounge.",megan:"Megan is free! (She says she was never stuck.)",gianna:"Gianna is free! Right on time.",sophia:"Sophia is free! She’s getting back to the lounge.",band:"You messed with the band.",floor:"The dance floor is lit.",windows:"You peeked in every window. Nosy.",jill:"Jill is free! She’s on her way to the lounge.",jill5:"Sharpshooter: Jill freed in 5 shots or fewer."};
     let noteT=0; const note=(t)=>{ const n=$("sec-note"); n.innerHTML=`<b>★ Secret found · ${got.size}/${SEC.length}</b>${t}`; n.classList.add("on"); clearTimeout(noteT); noteT=setTimeout(()=>n.classList.remove("on"),3800); };
     window.MSSecret=k=>{ if(got.has(k)||!SEC.some(s=>s[0]===k)) return; got.add(k); showHunt(); hunt.classList.remove("pop"); void hunt.offsetWidth; hunt.classList.add("pop");
       note(k.startsWith("tag:")?`Song tag: “${k.slice(4)}”`:NOTE[k]);
