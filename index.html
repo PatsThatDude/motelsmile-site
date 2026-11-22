@@ -271,9 +271,9 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <a class="show-sign" id="show-sign" href="#shows" data-open="shows" hidden aria-label="Next show"><small id="ss-a"></small><b id="ss-b"></b></a>
     <button class="binoc" id="binoc" aria-label="Coin-op binoculars on the ledge: go to the ledge"><span class="bn-tag">Look ↗</span></button>
     <div class="jar-glow" id="jar-glow" aria-hidden="true"></div><div class="jar-help" id="jar-help" aria-hidden="true">help!</div>
-    <button class="pk girl-jar" data-girl="megan" style="left:1272px;top:504px;width:37px;height:60px;background-image:url(img/girls/megan-jar.webp)" aria-label="A jar labeled MEGAN. Someone is trapped inside"></button>
-    <button class="pk girl-jar" data-girl="gianna" style="left:152px;top:446px;width:37px;height:60px;background-image:url(img/girls/gianna-jar.webp)" aria-label="A jar labeled GIANNA. Someone is trapped inside"></button>
-    <button class="pk girl-jar" data-girl="sophia" style="left:1172px;top:432px;width:37px;height:60px;background-image:url(img/girls/sophia-jar.webp)" aria-label="A jar labeled SOPHIA. Someone is trapped inside"></button>
+    <button class="pk girl-jar" data-girl="megan" style="left:418px;top:430px;width:37px;height:60px;background-image:url(img/girls/megan-jar.webp)" aria-label="A jar labeled MEGAN. Someone is trapped inside"></button>
+    <button class="pk girl-jar" data-girl="gianna" style="left:474px;top:428px;width:37px;height:60px;background-image:url(img/girls/gianna-jar.webp)" aria-label="A jar labeled GIANNA. Someone is trapped inside"></button>
+    <button class="pk girl-jar" data-girl="sophia" style="left:530px;top:430px;width:37px;height:60px;background-image:url(img/girls/sophia-jar.webp)" aria-label="A jar labeled SOPHIA. Someone is trapped inside"></button>
     <button class="pk" id="pk-jar" style="left:590px;top:434px;width:37px;height:60px" aria-label="A jar on the ledge. Someone is trapped inside. Open it up close" hidden></button>
     
     
@@ -357,7 +357,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
 .lounge:not(.on),.lounge:not(.on) *{pointer-events:none!important}
 .lounge:not(.on):not(.moving){visibility:hidden;content-visibility:hidden}
 /* Megan, Gianna, Sophia jars hidden for now (only Grace + Jill) */
-#play .girl-jar{display:none!important}
+
 .lounge:not(.on):not(.moving) *,.arcade:not(.on) *{animation-play-state:paused!important}
 body.bx-on #stage *,body.jx-on:not(.jx-zoom) #stage *{animation-play-state:paused!important}
 body.bx-cover #stage,body.bx-cover .lounge,body.bx-cover .arcade{visibility:hidden!important}
@@ -646,8 +646,8 @@ body.jx-zoom .welcome,body.jx-zoom .sec-pop,body.jx-zoom .jar-help{opacity:0!imp
 @media (max-width:760px){ .top .hunt{margin:0;padding:6px 10px!important;font-size:10px!important} .sec-note,.sec-pop{right:12px!important;top:calc(50px + env(safe-area-inset-top,0px))!important} }
 .gr-toast{top:calc(58px + env(safe-area-inset-top,0px));bottom:auto!important}
 /* next-show neon on a skyline building */
-.show-sign{position:absolute;left:330px;top:150px;width:150px;z-index:4;pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:1px;text-decoration:none;color:#fff;font-family:var(--tube);text-align:center;transform:rotate(-2deg);-webkit-tap-highlight-color:transparent;animation:ssFlick 6s infinite}
-.show-sign[hidden]{display:none}
+.show-sign{position:absolute;left:384px;top:378px;width:132px;padding:6px 4px 7px;background:linear-gradient(#1a1222,#0c0812);border:2px solid #3a2c44;border-radius:5px;box-shadow:0 6px 14px rgba(0,0,0,.55),inset 0 0 10px rgba(255,61,127,.18);z-index:4;pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:1px;text-decoration:none;color:#fff;font-family:var(--tube);text-align:center;transform:rotate(-1.5deg);transform-origin:50% -16px;-webkit-tap-highlight-color:transparent;animation:ssFlick 6s infinite}
+.show-sign[hidden]{display:none} .show-sign::before,.show-sign::after{content:"";position:absolute;top:-16px;width:2px;height:16px;background:repeating-linear-gradient(#8a7f90 0 3px,transparent 3px 5px)} .show-sign::before{left:14px}.show-sign::after{right:14px} .show-sign small{font-size:9px!important;letter-spacing:.08em!important} .show-sign b{font-size:22px!important}
 .show-sign small{font:700 12px/1.1 var(--mono);white-space:nowrap;letter-spacing:.12em;text-transform:uppercase;color:#46dcff;text-shadow:0 0 6px #46dcff}
 .show-sign b{font-weight:400;font-size:30px;line-height:1;color:#fff;text-shadow:0 0 6px #ff3d7f,0 0 14px #ff3d7f,0 0 26px #ff3d7f;white-space:nowrap}
 @keyframes ssFlick{0%,92%,100%{opacity:1}93%{opacity:.4}94%{opacity:1}96%{opacity:.6}}
@@ -2519,7 +2519,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const shows=(c.shows||[]).filter(x=>!x.date||x.date>=today).sort((a,b)=>(a.date||"9")<(b.date||"9")?-1:1);
     if(shows.length){
       const d0=shows[0].date?new Date(shows[0].date+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}):"TBA";
-      $("t-shows").textContent="Next: "+d0; $("t-shows-sub").textContent=[shows[0].venue,shows[0].time].filter(Boolean).join(" · "); window.MSShowSign&&window.MSShowSign(shows[0]);
+      $("t-shows").textContent="Next: "+d0; $("t-shows-sub").textContent=[shows[0].venue,shows[0].time].filter(Boolean).join(" · "); window.__msNext=shows[0]; window.MSShowSign&&window.MSShowSign(shows[0]);
       $("shows").innerHTML=`<ul class="rows">${shows.map(x=>{const d=x.date?new Date(x.date+"T12:00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}):"TBA";
         const extra=[x.doors&&("doors "+x.doors),x.price,x.ages,x.with&&("with "+x.with)].filter(Boolean).map(esc).join(" · ");
         return `<li><div><b>${x.tickets?`<a ${ext(x.tickets)}>${esc(x.venue)}</a>`:esc(x.venue)}</b>${extra?`<span class="extra">${extra}</span>`:""}</div><span style="text-align:right">${[d,x.time,x.city].filter(Boolean).map(esc).join(" · ")}<br><a ${ext(mapHref(x))} style="font-size:12px">Map ↗</a>${x.tickets?` · <a ${ext(x.tickets)} style="font-size:12px">Tickets ↗</a>`:""}</span></li>`;}).join("")}</ul>`;
@@ -3263,6 +3263,7 @@ window.MST=(()=>{
     const d=new Date(x.date+"T00:00:00"), n=Math.round((d-ny)/864e5);
     $("ss-a").textContent=[d.toLocaleDateString("en-US",{month:"short",day:"numeric"}),x.venue].filter(Boolean).join(" · ");
     $("ss-b").textContent=n<=0?"TONIGHT":n===1?"TOMORROW":n+" DAYS"; el.hidden=false; el.setAttribute("aria-label",`Next show: ${$("ss-a").textContent}, ${$("ss-b").textContent.toLowerCase()}`); };
+  if(window.__msNext) window.MSShowSign(window.__msNext);
   // ---- little cards
   const openCard=id=>{ document.querySelectorAll(".card-note").forEach(c=>c.hidden=c.id!==id); const c=$(id); const i=c.querySelector("input:not(.hp)"); setTimeout(()=>i&&i.focus(),60); };
   document.querySelectorAll("[data-cn-x]").forEach(b=>b.addEventListener("click",()=>b.closest(".card-note").hidden=true));
