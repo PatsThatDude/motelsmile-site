@@ -333,9 +333,8 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
   <div class="sky">
     <h1 class="sign" aria-label="Motel Smile"><span class="w"><span class="b f1">M</span><span class="p">o</span><span class="b f2">t</span><span class="p f3">e</span><span class="p">l</span></span> <span class="w"><span class="p">S</span><span class="p">m</span><span class="p">i</span><span class="p f4">l</span><span class="p">e</span></span></h1>
     <div class="pills">
-      <a class="pill" style="--c:var(--pink)" data-lounge href="#lounge"><span class="tri" aria-hidden="true"></span>Listen in the lounge</a>
-      <a class="pill" style="--c:var(--green)" data-arcade href="#arcade">Play games</a>
-      <a class="pill" style="--c:var(--cyan)" data-open="shows" href="#shows">Live music</a>
+      <a class="pill" style="--c:var(--cyan)" data-lounge href="#lounge"><span class="tri" aria-hidden="true"></span>Listen in the lounge</a>
+      <a class="pill pg-top" id="pill-games" style="--c:var(--green)" data-arcade href="#arcade">Play games</a>
     </div>
   </div>
 
@@ -3689,6 +3688,7 @@ body.jx-zoom .binoc{opacity:0!important;pointer-events:none!important}
 <style>
 /* roof guide: a neon "what's up here?" button + a brochure of everything to do */
 .gd-btn{position:absolute;left:max(16px,env(safe-area-inset-left,0px));top:46px;z-index:6;display:inline-flex;align-items:center;gap:8px;padding:7px 14px 7px 9px;border-radius:999px;border:1.5px solid #ffd36a;background:rgba(10,7,18,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff4d6;font:400 15px/1 var(--tube);letter-spacing:.02em;cursor:pointer;box-shadow:0 0 0 1px rgba(255,211,106,.15),0 0 16px rgba(255,190,70,.45),inset 0 0 10px rgba(255,190,70,.18);text-shadow:0 0 8px rgba(255,190,70,.9);transition:transform .15s,box-shadow .2s;-webkit-tap-highlight-color:transparent}
+.pill.pg-top{position:absolute;z-index:6;margin:0}body.in-room .pill.pg-top,body.jx-zoom .pill.pg-top,body.bx-on .pill.pg-top{opacity:0;pointer-events:none}
 .gd-btn:hover,.gd-btn:focus-visible{transform:translateY(-1px) scale(1.03);box-shadow:0 0 0 1px rgba(255,211,106,.3),0 0 26px rgba(255,190,70,.7),inset 0 0 12px rgba(255,190,70,.25);outline:none}
 .gd-btn .gd-star{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#ffd36a;color:#1a0f00;font:700 13px/1 system-ui;text-shadow:none;box-shadow:0 0 10px #ffb23d}
 .gd-btn .gd-new{position:absolute;right:-6px;top:-9px;padding:2px 6px;border-radius:8px;background:var(--pink);color:#fff;font:700 9px/1.2 var(--mono);letter-spacing:.12em;text-shadow:none;box-shadow:0 0 10px var(--pink);animation:gdBob 1.6s ease-in-out infinite}
@@ -3740,6 +3740,8 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
 </div>
 <script>
 (()=>{
+  { const g=document.getElementById("pill-games"), b0=document.getElementById("gd-btn"), st=document.getElementById("stage");
+    if(g&&b0&&st){ st.appendChild(g); const pos=()=>{ if(document.body.classList.contains("ph")){ g.style.left=b0.offsetLeft+"px"; g.style.top=(b0.offsetTop+b0.offsetHeight+8)+"px"; } else { g.style.left=(b0.offsetLeft+b0.offsetWidth+10)+"px"; g.style.top=(b0.offsetTop+(b0.offsetHeight-g.offsetHeight)/2)+"px"; } }; /* phones: under the guide button, the secrets pill sits to its right */ pos(); addEventListener("resize",pos); setTimeout(pos,600); if(window.ResizeObserver) new ResizeObserver(pos).observe(b0); } }
   const $=id=>document.getElementById(id), stage=$("stage"), btn=$("gd-btn"), gd=$("gd");
   if(stage) stage.appendChild(btn);
   const I={
@@ -4494,7 +4496,7 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
 /* the three buttons are neon signs hanging from the pole arm (desktop + iPad); phone keeps the on-screen row */
 (()=>{ const go=(id,f)=>{ const b=document.getElementById(id); b&&b.addEventListener("click",e=>{ e.stopPropagation(); window.MSBxSfx&&window.MSBxSfx("tick"); f(); }); };
   const pill=i=>()=>{ const p=document.querySelectorAll(".sky .pills .pill")[i]; p&&p.click(); };
-  go("ns-listen",pill(0)); go("ns-games",pill(1)); go("ns-live",pill(2)); go("nsp-listen",pill(0)); go("nsp-games",pill(1)); go("nsp-live",pill(2)); })();
+  const pq=q=>()=>{ const p=document.querySelector(q); p&&p.click(); }; go("ns-listen",pq(".pill[data-lounge]")); go("ns-games",pq(".pill[data-arcade]")); go("ns-live",pq(".tile[data-open=shows]")); go("nsp-listen",pq(".pill[data-lounge]")); go("nsp-games",pq(".pill[data-arcade]")); go("nsp-live",pq(".tile[data-open=shows]")); })();
 </script>
 
 </body>
