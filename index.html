@@ -265,14 +265,14 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
   <div id="play" aria-label="Things on the roof">
     <div class="lt-warm"></div><div class="lt-glow"></div><div class="lt-flame"></div><div class="lt-out"></div>
     <div class="pg-gone"></div><div class="pg-fly"></div>
-    <button class="pk" id="pk-lantern" style="left:3px;top:252px;width:50px;height:70px" aria-label="Lamp over the door"></button>
+    <button class="pk" id="pk-lantern" style="left:-80px;top:170px;width:52px;height:68px" aria-label="Lamp over the door"></button>
     <button class="pk" id="pk-pigeon" hidden style="display:none" aria-label="Pigeon"></button>
     <button class="pk img" id="pk-kick" style="left:960px;top:518px;width:120px;height:120px;border-radius:50%;background-position:-960px -518px" aria-label="Kick drum"></button>
     <button class="pk" id="pk-cym1" style="left:872px;top:440px;width:90px;height:26px" aria-label="Cymbal"></button>
     <button class="pk" id="pk-cym2" style="left:1080px;top:436px;width:90px;height:26px" aria-label="Cymbal"></button>
     <button class="pk" id="pk-amp" style="left:805px;top:500px;width:72px;height:92px" aria-label="Amp"></button>
     <button class="pk img" id="pk-gnome" hidden style="display:none;left:248px;top:560px;width:100px;height:90px;background-position:-248px -560px;transform-origin:50% 90%" aria-label="Garden gnome"></button>
-    <button class="pk" id="pk-reset" style="left:49px;top:436px;width:30px;height:44px" aria-label="Reset button: start the roof over"></button>
+    <button class="pk" id="pk-reset" style="left:362px;top:398px;width:30px;height:44px" aria-label="Reset button: start the roof over"></button>
     <a class="show-sign" id="show-sign" href="#shows" data-open="shows" hidden aria-label="Next show"><small id="ss-a"></small><b id="ss-b"></b></a>
     <button class="binoc" id="binoc" aria-label="Coin-op binoculars on the ledge: go to the ledge"><span class="bn-tag">Look ↗</span></button>
     <div class="jar-glow" id="jar-glow" aria-hidden="true"></div><div class="jar-help" id="jar-help" aria-hidden="true">help!</div>
@@ -652,7 +652,7 @@ body.jx-zoom .welcome,body.jx-zoom .sec-pop,body.jx-zoom .jar-help{opacity:0!imp
 @media (max-width:760px){ .top .hunt{margin:0;padding:6px 10px!important;font-size:10px!important} .sec-note,.sec-pop{right:12px!important;top:calc(50px + env(safe-area-inset-top,0px))!important} }
 .gr-toast{top:calc(58px + env(safe-area-inset-top,0px));bottom:auto!important}
 /* next-show neon on a skyline building */
-.show-sign{position:absolute;left:1200px;top:236px;width:150px;z-index:4;pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:1px;text-decoration:none;color:#fff;font-family:var(--tube);text-align:center;transform:rotate(-2deg);-webkit-tap-highlight-color:transparent;animation:ssFlick 6s infinite}
+.show-sign{position:absolute;left:880px;top:150px;width:150px;z-index:4;pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:1px;text-decoration:none;color:#fff;font-family:var(--tube);text-align:center;transform:rotate(-2deg);-webkit-tap-highlight-color:transparent;animation:ssFlick 6s infinite}
 .show-sign[hidden]{display:none}
 .show-sign small{font:700 12px/1.1 var(--mono);white-space:nowrap;letter-spacing:.12em;text-transform:uppercase;color:#46dcff;text-shadow:0 0 6px #46dcff}
 .show-sign b{font-weight:400;font-size:30px;line-height:1;color:#fff;text-shadow:0 0 6px #ff3d7f,0 0 14px #ff3d7f,0 0 26px #ff3d7f;white-space:nowrap}
@@ -2357,7 +2357,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   /* ---------- play: the roof reacts ---------- */
   (()=>{
-    const TAGS=[["Watch Your Tone", -172, 382, 100, 112], ["Never Ever Be", 1396, 532, 98, 58], ["Been Wrong", 1512, 528, 98, 60], ["Matter Of Time", 1358, 772, 108, 78], ["Sometimes", 1502, 792, 158, 62]], play=$("play");
+    const TAGS=[["Watch Your Tone", 520, 498, 150, 70], ["Never Ever Be", 1396, 532, 98, 58], ["Been Wrong", 1512, 528, 98, 60], ["Matter Of Time", 1358, 772, 108, 78], ["Sometimes", 1502, 792, 158, 62]], play=$("play");
     const ac=()=>window.MSAC&&window.MSAC();
     const noise=(dur)=>{ const a=ac(); if(!a) return null; const b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; const s=a.createBufferSource(); s.buffer=b; return s; };
     const env=(g,t,a,peak,rel)=>{ g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(peak,t+a); g.gain.exponentialRampToValueAtTime(.0001,t+a+rel); };
