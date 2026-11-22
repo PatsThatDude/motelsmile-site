@@ -292,6 +292,10 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
       <button class="pk ns" id="ns-live" style="left:1284px;top:230px;width:145px;height:48px" aria-label="Live music: shows"></button>
       <button class="pk ns" id="ns-games" style="left:1280px;top:294px;width:153px;height:49px" aria-label="Play games"></button>
       <button class="pk ns" id="ns-listen" style="left:1235px;top:369px;width:246px;height:46px;transform:rotate(-4deg)" aria-label="Listen in the lounge"></button></div>
+    <div id="ph-sway"><img id="ph-sway-img" src="img/ph-signs.webp?v=1" alt="" width="520" height="110">
+      <button class="pk ns" id="nsp-live" style="left:74px;top:58px;width:99px;height:34px" aria-label="Live music: shows"></button>
+      <button class="pk ns" id="nsp-games" style="left:187px;top:62px;width:102px;height:33px" aria-label="Play games"></button>
+      <button class="pk ns" id="nsp-listen" style="left:299px;top:56px;width:140px;height:38px;transform:rotate(-4deg)" aria-label="Listen in the lounge"></button></div>
     <a class="pk" id="pk-arcade" hidden href="#arcade" data-arcade style="display:none;left:335px;top:318px;width:128px;height:245px" aria-label="Arcade: go to the game corner"></a>
     <canvas id="pat-fx" width="1672" height="941"></canvas>
     <div id="tags"></div>
@@ -2424,8 +2428,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
-  const PSP=[{x:288,z:1,n:"Hangout"},{x:1122,z:1,n:"The band"},{x:1864,z:1,n:"Lounge"}] /* phone: same view centres as the view bars, roof fills the full screen height (Pat 11-21) */, DSP=[{x:1075,z:1.2935,y:.4825,n:"The band"}]; /* desktop: one view only, Pat's band bar (plate 599..1763 x 103..830, 11-22); walkway + lounge become their own scenes */ /* desktop: Pat's locked view bars (centre in play px, zoom) */ window.MSPhSpots=PSP; let spot=1, dspot=0; /* 3 stops everywhere: sitting area, band (default), partial lounge */
-  const TSP=[{x:833,z:1.165,y:0,n:"The band"},{x:1878,z:1.6,y:.246,n:"Lounge"}]; /* tablets (touch, landscape): Pat's iPad view bars */
+  const PSP=[{x:647,z:1,n:"Walkway"},{x:1030,z:1,n:"The band"},{x:1941,z:1,n:"Lounge"}] /* phone only: swipe left/right from the band (Pat's artifact sections 11-22) */ /* phone: same view centres as the view bars, roof fills the full screen height (Pat 11-21) */, DSP=[{x:836,z:1,y:.5,n:"The band"}]; /* desktop: one view only, Pat's band bar (plate 599..1763 x 103..830, 11-22); walkway + lounge become their own scenes */ /* desktop: Pat's locked view bars (centre in play px, zoom) */ window.MSPhSpots=PSP; let spot=1, dspot=0; /* 3 stops everywhere: sitting area, band (default), partial lounge */
+  const TSP=[{x:836,z:1,y:.5,n:"The band"}]; /* tablets (touch, landscape): Pat's iPad view bars */
   const tablet=()=>!phone()&&innerWidth<1300&&matchMedia("(pointer:coarse)").matches;
   const SPS=()=>phone()?PSP:tablet()?TSP:DSP; window.MSSpots=SPS;
   const spx=p=>p.x+OFF;
@@ -2757,7 +2761,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   // feet positions in main-shot coords (1672x941); height follows the floor's perspective (scaled to the drum kit)
   // far (back by the wall), mid (by the kit), close (foreground)
-  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [470,704],[300,712],[1830,602,172],[1480,656,262]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (Pat on the sofa, Jordan on the sofa, Jordan at the bar, Pat by the bar) */
+  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [600,708],[760,700],[1830,602,172],[1480,656,262]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (Pat on the sofa, Jordan on the sofa, Jordan at the bar, Pat by the bar) */
   const hFor=f=>1.48*(f-420);
   const hAt=i=>SPOTS[i][2]||hFor(SPOTS[i][1]); /* blocking spots by the sofa and in the lounge carry their own height: those props are drawn at a different scale */
   const MEMBERS=[], taken=()=>MEMBERS.map(m=>m.spot);
@@ -3094,7 +3098,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   // every so often one of them pulls a stunt; ?gag=pat|jordan|jacob runs one right away
   const CREW={pat:PAT,jordan:JORDAN,jacob:JACOB}; window.MSGag=n=>CREW[n]&&CREW[n].gag();
   // the band follows the camera: Hangout = Pat to the sofa, Jordan by the binoculars; Lounge = Jordan to the bar, Pat by the bar; band view = back to the kit
-  { const PLAN={"Hangout":[[PAT,11],[JORDAN,12]],"The band":[[PAT,9],[JORDAN,10]],"Lounge":[[JORDAN,13,"bar"],[PAT,14,"bar"]]}; let vT=0, gen=0;
+  { const PLAN={"Walkway":[[PAT,11],[JORDAN,12]],"The band":[[PAT,9],[JORDAN,10]],"Lounge":[[JORDAN,13,"bar"],[PAT,14,"bar"]]}; let vT=0, gen=0;
     addEventListener("msview",e=>{ clearTimeout(vT); const v=e.detail, g=++gen; vT=setTimeout(async()=>{ if(still) return;
       for(const [mb,sp,end] of PLAN[v]||[]){ if(g!==gen) return; mb.walkTo(sp,end).then(()=>{ if(v==="The band"&&g===gen) mb.resume(); }); await wait(1300); } },650); });
     // desktop main view shows the sofa: now and then one of them wanders over, sits a while, then heads back to the kit
@@ -4430,12 +4434,16 @@ body.ph #sway{display:none}
 @keyframes nsOn{0%{opacity:.9}12%{opacity:.1}22%{opacity:1}34%{opacity:.25}46%{opacity:1}100%{opacity:1}}
 @media (prefers-reduced-motion:reduce){#play .ns:hover::before,#play .ns:focus-visible::before{animation:none;opacity:1}}
 
-body:not(.ph) .sky .pills{visibility:hidden}body.ph #play .ns{display:none}</style>
+body:not(.ph) .sky .pills{visibility:hidden}body.ph #play .ns{display:none}
+#ph-sway{display:none;position:absolute;left:774px;top:134px;width:520px;height:110px;z-index:5}#ph-sway-img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;max-width:none}
+body.ph #ph-sway{display:block}body.ph #play #ph-sway .ns{display:block}body.ph .sky .pills{visibility:hidden}
+#nsp-live{--nc:#3ce6ff}#nsp-games{--nc:#5dff9e}#nsp-listen{--nc:#ff3d7f}
+body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important}</style>
 <script>
 /* the three buttons are neon signs hanging from the pole arm (desktop + iPad); phone keeps the on-screen row */
 (()=>{ const go=(id,f)=>{ const b=document.getElementById(id); b&&b.addEventListener("click",e=>{ e.stopPropagation(); window.MSBxSfx&&window.MSBxSfx("tick"); f(); }); };
   const pill=i=>()=>{ const p=document.querySelectorAll(".sky .pills .pill")[i]; p&&p.click(); };
-  go("ns-listen",pill(0)); go("ns-games",pill(1)); go("ns-live",pill(2)); })();
+  go("ns-listen",pill(0)); go("ns-games",pill(1)); go("ns-live",pill(2)); go("nsp-listen",pill(0)); go("nsp-games",pill(1)); go("nsp-live",pill(2)); })();
 </script>
 
 </body>
