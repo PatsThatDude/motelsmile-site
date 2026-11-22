@@ -2397,7 +2397,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     window.MSPlay.AMP=AMP; window.MSPlay.COOL=COOL;
     on("pk-amp",el=>{ feedback(); flashIn(el); say(el,pick(AMP)); });
     on("pk-gnome",el=>{ bump(el,"wob"); say(el,pick(["Don't mind me.","Five more minutes.","I'm the roadie.","Wake me up for the encore.","Who invited the gnome?"])); });
-    on("pk-cooler",el=>{ clink(); say(el,pick(COOL)); });
+
     // neon sign: kill a letter, it buzzes back
     { const sign=document.querySelector("h1.sign"), L=sign?[...sign.querySelectorAll("span span")]:[], cv2=document.createElement("canvas"), cx2=cv2.getContext("2d",{willReadFrequently:true});
       const pos=el=>{ let x=0,y=0,e=el; while(e&&e!==sign&&e!==document.body){ x+=e.offsetLeft; y+=e.offsetTop; e=e.offsetParent; } if(e!==sign){ x-=sign.offsetLeft; y-=sign.offsetTop; } return [x,y]; };
