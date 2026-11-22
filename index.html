@@ -113,9 +113,9 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 @media (max-width:760px){.stage{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}}
 #play{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;z-index:3;pointer-events:none}
 #play .pk,#lg-play .pk{appearance:none;-webkit-appearance:none;background-color:transparent;border:0;padding:0;margin:0;color:transparent;position:absolute;pointer-events:auto;cursor:pointer;border-radius:8px;-webkit-tap-highlight-color:transparent}
-#play .pk.img{background-image:url(img/roof-wide.webp?v=1);background-size:2412px 941px;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 70%,transparent 100%)}
+
 #roof-fx{position:absolute;left:0;top:0;width:2412px;height:941px;pointer-events:none;z-index:60}
-#roof-glass{position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:60;opacity:0;background:#ff3fd0;-webkit-mask:url(img/roof-glass.webp?v=1) 0 0/1672px 941px;mask:url(img/roof-glass.webp?v=1) 0 0/1672px 941px;mix-blend-mode:screen}
+
 #play a.pk{display:block}
 #play .pk:focus-visible,#lg-play .pk:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
 @media (hover:hover){#play .pk:hover,#lg-play .pk:hover{filter:brightness(1.25) drop-shadow(0 0 6px rgba(255,61,127,.6))}}
@@ -132,15 +132,11 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .dark .lt-out{opacity:1}
 .smoke{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(220,220,230,.5);filter:blur(2px);pointer-events:none;animation:smoke 1.6s ease-out forwards}
 @keyframes smoke{to{transform:translate(4px,-38px) scale(4);opacity:0}}
-.pg-gone{position:absolute;left:255px;top:155px;width:84px;height:76px;background:url(img/pigeon2-gone.webp?v=1) 0 0/84px 76px;opacity:0;pointer-events:none;transition:opacity .08s}
-.pg-fly{position:absolute;left:255px;top:155px;width:84px;height:76px;background:url(img/pigeon2.webp?v=1) 0 0/84px 76px;pointer-events:none;opacity:0}
-#play.flown .pg-gone{opacity:1}
-#play.flown .pg-fly{animation:fly 1.4s cubic-bezier(.3,0,.7,1) forwards}
-@keyframes fly{0%{opacity:1;transform:none}15%{transform:translate(6px,-10px) rotate(-8deg)}100%{opacity:0;transform:translate(420px,-260px) rotate(-20deg) scale(.4)}}
+#play.flown #play.flown @keyframes fly{0%{opacity:1;transform:none}15%{transform:translate(6px,-10px) rotate(-8deg)}100%{opacity:0;transform:translate(420px,-260px) rotate(-20deg) scale(.4)}}
 .bubble{position:absolute;z-index:6;max-width:220px;padding:8px 12px;border-radius:14px;background:rgba(5,6,10,.85);border:1.5px solid var(--pink);color:#fff;font:13px/1.35 var(--mono);box-shadow:0 0 10px rgba(255,61,127,.4);pointer-events:none;transform:translate(-50%,-110%);animation:bub 2.8s ease forwards}
 @keyframes bub{0%{opacity:0;transform:translate(-50%,-95%)}8%{opacity:1;transform:translate(-50%,-110%)}85%{opacity:1}100%{opacity:0}}
 .kick{animation:kick .22s ease-out}
-#pk-kick.kick{filter:drop-shadow(0 0 14px rgba(255,61,127,.9))}
+#pk-kick.kick{box-shadow:0 0 28px 6px rgba(255,61,127,.55)}
 @keyframes kick{0%{transform:scale(1)}30%{transform:scale(1.06)}100%{transform:scale(1)}}
 .wob{animation:wob .6s ease}
 @keyframes wob{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg)}55%{transform:rotate(7deg)}80%{transform:rotate(-3deg)}}
@@ -264,14 +260,13 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
   <a class="hot" id="flyer" href="#shows" data-open="shows" aria-label="Flyer on the door: next show TBA. Open shows"></a>
   <div id="play" aria-label="Things on the roof">
     <div class="lt-warm"></div><div class="lt-glow"></div><div class="lt-flame"></div><div class="lt-out"></div>
-    <div class="pg-gone"></div><div class="pg-fly"></div>
+    
     <button class="pk" id="pk-lantern" style="left:-80px;top:170px;width:52px;height:68px" aria-label="Lamp over the door"></button>
     <button class="pk" id="pk-pigeon" hidden style="display:none" aria-label="Pigeon"></button>
-    <button class="pk img" id="pk-kick" style="left:960px;top:518px;width:120px;height:120px;border-radius:50%;background-position:-960px -518px" aria-label="Kick drum"></button>
+    <button class="pk" id="pk-kick" style="left:960px;top:518px;width:120px;height:120px;border-radius:50%;background-position:-960px -518px" aria-label="Kick drum"></button>
     <button class="pk" id="pk-cym1" style="left:872px;top:440px;width:90px;height:26px" aria-label="Cymbal"></button>
     <button class="pk" id="pk-cym2" style="left:1080px;top:436px;width:90px;height:26px" aria-label="Cymbal"></button>
     <button class="pk" id="pk-amp" style="left:805px;top:500px;width:72px;height:92px" aria-label="Amp"></button>
-    <button class="pk img" id="pk-gnome" hidden style="display:none;left:248px;top:560px;width:100px;height:90px;background-position:-248px -560px;transform-origin:50% 90%" aria-label="Garden gnome"></button>
     <button class="pk" id="pk-reset" style="left:362px;top:398px;width:30px;height:44px" aria-label="Reset button: start the roof over"></button>
     <a class="show-sign" id="show-sign" href="#shows" data-open="shows" hidden aria-label="Next show"><small id="ss-a"></small><b id="ss-b"></b></a>
     <button class="binoc" id="binoc" aria-label="Coin-op binoculars on the ledge: go to the ledge"><span class="bn-tag">Look ↗</span></button>
@@ -281,18 +276,18 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <button class="pk girl-jar" data-girl="sophia" style="left:1172px;top:432px;width:37px;height:60px;background-image:url(img/girls/sophia-jar.webp)" aria-label="A jar labeled SOPHIA. Someone is trapped inside"></button>
     <button class="pk" id="pk-jar" style="left:590px;top:434px;width:37px;height:60px" aria-label="A jar on the ledge. Someone is trapped inside. Open it up close" hidden></button>
     
-    <div id="roof-glass" aria-hidden="true"></div>
+    
     <canvas id="roof-fx" width="2412" height="941" aria-hidden="true"></canvas>
     <canvas id="gr-roof" width="1672" height="941" aria-hidden="true" style="position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:60"></canvas>
     <a class="lng-sign" id="lng-sign" href="#lounge" data-lounge aria-label="Smile Lounge: go downstairs"><span>Smile Lounge</span><i>↓</i></a>
     <a class="pk" id="pk-floor" href="#lounge" data-lounge style="left:1850px;top:578px;width:436px;height:74px;clip-path:polygon(2% 0,100% 0,89% 100%,0 100%)" aria-label="Dance floor: go to the Smile Lounge"></a>
     <a class="pk" id="pk-bar" href="#lounge" data-lounge style="left:1648px;top:428px;width:206px;height:192px" aria-label="The bar: go to the Smile Lounge"></a>
     <a class="pk" id="pk-couch" href="#lounge" data-lounge style="left:1860px;top:400px;width:440px;height:178px" aria-label="The lounge: record player and couch"></a>
-    <div id="sway" aria-hidden="false"><img id="sway-img" src="img/signs-stack.webp?v=1" alt="" width="290" height="240">
+    <div id="sway" aria-hidden="false">
       <button class="pk ns" id="ns-live" style="left:1284px;top:230px;width:145px;height:48px" aria-label="Live music: shows"></button>
       <button class="pk ns" id="ns-games" style="left:1280px;top:294px;width:153px;height:49px" aria-label="Play games"></button>
       <button class="pk ns" id="ns-listen" style="left:1235px;top:369px;width:246px;height:46px;transform:rotate(-4deg)" aria-label="Listen in the lounge"></button></div>
-    <div id="ph-sway"><img id="ph-sway-img" src="img/ph-signs.webp?v=1" alt="" width="520" height="110">
+    <div id="ph-sway">
       <button class="pk ns" id="nsp-live" style="left:74px;top:58px;width:99px;height:34px" aria-label="Live music: shows"></button>
       <button class="pk ns" id="nsp-games" style="left:187px;top:62px;width:102px;height:33px" aria-label="Play games"></button>
       <button class="pk ns" id="nsp-listen" style="left:299px;top:56px;width:140px;height:38px;transform:rotate(-4deg)" aria-label="Listen in the lounge"></button></div>
@@ -372,7 +367,7 @@ body.in-room #stage>:is(.top,#flyer,#play,#hunt,.sky,.bar) *{animation-play-stat
 body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-state:paused!important}
 .lounge:not(.on):not(.moving) .lg-fill{background:none}.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=b1) 40% 50%/cover;filter:blur(22px) brightness(.45)}
 .lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
-.lg-cam{z-index:8}.lg-hero{z-index:2;background:url(img/roof-main.webp?v=c3) 0 0/1672px 941px;pointer-events:none}
+.lg-cam{z-index:8}.lg-hero{z-index:2;width:2412px;background:url(img/roof-v2.webp?v=16) -106px 0/2518px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
 .lg-bg{left:0;top:0;width:1672px;height:941px}
 .lg-front{left:341px;top:489px;width:886px;height:405px;pointer-events:none}
@@ -1474,7 +1469,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 .arcade:not(.on){visibility:hidden;content-visibility:hidden}
 .ac-fill{position:absolute;inset:-40px;background:url(img/game-corner.webp?v=c1) 30% 50%/cover;filter:blur(22px) brightness(.45)}
 .ac-cam,.ac-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
-.ac-cam{z-index:8}.ac-hero{z-index:2;background:url(img/roof-main.webp?v=c3) 0 0/1672px 941px;pointer-events:none;display:none}
+.ac-cam{z-index:8}.ac-hero{z-index:2;width:2412px;background:url(img/roof-v2.webp?v=16) -106px 0/2518px 941px;pointer-events:none;display:none}
 .ac-cam>img{position:absolute;left:0;top:0;width:1672px;height:941px;user-select:none;-webkit-user-drag:none}
 #pb{position:fixed;inset:0;z-index:95;background:#05060a;display:none;touch-action:none;user-select:none;-webkit-user-select:none}
 #pb.on{display:block}
@@ -1591,8 +1586,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 (()=>{
   const $=id=>document.getElementById(id), still=matchMedia("(prefers-reduced-motion:reduce)").matches;
   const LT=[[[675.7, 766.2], [834.2, 751.2], [881.0, 776.1], [714.8, 794.5], 0, 0], [[834.2, 751.2], [970.1, 738.3], [1022.1, 760.5], [881.0, 776.1], 1, 0], [[970.1, 738.3], [1088.0, 727.1], [1143.4, 747.0], [1022.1, 760.5], 2, 0], [[1088.0, 727.1], [1191.2, 717.3], [1248.8, 735.4], [1143.4, 747.0], 3, 0], [[1191.2, 717.3], [1282.3, 708.6], [1341.1, 725.2], [1248.8, 735.4], 4, 0], [[1282.3, 708.6], [1363.4, 700.9], [1422.8, 716.1], [1341.1, 725.2], 5, 0], [[1363.4, 700.9], [1435.9, 694.0], [1495.5, 708.1], [1422.8, 716.1], 6, 0], [[714.8, 794.5], [881.0, 776.1], [934.9, 804.7], [760.2, 827.4], 0, 1], [[881.0, 776.1], [1022.1, 760.5], [1081.4, 785.7], [934.9, 804.7], 1, 1], [[1022.1, 760.5], [1143.4, 747.0], [1205.9, 769.6], [1081.4, 785.7], 2, 1], [[1143.4, 747.0], [1248.8, 735.4], [1313.2, 755.6], [1205.9, 769.6], 3, 1], [[1248.8, 735.4], [1341.1, 725.2], [1406.4, 743.5], [1313.2, 755.6], 4, 1], [[1341.1, 725.2], [1422.8, 716.1], [1488.3, 732.9], [1406.4, 743.5], 5, 1], [[1422.8, 716.1], [1495.5, 708.1], [1560.8, 723.5], [1488.3, 732.9], 6, 1], [[760.2, 827.4], [934.9, 804.7], [997.5, 838.0], [813.8, 866.1], 0, 2], [[934.9, 804.7], [1081.4, 785.7], [1149.3, 814.7], [997.5, 838.0], 1, 2], [[1081.4, 785.7], [1205.9, 769.6], [1276.9, 795.1], [1149.3, 814.7], 2, 2], [[1205.9, 769.6], [1313.2, 755.6], [1385.6, 778.4], [1276.9, 795.1], 3, 2], [[1313.2, 755.6], [1406.4, 743.5], [1479.4, 764.1], [1385.6, 778.4], 4, 2], [[1406.4, 743.5], [1488.3, 732.9], [1561.1, 751.5], [1479.4, 764.1], 5, 2], [[1488.3, 732.9], [1560.8, 723.5], [1632.9, 740.5], [1561.1, 751.5], 6, 2], [[813.8, 866.1], [997.5, 838.0], [1071.1, 877.1], [877.9, 912.5], 0, 3], [[997.5, 838.0], [1149.3, 814.7], [1228.1, 848.3], [1071.1, 877.1], 1, 3], [[1149.3, 814.7], [1276.9, 795.1], [1358.3, 824.4], [1228.1, 848.3], 2, 3], [[1276.9, 795.1], [1385.6, 778.4], [1467.9, 804.3], [1358.3, 824.4], 3, 3], [[1385.6, 778.4], [1479.4, 764.1], [1561.4, 787.1], [1467.9, 804.3], 4, 3], [[1479.4, 764.1], [1561.1, 751.5], [1642.3, 772.3], [1561.4, 787.1], 5, 3], [[1561.1, 751.5], [1632.9, 740.5], [1712.8, 759.4], [1642.3, 772.3], 6, 3], [[877.9, 912.5], [1071.1, 877.1], [1158.9, 923.7], [955.9, 969.0], 0, 4], [[1071.1, 877.1], [1228.1, 848.3], [1320.6, 887.7], [1158.9, 923.7], 1, 4], [[1228.1, 848.3], [1358.3, 824.4], [1452.4, 858.3], [1320.6, 887.7], 2, 4], [[1358.3, 824.4], [1467.9, 804.3], [1561.9, 833.9], [1452.4, 858.3], 3, 4], [[1467.9, 804.3], [1561.4, 787.1], [1654.4, 813.3], [1561.9, 833.9], 4, 4], [[1561.4, 787.1], [1642.3, 772.3], [1733.4, 795.7], [1654.4, 813.3], 5, 4], [[1642.3, 772.3], [1712.8, 759.4], [1801.8, 780.4], [1733.4, 795.7], 6, 4], [[955.9, 969.0], [1158.9, 923.7], [1265.4, 980.3], [1052.9, 1039.2], 0, 5], [[1158.9, 923.7], [1320.6, 887.7], [1430.5, 934.6], [1265.4, 980.3], 1, 5], [[1320.6, 887.7], [1452.4, 858.3], [1562.5, 898.0], [1430.5, 934.6], 2, 5], [[1452.4, 858.3], [1561.9, 833.9], [1670.5, 868.1], [1562.5, 898.0], 3, 5], [[1561.9, 833.9], [1654.4, 813.3], [1760.5, 843.1], [1670.5, 868.1], 4, 5], [[1654.4, 813.3], [1733.4, 795.7], [1836.6, 822.1], [1760.5, 843.1], 5, 5], [[1733.4, 795.7], [1801.8, 780.4], [1901.7, 804.0], [1836.6, 822.1], 6, 5], [[1052.9, 1039.2], [1265.4, 980.3], [1397.3, 1050.4], [1176.8, 1128.9], 0, 6], [[1265.4, 980.3], [1430.5, 934.6], [1563.5, 991.2], [1397.3, 1050.4], 1, 6], [[1430.5, 934.6], [1562.5, 898.0], [1693.2, 945.0], [1563.5, 991.2], 2, 6], [[1562.5, 898.0], [1670.5, 868.1], [1797.4, 908.0], [1693.2, 945.0], 3, 6], [[1670.5, 868.1], [1760.5, 843.1], [1882.8, 877.5], [1797.4, 908.0], 4, 6], [[1760.5, 843.1], [1836.6, 822.1], [1954.1, 852.1], [1882.8, 877.5], 5, 6], [[1836.6, 822.1], [1901.7, 804.0], [2014.6, 830.6], [1954.1, 852.1], 6, 6], [[1176.8, 1128.9], [1397.3, 1050.4], [1564.9, 1139.5], [1340.7, 1247.6], 0, 7], [[1397.3, 1050.4], [1563.5, 991.2], [1727.5, 1061.2], [1564.9, 1139.5], 1, 7], [[1563.5, 991.2], [1693.2, 945.0], [1850.8, 1001.8], [1727.5, 1061.2], 2, 7], [[1693.2, 945.0], [1797.4, 908.0], [1947.5, 955.2], [1850.8, 1001.8], 3, 7], [[1797.4, 908.0], [1882.8, 877.5], [2025.4, 917.7], [1947.5, 955.2], 4, 7], [[1882.8, 877.5], [1954.1, 852.1], [2089.4, 886.8], [2025.4, 917.7], 5, 7], [[1954.1, 852.1], [2014.6, 830.6], [2143.1, 860.9], [2089.4, 886.8], 6, 7]], MT=[[[1858.0, 580.0], [1911.0, 580.0], [1904.6, 615.0], [1854.0, 615.0], 0, 0], [[1911.0, 580.0], [1964.0, 580.0], [1955.2, 615.0], [1904.6, 615.0], 1, 0], [[1964.0, 580.0], [2017.0, 580.0], [2005.9, 615.0], [1955.2, 615.0], 2, 0], [[2017.0, 580.0], [2070.0, 580.0], [2056.5, 615.0], [2005.9, 615.0], 3, 0], [[2070.0, 580.0], [2123.0, 580.0], [2107.1, 615.0], [2056.5, 615.0], 4, 0], [[2123.0, 580.0], [2176.0, 580.0], [2157.8, 615.0], [2107.1, 615.0], 5, 0], [[2176.0, 580.0], [2229.0, 580.0], [2208.4, 615.0], [2157.8, 615.0], 6, 0], [[2229.0, 580.0], [2282.0, 580.0], [2259.0, 615.0], [2208.4, 615.0], 7, 0], [[1854.0, 615.0], [1904.6, 615.0], [1898.2, 650.0], [1850.0, 650.0], 0, 1], [[1904.6, 615.0], [1955.2, 615.0], [1946.5, 650.0], [1898.2, 650.0], 1, 1], [[1955.2, 615.0], [2005.9, 615.0], [1994.8, 650.0], [1946.5, 650.0], 2, 1], [[2005.9, 615.0], [2056.5, 615.0], [2043.0, 650.0], [1994.8, 650.0], 3, 1], [[2056.5, 615.0], [2107.1, 615.0], [2091.2, 650.0], [2043.0, 650.0], 4, 1], [[2107.1, 615.0], [2157.8, 615.0], [2139.5, 650.0], [2091.2, 650.0], 5, 1], [[2157.8, 615.0], [2208.4, 615.0], [2187.8, 650.0], [2139.5, 650.0], 6, 1], [[2208.4, 615.0], [2259.0, 615.0], [2236.0, 650.0], [2187.8, 650.0], 7, 1]];
-  const lcv=$("lg-fx"), lx=lcv.getContext("2d"), mcv=$("roof-fx"), mx=mcv.getContext("2d"), glass=$("roof-glass"), plOn=$("pl-on"), lever=$("lg-lever");
-  const occ=new Image(); occ.src="img/roof-occ.webp?v=1";
+  const lcv=$("lg-fx"), lx=lcv.getContext("2d"), mcv=$("roof-fx"), mx=mcv.getContext("2d"), plOn=$("pl-on"), lever=$("lg-lever");
+  
   const PAL=["#ff46c8","#46dcff","#ffaa46","#aa5aff"];
   window.MSFloorLT=LT;
   const tv={}; [...LT,...MT].forEach(q=>{ const k=q[4]+","+q[5]; if(!(k in tv)) tv[k]=.5+Math.random()*.5; });
@@ -1640,13 +1635,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       sx.clearRect(0,0,209,118); sx.globalCompositeOperation="lighter"; tiles(sx,LT,lvl,.125); lx.globalAlpha=.85; lx.drawImage(sm,0,0,1672,941); lx.drawImage(sm,0,0,1672,941); lx.globalAlpha=1;
       beams(lx,LCANS,now,on?.9:amp); lx.globalCompositeOperation="source-over"; }
     // main roof
-    mx.clearRect(0,0,2412,941); glass.style.opacity="0";
-    if(!inL&&!inA&&lvl){ mx.globalCompositeOperation="lighter"; tiles(mx,MT,lvl,1);
-      if(occ.complete&&occ.naturalWidth){ mx.globalCompositeOperation="destination-out"; mx.drawImage(occ,0,0,1672,941); }
-      mx.globalCompositeOperation="lighter";
-      if(on){ beams(mx,MCANS,now,.55); const c=PAL[step%4]; glass.style.background=c; glass.style.opacity=String(.28+.3*amp);
-        const r=mx.createRadialGradient(2066,615,0,2066,615,250); r.addColorStop(0,c+"55"); r.addColorStop(1,c+"00"); mx.fillStyle=r; mx.beginPath(); mx.ellipse(2066,615,250,48,0,0,7); mx.fill(); }
-      mx.globalCompositeOperation="source-over"; }
+    mx.clearRect(0,0,2412,941);
     if((on||P||stut||window.MSFloorGame)&&!(window.MSAway&&window.MSAway()&&!inL)) kick();
   }
   function kick(){ if(!raf) raf=requestAnimationFrame(draw); }
@@ -2074,7 +2063,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   lever.addEventListener("click",()=>setTimeout(hint,0));
   addEventListener("ms-view",()=>{ if(!L.classList.contains("on")&&duet){ duet=null; pEl.style.display="none"; pSh.style.display="none"; } if(!L.classList.contains("on")&&girls) girlsEnd(); if(L.classList.contains("on")&&!floorOn()) pickPose(); render(); hint(); });
   // main roof: her shadow on the front skylight glass while the floor is lit
-  const mcv=$("gr-roof"), mx=mcv.getContext("2d"), gm=new Image(); gm.crossOrigin="anonymous"; gm.src="img/roof-glass.webp?v=1";
+  const mcv=$("gr-roof"), mx=mcv.getContext("2d"), gm={complete:false};
   const tmp=document.createElement("canvas"); tmp.width=260; tmp.height=220; const tx=tmp.getContext("2d");
   let si=0, sT=0;
   function roofShadow(now){
@@ -2396,7 +2385,6 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const AMP=["Who left this on?","Turn it to 11.","EEEEEEEEE","Unplug it! Unplug it!"], COOL=["Empty. Classic.","One left. It's warm.","Ice, no drinks.","Band only.","Someone ate the last slice and left the box."];
     window.MSPlay.AMP=AMP; window.MSPlay.COOL=COOL;
     on("pk-amp",el=>{ feedback(); flashIn(el); say(el,pick(AMP)); });
-    on("pk-gnome",el=>{ bump(el,"wob"); say(el,pick(["Don't mind me.","Five more minutes.","I'm the roadie.","Wake me up for the encore.","Who invited the gnome?"])); });
 
     // neon sign: kill a letter, it buzzes back
     { const sign=document.querySelector("h1.sign"), L=sign?[...sign.querySelectorAll("span span")]:[], cv2=document.createElement("canvas"), cx2=cv2.getContext("2d",{willReadFrequently:true});
