@@ -149,7 +149,7 @@ input{flex:1 1 220px;min-width:0;font:inherit;font-size:16px;padding:12px;backgr
 .hunt{position:absolute;right:max(16px,env(safe-area-inset-right,0px));top:46px;z-index:3;font:11px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--green);padding:5px 10px;border:1px solid rgba(93,255,158,.4);border-radius:20px;background:rgba(5,6,10,.55);opacity:0;transition:opacity .4s;pointer-events:none}
 .hunt.on{opacity:1}
 .sign .dead{opacity:.12!important;text-shadow:none!important;animation:none!important}
-.sign span span{cursor:pointer;pointer-events:auto}
+.sign span span{pointer-events:none} /* letters are hit-tested against their glyph shapes (see letterAt) */
 .bm{position:absolute;z-index:2;cursor:pointer;-webkit-tap-highlight-color:transparent;pointer-events:auto;visibility:hidden}
 .bm .in{position:absolute;inset:0}.bm img{position:absolute;pointer-events:none;user-select:none;-webkit-user-drag:none}
 .bm .r{left:0;top:0;width:100%;height:100%}.bm .n{opacity:0;mix-blend-mode:screen}
@@ -280,7 +280,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <button class="pk girl-jar" data-girl="gianna" style="left:152px;top:446px;width:37px;height:60px;background-image:url(img/girls/gianna-jar.webp)" aria-label="A jar labeled GIANNA. Someone is trapped inside"></button>
     <button class="pk girl-jar" data-girl="sophia" style="left:1172px;top:432px;width:37px;height:60px;background-image:url(img/girls/sophia-jar.webp)" aria-label="A jar labeled SOPHIA. Someone is trapped inside"></button>
     <button class="pk" id="pk-jar" style="left:590px;top:434px;width:37px;height:60px" aria-label="A jar on the ledge. Someone is trapped inside. Open it up close" hidden></button>
-    <button class="pk" id="pk-cooler" style="left:1225px;top:550px;width:140px;height:90px" aria-label="Cooler"></button>
+    
     <div id="roof-glass" aria-hidden="true"></div>
     <canvas id="roof-fx" width="2412" height="941" aria-hidden="true"></canvas>
     <canvas id="gr-roof" width="1672" height="941" aria-hidden="true" style="position:absolute;left:0;top:0;width:1672px;height:941px;pointer-events:none;z-index:60"></canvas>
@@ -2399,7 +2399,20 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     on("pk-gnome",el=>{ bump(el,"wob"); say(el,pick(["Don't mind me.","Five more minutes.","I'm the roadie.","Wake me up for the encore.","Who invited the gnome?"])); });
     on("pk-cooler",el=>{ clink(); say(el,pick(COOL)); });
     // neon sign: kill a letter, it buzzes back
-    document.querySelectorAll(".sign span span").forEach(s=>s.addEventListener("click",e=>{ e.stopPropagation(); s.classList.add("dead"); puff(); setTimeout(()=>s.classList.remove("dead"),2500+Math.random()*2500); }));
+    { const sign=document.querySelector("h1.sign"), L=sign?[...sign.querySelectorAll("span span")]:[], cv2=document.createElement("canvas"), cx2=cv2.getContext("2d",{willReadFrequently:true});
+      const pos=el=>{ let x=0,y=0,e=el; while(e&&e!==sign&&e!==document.body){ x+=e.offsetLeft; y+=e.offsetTop; e=e.offsetParent; } if(e!==sign){ x-=sign.offsetLeft; y-=sign.offsetTop; } return [x,y]; };
+      const letterAt=(px,py)=>{ if(!sign||!sign.offsetWidth) return null; const r=sign.getBoundingClientRect(), m=new DOMMatrix(getComputedStyle(sign).transform==="none"?undefined:getComputedStyle(sign).transform), a=Math.atan2(m.b,m.a);
+        const dx=px-(r.left+r.width/2), dy=py-(r.top+r.height/2), lx=dx*Math.cos(-a)-dy*Math.sin(-a)+sign.offsetWidth/2, ly=dx*Math.sin(-a)+dy*Math.cos(-a)+sign.offsetHeight/2;
+        for(const sp of L){ const cs=getComputedStyle(sp); cx2.font=`${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`; const mt=cx2.measureText(sp.textContent), fs=parseFloat(cs.fontSize), [ox,oy]=pos(sp);
+          const bx=ox, by=oy+(mt.fontBoundingBoxAscent||fs*.8), tx=lx-bx, ty=ly-by; if(tx<-fs*.6||tx>mt.width+fs*.6||ty<-fs*1.3||ty>fs*.6) continue;
+          const P=Math.ceil(fs*.8), W=Math.ceil(mt.width+2*P), H=Math.ceil(fs*2); cv2.width=W; cv2.height=H; cx2.font=`${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`; cx2.lineWidth=Math.max(6,fs*.08); cx2.lineJoin="round";
+          const X=P, Y=fs*1.3; cx2.fillText(sp.textContent,X,Y); cx2.strokeText(sp.textContent,X,Y); const qx=Math.round(X+tx), qy=Math.round(Y+ty);
+          if(qx>=0&&qy>=0&&qx<W&&qy<H&&cx2.getImageData(qx,qy,1,1).data[3]>40) return sp; }
+        return null; };
+      const kill=s=>{ s.classList.add("dead"); puff(); setTimeout(()=>s.classList.remove("dead"),2500+Math.random()*2500); };
+      addEventListener("click",e=>{ if(e.target.closest&&e.target.closest("a,button,.pill,.sheet,.bar,.tile")) return; const sp=letterAt(e.clientX,e.clientY); if(sp){ e.stopPropagation(); e.preventDefault(); kill(sp); } },true);
+      let mvT=0; addEventListener("pointermove",e=>{ if(e.pointerType!=="mouse") return; const n=performance.now(); if(n-mvT<60) return; mvT=n; document.documentElement.style.cursor=letterAt(e.clientX,e.clientY)?"pointer":""; },{passive:true});
+      window.MSLetterAt=letterAt; }
     // tag hunt: 17 song titles hidden in the graffiti
     const KEY="ms-tags"; let found=[]; try{ localStorage.removeItem(KEY); }catch(e){}
     const hunt=$("hunt"), box=$("tags");
@@ -2491,7 +2504,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function render(c){
     seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=15"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
+    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=16"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
@@ -2979,7 +2992,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     const S=cfg.seat; let kitEl=null, kimg=[];
     if(S){ kitEl=document.createElement("div"); kitEl.className="bm-kit"; kitEl.setAttribute("role","button"); kitEl.setAttribute("aria-label",cfg.name+" at the kit (tap to hear him play)");
       Object.assign(kitEl.style,{left:S.x+"px",top:S.y+"px",width:S.w+"px",height:S.h+"px",zIndex:S.z});
-      kimg=S.frames.map(f=>{ const i=document.createElement("img"); i.alt=""; i.src=`img/band/${S.pre}${f}.webp?v=4`; kitEl.appendChild(i); return i; });
+      kimg=S.frames.map(f=>{ const i=document.createElement("img"); i.alt=""; i.src=`img/band/${S.pre}${f}.webp?v=5`; kitEl.appendChild(i); return i; });
       // only Jacob himself is tappable, not the whole kit picture
       const hit=document.createElement("i"); hit.className="kit-hit"; Object.assign(hit.style,{left:(S.hit?S.hit[0]:S.w*.41)+"px",top:(S.hit?S.hit[1]:S.h*.17)+"px",width:(S.hit?S.hit[2]:S.w*.3)+"px",height:(S.hit?S.hit[3]:S.h*.46)+"px"}); kitEl.appendChild(hit);
       play.insertBefore(kitEl,cv); }
