@@ -3110,7 +3110,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   { const MOM=[{k:"backtoback",who:[PAT,JORDAN],ar:.7135},{k:"headlock",who:[PAT,JACOB],ar:.65},{k:"sticktap",who:[PAT,JACOB],ar:.6058},{k:"toast",who:[PAT,JORDAN,JACOB],ar:.7135},{k:"highfive",who:[PAT,JORDAN],ar:.8077,f:1.2,up:45},{k:"sharedmic",who:[PAT,JORDAN],ar:.6923},{k:"bow",who:[PAT,JORDAN,JACOB],ar:1.0115,f:1.0},{k:"shoulders",who:[PAT,JORDAN],ar:.5077,f:1.48},{k:"jump",who:[PAT,JORDAN,JACOB],ar:1.7327,f:.84,up:85}];
     const V="?v=1"; MOM.forEach(o=>window.MSIdleLoad&&window.MSIdleLoad(`img/band/gm${o.k}-real.webp${V}`));
     let on=false;
-    const narrow=()=>innerWidth<=760||(innerHeight>innerWidth&&innerWidth<=1100), fits=o=>!narrow()||hFor(716)*(o.f||1.06)*o.ar<=400; /* phones: skip the wide group shots */
+    const narrow=()=>innerWidth<=760||(innerHeight>innerWidth&&innerWidth<=1100), fits=o=>!narrow()||(hFor(716)*(o.f||1.06)*o.ar<=400&&(o.f||1.06)<1.3); /* phones: skip the wide group shots */
     const ok=()=>!on&&!gagOn&&!document.hidden&&!(window.MSAway&&window.MSAway())&&(!window.MSView||window.MSView==="The band");
     async function run(o){ if(!ok()||o.who.some(m=>m.busy)) return false; on=true;
       const ALL=[PAT,JORDAN,JACOB], res=await Promise.all(ALL.map(m=>m.away())); /* everyone clears the stage; whoever is not in the shot comes back after */
