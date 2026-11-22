@@ -688,7 +688,7 @@ body.jx-zoom .welcome,body.jx-zoom .sec-pop,body.jx-zoom .jar-help{opacity:0!imp
 .stage::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity 2s}
 .stage.tod-dusk::after{opacity:1;background:linear-gradient(180deg,rgba(255,110,50,.42),rgba(255,70,110,.26) 28%,rgba(255,140,70,.1) 48%,transparent 60%);mix-blend-mode:screen}
 .stage.tod-day::after{opacity:1;background:linear-gradient(180deg,rgba(90,140,230,.45),rgba(120,160,240,.2) 40%,transparent 62%);mix-blend-mode:screen}
-.stage.tod-late::after{opacity:.45;background:rgba(0,0,20,.6);mix-blend-mode:multiply}
+.stage.tod-late::after{opacity:0} /* late-night dimming retired (Pat 11-22: read as a dark mask) */
 .wx-read{font-size:inherit;color:var(--fog);margin-left:14px}
 @media (max-width:760px){.wx-read{display:none}}
 body.jx-zoom .show-sign,body.jx-zoom .spray,body.jx-zoom .fanwall,body.jx-zoom .fw-empty,body.jx-zoom .wx{opacity:0!important;pointer-events:none!important}
@@ -2761,7 +2761,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   // feet positions in main-shot coords (1672x941); height follows the floor's perspective (scaled to the drum kit)
   // far (back by the wall), mid (by the kit), close (foreground)
-  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [760,690],[560,655,300],[1800,602,172],[2020,648,215]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (Pat on the sofa, Jordan on the sofa, Jordan at the bar, Pat by the bar) */
+  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [760,690],[560,655,300],[1800,602,172],[2020,648,215],[1030,712]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (Pat on the sofa, Jordan on the sofa, Jordan at the bar, Pat by the bar) */
   const hFor=f=>1.48*(f-420);
   const hAt=i=>SPOTS[i][2]||hFor(SPOTS[i][1]); /* blocking spots by the sofa and in the lounge carry their own height: those props are drawn at a different scale */
   const MEMBERS=[], taken=()=>MEMBERS.map(m=>m.spot);
@@ -2769,7 +2769,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     const kit=MEMBERS.some(m=>m.seated&&m!==self); /* nobody stands in front of Jacob while he is at the kit (it blocks tapping him) */
     const isPh=innerWidth<=760||(innerHeight>innerWidth&&innerWidth<=1100); /* stay mid-ground (no giant close-ups) and, on phones, inside the band view */
     const ok=SPOTS.map((s,i)=>i).filter(i=>i<11 && SPOTS[i][1]<760 && !isPh && i!==self.spot && !(kit&&(i===4||i===8)) && busy.every(j=>Math.hypot(SPOTS[j][0]-SPOTS[i][0],(SPOTS[j][1]-SPOTS[i][1])*1.5)>230));
-    return ok.length?ok[Math.floor(Math.random()*ok.length)]:(self.spot>=0?self.spot:(busy.includes(9)?10:9)); } /* phones: the band view is too narrow to wander, so they hold their marks */
+    return ok.length?ok[Math.floor(Math.random()*ok.length)]:(self.spot>=0?self.spot:(!busy.includes(9)?9:!busy.includes(10)?10:15)); } /* phones: the band view is too narrow to wander, so they hold their marks */
   // shared fx: bolts + smoke on one canvas inside #play
   let smoke=[], sparks=[], raf=0;
   function bolt(R,c){ c=c||["#ff6ae6","#bdf6ff","#ff3fd0"]; cx.strokeStyle=Math.random()<.5?c[0]:c[1]; cx.lineWidth=1.5+Math.random()*2; cx.shadowColor=c[2]; cx.shadowBlur=14;
@@ -2987,7 +2987,10 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       for(let i=0;i<4;i++){ kitEl.style.opacity=.35; await wait(50+Math.random()*50); kitEl.style.opacity=1; await wait(40+Math.random()*70); } }
     async function stand(){ for(let i=0;i<3;i++){ kitEl.style.opacity=.35; await wait(50); kitEl.style.opacity=1; await wait(50); }
       kitEl.style.visibility="hidden"; kitEl.classList.remove("on"); m.seated=false; }
-    async function playKit(e){ e&&e.stopPropagation(); if(m.busy) return; m.busy=true; clearTimeout(wT); let alt=0;
+    let kitTaps=0;
+    async function playKit(e){ e&&e.stopPropagation(); if(m.busy) return;
+      if(++kitTaps%2===0&&!gagOn){ m.busy=true; clearTimeout(wT); await stand(); await wait(350); m.wasSeated=true; await appear(); m.busy=false; schedule(); return; } /* every other tap Jacob gets up off the kit; he wanders back later */
+      m.busy=true; clearTimeout(wT); let alt=0;
       const dur=drumGroove(k=>{ let f=S.idle;
         if(k==="up") f=has(3)?3:2; else if(k==="crash"||k==="snare") f=2; else if(k==="tom") f=has(4)?4:2; else if(k==="kick") f=(alt++%2&&has(4))?4:2; else f=has(4)&&alt%2?4:2;
         frame(f); kitEl.classList.remove("hit"); void kitEl.offsetWidth; kitEl.classList.add("hit"); });
