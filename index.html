@@ -652,7 +652,7 @@ body.jx-zoom .welcome,body.jx-zoom .sec-pop,body.jx-zoom .jar-help{opacity:0!imp
 @media (max-width:760px){ .top .hunt{margin:0;padding:6px 10px!important;font-size:10px!important} .sec-note,.sec-pop{right:12px!important;top:calc(50px + env(safe-area-inset-top,0px))!important} }
 .gr-toast{top:calc(58px + env(safe-area-inset-top,0px));bottom:auto!important}
 /* next-show neon on a skyline building */
-.show-sign{position:absolute;left:880px;top:150px;width:150px;z-index:4;pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:1px;text-decoration:none;color:#fff;font-family:var(--tube);text-align:center;transform:rotate(-2deg);-webkit-tap-highlight-color:transparent;animation:ssFlick 6s infinite}
+.show-sign{position:absolute;left:210px;top:160px;width:150px;z-index:4;pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:1px;text-decoration:none;color:#fff;font-family:var(--tube);text-align:center;transform:rotate(-2deg);-webkit-tap-highlight-color:transparent;animation:ssFlick 6s infinite}
 .show-sign[hidden]{display:none}
 .show-sign small{font:700 12px/1.1 var(--mono);white-space:nowrap;letter-spacing:.12em;text-transform:uppercase;color:#46dcff;text-shadow:0 0 6px #46dcff}
 .show-sign b{font-weight:400;font-size:30px;line-height:1;color:#fff;text-shadow:0 0 6px #ff3d7f,0 0 14px #ff3d7f,0 0 26px #ff3d7f;white-space:nowrap}
@@ -2761,14 +2761,15 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   // feet positions in main-shot coords (1672x941); height follows the floor's perspective (scaled to the drum kit)
   // far (back by the wall), mid (by the kit), close (foreground)
-  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [600,708],[760,700],[1830,602,172],[1480,656,262]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (Pat on the sofa, Jordan on the sofa, Jordan at the bar, Pat by the bar) */
+  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [760,690],[560,655,300],[1800,602,172],[2020,648,215]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (Pat on the sofa, Jordan on the sofa, Jordan at the bar, Pat by the bar) */
   const hFor=f=>1.48*(f-420);
   const hAt=i=>SPOTS[i][2]||hFor(SPOTS[i][1]); /* blocking spots by the sofa and in the lounge carry their own height: those props are drawn at a different scale */
   const MEMBERS=[], taken=()=>MEMBERS.map(m=>m.spot);
   function freeSpot(self){ const busy=taken().filter((s,i)=>MEMBERS[i]!==self && s>=0);
     const kit=MEMBERS.some(m=>m.seated&&m!==self); /* nobody stands in front of Jacob while he is at the kit (it blocks tapping him) */
-    const ok=SPOTS.map((s,i)=>i).filter(i=>i<11 && i!==self.spot && !(kit&&(i===4||i===8)) && busy.every(j=>Math.hypot(SPOTS[j][0]-SPOTS[i][0],(SPOTS[j][1]-SPOTS[i][1])*1.5)>230));
-    return ok.length?ok[Math.floor(Math.random()*ok.length)]:self.spot; }
+    const isPh=innerWidth<=760||(innerHeight>innerWidth&&innerWidth<=1100); /* stay mid-ground (no giant close-ups) and, on phones, inside the band view */
+    const ok=SPOTS.map((s,i)=>i).filter(i=>i<11 && SPOTS[i][1]<760 && !isPh && i!==self.spot && !(kit&&(i===4||i===8)) && busy.every(j=>Math.hypot(SPOTS[j][0]-SPOTS[i][0],(SPOTS[j][1]-SPOTS[i][1])*1.5)>230));
+    return ok.length?ok[Math.floor(Math.random()*ok.length)]:(self.spot>=0?self.spot:(busy.includes(9)?10:9)); } /* phones: the band view is too narrow to wander, so they hold their marks */
   // shared fx: bolts + smoke on one canvas inside #play
   let smoke=[], sparks=[], raf=0;
   function bolt(R,c){ c=c||["#ff6ae6","#bdf6ff","#ff3fd0"]; cx.strokeStyle=Math.random()<.5?c[0]:c[1]; cx.lineWidth=1.5+Math.random()*2; cx.shadowColor=c[2]; cx.shadowBlur=14;
@@ -3032,7 +3033,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     async function appear(){ if(S&&!m.wasSeated&&Math.random()<S.p){ m.wasSeated=true; return sit(); } m.wasSeated=false; m.spot=freeSpot(m);
       let np; do{ np=POSES[Math.floor(Math.random()*POSES.length)]; }while(np===m.pose&&POSES.length>1); m.pose=np;
       setPose(m.pose); place(); await wait(80); neon(1); vis(true); await wait(90); await flicker(5); }
-    async function teleport(){ if(m.busy||m.directed||document.hidden||gagOn||window.MSAway()) return;
+    async function teleport(){ if((innerWidth<=760||(innerHeight>innerWidth&&innerWidth<=1100))&&!m.seated) return; if(m.busy||m.directed||document.hidden||gagOn||window.MSAway()) return;
       if(performance.now()-(window.__msTp||0)<1500){ schedule(1500); return new Promise(()=>{}); } window.__msTp=performance.now(); m.busy=true;
       if(m.seated){ await stand(); await wait(500+Math.random()*700); await appear(); m.busy=false; return; }
       await m.buzz("buzz",true); [el,rf,sh].forEach(e=>{ e.style.transition="opacity .4s"; e.style.opacity=0; }); await wait(420);
@@ -3098,7 +3099,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   // every so often one of them pulls a stunt; ?gag=pat|jordan|jacob runs one right away
   const CREW={pat:PAT,jordan:JORDAN,jacob:JACOB}; window.MSGag=n=>CREW[n]&&CREW[n].gag();
   // the band follows the camera: Hangout = Pat to the sofa, Jordan by the binoculars; Lounge = Jordan to the bar, Pat by the bar; band view = back to the kit
-  { const PLAN={"Walkway":[[PAT,11],[JORDAN,12]],"The band":[[PAT,9],[JORDAN,10]],"Lounge":[[JORDAN,13,"bar"],[PAT,14,"bar"]]}; let vT=0, gen=0;
+  { const PLAN={"Walkway":[[PAT,11],[JORDAN,12]],"The band":[[PAT,9],[JORDAN,10]],"Lounge":[[JORDAN,13,"bar"],[PAT,14]]}; let vT=0, gen=0;
     addEventListener("msview",e=>{ clearTimeout(vT); const v=e.detail, g=++gen; vT=setTimeout(async()=>{ if(still) return;
       for(const [mb,sp,end] of PLAN[v]||[]){ if(g!==gen) return; mb.walkTo(sp,end).then(()=>{ if(v==="The band"&&g===gen) mb.resume(); }); await wait(1300); } },650); });
     // desktop main view shows the sofa: now and then one of them wanders over, sits a while, then heads back to the kit
