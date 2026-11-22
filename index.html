@@ -2489,7 +2489,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function render(c){
     seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=14"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
+    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=13"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
@@ -4435,9 +4435,8 @@ body.ph #sway{display:none}
 @media (prefers-reduced-motion:reduce){#play .ns:hover::before,#play .ns:focus-visible::before{animation:none;opacity:1}}
 
 body:not(.ph) .sky .pills{visibility:hidden}body.ph #play .ns{display:none}
-#sway{display:none!important}
-#ph-sway{display:block;position:absolute;left:774px;top:134px;width:520px;height:110px;z-index:5}#ph-sway-img{display:none;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;max-width:none}
-#play #ph-sway .ns{display:block}body.ph .sky .pills{visibility:hidden}
+#ph-sway{display:none;position:absolute;left:774px;top:134px;width:520px;height:110px;z-index:5}#ph-sway-img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;max-width:none}
+body.ph #ph-sway{display:block}body.ph #play #ph-sway .ns{display:block}body.ph .sky .pills{visibility:hidden}
 #nsp-live{--nc:#3ce6ff}#nsp-games{--nc:#5dff9e}#nsp-listen{--nc:#ff3d7f}
 body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important}</style>
 <script>
