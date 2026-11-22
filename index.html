@@ -2457,7 +2457,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
-  const PSP=[{x:571.5,z:1,n:"Walkway"},{x:1019.5,z:1,n:"The band"},{x:1397.5,z:1,n:"Lounge"}] /* phone only: swipe left/right from the band (Pat's artifact sections 11-22) */ /* phone: same view centres as the view bars, roof fills the full screen height (Pat 11-21) */, DSP=[{x:973,z:1.0609,y:.5,n:"The band"}]; /* desktop: one view only, Pat's band bar (plate 599..1763 x 103..830, 11-22); walkway + lounge become their own scenes */ /* desktop: Pat's locked view bars (centre in play px, zoom) */ window.MSPhSpots=PSP; let spot=1, dspot=0; /* 3 stops everywhere: sitting area, band (default), partial lounge */
+  const PSP=[{x:571.5,z:1,n:"Walkway"},{x:1019.5,z:1,n:"The band"},{x:1397.5,z:1,n:"Lounge"}] /* phone only: swipe left/right from the band (Pat's artifact sections 11-22) */ /* phone: same view centres as the view bars, roof fills the full screen height (Pat 11-21) */, DSP=[{x:973,get z(){ const st=document.getElementById("stage"); return Math.max(.5,(st.clientWidth/st.clientHeight)*941/1420); },y:.5,n:"The band"}] /* every non-phone screen shows plate 263..1683 (Pat's desktop bounds) whatever its shape */; /* desktop: one view only, Pat's band bar (plate 599..1763 x 103..830, 11-22); walkway + lounge become their own scenes */ /* desktop: Pat's locked view bars (centre in play px, zoom) */ window.MSPhSpots=PSP; let spot=1, dspot=0; /* 3 stops everywhere: sitting area, band (default), partial lounge */
   const TSP=[{x:973,get z(){ const st=document.getElementById("stage"); return (st.clientWidth/st.clientHeight)*941/1420; },y:.5,n:"The band"}]; /* iPad: same left/right bounds as desktop (plate 263..1683 in play px) */ /* tablets (touch, landscape): Pat's iPad view bars */
   const tablet=()=>!phone()&&innerWidth<1300&&matchMedia("(pointer:coarse)").matches;
   const SPS=()=>phone()?PSP:tablet()?TSP:DSP; window.MSSpots=SPS;
@@ -2485,7 +2485,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     if(tall()) py=0.5;
     place(); if(window.MSAway&&window.MSAway()) setTimeout(()=>requestAnimationFrame(tick),400); else requestAnimationFrame(tick);
   }
-  requestAnimationFrame(tick); addEventListener("resize",()=>place(true));
+  requestAnimationFrame(tick); addEventListener("resize",()=>{ if(!phone()){ const L=SPS(), q=L[Math.min(dspot,L.length-1)]; if(q){ ZT=q.z||1; cxT=clampC(spx(q)); } } place(true); });
   // stunts can steer the phone camera: MSCam(plateX) pans there; returns where it was
   window.MSCam=c=>{ const was=cxT-OFF; if(c!=null){ cxT=clampC(c+OFF); hinted=true; } return was; };
   const setBarH=()=>{ const h=$("bar").offsetHeight+"px"; $("stage").style.setProperty("--barh",h); document.documentElement.style.setProperty("--barh",h); };
