@@ -3115,7 +3115,11 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     async function run(o){ if(!ok()||o.who.some(m=>m.busy)) return false; on=true;
       const ALL=[PAT,JORDAN,JACOB], res=await Promise.all(ALL.map(m=>m.away())); /* everyone clears the stage; whoever is not in the shot comes back after */
       if(o.who.some(m=>!res[ALL.indexOf(m)])){ ALL.forEach((m,i)=>res[i]&&m.back()); on=false; return false; }
-      const F=716, h=hFor(F)*(o.f||1.06), w=h*o.ar, x=1027, up=o.up||0;
+      const SP=[[1027,716],[700,708],[830,775],[1235,728],[580,748],[1000,790]]; /* open floor spots; feet y sets the depth scale */
+      const B=window.MSRoofBox, st=document.getElementById("stage"), vL=B?(-B.ox)/B.s+20:400, vR=B?(st.clientWidth-B.ox)/B.s-20:1800;
+      const cand=SP.map(([x,F])=>({x,F,w:hFor(F)*(o.f||1.06)*o.ar})).filter(c=>c.x-c.w/2>=vL&&c.x+c.w/2<=vR&&(c.x<1290||c.F<740));
+      const pick=window.__msAt?(()=>{ const [x,F]=window.__msAt; window.__msAt=null; return {x,F}; })():cand.length?cand[Math.floor(Math.random()*cand.length)]:{x:1027,F:716};
+      const F=pick.F, h=hFor(F)*(o.f||1.06), w=h*o.ar, x=pick.x, up=(o.up||0)*hFor(F)/hFor(716);
       const d=document.createElement("div"); d.className="band-mom"; d.setAttribute("role","button"); d.setAttribute("aria-label","The band");
       Object.assign(d.style,{position:"absolute",left:(x-w/2)+"px",top:(F-h-up)+"px",width:w+"px",height:h+"px",zIndex:10+Math.round(F/10),cursor:"pointer"});
       const r=new Image(), n=new Image(); r.src=`img/band/gm${o.k}-real.webp${V}`; n.src=`img/band/gm${o.k}-neon.webp${V}`; r.alt=n.alt="";
@@ -3128,7 +3132,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       while(!stop&&performance.now()-t0<6500){ const k=(performance.now()-t0)/1000; r.style.transform=`translateY(${(-Math.abs(Math.sin(k*3.2))*4).toFixed(1)}px)`; await wait(40); }
       for(let i=0;i<3;i++){ n.style.opacity=1; r.style.opacity=.3; await wait(50); n.style.opacity=0; r.style.opacity=1; await wait(50); }
       d.remove(); ALL.forEach((m,i)=>res[i]&&m.back()); await wait(1200); on=false; return true; }
-    window.MSMoment=k=>run(MOM.find(o=>o.k===k)||MOM[0]);
+    window.MSMoment=(k,at)=>{ window.__msAt=at; return run(MOM.find(o=>o.k===k)||MOM[0]); };
     window.MSMomentTry=m=>{ if(!ok()) return false; const c=MOM.filter(o=>fits(o)&&o.who.includes(m)&&o.who.every(x=>!x.busy)); if(!c.length) return false; run(c[Math.floor(Math.random()*c.length)]); return true; };
     if(!still) (async()=>{ await wait(35000+Math.random()*15000); while(true){ const L=MOM.filter(fits); if(ok()) await run(L[Math.floor(Math.random()*L.length)]); await wait(45000+Math.random()*30000); } })(); }
   // the band follows the camera: Hangout = Pat to the sofa, Jordan by the binoculars; Lounge = Jordan to the bar, Pat by the bar; band view = back to the kit
