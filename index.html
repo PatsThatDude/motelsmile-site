@@ -2790,7 +2790,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   // feet positions in main-shot coords (1672x941); height follows the floor's perspective (scaled to the drum kit)
   // far (back by the wall), mid (by the kit), close (foreground)
-  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [760,690],[560,655,300],[1355,700],[1205,742],[1030,712]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (Pat on the sofa, Jordan on the sofa, Jordan at the bar, Pat by the bar) */
+  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [712,708],[456,676],[1355,700],[1205,742],[1030,712]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (Pat on the sofa, Jordan on the sofa, Jordan at the bar, Pat by the bar) */
   const hFor=f=>1.48*(f-420);
   const hAt=i=>SPOTS[i][2]||hFor(SPOTS[i][1]); /* blocking spots by the sofa and in the lounge carry their own height: those props are drawn at a different scale */
   const MEMBERS=[], taken=()=>MEMBERS.map(m=>m.spot);
