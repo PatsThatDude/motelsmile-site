@@ -2322,7 +2322,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   const ext=u=>`href="${esc(u)}" target="_blank" rel="noopener"`;
   const PLAT={spotify:"Spotify",apple:"Apple Music",youtube:"YouTube",bandcamp:"Bandcamp"};
   // flyer hotspot: follows the flyer painted on the door, whatever the crop
-  const OFF=175; /* play x 0 sits 175px into the v2 plate (new left side: bulkhead + sitting area) */ const IMG={w:2587,h:941}, FLY={x:-900,y:0,w:41,h:61}, LNG={x:-900,y:0,w:10,h:10};
+  const OFF=106; /* play x 0 sits 106px into the v3 plate (left side: brick wall + walkway nook) */ const IMG={w:2518,h:941}, FLY={x:-900,y:0,w:41,h:61}, LNG={x:-900,y:0,w:10,h:10};
   // tall phones use a vertical version of the roof; the main shot sits inside it at this scale/offset
   const MP={s:.9063,tx:-292.6,ty:393};
   // phones now use the same wide roof as desktop (drag sideways to look around); vertical version retired
@@ -2335,7 +2335,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   let lastPlace="";
   function place(force){
     const key=stage.clientWidth+"x"+stage.clientHeight+":"+px.toFixed(4)+":"+py.toFixed(4)+":"+ZC.toFixed(4); if(!force&&key===lastPlace) return; lastPlace=key;
-    const TL=tall(); stage.classList.toggle("tall",TL); IMG.w=TL?941:2587; IMG.h=TL?1672:941;
+    const TL=tall(); stage.classList.toggle("tall",TL); IMG.w=TL?941:2518; IMG.h=TL?1672:941;
     const W=stage.clientWidth,H=stage.clientHeight, s0=Math.max(W/IMG.w,H/IMG.h)*ZC; /* cover; the wide roof pans on every screen */
     const ox0=(W-IMG.w*s0)*px, oy0=(H-IMG.h*s0)*py;
     window.MSRoofBox={s:s0,ox:ox0+OFF*s0,oy:oy0};
@@ -2424,7 +2424,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
-  const PSP=[{x:288,z:1,n:"Sofa"},{x:1122,z:1,n:"The band"},{x:1864,z:1,n:"Lounge"}] /* phone: same view centres as the view bars, roof fills the full screen height (Pat 11-21) */, DSP=[{x:833,z:1.165,y:0,n:"The band"},{x:1878,z:1.6,y:.246,n:"Lounge"}]; /* desktop: Pat's 2 sections (main = band + sofa, top-anchored; lounge peek) */ /* desktop: Pat's locked view bars (centre in play px, zoom) */ window.MSPhSpots=PSP; let spot=1, dspot=0; /* 3 stops everywhere: sitting area, band (default), partial lounge */
+  const PSP=[{x:288,z:1,n:"Hangout"},{x:1122,z:1,n:"The band"},{x:1864,z:1,n:"Lounge"}] /* phone: same view centres as the view bars, roof fills the full screen height (Pat 11-21) */, DSP=[{x:833,z:1.165,y:0,n:"The band"},{x:1878,z:1.6,y:.246,n:"Lounge"}]; /* desktop: Pat's 2 sections (main = band + sofa, top-anchored; lounge peek) */ /* desktop: Pat's locked view bars (centre in play px, zoom) */ window.MSPhSpots=PSP; let spot=1, dspot=0; /* 3 stops everywhere: sitting area, band (default), partial lounge */
   const TSP=[{x:833,z:1.165,y:0,n:"The band"},{x:1878,z:1.6,y:.246,n:"Lounge"}]; /* tablets (touch, landscape): Pat's iPad view bars */
   const tablet=()=>!phone()&&innerWidth<1300&&matchMedia("(pointer:coarse)").matches;
   const SPS=()=>phone()?PSP:tablet()?TSP:DSP; window.MSSpots=SPS;
@@ -2485,7 +2485,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function render(c){
     seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=11"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
+    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=13"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
@@ -2757,7 +2757,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   // feet positions in main-shot coords (1672x941); height follows the floor's perspective (scaled to the drum kit)
   // far (back by the wall), mid (by the kit), close (foreground)
-  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [445,704,360],[290,702,360],[1830,602,172],[1480,656,262]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (Pat on the sofa, Jordan on the sofa, Jordan at the bar, Pat by the bar) */
+  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [470,704],[300,712],[1830,602,172],[1480,656,262]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (Pat on the sofa, Jordan on the sofa, Jordan at the bar, Pat by the bar) */
   const hFor=f=>1.48*(f-420);
   const hAt=i=>SPOTS[i][2]||hFor(SPOTS[i][1]); /* blocking spots by the sofa and in the lounge carry their own height: those props are drawn at a different scale */
   const MEMBERS=[], taken=()=>MEMBERS.map(m=>m.spot);
@@ -3094,12 +3094,12 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   // every so often one of them pulls a stunt; ?gag=pat|jordan|jacob runs one right away
   const CREW={pat:PAT,jordan:JORDAN,jacob:JACOB}; window.MSGag=n=>CREW[n]&&CREW[n].gag();
   // the band follows the camera: Hangout = Pat to the sofa, Jordan by the binoculars; Lounge = Jordan to the bar, Pat by the bar; band view = back to the kit
-  { const PLAN={"Sofa":[[PAT,11,"sit"],[JORDAN,12,"sit"]],"The band":[[PAT,9],[JORDAN,10]],"Lounge":[[JORDAN,13,"bar"],[PAT,14,"bar"]]}; let vT=0, gen=0;
+  { const PLAN={"Hangout":[[PAT,11],[JORDAN,12]],"The band":[[PAT,9],[JORDAN,10]],"Lounge":[[JORDAN,13,"bar"],[PAT,14,"bar"]]}; let vT=0, gen=0;
     addEventListener("msview",e=>{ clearTimeout(vT); const v=e.detail, g=++gen; vT=setTimeout(async()=>{ if(still) return;
       for(const [mb,sp,end] of PLAN[v]||[]){ if(g!==gen) return; mb.walkTo(sp,end).then(()=>{ if(v==="The band"&&g===gen) mb.resume(); }); await wait(1300); } },650); });
     // desktop main view shows the sofa: now and then one of them wanders over, sits a while, then heads back to the kit
     const isPh=()=>innerWidth<=760||(innerHeight>innerWidth&&innerWidth<=1100); let lounging=null;
-    setInterval(async()=>{ if(still||isPh()||gagOn||lounging||document.hidden||(window.MSView&&window.MSView!=="The band")||Math.random()>.45) return;
+    false&&setInterval(async()=>{ if(still||isPh()||gagOn||lounging||document.hidden||(window.MSView&&window.MSView!=="The band")||Math.random()>.45) return;
       const mb=Math.random()<.5?PAT:JORDAN; if(mb.busy) return; const g=gen; lounging=mb;
       await mb.walkTo(mb===PAT?11:12,"sit"); await wait(11000+Math.random()*8000);
       if(g===gen&&(!window.MSView||window.MSView==="The band")) await mb.walkTo(mb===PAT?9:10); if(g===gen) mb.resume(); lounging=null; },26000); }
