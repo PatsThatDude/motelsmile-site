@@ -2489,7 +2489,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function render(c){
     seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=13"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
+    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=15"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
@@ -4315,14 +4315,16 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
 </script>
 <style>
 /* ===== phone layout: roof gets the whole screen. One menu button, snap between 4 spots, smaller sign ===== */
-body.ph #bar,body.ph .sky .pills,body.ph #lng-edge,body.ph #pan-hint{display:none!important}
+body.ph #bar,body.ph #lng-edge,body.ph #pan-hint{display:none!important}
+body.ph .sky .pills{grid-column:1/-1;align-self:start;justify-content:flex-end;margin:12px 0 0!important;gap:8px}
+body.ph .sky .pills .pill{font-size:13px!important;padding:6px 11px!important;min-height:0!important}
+@media (max-width:385px){body.ph .sky .pills{gap:5px}body.ph .sky .pills .pill{font-size:12px!important;padding:5px 9px!important}} /* phone: old pill buttons sit under the heading, clear of the band */
 body.ph .sign{font-size:clamp(40px,12.5vw,66px)!important;margin-top:4px}
 body.ph .welcome{top:auto!important;bottom:calc(92px + env(safe-area-inset-bottom,0px));width:min(320px,88vw)}
 .ph-dots,.ph-menu{display:none}
 .dk-arw{position:absolute;top:64%;z-index:6;width:46px;height:74px;transform:translateY(-50%);border:1.5px solid rgba(255,255,255,.25);background:rgba(8,6,16,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:#fff;font:300 40px/1 system-ui;cursor:pointer;transition:opacity .3s,border-color .2s}
 .dk-arw:hover{border-color:var(--pink);box-shadow:0 0 14px rgba(255,61,127,.45)}.dk-arw.l{left:0;border-radius:0 14px 14px 0;border-left:0}.dk-arw.r{right:0;border-radius:14px 0 0 14px;border-right:0}
 .dk-arw.off{opacity:0;pointer-events:none}
-body:not(.ph) .sign{grid-column:1/3;justify-self:start;margin-top:26px!important;font-size:clamp(48px,6.4vw,104px)} /* desktop: heading top-left, clear of the hanging signs */
 
 body.ph .dk-arw,body.in-room .dk-arw,body.jx-zoom .dk-arw,body.bx-on .dk-arw{display:none}
 body.ph .ph-dots{display:flex;position:absolute;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:7;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(8,6,16,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1)}
@@ -4435,10 +4437,10 @@ body.ph #sway{display:none}
 @keyframes nsOn{0%{opacity:.9}12%{opacity:.1}22%{opacity:1}34%{opacity:.25}46%{opacity:1}100%{opacity:1}}
 @media (prefers-reduced-motion:reduce){#play .ns:hover::before,#play .ns:focus-visible::before{animation:none;opacity:1}}
 
-body:not(.ph) .sky .pills{visibility:hidden}body.ph #play .ns{display:none}
+body.ph #play .ns{display:none}
 #sway{display:none!important}
-#ph-sway{display:block;position:absolute;left:774px;top:134px;width:520px;height:110px;z-index:5}#ph-sway-img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;max-width:none}
-#play #ph-sway .ns{display:block}body.ph .sky .pills{visibility:hidden}
+#ph-sway{display:none!important;position:absolute;left:774px;top:134px;width:520px;height:110px;z-index:5}#ph-sway-img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;max-width:none}
+
 #nsp-live{--nc:#3ce6ff}#nsp-games{--nc:#5dff9e}#nsp-listen{--nc:#ff3d7f}
 body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important}</style>
 <script>
