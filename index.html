@@ -2411,16 +2411,18 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
         return null; };
       // every letter out at once: the Smile signal lights up the clouds over the skyline
       let sigOn=false;
-      const signal=()=>{ if(sigOn) return; sigOn=true; const st=document.getElementById("stage"), B=window.MSRoofBox||{s:1,ox:0,oy:0};
-        const cx=B.ox+(window.MSView==="Walkway"?560:760)*B.s, cy=B.oy+205*B.s, R=150*B.s;
-        const w=document.createElement("div"); w.className="smile-sig"; Object.assign(w.style,{position:"absolute",inset:0,pointerEvents:"none",zIndex:3,opacity:0,transition:"opacity .25s"});
-        const bx=Math.min(st.clientWidth*.18,cx-R*1.2), by=st.clientHeight+40;
-        w.innerHTML=`<svg width="100%" height="100%" style="position:absolute;inset:0;overflow:visible"><defs><linearGradient id="sgb" x1="${bx}" y1="${by}" x2="${cx}" y2="${cy}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff6c8" stop-opacity=".55"/><stop offset="1" stop-color="#fff6c8" stop-opacity=".08"/></linearGradient><filter id="sgf"><feGaussianBlur stdDeviation="6"/></filter></defs><polygon points="${bx-10},${by} ${bx+22},${by} ${cx+R*.95},${cy+R*.25} ${cx-R*.95},${cy-R*.25}" fill="url(#sgb)" filter="url(#sgf)"/></svg>
-          <div style="position:absolute;left:${cx-R*1.25}px;top:${cy-R*.95}px;width:${R*2.5}px;height:${R*1.9}px;border-radius:50%;background:radial-gradient(closest-side,#fff8d0,rgba(255,240,170,.95) 60%,rgba(255,226,140,.35) 85%,transparent);filter:blur(1.5px);mix-blend-mode:screen"></div>
-          <img src="img/smile-logo-256.webp" alt="" style="position:absolute;left:${cx-R*.72}px;top:${cy-R*.72}px;width:${R*1.44}px;height:${R*1.44}px;filter:grayscale(1) brightness(1.05) contrast(1.5) blur(.6px);opacity:.92;mix-blend-mode:multiply">`;
-        st.appendChild(w); try{ crash(); }catch(_){}
-        const fl=[1,.2,1,.4,1]; fl.forEach((o,i)=>setTimeout(()=>w.style.opacity=o,i*90)); window.MSSecret&&window.MSSecret("signal");
-        setTimeout(()=>{ w.style.transition="opacity 1.2s"; w.style.opacity=0; setTimeout(()=>{ w.remove(); sigOn=false; },1300); },9000); };
+      const signal=async()=>{ if(sigOn) return; sigOn=true; const ph=innerWidth<=760||(innerHeight>innerWidth&&innerWidth<=1100), camWas=ph&&window.MSCam?window.MSCam(790):null; if(camWas!=null) await new Promise(r=>setTimeout(r,1100)); /* phones pan over to the Empire State Building */
+        const st=document.getElementById("stage"), pl=document.getElementById("play"), B=window.MSRoofBox||{s:1,ox:0,oy:0};
+        const P=(x,y)=>[B.ox+x*B.s,B.oy+y*B.s], [sx,sy]=P(699,206), [cx,cy]=ph?P(856,212):P(888,98), R=(ph?56:64)*B.s; /* beam from the Empire State Building's top onto the clouds */
+        const w=document.createElement("div"); w.className="smile-sig"; Object.assign(w.style,{position:"absolute",inset:0,pointerEvents:"none",zIndex:2,opacity:0,transition:"opacity .3s"});
+        const ang=Math.atan2(cy-sy,cx-sx), nx=-Math.sin(ang), ny=Math.cos(ang), w0=2*B.s, w1=R*.62;
+        w.innerHTML=`<svg width="100%" height="100%" style="position:absolute;inset:0;overflow:visible"><defs><linearGradient id="sgb" x1="${sx}" y1="${sy}" x2="${cx}" y2="${cy}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff2c0" stop-opacity=".7"/><stop offset="1" stop-color="#fff2c0" stop-opacity=".12"/></linearGradient><filter id="sgf"><feGaussianBlur stdDeviation="${2.5*B.s}"/></filter></defs>
+          <polygon points="${sx+nx*w0},${sy+ny*w0} ${sx-nx*w0},${sy-ny*w0} ${cx-nx*w1},${cy-ny*w1} ${cx+nx*w1},${cy+ny*w1}" fill="url(#sgb)" filter="url(#sgf)"/><circle cx="${sx}" cy="${sy}" r="${4*B.s}" fill="#fff6d0" filter="url(#sgf)"/></svg>
+          <div style="position:absolute;left:${cx-R*1.35}px;top:${cy-R}px;width:${R*2.7}px;height:${R*2}px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,246,205,.8),rgba(255,236,170,.6) 55%,rgba(255,226,150,.18) 85%,transparent);filter:blur(${3*B.s}px);mix-blend-mode:screen;transform:rotate(8deg)"></div>
+          <img src="img/smile-logo-256.webp" alt="" style="position:absolute;left:${cx-R*.68}px;top:${cy-R*.66}px;width:${R*1.36}px;height:${R*1.36}px;filter:grayscale(1) brightness(1.1) contrast(1.3) blur(${1.2*B.s}px);opacity:.7;mix-blend-mode:multiply;transform:rotate(8deg) scaleY(.9)">`;
+        st.insertBefore(w,pl); try{ crash(); }catch(_){}
+        [1,.25,1,.5,1].forEach((o,k)=>setTimeout(()=>w.style.opacity=o,k*110)); window.MSSecret&&window.MSSecret("signal");
+        setTimeout(()=>{ w.style.transition="opacity 1.4s"; w.style.opacity=0; setTimeout(()=>{ w.remove(); sigOn=false; if(camWas!=null) window.MSCam(camWas); },1500); },9000); };
       const kill=s=>{ s.classList.add("dead"); puff(); if(L.every(x=>x.classList.contains("dead"))) setTimeout(signal,350); setTimeout(()=>s.classList.remove("dead"),(L.filter(x=>x.classList.contains("dead")).length>6?5500:2500)+Math.random()*2500); };
       addEventListener("click",e=>{ if(e.target.closest&&e.target.closest("a,button,.pill,.sheet,.bar,.tile")) return; const sp=letterAt(e.clientX,e.clientY); if(sp){ e.stopPropagation(); e.preventDefault(); kill(sp); } },true);
       let mvT=0; addEventListener("pointermove",e=>{ if(e.pointerType!=="mouse") return; const n=performance.now(); if(n-mvT<60) return; mvT=n; document.documentElement.style.cursor=letterAt(e.clientX,e.clientY)?"pointer":""; },{passive:true});
