@@ -4,7 +4,7 @@ export async function onRequestGet({request}){
   const q=(new URL(request.url).searchParams.get("q")||"").replace(/\s+/g," ").trim().slice(0,60);
   if(q.length<2) return J({ok:true,songs:[]});
   try{
-    const r=await fetch("https://itunes.apple.com/search?entity=song&limit=25&country=US&term="+encodeURIComponent(q),{cf:{cacheTtl:86400,cacheEverything:true}});
+    const r=await fetch("https://itunes.apple.com/search?entity=song&limit=25&country=US&term="+encodeURIComponent(q),{headers:{"user-agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15","accept":"application/json"},cf:{cacheTtl:86400,cacheEverything:true}});
     const d=await r.json(), seen=new Set(), out=[];
     for(const x of d.results||[]){
       const t=String(x.trackName||"").replace(/\s*[\(\[](feat\.|with|remaster|remastered|live|\d{4} remaster|mono|stereo|single version|album version|radio edit)[^\)\]]*[\)\]]/ig,"").replace(/\s+-\s+(\d{4} )?remaster(ed)?.*$/i,"").trim();

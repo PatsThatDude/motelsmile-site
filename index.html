@@ -4707,7 +4707,7 @@ body.walking #play .bm{transition:none}
   ti.addEventListener("input",()=>{ clearTimeout(acT); const q=ti.value.trim(); if(q.length<2){ acHide(); return; }
     const n=nrm(q), board=S.filter(s=>nrm(s.t).includes(n)).slice(0,3); acShow(board,[]);
     acT=setTimeout(async()=>{ const my=++acSeq; let cat=[];
-      try{ const d=await (await fetch("/api/songsearch?q="+encodeURIComponent(q))).json(); cat=d.songs||[]; }catch(e){
+      try{ const d=await (await fetch("/api/songsearch?q="+encodeURIComponent(q))).json(); cat=d.songs||[]; if(!d.ok) throw 0; }catch(e){
         try{ const d=await (await fetch("https://itunes.apple.com/search?entity=song&limit=10&country=US&term="+encodeURIComponent(q))).json(); cat=(d.results||[]).map(x=>({t:x.trackName,a:x.artistName,art:x.artworkUrl60})).slice(0,6); }catch(_){} }
       if(my!==acSeq||ti.value.trim()!==q) return;
       const onB=new Set(board.map(s=>nrm(s.t))); acShow(board,cat.filter(c=>!onB.has(nrm(c.t))).slice(0,6)); },260); });
