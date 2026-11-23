@@ -4555,7 +4555,9 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
 #rq .rq-add{margin-top:12px;padding-top:12px;border-top:1px dashed #3a2c44;display:grid;gap:8px}
 #rq .rq-add b{font:600 13px var(--sans,system-ui);color:#cfc3db}
 #rq .rq-row{display:grid;grid-template-columns:1.3fr 1fr;gap:6px}
-#rq .rq-add input{min-width:0;padding:9px 10px;border-radius:9px;border:1px solid #3a2c44;background:#0b0710;color:#fff;font:500 15px var(--sans,system-ui)}
+#rq .rq-add input{min-width:0;padding:9px 10px;border-radius:9px;border:1px solid #3a2c44;background:#0b0710;color:#fff;font:500 16px var(--sans,system-ui)}
+#sl.rq-open .sl-wrap,#sl.rq-open .sl-shade,#sl.rq-open .sl-hint{visibility:hidden}#sl.rq-open .sl-mct{animation:none}
+#rq{background:#07050b}
 #rq .rq-add input:focus{outline:none;border-color:#46dcff}
 #rq .rq-add .rq-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 #rq .rq-add button{justify-self:end;padding:9px 16px;border-radius:999px;border:2px solid #46dcff;background:rgba(70,220,255,.12);color:#fff;font:600 14px var(--sans,system-ui);cursor:pointer}
@@ -4681,8 +4683,8 @@ body.walking #play .bm{transition:none}
     catch(e){ const o=S.find(x=>x.k===mine); if(o&&o.n>0) o.n--; mine=k; const s=S.find(x=>x.k===k); if(s) s.n=(s.n|0)+1; }
     try{ localStorage.setItem(LK,JSON.stringify({k:mine,d:new Date().toISOString().slice(0,10)})); }catch(e){}
     busy=false; draw(); }
-  const open=e=>{ e&&e.preventDefault(); e&&e.stopPropagation(); rq.classList.add("on"); rq.setAttribute("aria-hidden","false"); load(); setTimeout(()=>rq.querySelector(".rq-x").focus({preventScroll:true}),50); };
-  const close=e=>{ e&&e.preventDefault(); e&&e.stopPropagation(); rq.classList.remove("on"); rq.setAttribute("aria-hidden","true"); };
+  const open=e=>{ e&&e.preventDefault(); e&&e.stopPropagation(); rq.classList.add("on"); setTimeout(()=>sl.classList.add("rq-open"),320); rq.setAttribute("aria-hidden","false"); load(); setTimeout(()=>rq.querySelector(".rq-x").focus({preventScroll:true}),50); };
+  const close=e=>{ e&&e.preventDefault(); e&&e.stopPropagation(); sl.classList.remove("rq-open"); rq.classList.remove("on"); rq.setAttribute("aria-hidden","true"); };
   sl.querySelectorAll(".sl-mct").forEach(b=>b.addEventListener("click",open));
   const form=$("rq-add");
   form.addEventListener("submit",async e=>{ e.preventDefault(); e.stopPropagation(); const t=$("rq-t").value.trim(), a=$("rq-a").value.trim(); if(t.length<2||busy) return;
@@ -4694,6 +4696,17 @@ body.walking #play .bm{transition:none}
         $("rq-t").value=""; $("rq-a").value=""; delete form.dataset.ok; $("rq-a").readOnly=false; draw(); note.textContent=d.added?"It's on the board for everyone. Get your friends to vote.":"That one's already up. We counted you in."; } }
     catch(err){ note.textContent="The request line is down. Try later."; }
     busy=false; btn.disabled=false; });
+
+  const CACHE=new Map(); let appleOff=0, ctl=null;
+  const cl=t=>String(t||"").replace(/\s*[\(\[](feat\.?|ft\.?|with|remaster|remastered|live|\d{4} remaster|mono|stereo|single version|album version|radio edit)[^\)\]]*[\)\]]/ig,"").replace(/\s+-\s+(\d{4} )?(remaster(ed)?|live|single|radio edit|mono|stereo).*$/i,"").trim();
+  const junk=x=>/karaoke|tribute|made famous|in the style of|\b(demo|remix|mix|edit|version|acoustic|instrumental|live|cover|from ")\b/i.test(x.t)||/karaoke|tribute|cast\b|lullaby|piano guys/i.test(x.a);
+  function tidy(L,q){ const seen=new Set(), nq=nrm(q); return L.filter(x=>x.t&&x.a&&!junk(x)).filter(x=>{ const k=nq.includes(nrm(x.a))?nrm(x.t)+"|"+nrm(x.a):nrm(x.t); if(seen.has(k)) return false; seen.add(k); return true; }); }
+  async function findSongs(q){ const key=q.toLowerCase(); if(CACHE.has(key)) return CACHE.get(key);
+    if(ctl) ctl.abort(); ctl=new AbortController(); const sig=ctl.signal;
+    const apple=Date.now()>appleOff?fetch("https://itunes.apple.com/search?entity=song&limit=20&country=US&term="+encodeURIComponent(q),{signal:sig}).then(r=>{ if(!r.ok){ appleOff=Date.now()+60000; throw 0; } return r.json(); }).then(d=>tidy((d.results||[]).map(x=>({t:cl(x.trackName),a:x.artistName,art:x.artworkUrl60})),q)).catch(()=>null):Promise.resolve(null);
+    const srv=fetch("/api/songsearch?q="+encodeURIComponent(q),{signal:sig}).then(r=>r.json()).then(d=>tidy(d.songs||[],q)).catch(()=>[]);
+    let L=await apple; if(!L||!L.length) L=await srv;
+    L=L.slice(0,6); if(L.length) CACHE.set(key,L); return L; }
   // autocomplete: board songs first, then Apple's catalog via /api/songsearch
   const ti=$("rq-t"), ai=$("rq-a"), sug=$("rq-sug"); let picked=null, acT=0, acSeq=0, acItems=[], acSel=-1;
   const nrm=x=>String(x).toLowerCase().replace(/^the\s+/,"").replace(/[^a-z0-9]/g,"");
@@ -4707,13 +4720,10 @@ body.walking #play .bm{transition:none}
     picked={t:it.t,a:it.a}; form.dataset.ok="1"; ti.value=it.t.slice(0,48); ai.value=it.a.slice(0,40); ai.readOnly=true; form.querySelector("button").focus(); }
   ti.addEventListener("input",()=>{ picked=null; delete form.dataset.ok; ai.readOnly=false; ai.value=""; clearTimeout(acT); const q=ti.value.trim(); if(q.length<2){ acHide(); return; }
     const n=nrm(q), board=S.filter(s=>nrm(s.t).includes(n)).slice(0,3); acShow(board,[]);
-    acT=setTimeout(async()=>{ const my=++acSeq; let cat=[];
-      const cl=t=>String(t||"").replace(/\s*[\(\[](feat\.?|ft\.?|with|remaster|remastered|live|\d{4} remaster|mono|stereo|single version|album version|radio edit)[^\)\]]*[\)\]]/ig,"").replace(/\s+-\s+(\d{4} )?(remaster(ed)?|live|single|radio edit|mono|stereo).*$/i,"").trim();
-      try{ const d=await (await fetch("https://itunes.apple.com/search?entity=song&limit=20&country=US&term="+encodeURIComponent(q))).json(); const seen=new Set();
-        cat=(d.results||[]).map(x=>({t:cl(x.trackName),a:x.artistName,art:x.artworkUrl60})).filter(x=>{ if(/karaoke|tribute|made famous|in the style of|\b(demo|remix|mix|edit|version|acoustic|instrumental|live|cover|from ")\b/i.test(x.t)||/karaoke|tribute|cast\b|lullaby|piano guys/i.test(x.a)) return false; const qa=nrm(q).includes(nrm(x.a)); const k=qa?nrm(x.t)+"|"+nrm(x.a):nrm(x.t); if(seen.has(k)) return false; seen.add(k); return true; }).slice(0,6); }catch(e){}
-      if(!cat.length){ try{ const d=await (await fetch("/api/songsearch?q="+encodeURIComponent(q))).json(); cat=d.songs||[]; }catch(_){} }
+    if(q.length<3) return;
+    acT=setTimeout(async()=>{ const my=++acSeq; const cat=await findSongs(q);
       if(my!==acSeq||ti.value.trim()!==q) return;
-      const onB=new Set(board.map(s=>nrm(s.t))); acShow(board,cat.filter(c=>!onB.has(nrm(c.t))).slice(0,6)); },260); });
+      const onB=new Set(board.map(s=>nrm(s.t))); acShow(board,cat.filter(c=>!onB.has(nrm(c.t))).slice(0,6)); },350); });
   ti.addEventListener("keydown",e=>{ if(sug.hidden) return; const opts=[...sug.querySelectorAll('[role=option]')];
     if(e.key==="ArrowDown"||e.key==="ArrowUp"){ e.preventDefault(); acSel=(acSel+(e.key==="ArrowDown"?1:-1)+opts.length)%opts.length; opts.forEach((o,i)=>o.setAttribute("aria-selected",String(i===acSel))); opts[acSel]&&opts[acSel].scrollIntoView({block:"nearest"}); }
     else if(e.key==="Enter"&&acSel>=0){ e.preventDefault(); acPick(+opts[acSel].dataset.i); }

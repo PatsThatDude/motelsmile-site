@@ -8,7 +8,7 @@ export async function search(q,n=7){
   try{ const r=await fetch("https://itunes.apple.com/search?entity=song&limit=25&country=US&term="+encodeURIComponent(q),{headers:UA,cf:{cacheTtl:86400,cacheEverything:true}});
     if(r.ok){ const d=await r.json(); (d.results||[]).forEach(x=>add(x.trackName,x.artistName,x.artworkUrl60)); } }catch(e){}
   if(out.length<3){ try{ const r=await fetch("https://api.deezer.com/search?limit=25&q="+encodeURIComponent(q),{headers:UA,cf:{cacheTtl:86400,cacheEverything:true}});
-    if(r.ok){ const d=await r.json(); (d.data||[]).forEach(x=>add(x.title_short||x.title,x.artist&&x.artist.name,x.album&&x.album.cover_small)); } }catch(e){} }
+    if(r.ok){ const d=await r.json(); (d.data||[]).sort((x,y)=>(y.rank|0)-(x.rank|0)).forEach(x=>add(x.title_short||x.title,x.artist&&x.artist.name,x.album&&x.album.cover_small)); } }catch(e){} }
   return out.slice(0,n);
 }
 const match=(x,nt,na)=>norm(x.t)===nt&&(!na||norm(x.a).includes(na)||na.includes(norm(x.a)));
