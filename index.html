@@ -5245,11 +5245,11 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
   const IMG="img/band/peek/", EX=.4; /* exports are 0.4x source px */
   /* source-pixel data: crop box, wall edge y, face centre x, face width */
   const V={ "pat-hold":[0,113,1254,663,711,644,399], "jordan-hold":[4,263,1246,514,730,641,334], "jacob-hold":[3,117,1251,719,734,624,386],
-            "pat-chin":[31,75,1198,696,765,623,384], "jordan-over":[99,234,1082,665,826,787,241], "jordan-sit":[238,44,750,1158,704,603,173], "jacob-drape":[3,138,1053,1105,505,747,250], "pat-sit":[262,18,746,1195,722,608,188] };
+            "pat-chin":[31,75,1198,696,765,623,384], "jordan-over":[99,234,1082,665,826,787,241], "jordan-sit":[238,44,750,1158,704,603,173], "jacob-drape":[3,138,1053,1105,505,747,250], "pat-sit":[262,18,746,1195,722,608,188], "jacob-drum1":[21,76,722,600,672,380,164], "jacob-drum2":[26,194,729,484,672,380,164] };
   /* hand boxes in hold-crop px: [x0,x1] each; y from edge-150 down */
   const HANDS={pat:[[103,367],[932,1179]],jordan:[[236,443],[799,1019]],jacob:[[165,400],[837,1075]]};
   const FALL={pat:[52.6,"spin"],jordan:[54.6,"flail"],jacob:[51.2,"drop"]}, BRUSH={pat:48.6,jordan:64.7,jacob:54.5}, FAR={pat:273/440,jordan:376/440,jacob:261/440}, BAR={pat:175/440,jordan:187/440,jacob:170/440};
-  const WHO=[{k:"pat",cx:.2,t:900,v:"pat-sit",sit:1,face:31},{k:"jacob",cx:.53,t:250,v:"jacob-hold",face:37},{k:"jordan",cx:.83,t:560,v:"jordan-hold",face:37}];
+  const WHO=[{k:"pat",cx:.2,t:900,v:"pat-sit",sit:1,face:31},{k:"jacob",cx:.53,t:250,v:"jacob-drum1",v2:"jacob-drum2",face:37},{k:"jordan",cx:.83,t:560,v:"jordan-hold",face:37}];
   let run=0, faceAt={};
   /* place one variant image so its wall edge sits on the card edge and its face lines up with the slot */
   function put(img,v,cx,s,face){ const d=V[v], k=face/d[6], sc=s*k; img.style.width=(d[2]*sc)+"px"; img.style.left=(cx-(d[5]-d[0])*sc)+"px"; img.style.top=(-(d[4]-d[1])*sc)+"px"; return sc; }
@@ -5260,7 +5260,8 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
       const box=w.sit?c:Object.assign(c.appendChild(document.createElement("div")),{className:"cw"});
       const i=document.createElement("img"); i.alt=""; i.src=IMG+w.v+".webp?v=1"; box.appendChild(i);
       i.style.width=(d[2]*sc)+"px"; i.style.left=(cx-(d[5]-d[0])*sc)+"px"; i.style.top=(-(d[4]-d[1])*sc+(w.sit?0:260))+"px";
-      return {w,c,img:i,h:d[3]*sc,face:w.face,s:1}; }); }
+      let i2=null; if(w.v2){ const d2=V[w.v2]; i2=document.createElement("img"); i2.alt=""; i2.src=IMG+w.v2+".webp?v=1"; box.appendChild(i2); i2.style.width=(d2[2]*sc)+"px"; i2.style.left=(cx-(d2[5]-d2[0])*sc)+"px"; i2.style.top=(-(d2[4]-d2[1])*sc+260)+"px"; }
+      i.dataset.k=w.k; return {w,c,img:i,img2:i2,h:d[3]*sc,face:w.face,s:1}; }); }
   async function climb(id){ await wait(60); if(id!==run) return; band.className="up"; const P=build(); band.__P=P;
     P.forEach(async p=>{ await wait(p.w.t); if(id!==run) return; p.img.style.visibility="visible";
       if(p.w.sit) p.img.animate([{transform:"translateY(-26px)",opacity:0},{transform:"translateY(2px) scale(1.02,.97)",opacity:1,offset:.7},{transform:"none",opacity:1}],{duration:420,easing:"ease-out"});
@@ -5359,11 +5360,12 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
   let an=null, data=null, tried=false;
   const hook=()=>{ if(an||tried) return; tried=true; try{ const ac=window.MSAC&&window.MSAC(); if(!ac) return; const src=ac.createMediaElementSource(audio); an=ac.createAnalyser(); an.fftSize=128; an.smoothingTimeConstant=.5; src.connect(an); an.connect(ac.destination); data=new Uint8Array(an.frequencyBinCount); }catch(e){ an=null; } };
   audio.addEventListener("play",()=>{ if(lw.classList.contains("open")) hook(); });
-  const N=24, lv=new Array(N).fill(0), fl=new Array(N).fill(.3), pk=new Array(N).fill(.6);
+  let bAvg=80, bLast=0; const N=24, lv=new Array(N).fill(0), fl=new Array(N).fill(.3), pk=new Array(N).fill(.6);
   function draw(t){ requestAnimationFrame(draw); if(!lw.classList.contains("open")) return;
     const r=lw.getBoundingClientRect(), dpr=Math.min(2,devicePixelRatio||1), W=Math.round(r.width*dpr), H=Math.round(r.height*dpr); if(cv.width!==W||cv.height!==H){ cv.width=W; cv.height=H; }
     if(!an&&!audio.paused) hook();
-    const on=!audio.paused&&!audio.muted; if(on&&an) an.getByteFrequencyData(data);
+    const on=!audio.paused&&!audio.muted; if(on&&an){ an.getByteFrequencyData(data); window.__msHasAnalyser=true;
+      const bass=(data[1]+data[2]+data[3]+data[4])/4; bAvg+=(bass-bAvg)*.05; if(bass>bAvg*1.18&&bass>70&&t-bLast>200){ bLast=t; dispatchEvent(new CustomEvent("msbeat",{detail:bass/Math.max(1,bAvg)})); } }
     cx.clearRect(0,0,W,H);
     const base=H*.6, maxH=H*.36, gap=W*.008, bw=(W*.92-gap*(N-1))/N, x0=W*.04;
     for(let i=0;i<N;i++){ let v;
@@ -5425,6 +5427,38 @@ body:not(.ph) #lw{position:fixed!important;left:50%;right:auto;width:440px;margi
 body:not(.ph) #lw-band{position:fixed!important;left:50%;right:auto;width:440px;margin-left:-220px}
 body:not(.ph) #lw .lw-rec{width:130px!important}
 </style>
+<style>
+/* the whole Now playing card opens the Listen card (Pat 11-23) */
+#bar-np{cursor:pointer}
+#bar-np:hover{box-shadow:0 0 18px rgba(255,61,127,.55),inset 0 1px 0 var(--ambE,rgba(255,255,255,.3))!important}
+body:not(.ph) #bar-np .np-t small::after{content:"  · open ↗";color:rgba(255,255,255,.45);letter-spacing:.08em}
+/* band on the card can be tapped */
+#lw-band .cm img{pointer-events:auto;cursor:pointer}
+#lw-band .cm .cw{pointer-events:none}
+#lw-band .cm .cw img{pointer-events:auto}
+</style>
+<script>
+(()=>{ const np=document.getElementById("bar-np"); if(!np) return;
+  np.addEventListener("click",e=>{ if(e.target.closest(".lg-pp,.np-bar")) return; e.stopPropagation(); window.MSListenOpen&&window.MSListenOpen(); });
+})();
+/* the band on the card plays along: beats from the EQ analyser (or a steady 132 bpm if there is none) */
+(()=>{ const lw=document.getElementById("lw"), band=document.getElementById("lw-band"), audio=document.getElementById("lg-audio"); if(!lw||!band||!audio) return;
+  const get=k=>{ const P=band.__P||[]; return P.find(p=>p.w.k===k); };
+  let roll=false;
+  const hit=(strong)=>{ if(!lw.classList.contains("open")) return;
+    const J=get("jacob"); if(J&&J.img2&&J.img.style.visibility==="visible"&&!roll){ J.img.style.opacity=0; J.img2.style.visibility="visible"; setTimeout(()=>{ J.img.style.opacity=1; J.img2.style.visibility="hidden"; },110); }
+    const D=get("jordan"); if(D&&D.img.style.visibility==="visible") D.img.animate([{transform:"none"},{transform:`translateY(${strong?7:4}px) rotate(${strong?3:1.5}deg)`,offset:.35},{transform:"none"}],{duration:240,easing:"ease-out"});
+    const P=get("pat"); if(P&&P.img.style.visibility==="visible") P.img.animate([{transform:"none"},{transform:"translateY(-4px) scaleY(1.015)",offset:.4},{transform:"none"}],{duration:260,easing:"ease-out"}); };
+  addEventListener("msbeat",e=>hit(e.detail>1.6));
+  let fake=0; (function tick(t){ requestAnimationFrame(tick); if(!lw.classList.contains("open")||audio.paused||window.__msHasAnalyser) return; if(t-fake>455){ fake=t; hit(false); } })(0);
+  /* taps */
+  band.addEventListener("pointerdown",async e=>{ const im=e.target.closest(".cm img"); if(!im) return; e.stopPropagation(); const k=(im.dataset.k)||(im.src.includes("jacob")?"jacob":im.src.includes("jordan")?"jordan":"pat"); const p=get(k); if(!p) return;
+    if(k==="jacob"&&p.img2){ if(roll) return; roll=true; for(let n=0;n<14;n++){ const d=n%2===0; p.img.style.opacity=d?0:1; p.img2.style.visibility=d?"visible":"hidden"; p.img2.style.transform=`translateY(${(n%4)-1}px)`; await new Promise(r=>setTimeout(r,55)); } p.img.style.opacity=1; p.img2.style.visibility="hidden"; roll=false; try{ window.MSPlay&&window.MSPlay.crash&&window.MSPlay.crash(); }catch(_){} }
+    else if(k==="jordan"){ p.img.animate([{transform:"none"},{transform:"translateY(-26px)",offset:.3},{transform:"translateY(-22px) rotate(-4deg)",offset:.5},{transform:"translateY(-26px) rotate(4deg)",offset:.7},{transform:"none"}],{duration:900,easing:"ease-in-out"}); }
+    else { p.img.animate([{transform:"none"},{transform:"translateY(-14px) scale(1.02,.98)",offset:.25},{transform:"translateY(0) scale(1.04,.94)",offset:.45},{transform:"translateY(-6px)",offset:.65},{transform:"none"}],{duration:700,easing:"ease-out"}); }
+  });
+})();
+</script>
 
 </body>
 </html>
