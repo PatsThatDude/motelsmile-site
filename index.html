@@ -5255,8 +5255,8 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
   function put(img,v,cx,s,face){ const d=V[v], k=face/d[6], sc=s*k; img.style.width=(d[2]*sc)+"px"; img.style.left=(cx-(d[5]-d[0])*sc)+"px"; img.style.top=(-(d[4]-d[1])*sc)+"px"; return sc; }
   /* simple: peekers rise from behind the edge; the sitter hops on top. One image each, one move each. */
   function build(){ band.querySelectorAll(".cm,.pk").forEach(e=>e.remove());
-    const W=lw.getBoundingClientRect().width;
-    return WHO.map(w=>{ const c=document.createElement("div"); c.className="cm"; band.appendChild(c); const cx=W*w.cx, d=V[w.v], sc=w.face/d[6];
+    const W=lw.getBoundingClientRect().width, wide=!document.body.classList.contains("ph"), XS={pat:.52,jacob:.24,jordan:.82};
+    return WHO.map(w=>{ const c=document.createElement("div"); c.className="cm"; band.appendChild(c); const cx=W*(wide?XS[w.k]:w.cx), d=V[w.v], sc=(wide?w.face*(w.k==="jordan"?1.45:1.25):w.face)/d[6];
       const box=w.sit?c:Object.assign(c.appendChild(document.createElement("div")),{className:"cw"});
       const i=document.createElement("img"); i.alt=""; i.src=IMG+w.v+".webp?v=1"; box.appendChild(i);
       i.style.width=(d[2]*sc)+"px"; i.style.left=(cx-(d[5]-d[0])*sc)+"px"; i.style.top=(-(d[4]-d[1])*sc+(w.sit?0:260))+"px";
@@ -5459,6 +5459,21 @@ body:not(.ph) #bar-np .np-t small::after{content:"  · open ↗";color:rgba(255,
   });
 })();
 </script>
+<style>
+/* desktop + iPad: the Listen card is the original full-width bottom sheet, restyled (Pat 11-23).
+   Low, wide top edge for the band to hang on. Layout: record | title + controls | covers */
+body:not(.ph) #lw{position:fixed!important;left:16px!important;right:16px!important;width:auto!important;margin-left:0!important;
+  height:min(260px,34vh)!important;bottom:calc(var(--barh,110px) + 10px)!important;border-radius:18px;padding:18px 64px 18px 28px!important;
+  display:grid!important;grid-template-columns:auto minmax(220px,1fr) minmax(0,1.5fr);grid-template-rows:auto auto auto 1fr;column-gap:28px;align-items:center;justify-items:start}
+body:not(.ph) #lw .lw-h{grid-column:2;grid-row:1;align-self:end}
+body:not(.ph) #lw .lw-rec{grid-column:1;grid-row:1/5;width:min(190px,24vh)!important;margin:0!important;align-self:center}
+body:not(.ph) #lw .lw-t{grid-column:2;grid-row:2;font-size:30px!important;margin:4px 0 0!important;max-width:100%}
+body:not(.ph) #lw .lw-ctl{grid-column:2;grid-row:3;margin:8px 0 0!important}
+body:not(.ph) #lw .lw-ctl .lg-pp{width:48px!important;height:48px!important}
+body:not(.ph) #lw .lw-row{grid-column:3;grid-row:1/5;align-self:center;margin:0!important;width:100%}
+body:not(.ph) #lw .lw-x{top:12px;right:16px}
+body:not(.ph) #lw-band{position:fixed!important;left:16px!important;right:16px!important;width:auto!important;margin-left:0!important}
+</style>
 
 </body>
 </html>
