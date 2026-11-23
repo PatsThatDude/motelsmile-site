@@ -5241,47 +5241,31 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
   const IMG="img/band/peek/", EX=.4; /* exports are 0.4x source px */
   /* source-pixel data: crop box, wall edge y, face centre x, face width */
   const V={ "pat-hold":[0,113,1254,663,711,644,399], "jordan-hold":[4,263,1246,514,730,641,334], "jacob-hold":[3,117,1251,719,734,624,386],
-            "pat-chin":[31,75,1198,696,765,623,384], "jordan-over":[99,234,1082,665,826,787,241], "jordan-sit":[238,44,750,1158,704,603,173], "jacob-drape":[3,138,1053,1105,505,747,250] };
+            "pat-chin":[31,75,1198,696,765,623,384], "jordan-over":[99,234,1082,665,826,787,241], "jordan-sit":[238,44,750,1158,704,603,173], "jacob-drape":[3,138,1053,1105,505,747,250], "pat-sit":[262,18,746,1195,722,608,188] };
   /* hand boxes in hold-crop px: [x0,x1] each; y from edge-150 down */
   const HANDS={pat:[[103,367],[932,1179]],jordan:[[236,443],[799,1019]],jacob:[[165,400],[837,1075]]};
   const FALL={pat:[52.6,"spin"],jordan:[54.6,"flail"],jacob:[51.2,"drop"]}, BRUSH={pat:48.6,jordan:64.7,jacob:54.5}, FAR={pat:273/440,jordan:376/440,jacob:261/440}, BAR={pat:175/440,jordan:187/440,jacob:170/440};
-  const WHO=[{k:"jordan",cx:.19,t:950,end:["jordan-over","jordan-sit"]},{k:"jacob",cx:.5,t:520,end:["jacob-drape"]},{k:"pat",cx:.81,t:1250,end:["pat-chin"]}];
+  const WHO=[{k:"pat",cx:.2,t:900,v:"pat-sit",sit:1,face:31},{k:"jacob",cx:.53,t:250,v:"jacob-hold",face:37},{k:"jordan",cx:.83,t:560,v:"jordan-hold",face:37}];
   let run=0, faceAt={};
   /* place one variant image so its wall edge sits on the card edge and its face lines up with the slot */
   function put(img,v,cx,s,face){ const d=V[v], k=face/d[6], sc=s*k; img.style.width=(d[2]*sc)+"px"; img.style.left=(cx-(d[5]-d[0])*sc)+"px"; img.style.top=(-(d[4]-d[1])*sc)+"px"; return sc; }
+  /* simple: peekers rise from behind the edge; the sitter hops on top. One image each, one move each. */
   function build(){ band.querySelectorAll(".cm,.pk").forEach(e=>e.remove());
-    const W=lw.getBoundingClientRect().width, slot=W*.36, s=slot/1254;
-    return WHO.map(w=>{ const c=document.createElement("div"); c.className="cm"; band.appendChild(c); const cx=W*w.cx, hold=w.k+"-hold", face=V[hold][6];
-      const cw=document.createElement("div"); cw.className="cw"; c.appendChild(cw);
-      const mk=(v,clip)=>{ const i=document.createElement("img"); i.alt=""; i.src=IMG+v+".webp?v=1"; (clip?cw:c).appendChild(i); put(i,v,cx,s,face); if(clip) i.style.top=(parseFloat(i.style.top)+260)+"px"; return i; };
-      const hA=mk(hold,1), hB=mk(hold,1), body=mk(hold,1), full=mk(hold), ends=w.end.map(v=>mk(v));
-      const d=V[hold], ey=d[4]-d[1], H=d[3], Wd=d[2], top=Math.max(0,ey-150);
-      const box=([x0,x1])=>`polygon(${x0/Wd*100}% ${top/H*100}%,${x1/Wd*100}% ${top/H*100}%,${x1/Wd*100}% 100%,${x0/Wd*100}% 100%)`;
-      const [A,B]=HANDS[w.k]; hA.style.clipPath=box(A); hB.style.clipPath=box(B);
-      const yb=(ey-150)/H*100, yt=100; /* body: everything except the two hand boxes below the line */
-      body.style.clipPath=`polygon(0 0,100% 0,100% ${yt}%,${B[1]/Wd*100}% ${yt}%,${B[1]/Wd*100}% ${yb}%,${B[0]/Wd*100}% ${yb}%,${B[0]/Wd*100}% ${yt}%,${A[1]/Wd*100}% ${yt}%,${A[1]/Wd*100}% ${yb}%,${A[0]/Wd*100}% ${yb}%,${A[0]/Wd*100}% ${yt}%,0 ${yt}%)`;
-      return {w,c,hA,hB,body,full,ends,cx,s,face}; }); }
-  const show=(el,on)=>{ el.style.visibility=on?"visible":"hidden"; };
-  async function climb(id){ await wait(80); if(id!==run) return; band.className="up"; const P=build();
-    await Promise.all(P.map(async p=>{ await wait(p.w.t); if(id!==run) return;
-      const h=parseFloat(p.full.style.width)*(V[p.w.k+"-hold"][3]/V[p.w.k+"-hold"][2]);
-      /* hand 1 slaps on, hand 2, then he hauls himself up */
-      show(p.hA,1); p.hA.animate([{transform:"translateY(40px)"},{transform:"translateY(-4px)",offset:.7},{transform:"none"}],{duration:260,easing:"ease-out"});
-      await wait(260+Math.random()*220); if(id!==run) return;
-      show(p.hB,1); p.hB.animate([{transform:"translateY(40px)"},{transform:"translateY(-4px)",offset:.7},{transform:"none"}],{duration:260,easing:"ease-out"});
-      await wait(380+Math.random()*300); if(id!==run) return;
-      show(p.body,1); const up=p.body.animate([{transform:`translateY(${h*.75}px)`},{transform:`translateY(${h*.45}px)`,offset:.35},{transform:`translateY(${h*.5}px)`,offset:.5},{transform:"translateY(-6px)",offset:.85},{transform:"none"}],{duration:900,easing:"ease-in-out"});
-      p.hA.animate([{transform:"none"},{transform:"translateY(3px)",offset:.4},{transform:"none"}],{duration:900}); p.hB.animate([{transform:"none"},{transform:"translateY(3px)",offset:.6},{transform:"none"}],{duration:900});
-      await up.finished.catch(()=>{}); if(id!==run) return; show(p.full,1); [p.hA,p.hB,p.body].forEach(e=>show(e,0));
-      await wait(500+Math.random()*500);
-      let cur=p.full; for(const e of p.ends){ if(id!==run) return; show(e,1); show(cur,0); e.animate([{transform:"translateY(-10px) scaleY(1.04)"},{transform:"translateY(2px) scaleY(.97)",offset:.6},{transform:"none"}],{duration:380,easing:"ease-out"}); cur=e; await wait(650); }
-      p.cur=cur; }));
-    if(id===run) band.__P=P; }
+    const W=lw.getBoundingClientRect().width;
+    return WHO.map(w=>{ const c=document.createElement("div"); c.className="cm"; band.appendChild(c); const cx=W*w.cx, d=V[w.v], sc=w.face/d[6];
+      const box=w.sit?c:Object.assign(c.appendChild(document.createElement("div")),{className:"cw"});
+      const i=document.createElement("img"); i.alt=""; i.src=IMG+w.v+".webp?v=1"; box.appendChild(i);
+      i.style.width=(d[2]*sc)+"px"; i.style.left=(cx-(d[5]-d[0])*sc)+"px"; i.style.top=(-(d[4]-d[1])*sc+(w.sit?0:260))+"px";
+      return {w,c,img:i,h:d[3]*sc,face:w.face,s:1}; }); }
+  async function climb(id){ await wait(60); if(id!==run) return; band.className="up"; const P=build(); band.__P=P;
+    P.forEach(async p=>{ await wait(p.w.t); if(id!==run) return; p.img.style.visibility="visible";
+      if(p.w.sit) p.img.animate([{transform:"translateY(-26px)",opacity:0},{transform:"translateY(2px) scale(1.02,.97)",opacity:1,offset:.7},{transform:"none",opacity:1}],{duration:420,easing:"ease-out"});
+      else p.img.animate([{transform:`translateY(${p.h}px)`},{transform:"translateY(-5px)",offset:.75},{transform:"none"}],{duration:560,easing:"cubic-bezier(.2,.8,.3,1)"}); }); }
   /* close: they hang where they were, then fall into the roof and land at a spot */
   async function drop(id){ const P=band.__P||[], SR=st.getBoundingClientRect(); fall.innerHTML="";
     const M=(window.MSMembers||[]); const by=n=>M.find(m=>m.name&&m.name.toLowerCase()===n);
     const starts={}; band.querySelectorAll(".cm img").forEach(i=>{});
-    for(const p of P){ const vis=[...p.c.querySelectorAll("img")].find(i=>i.style.visibility==="visible"); if(!vis) continue; const r=vis.getBoundingClientRect(); starts[p.w.k]={x:r.left+r.width*((V[vis.src.match(/peek\/([a-z-]+)\.webp/)[1]][5]-V[vis.src.match(/peek\/([a-z-]+)\.webp/)[1]][0])/V[vis.src.match(/peek\/([a-z-]+)\.webp/)[1]][2])-SR.left,y:r.top+r.height*.25-SR.top,face:p.face*p.s}; }
+    for(const p of P){ if(p.img.style.visibility!=="visible") continue; const r=p.img.getBoundingClientRect(), d=V[p.w.v]; starts[p.w.k]={x:r.left+r.width*((d[5]-d[0])/d[2])-SR.left,y:r.top+r.height*.12-SR.top,face:p.face}; }
     band.querySelectorAll(".cm").forEach(e=>e.remove());
     /* pick landing spots that are on screen */
     const used=new Set(), targets={};
