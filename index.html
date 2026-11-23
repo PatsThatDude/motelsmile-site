@@ -5010,7 +5010,18 @@ body.ph #ph-brand{display:flex;position:absolute;left:10px;top:calc(8px + env(sa
 #ph-brand img{width:30px;height:30px;filter:drop-shadow(0 0 6px rgba(255,61,127,.7))}
 body.in-room #ph-brand,body.jx-zoom #ph-brand,body.bx-on #ph-brand{opacity:0}
 </style>
-<script>(()=>{ const st=document.getElementById("stage"); if(!st) return; const b=document.createElement("div"); b.id="ph-brand"; b.innerHTML='<img src="img/smile-logo-96.webp" alt="" width="30" height="30"><span>Motel<br>Smile</span>'; b.setAttribute("aria-hidden","true"); st.appendChild(b); })();</script>
+<script>(()=>{ const st=document.getElementById("stage"); if(!st) return; const b=document.createElement("div"); b.id="ph-brand"; b.innerHTML='<img src="img/smile-logo-96.webp" alt="" width="30" height="30"><span>Motel Smile</span>'; b.setAttribute("aria-hidden","true"); st.appendChild(b); })();</script>
+<style>
+/* phone: badge one line; What's here back to a star, slid right and wider (Pat 11-23) */
+body.ph #ph-brand span br{display:none}
+body.ph #ph-brand{font-size:10px;letter-spacing:.14em;gap:7px}
+body.ph #ph-brand span{white-space:nowrap}
+body.ph #ph-top{justify-content:flex-end!important;padding:0 10px 0 0!important}
+body.ph #ph-top .gd-btn{min-width:min(212px,54vw)!important;justify-content:space-between!important;padding:0 8px 0 6px!important}
+body.ph #ph-top .gd-btn .gd-star{width:24px!important;height:24px!important;background:#ffd36a!important;box-shadow:0 0 10px #ffb23d!important;color:#1a0f00!important;display:grid!important;place-items:center!important}
+body.ph #ph-top .gd-btn .gd-star img{display:none!important}
+body.ph #ph-top .gd-btn .gd-star::before{content:"★";font:700 14px/1 system-ui;color:#1a0f00}
+</style>
 
 </body>
 </html>
