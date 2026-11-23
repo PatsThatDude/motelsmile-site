@@ -4587,7 +4587,7 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
   <div class="sl-shade"></div>
   <button class="sl-x" type="button">✕ Back to the roof</button>
   <div class="sl-hint">Tap the Mystery Cover Tune</div>
-  <div id="rq" role="dialog" aria-modal="true" aria-label="Request line" aria-hidden="true"><button class="rq-x" type="button">✕ Back to the setlist</button><div class="rq-box"><h3>Request Line</h3><p class="rq-sub">You pick the Mystery Cover Tune</p><ul id="rq-list"></ul><p class="rq-note" id="rq-note" role="status"></p><form class="rq-add" id="rq-add" autocomplete="off"><b>Not on the list? Find it and add it for everyone.</b><div class="rq-row"><div class="rq-ac"><input id="rq-t" maxlength="48" placeholder="Start typing a song…" aria-label="Song" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="rq-sug" required><ul id="rq-sug" role="listbox" hidden></ul></div><input id="rq-a" maxlength="40" placeholder="Artist (fills in)" aria-label="Artist" readonly tabindex="-1"></div><input class="rq-hp" name="hp" tabindex="-1" aria-hidden="true"><button type="submit">Add to the board</button></form></div></div>
+  <div id="rq" role="dialog" aria-modal="true" aria-label="Request line" aria-hidden="true"><button class="rq-x" type="button">✕ Back to the setlist</button><div class="rq-box"><h3>Request Line</h3><p class="rq-sub">You pick the Mystery Cover Tune</p><ul id="rq-list"></ul><p class="rq-note" id="rq-note" role="status"></p><form class="rq-add" id="rq-add" autocomplete="off"><b>Not on the list? Find it and add it for everyone.</b><div class="rq-row"><div class="rq-ac"><input id="rq-t" maxlength="48" placeholder="Start typing a song…" aria-label="Song" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="rq-sug" required><ul id="rq-sug" role="listbox" hidden></ul></div><input id="rq-a" maxlength="40" placeholder="Artist" aria-label="Artist"></div><input class="rq-hp" name="hp" tabindex="-1" aria-hidden="true"><button type="submit">Add to the board</button></form></div></div>
 </div>
 <script>
 /* Band hangout: tap the milk crate, push in, the crate lifts off the taped setlist */
@@ -4688,25 +4688,23 @@ body.walking #play .bm{transition:none}
   sl.querySelectorAll(".sl-mct").forEach(b=>b.addEventListener("click",open));
   const form=$("rq-add");
   form.addEventListener("submit",async e=>{ e.preventDefault(); e.stopPropagation(); const t=$("rq-t").value.trim(), a=$("rq-a").value.trim(); if(t.length<2||busy) return;
-    if(!form.dataset.ok){ note.textContent="Pick the song from the list as you type."; $("rq-t").focus(); return; }
+    if(!form.dataset.ok&&!a){ note.textContent="Pick it from the list, or add the artist."; $("rq-a").focus(); return; }
     busy=true; const btn=form.querySelector("button"); btn.disabled=true; note.textContent="Putting it on the board…";
     try{ const r=await fetch("/api/covers",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({suggest:t,artist:a,hp:form.hp.value})}); const d=await r.json();
       if(!d.ok){ note.textContent=d.error||"Couldn't add it. Try again."; }
       else { if(d.songs) S=d.songs; if(d.mine) mine=d.mine; try{ localStorage.setItem(LK,JSON.stringify({k:mine,d:new Date().toISOString().slice(0,10)})); }catch(_){}
-        $("rq-t").value=""; $("rq-a").value=""; delete form.dataset.ok; $("rq-a").readOnly=false; draw(); note.textContent=d.added?"It's on the board for everyone. Get your friends to vote.":"That one's already up. We counted you in."; } }
+        $("rq-t").value=""; $("rq-a").value=""; delete form.dataset.ok; draw(); note.textContent=d.added?"It's on the board for everyone. Get your friends to vote.":"That one's already up. We counted you in."; } }
     catch(err){ note.textContent="The request line is down. Try later."; }
     busy=false; btn.disabled=false; });
 
-  const CACHE=new Map(); let appleOff=0, ctl=null;
+  const CACHE=new Map(); let ctl=null;
   const cl=t=>String(t||"").replace(/\s*[\(\[](feat\.?|ft\.?|with|remaster|remastered|live|\d{4} remaster|mono|stereo|single version|album version|radio edit)[^\)\]]*[\)\]]/ig,"").replace(/\s+-\s+(\d{4} )?(remaster(ed)?|live|single|radio edit|mono|stereo).*$/i,"").trim();
   const junk=x=>/karaoke|tribute|made famous|in the style of|\b(demo|remix|mix|edit|version|acoustic|instrumental|live|cover|from ")\b/i.test(x.t)||/karaoke|tribute|cast\b|lullaby|piano guys/i.test(x.a);
   function tidy(L,q){ const seen=new Set(), nq=nrm(q); return L.filter(x=>x.t&&x.a&&!junk(x)).filter(x=>{ const k=nq.includes(nrm(x.a))?nrm(x.t)+"|"+nrm(x.a):nrm(x.t); if(seen.has(k)) return false; seen.add(k); return true; }); }
   async function findSongs(q){ const key=q.toLowerCase(); if(CACHE.has(key)) return CACHE.get(key);
-    if(ctl) ctl.abort(); ctl=new AbortController(); const sig=ctl.signal;
-    const apple=Date.now()>appleOff?fetch("https://itunes.apple.com/search?entity=song&limit=20&country=US&term="+encodeURIComponent(q),{signal:sig}).then(r=>{ if(!r.ok){ appleOff=Date.now()+60000; throw 0; } return r.json(); }).then(d=>tidy((d.results||[]).map(x=>({t:cl(x.trackName),a:x.artistName,art:x.artworkUrl60})),q)).catch(()=>null):Promise.resolve(null);
-    const srv=fetch("/api/songsearch?q="+encodeURIComponent(q),{signal:sig}).then(r=>r.json()).then(d=>tidy(d.songs||[],q)).catch(()=>[]);
-    let L=await apple; if(!L||!L.length) L=await srv;
-    L=L.slice(0,6); if(L.length) CACHE.set(key,L); return L; }
+    if(ctl) ctl.abort(); ctl=new AbortController();
+    try{ const r=await fetch("https://itunes.apple.com/search?entity=song&limit=20&country=US&term="+encodeURIComponent(q),{signal:ctl.signal}); if(!r.ok) return [];
+      const d=await r.json(); const L=tidy((d.results||[]).map(x=>({t:cl(x.trackName),a:x.artistName,art:x.artworkUrl60})),q).slice(0,6); CACHE.set(key,L); return L; }catch(e){ return []; } }
   // autocomplete: board songs first, then Apple's catalog via /api/songsearch
   const ti=$("rq-t"), ai=$("rq-a"), sug=$("rq-sug"); let picked=null, acT=0, acSeq=0, acItems=[], acSel=-1;
   const nrm=x=>String(x).toLowerCase().replace(/^the\s+/,"").replace(/[^a-z0-9]/g,"");
@@ -4717,8 +4715,8 @@ body.walking #play .bm{transition:none}
   function acHide(){ sug.hidden=true; ti.setAttribute("aria-expanded","false"); acSel=-1; }
   function acPick(i){ const it=acItems[i]; if(!it) return; acHide();
     if(it.vote){ ti.value=""; ai.value=""; picked=null; vote(it.vote); return; }
-    picked={t:it.t,a:it.a}; form.dataset.ok="1"; ti.value=it.t.slice(0,48); ai.value=it.a.slice(0,40); ai.readOnly=true; form.querySelector("button").focus(); }
-  ti.addEventListener("input",()=>{ picked=null; delete form.dataset.ok; ai.readOnly=false; ai.value=""; clearTimeout(acT); const q=ti.value.trim(); if(q.length<2){ acHide(); return; }
+    picked={t:it.t,a:it.a}; form.dataset.ok="1"; ti.value=it.t.slice(0,48); ai.value=it.a.slice(0,40); form.querySelector("button").focus(); }
+  ti.addEventListener("input",()=>{ if(form.dataset.ok){ ai.value=""; } picked=null; delete form.dataset.ok; clearTimeout(acT); const q=ti.value.trim(); if(q.length<2){ acHide(); return; }
     const n=nrm(q), board=S.filter(s=>nrm(s.t).includes(n)).slice(0,3); acShow(board,[]);
     if(q.length<3) return;
     acT=setTimeout(async()=>{ const my=++acSeq; const cat=await findSongs(q);
