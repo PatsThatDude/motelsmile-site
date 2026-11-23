@@ -4746,9 +4746,10 @@ body.walking #play .bm{transition:none}
 /* top of frame, phone: [smiley What's here?] [Play games] ......... [Secrets] / big Motel Smile */
 .gd-btn .gd-star img{width:100%;height:100%;display:block;border-radius:50%}
 .gd-btn .gd-star{background:none!important;box-shadow:0 0 10px rgba(255,61,127,.55)!important;overflow:hidden}
-body.ph .gd-btn{left:max(12px,env(safe-area-inset-left,0px))!important;top:8px!important;font-size:15px!important;padding:5px 12px 5px 5px!important;gap:7px!important}
+body.ph .pill.pg-top{display:none!important}
+body.ph .gd-btn{left:50%!important;transform:translateX(-50%);top:8px!important;font-size:15px!important;padding:5px 12px 5px 5px!important;gap:7px!important}
 body.ph .gd-btn .gd-star{width:28px!important;height:28px!important}
-body.ph .pill.pg-top{font-size:15px!important;padding:0 13px!important;height:40px!important;box-sizing:border-box!important;display:inline-flex!important;align-items:center!important}
+body.ph .pill.pg-top.x{font-size:15px!important;padding:0 13px!important;height:40px!important;box-sizing:border-box!important;display:inline-flex!important;align-items:center!important}
 body.ph .top>div{visibility:hidden}
 
 body.ph .sign{font-size:clamp(56px,18vw,80px)!important;margin-top:18px!important;justify-self:end}
@@ -4782,6 +4783,7 @@ body.ph #hunt .hsw{display:none}body.ph #hunt{padding:0 11px!important;gap:6px!i
   src&&new MutationObserver(sync).observe(src,{childList:true,subtree:true});
 })();
 </script>
+<style>body.ph .gd-btn:hover,body.ph .gd-btn:focus-visible{transform:translateX(-50%) translateY(-1px) scale(1.03)}</style>
 
 </body>
 </html>
