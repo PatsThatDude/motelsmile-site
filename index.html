@@ -2780,7 +2780,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
   // feet positions in main-shot coords (1672x941); height follows the floor's perspective (scaled to the drum kit)
   // far (back by the wall), mid (by the kit), close (foreground)
-  const SPOTS=[[600,612],[790,618],[1450,652], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [712,708],[456,676],[1355,700],[1205,742],[1030,712]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (Pat on the sofa, Jordan on the sofa, Jordan at the bar, Pat by the bar) */
+  const SPOTS=[[600,612],[790,618],[1300,640], [560,690],[880,690],[1160,700], [420,800],[700,820],[1050,830], [872,706],[1182,708], [712,708],[456,676],[1300,712],[1205,742],[1030,712]]; /* 9,10: opening stance, Pat and Jordan either side of Jacob at the kit; 11-14 per-view blocking (Pat on the sofa, Jordan on the sofa, Jordan at the bar, Pat by the bar) */
   const hFor=f=>1.48*(f-420);
   const hAt=i=>SPOTS[i][2]||hFor(SPOTS[i][1]); /* blocking spots by the sofa and in the lounge carry their own height: those props are drawn at a different scale */
   const MEMBERS=[], taken=()=>MEMBERS.map(m=>m.spot);
@@ -2947,7 +2947,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
         cl.remove(); st.remove(); setTimeout(()=>relight([O]),7000);
         if(panning){ await wait(250); window.MSCam(this.cam.on); await wait(700); } } },
     // Pat: up on the cooler, hurls the bass into SMILE; the whole word smashes and falls
-    pat:{ spot(){ return {x:1282,feet:561,floor:635,z:96}; }, keep:[{x:1110,y:160,w:360,h:410}], cam:{on:1285},
+    pat:{ spot(){ return {x:1262,feet:640,floor:640,z:96}; }, keep:[{x:1110,y:160,w:360,h:410}], cam:{on:1285},
       async hit(R){ const W=document.querySelectorAll(".sign .w")[1]; const L=W?[...W.querySelectorAll("span")]:[];
         const [sx,sy]=p2s(R.L+R.w*.8,R.T+R.h*.15), k=k1(), len=R.h*.62*k, T=W?rectIn(W):{cx:sx+300,cy:sy-300};
         const b=document.createElement("img"); b.src="img/band/gag-bass.webp?v=1"; b.alt=""; b.style.width=len+"px"; fx.appendChild(b);
@@ -3020,7 +3020,8 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       const camWas=(GG.cam&&window.MSCam)?window.MSCam(GG.cam.on):null; if(camWas!=null) await wait(800);
       { // bandmates step out of the way: anyone overlapping the stunt area, the sign or the buttons fades out until it's over
         const boxes=[...document.querySelectorAll(".sign,.sky .pills .pill")].map(e=>{ const r=e.getBoundingClientRect(), S0=SR(), [x,y]=s2p(r.left-S0.left,r.top-S0.top), k=k1(); return {x,y,w:r.width/k,h:r.height/k}; });
-        if(GG.ov) GG.ov.frames.forEach(f=>boxes.push({x:f.x-60,y:f.y,w:f.w+120,h:f.h})); if(GG.keep) GG.keep.forEach(b=>boxes.push(b));
+        if(GG.ov) GG.ov.frames.forEach(f=>boxes.push({x:f.x-60,y:f.y,w:f.w+120,h:f.h}));
+        if(GG.spot){ const q=GG.spot(), hh=hFor(q.floor)*1.1; boxes.push({x:q.x-hh*.45,y:q.feet-hh,w:hh*.9,h:hh+40}); } /* whoever stands where the stunt happens steps aside */ if(GG.keep) GG.keep.forEach(b=>boxes.push(b));
         const hit=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
         const hidden=new Set(), sweep=()=>MEMBERS.forEach(o=>{ if(o===m||hidden.has(o)||!o.rect) return; const r=o.rect(); if(r.w>0&&boxes.some(b=>hit(r,b))){ hidden.add(o); o.fade(0); } });
         sweep(); const iv=setInterval(sweep,150); m.unhide=()=>{ clearInterval(iv); hidden.forEach(o=>o.fade(1)); }; }
