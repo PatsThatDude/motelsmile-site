@@ -2423,7 +2423,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     /* roof secrets: Grace, the 5 tags, the band, the dance floor */
     const SEC=[["grace","Free Grace","Someone’s stuck in a jar on the ledge"],...TAGS.map(t=>["tag:"+t[0],`Tag: “${t[0]}”`,"A song title sprayed somewhere on the roof"]),["band","Mess with the band","Tap a band member (at your own risk)"],["floor","Light up the dance floor","Downstairs in the Smile Lounge"],["windows","Peek in every window","The binoculars by the wall see a lot"],["jill","Free Jill","Someone else is trapped across the street"],["signal","The Smile signal","Black out the whole neon sign"]];
     const got=new Set(); window.MSGot=()=>got; window.MSSecList=()=>SEC.map(x=>x[0]);
-    const showHunt=()=>{ hunt.innerHTML=`★ <i class="hr">Roof </i>secrets <b>${got.size}/${SEC.length}</b>`;
+    const showHunt=()=>{ hunt.innerHTML=`★ <i class="hr">Roof </i><span class="hsw">secrets </span><b>${got.size}/${SEC.length}</b>`;
       $("sec-list").innerHTML=SEC.map(([k,a,h])=>`<li class="${got.has(k)?"got":""}"><i>${got.has(k)?"✓":"?"}</i><span>${got.has(k)?a:h}</span></li>`).join(""); };
     { const sp=document.querySelector(".top span"); if(sp) sp.insertBefore(hunt,sp.firstChild); }
     const NOTE={signal:"The Smile signal is up over the city.",grace:"Grace is free! She’s headed down to the lounge.",megan:"Megan is free! (She says she was never stuck.)",gianna:"Gianna is free! Right on time.",sophia:"Sophia is free! She’s getting back to the lounge.",band:"You messed with the band.",floor:"The dance floor is lit.",windows:"You peeked in every window. Nosy.",jill:"Jill is free! She’s on her way to the lounge.",jill5:"Sharpshooter: Jill freed in 5 shots or fewer."};
@@ -3746,7 +3746,7 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
   .gd-grid{grid-template-columns:1fr;gap:9px}.gd-it{grid-template-columns:38px 1fr auto;padding:11px 10px;gap:10px}.gd-ic{width:38px;height:38px}.gd-it b{font-size:17px}.gd-it p{font-size:12px}.gd-sub{font-size:13px;margin-bottom:14px}}
 @media (prefers-reduced-motion:reduce){.gd-btn::after,.gd-new{animation:none}}
 </style>
-<button class="gd-btn" id="gd-btn" type="button" aria-haspopup="dialog" aria-controls="gd"><span class="gd-star">★</span><span class="gd-t">What’s<span class="gd-l">&nbsp;up</span>&nbsp;here?</span><span class="gd-s">Guide</span><span class="gd-new">NEW</span></button>
+<button class="gd-btn" id="gd-btn" type="button" aria-haspopup="dialog" aria-controls="gd"><span class="gd-star"><img src="img/smile-logo-96.webp" alt="" width="26" height="26"></span><span class="gd-t">What’s<span class="gd-l">&nbsp;up</span>&nbsp;here?</span><span class="gd-s">Guide</span><span class="gd-new">NEW</span></button>
 <div class="gd" id="gd" hidden role="dialog" aria-modal="true" aria-labelledby="gd-h">
   <div class="gd-card">
     <button class="gd-x" id="gd-x" aria-label="Close">✕</button>
@@ -3762,7 +3762,7 @@ body.in-room .gd-btn,body.jx-zoom .gd-btn,body.bx-on .gd-btn{opacity:0;pointer-e
   { const g=document.getElementById("pill-games"), b0=document.getElementById("gd-btn"), st=document.getElementById("stage");
     if(g&&b0&&st){ st.appendChild(g); const pos=()=>{ const ph=document.body.classList.contains("ph"), hu=document.getElementById("hunt"), br=document.querySelector(".top>div");
       if(!ph&&hu&&br){ const H=hu.offsetHeight||28, sr=st.getBoundingClientRect(), r=br.getBoundingClientRect(), hr=hu.getBoundingClientRect(); b0.style.height=H+"px"; b0.style.left=(r.right-sr.left+16)+"px"; b0.style.top=(hr.top-sr.top)+"px"; } else { b0.style.height=""; b0.style.left=""; b0.style.top=""; }
-      if(ph){ g.style.left=b0.offsetLeft+"px"; g.style.top=(b0.offsetTop+b0.offsetHeight+8)+"px"; } else { g.style.left=(b0.offsetLeft+b0.offsetWidth+16)+"px"; g.style.top=(b0.offsetTop+(b0.offsetHeight-g.offsetHeight)/2)+"px"; } }; /* phones: under the guide button, the secrets pill sits to its right */ pos(); addEventListener("resize",pos); setTimeout(pos,600); if(window.ResizeObserver) new ResizeObserver(pos).observe(b0); } }
+      if(ph){ g.style.left=(b0.offsetLeft+b0.offsetWidth+8)+"px"; g.style.top=(b0.offsetTop+(b0.offsetHeight-g.offsetHeight)/2)+"px"; } else { g.style.left=(b0.offsetLeft+b0.offsetWidth+16)+"px"; g.style.top=(b0.offsetTop+(b0.offsetHeight-g.offsetHeight)/2)+"px"; } }; /* phones: under the guide button, the secrets pill sits to its right */ pos(); addEventListener("resize",pos); setTimeout(pos,600); if(window.ResizeObserver) new ResizeObserver(pos).observe(b0); } }
   const $=id=>document.getElementById(id), stage=$("stage"), btn=$("gd-btn"), gd=$("gd");
   if(stage) stage.appendChild(btn);
   const I={
@@ -4741,6 +4741,20 @@ body.walking #play .bm{transition:none}
   sl.querySelector(".sl-x").addEventListener("click",()=>close(),true);
 })();
 </script>
+
+<style>
+/* top of frame, phone: [smiley What's here?] [Play games] ......... [Secrets] / big Motel Smile */
+.gd-btn .gd-star img{width:100%;height:100%;display:block;border-radius:50%}
+.gd-btn .gd-star{background:none!important;box-shadow:0 0 10px rgba(255,61,127,.55)!important;overflow:hidden}
+body.ph .gd-btn{left:max(12px,env(safe-area-inset-left,0px))!important;top:8px!important;font-size:15px!important;padding:5px 12px 5px 5px!important;gap:7px!important}
+body.ph .gd-btn .gd-star{width:28px!important;height:28px!important}
+body.ph .pill.pg-top{font-size:15px!important;padding:0 13px!important;height:40px!important;box-sizing:border-box!important;display:inline-flex!important;align-items:center!important}
+body.ph .top>div{visibility:hidden}
+body.ph #hunt{position:absolute!important;right:max(12px,env(safe-area-inset-right,0px));top:6px;margin:0!important;height:40px;box-sizing:border-box;font-size:15px!important;display:inline-flex!important;align-items:center}
+body.ph .sign{font-size:clamp(56px,18vw,80px)!important;margin-top:18px!important;justify-self:end}
+body.ph #hunt .hsw{display:none}body.ph #hunt{padding:0 11px!important;gap:6px!important;letter-spacing:.06em!important}
+@media (max-width:370px){body.ph .gd-btn{font-size:14px!important}body.ph .pill.pg-top{font-size:14px!important;padding:0 10px!important}}
+</style>
 
 </body>
 </html>
