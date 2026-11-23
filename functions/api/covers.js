@@ -5,7 +5,7 @@
 // Admin: POST {admin:<key>, action:"remove", k}
 const J=(o,s=200,c="no-store")=>new Response(JSON.stringify(o),{status:s,headers:{"content-type":"application/json","cache-control":c}});
 const ADMIN_SHA256="361ee6ece6ff7358d56d103110a6ddda8ff5b8ce0291147ebe4faadb983bde7a";
-const DEF=[["sunshine","Sunshine of Your Love","Cream"],["whycantthis","Why Can't This Be Love","Van Halen"],["sledgehammer","Sledgehammer","Peter Gabriel"],["ishotsheriff","I Shot the Sheriff","our own mix"],["waituntil","Wait Until Tomorrow","John Mayer Trio"],["alwaysrun","Always on the Run","Lenny Kravitz"],["thedoor","The Door","Teddy Swims"]];
+const DEF=[["sunshine","Sunshine of Your Love","Cream"],["whycantthis","Why Can't This Be Love","Van Halen"],["sledgehammer","Sledgehammer","Peter Gabriel"],["ishotsheriff","I Shot the Sheriff","Clapton/Marley"],["waituntil","Wait Until Tomorrow","John Mayer Trio"],["alwaysrun","Always on the Run","Lenny Kravitz"],["thedoor","The Door","Teddy Swims"]];
 const BAD=/(fuck|shit|cunt|nigg|fag|bitch|whore|slut|nazi|kike|chink|retard|porn|dick|cock|pussy|rape|http|www\.|\.com|\.net)/i;
 const OK=/^[\p{L}\p{N} '’&!.?,()\/:+-]+$/u;
 const hx=async t=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t)))].map(b=>b.toString(16).padStart(2,"0")).join("");
