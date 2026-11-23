@@ -4538,10 +4538,10 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
 #sl.s3 .sl-mct{pointer-events:auto;opacity:1}
 #sl .sl-glow{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;mix-blend-mode:screen;transition:opacity .5s}
 #sl.s3 .sl-glow.g-b{animation:mctB 3s ease-in-out .4s infinite}#sl.s3 .sl-glow.g-p{animation:mctP 3s ease-in-out .4s infinite}
-@keyframes mctB{0%,100%{opacity:.15}25%{opacity:1}50%{opacity:.35}}@keyframes mctP{0%,100%{opacity:.15}50%{opacity:.35}75%{opacity:1}}
+@keyframes mctB{0%,100%{opacity:.06}25%{opacity:.35}50%{opacity:.12}}@keyframes mctP{0%,100%{opacity:.06}50%{opacity:.12}75%{opacity:.35}}
 @keyframes mctGlow{0%,100%{box-shadow:0 0 0 0 rgba(70,220,255,0)}50%{box-shadow:0 0 0 2px rgba(70,220,255,.55),0 0 22px rgba(70,220,255,.45)}}
 #sl .sl-mct:hover,#sl .sl-mct:focus-visible{outline:none}
-#sl:has(.sl-mct:hover) .sl-glow,#sl:has(.sl-mct:focus-visible) .sl-glow{animation:none;opacity:1}
+#sl:has(.sl-mct:hover) .sl-glow,#sl:has(.sl-mct:focus-visible) .sl-glow{animation:none;opacity:.45}
 #rq{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:rgba(5,3,10,.72);opacity:0;pointer-events:none;transition:opacity .3s;padding:calc(64px + env(safe-area-inset-top,0px)) 16px 16px}
 #rq.on{opacity:1;pointer-events:auto}
 #rq .rq-box{width:min(460px,100%);max-height:100%;overflow:auto;background:linear-gradient(#17101f,#0d0913);border:2px solid #ff3d7f;border-radius:18px;box-shadow:0 0 30px rgba(255,61,127,.45),inset 0 0 18px rgba(255,61,127,.18);padding:18px 18px 16px;color:#fff;transform:translateY(12px) scale(.97);transition:transform .35s}
