@@ -5481,6 +5481,15 @@ body:not(.ph) #pill-games{left:381px!important;padding:0 14px!important}
 body:not(.ph) #gd-btn .gd-new{top:-7px!important;right:-6px!important}
 body:not(.ph) #show-sign:not(.ss-ph){left:790px;top:165px}
 </style>
+<style>
+/* dragging the roof shouldn't highlight text (Pat 11-23); inputs and panels stay selectable */
+#stage,#stage *,#bar,#bar *,header.top,header.top *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#stage img,#bar img{-webkit-user-drag:none;user-drag:none}
+input,textarea,.sheet .in,.sheet .in *,#rq,#rq *{-webkit-user-select:text;user-select:text}
+</style>
+<script>
+document.addEventListener("dragstart",e=>{ if(e.target.closest&&e.target.closest("#stage,#bar")&&e.target.tagName==="IMG") e.preventDefault(); });
+</script>
 
 </body>
 </html>
