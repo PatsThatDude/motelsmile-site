@@ -267,6 +267,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <button class="pk" id="pk-cym1" style="left:872px;top:440px;width:90px;height:26px" aria-label="Cymbal"></button>
     <button class="pk" id="pk-cym2" style="left:1080px;top:436px;width:90px;height:26px" aria-label="Cymbal"></button>
     <button class="pk" id="pk-amp" style="left:805px;top:500px;width:72px;height:92px" aria-label="Amp"></button>
+    <div class="sl-curl" aria-hidden="true"></div><button class="pk" id="pk-crate" style="left:483px;top:578px;width:140px;height:100px" aria-label="Milk crate in the band hangout: look underneath"></button>
     <button class="pk" id="pk-reset" style="left:362px;top:398px;width:30px;height:44px" aria-label="Reset button: start the roof over"></button>
     <a class="show-sign" id="show-sign" href="#shows" data-open="shows" hidden aria-label="Next show"><small id="ss-a"></small><b id="ss-b"></b></a>
     <button class="binoc" id="binoc" aria-label="Coin-op binoculars on the ledge: go to the ledge"><span class="bn-tag">Look ↗</span></button>
@@ -355,7 +356,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
 .lounge{position:fixed;inset:0;z-index:40;overflow:hidden;background:#05060a;opacity:0;pointer-events:none}
 .lounge.on{opacity:1;pointer-events:auto}
 .lounge:not(.on),.lounge:not(.on) *{pointer-events:none!important}
-.lounge:not(.on):not(.moving){visibility:hidden;content-visibility:hidden}
+.lounge:not(.on):not(.moving){visibility:hidden;content-visibility:hidden} /* Megan, Gianna, Sophia jars move to the walkway shelf later */ #play .girl-jar{display:none!important}
 /* Megan, Gianna, Sophia jars hidden for now (only Grace + Jill) */
 
 .lounge:not(.on):not(.moving) *,.arcade:not(.on) *{animation-play-state:paused!important}
@@ -367,7 +368,7 @@ body.in-room #stage>:is(.top,#flyer,#play,#hunt,.sky,.bar) *{animation-play-stat
 body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-state:paused!important}
 .lounge:not(.on):not(.moving) .lg-fill{background:none}.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=b1) 40% 50%/cover;filter:blur(22px) brightness(.45)}
 .lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
-.lg-cam{z-index:8}.lg-hero{z-index:2;width:2412px;background:url(img/roof-v2.webp?v=16) -106px 0/2518px 941px;pointer-events:none}
+.lg-cam{z-index:8}.lg-hero{z-index:2;width:2412px;background:url(img/roof-v2.webp?v=23) -106px 0/2518px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
 .lg-bg{left:0;top:0;width:1672px;height:941px}
 .lg-front{left:341px;top:489px;width:886px;height:405px;pointer-events:none}
@@ -1469,7 +1470,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 .arcade:not(.on){visibility:hidden;content-visibility:hidden}
 .ac-fill{position:absolute;inset:-40px;background:url(img/game-corner.webp?v=c1) 30% 50%/cover;filter:blur(22px) brightness(.45)}
 .ac-cam,.ac-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
-.ac-cam{z-index:8}.ac-hero{z-index:2;width:2412px;background:url(img/roof-v2.webp?v=16) -106px 0/2518px 941px;pointer-events:none;display:none}
+.ac-cam{z-index:8}.ac-hero{z-index:2;width:2412px;background:url(img/roof-v2.webp?v=23) -106px 0/2518px 941px;pointer-events:none;display:none}
 .ac-cam>img{position:absolute;left:0;top:0;width:1672px;height:941px;user-select:none;-webkit-user-drag:none}
 #pb{position:fixed;inset:0;z-index:95;background:#05060a;display:none;touch-action:none;user-select:none;-webkit-user-select:none}
 #pb.on{display:block}
@@ -2506,7 +2507,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function render(c){
     seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=16"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
+    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=23"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
@@ -4517,6 +4518,53 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
 (()=>{ const go=(id,f)=>{ const b=document.getElementById(id); b&&b.addEventListener("click",e=>{ e.stopPropagation(); window.MSBxSfx&&window.MSBxSfx("tick"); f(); }); };
   const pill=i=>()=>{ const p=document.querySelectorAll(".sky .pills .pill")[i]; p&&p.click(); };
   const pq=q=>()=>{ const p=document.querySelector(q); p&&p.click(); }; go("ns-listen",pq(".pill[data-lounge]")); go("ns-games",pq(".pill[data-arcade]")); go("ns-live",pq(".tile[data-open=shows]")); go("nsp-listen",pq(".pill[data-lounge]")); go("nsp-games",pq(".pill[data-arcade]")); go("nsp-live",pq(".tile[data-open=shows]")); })();
+</script>
+
+<style>
+#sl{position:fixed;inset:0;z-index:90;background:#07050b;opacity:0;pointer-events:none;transition:opacity .35s;overflow:hidden}
+#sl.open{opacity:1;pointer-events:auto}
+#sl .sl-wrap{position:absolute;left:50%;top:50%;width:max(100vw,calc(100vh*1672/941));aspect-ratio:1672/941;transform:translate(-50%,-50%) scale(.42);transform-origin:var(--ox,50%) var(--oy,50%);transition:transform .75s cubic-bezier(.2,.7,.2,1),filter .75s;filter:blur(6px)}
+#sl.open .sl-wrap{transform:translate(-50%,-50%) scale(1);filter:none}
+@media (orientation:portrait){#sl .sl-wrap{width:250vw;left:calc(50% + (0.5 - .493)*250vw)}}
+#sl .sl-f{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none;pointer-events:none;opacity:0;transition:opacity .35s}
+#sl .sl-f.f2,#sl .sl-f.f3{opacity:0!important}
+#sl .f1{opacity:1}
+#sl.s2 .sl-f.f2,#sl.s3 .sl-f.f3,#sl.s3 .sl-f.f2{opacity:1!important}
+#play .sl-curl{position:absolute;left:486px;top:612px;width:136px;height:66px;background:url(img/hang/curl.webp?v=1) 0 0/100% 100%;pointer-events:none;opacity:0;animation:slCurl 7s ease-in-out infinite}
+@keyframes slCurl{0%,55%,100%{opacity:0}65%,85%{opacity:1}}
+#sl .sl-shade{position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 49% 50%,transparent 45%,rgba(4,2,8,.75));pointer-events:none}
+#sl .sl-x{position:absolute;left:16px;top:calc(14px + env(safe-area-inset-top,0px));z-index:2;padding:9px 16px;border-radius:999px;border:2px solid var(--cyan,#46dcff);background:rgba(10,6,16,.7);color:#fff;font:600 14px var(--sans,system-ui);cursor:pointer;box-shadow:0 0 14px rgba(70,220,255,.45)}
+#sl .sl-hint{position:absolute;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:2;color:#fff;font:500 13px var(--mono,monospace);letter-spacing:.08em;opacity:0;transition:opacity .5s 1.2s;text-shadow:0 1px 6px #000;white-space:nowrap}
+#sl.s3 .sl-hint{opacity:.85}
+#pk-crate{border-radius:10px}
+@media (prefers-reduced-motion:reduce){#sl .sl-wrap,#sl .sl-f{transition:none}#play .sl-curl{animation:none}}
+</style>
+<div id="sl" aria-hidden="true" role="dialog" aria-label="The setlist under the crate">
+  <div class="sl-wrap"><img class="sl-f f1" alt="" data-src="img/hang/sl1.webp?v=1" width="1672" height="941"><img class="sl-f f2" alt="" data-src="img/hang/sl2.webp?v=1" width="1672" height="941"><img class="sl-f f3 sl-bg" alt="Tonight's setlist, gaffer-taped to the roof: Get Back, Matter of Time, Dirty Little Liar, Don't Mind It, Better Free, Fences, Down, Thread, Mean, Gnocchi" data-src="img/hang/sl3.webp?v=1" width="1672" height="941"></div>
+  <div class="sl-shade"></div>
+  <button class="sl-x" type="button">✕ Back to the roof</button>
+  <div class="sl-hint">Tonight’s setlist</div>
+</div>
+<script>
+/* Band hangout: tap the milk crate, push in, the crate lifts off the taped setlist */
+(()=>{ const $=id=>document.getElementById(id), sl=$("sl"), hot=$("pk-crate"); if(!sl||!hot) return;
+  const wrap=sl.querySelector(".sl-wrap"); let t1=0, loaded=false;
+  const load=()=>{ if(loaded) return; loaded=true; sl.querySelectorAll("img[data-src]").forEach(i=>i.src=i.dataset.src); };
+  hot.addEventListener("pointerenter",load,{once:true});
+  function open(e){ e&&e.preventDefault(); e&&e.stopPropagation(); load();
+    const r=hot.getBoundingClientRect(); wrap.style.setProperty("--ox",(r.left+r.width/2)/innerWidth*100+"%"); wrap.style.setProperty("--oy",(r.top+r.height/2)/innerHeight*100+"%");
+    sl.classList.remove("s2","s3"); sl.setAttribute("aria-hidden","false"); document.body.classList.add("jx-on");
+    let went=false; const go=()=>{ if(went) return; went=true; requestAnimationFrame(()=>{ sl.classList.add("open"); clearTimeout(t1); t1=setTimeout(()=>{ sl.classList.add("s2"); t1=setTimeout(()=>sl.classList.add("s3"),700); },1200); }); };
+    const im=sl.querySelector(".f1"); if(im.complete&&im.naturalWidth) go(); else { im.onload=go; setTimeout(go,1500); }
+    try{ window.MSAudio&&window.MSAudio.thunk&&window.MSAudio.thunk(); }catch(_){}
+    sl.querySelector(".sl-x").focus({preventScroll:true}); }
+  function close(e){ e&&e.preventDefault(); e&&e.stopPropagation(); clearTimeout(t1); sl.classList.remove("open"); sl.setAttribute("aria-hidden","true"); document.body.classList.remove("jx-on"); setTimeout(()=>sl.classList.remove("s2","s3"),400); hot.focus({preventScroll:true}); }
+  hot.addEventListener("click",open);
+  sl.querySelector(".sl-x").addEventListener("click",close);
+  sl.addEventListener("click",e=>{ if(e.target===sl||e.target.classList.contains("sl-shade")) close(e); });
+  addEventListener("keydown",e=>{ if(e.key==="Escape"&&sl.classList.contains("open")) close(e); });
+  window.MSSetlist=open;
+})();
 </script>
 
 </body>
