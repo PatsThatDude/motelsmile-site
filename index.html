@@ -329,7 +329,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
   <div class="sky">
     <h1 class="sign" aria-label="Motel Smile"><span class="w"><span class="b f1">M</span><span class="p">o</span><span class="b f2">t</span><span class="p f3">e</span><span class="p">l</span></span> <span class="w"><span class="p">S</span><span class="p">m</span><span class="p">i</span><span class="p f4">l</span><span class="p">e</span></span></h1>
     <div class="pills">
-      <a class="pill" style="--c:var(--cyan)" data-lounge href="#lounge"><span class="tri" aria-hidden="true"></span>Listen in the lounge</a>
+      <a class="pill" id="pill-listen" style="--c:var(--cyan)" data-lounge href="#lounge"><span class="tri" aria-hidden="true"></span>Listen in the lounge</a>
       <a class="pill pg-top" id="pill-games" style="--c:var(--green)" data-arcade href="#arcade">Play games</a>
     </div>
   </div>
@@ -4799,6 +4799,28 @@ body.in-room #show-sign.ss-ph,body.jx-zoom #show-sign.ss-ph,body.bx-on #show-sig
       el.style.top=(r&&r.height?(r.bottom-sr.top+6):170)+"px"; }
     else { if(el.parentElement!==play) play.appendChild(el); el.classList.remove("ss-ph"); el.style.top=""; } };
   home(); addEventListener("resize",home); setTimeout(home,700); setTimeout(home,2500); document.fonts&&document.fonts.ready.then(home);
+})();
+</script>
+<style>
+/* phone top row: What's here + Listen, same size, centered together (Pat 11-23) */
+#ph-top{position:absolute;left:0;right:0;top:8px;z-index:6;display:flex;justify-content:center;align-items:center;gap:8px;padding:0 10px;pointer-events:none}
+#ph-top>*{pointer-events:auto;position:relative!important;left:auto!important;top:auto!important;transform:none!important;margin:0!important;flex:none}
+#ph-top .gd-btn,#ph-top #pill-listen{height:38px!important;box-sizing:border-box!important;font-size:min(14px,3.45vw)!important;letter-spacing:0!important;padding:0 10px 0 5px!important;border-width:1.5px!important;display:inline-flex!important;align-items:center!important;gap:7px!important;white-space:nowrap}
+#ph-top #pill-listen{padding:0 12px 0 10px!important;font-family:"Tilt Neon",system-ui,sans-serif!important;font-weight:400!important;gap:6px!important}#ph-top .gd-btn .gd-cnt{padding:3px 6px!important}#ph-top .gd-btn .gd-new{right:-4px!important}
+#ph-top .gd-btn .gd-star{width:26px!important;height:26px!important}
+#ph-top .gd-btn:hover,#ph-top .gd-btn:focus-visible{transform:translateY(-1px) scale(1.03)!important}
+body.in-room #ph-top,body.jx-zoom #ph-top,body.bx-on #ph-top{opacity:0;pointer-events:none}
+body.in-room #ph-top>*,body.jx-zoom #ph-top>*,body.bx-on #ph-top>*{pointer-events:none}
+@media (max-width:400px){#ph-top{gap:6px;padding:0 6px}#ph-top #pill-listen .tri{display:none}}
+</style>
+<script>
+(()=>{ const st=document.getElementById("stage"), g=document.getElementById("gd-btn"), l=document.getElementById("pill-listen"); if(!st||!g||!l) return;
+  const pills=l.parentElement; let row=null;
+  const set=()=>{ const ph=document.body.classList.contains("ph");
+    if(ph){ if(!row){ row=document.createElement("div"); row.id="ph-top"; st.appendChild(row); } if(g.parentElement!==row) row.appendChild(g); if(l.parentElement!==row) row.appendChild(l);
+      const gs=g.offsetHeight; }
+    else if(row){ st.appendChild(g); pills.insertBefore(l,pills.firstChild); row.remove(); row=null; } };
+  set(); addEventListener("resize",set); setTimeout(set,700);
 })();
 </script>
 
