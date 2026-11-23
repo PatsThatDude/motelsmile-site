@@ -267,7 +267,7 @@ window.MSFit=(w,h,W0,H0)=>{ const cov=Math.max(w/W0,h/H0), con=Math.min(w/W0,h/H
     <button class="pk" id="pk-cym1" style="left:872px;top:440px;width:90px;height:26px" aria-label="Cymbal"></button>
     <button class="pk" id="pk-cym2" style="left:1080px;top:436px;width:90px;height:26px" aria-label="Cymbal"></button>
     <button class="pk" id="pk-amp" style="left:805px;top:500px;width:72px;height:92px" aria-label="Amp"></button>
-    <div class="sl-curl" aria-hidden="true"></div><button class="pk" id="pk-crate" style="left:483px;top:578px;width:140px;height:100px" aria-label="Milk crate in the band hangout: look underneath"></button>
+    <div class="sl-holes" aria-hidden="true"></div><div class="sl-curl" aria-hidden="true"></div><button class="pk" id="pk-crate" style="left:483px;top:578px;width:140px;height:100px" aria-label="Milk crate in the band hangout: look underneath"></button>
     <button class="pk" id="pk-reset" style="left:362px;top:398px;width:30px;height:44px" aria-label="Reset button: start the roof over"></button>
     <a class="show-sign" id="show-sign" href="#shows" data-open="shows" hidden aria-label="Next show"><small id="ss-a"></small><b id="ss-b"></b></a>
     <button class="binoc" id="binoc" aria-label="Coin-op binoculars on the ledge: go to the ledge"><span class="bn-tag">Look ↗</span></button>
@@ -368,7 +368,7 @@ body.in-room #stage>:is(.top,#flyer,#play,#hunt,.sky,.bar) *{animation-play-stat
 body.in-room .lounge:not(.on) *,body.in-room .arcade:not(.on) *{animation-play-state:paused!important}
 .lounge:not(.on):not(.moving) .lg-fill{background:none}.lounge.moving .lg-fill{opacity:.25}.lg-fill{transition:opacity .4s;position:absolute;inset:-40px;background:url(img/smile-lounge.webp?v=b1) 40% 50%/cover;filter:blur(22px) brightness(.45)}
 .lg-cam,.lg-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
-.lg-cam{z-index:8}.lg-hero{z-index:2;width:2412px;background:url(img/roof-v2.webp?v=26) -106px 0/2518px 941px;pointer-events:none}
+.lg-cam{z-index:8}.lg-hero{z-index:2;width:2412px;background:url(img/roof-v2.webp?v=27) -106px 0/2518px 941px;pointer-events:none}
 .lg-cam img{position:absolute;display:block;user-select:none;-webkit-user-drag:none}
 .lg-bg{left:0;top:0;width:1672px;height:941px}
 .lg-front{left:341px;top:489px;width:886px;height:405px;pointer-events:none}
@@ -1470,7 +1470,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 .arcade:not(.on){visibility:hidden;content-visibility:hidden}
 .ac-fill{position:absolute;inset:-40px;background:url(img/game-corner.webp?v=c1) 30% 50%/cover;filter:blur(22px) brightness(.45)}
 .ac-cam,.ac-hero{position:absolute;left:0;top:0;width:1672px;height:941px;transform-origin:0 0;will-change:transform,opacity}
-.ac-cam{z-index:8}.ac-hero{z-index:2;width:2412px;background:url(img/roof-v2.webp?v=26) -106px 0/2518px 941px;pointer-events:none;display:none}
+.ac-cam{z-index:8}.ac-hero{z-index:2;width:2412px;background:url(img/roof-v2.webp?v=27) -106px 0/2518px 941px;pointer-events:none;display:none}
 .ac-cam>img{position:absolute;left:0;top:0;width:1672px;height:941px;user-select:none;-webkit-user-drag:none}
 #pb{position:fixed;inset:0;z-index:95;background:#05060a;display:none;touch-action:none;user-select:none;-webkit-user-select:none}
 #pb.on{display:block}
@@ -2507,7 +2507,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   function render(c){
     seo(c);
     const hints=c.site&&c.site.showSetupHints;
-    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=26"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
+    $("stage").style.backgroundImage=`url("${"img/roof-v2.webp?v=27"}")`; /* wide roof with the lounge (2412x941); content.json hero is the old 1672 plate */
     const m=c.music,f=m.featured;
     const sub=[f.status,f.length].filter(Boolean).join(" · ");
     $("t-listen").textContent=f.title+" ▸"; $("t-listen-sub").textContent=sub;
@@ -4531,6 +4531,8 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
 #sl .f1{opacity:1}
 #sl.s2 .sl-f.f2,#sl.s3 .sl-f.f3,#sl.s3 .sl-f.f2{opacity:1!important}
 #play .sl-curl{position:absolute;left:478px;top:608px;width:148px;height:54px;background:url(img/hang/curl.webp?v=4) 0 0/100% 100%;pointer-events:none;opacity:0;animation:slCurl 7s ease-in-out infinite}
+#play .sl-holes{position:absolute;left:508px;top:599px;width:51px;height:29px;background:url(img/hang/holes.png?v=2) 0 0/100% 100%;pointer-events:none;mix-blend-mode:screen;opacity:.15;filter:drop-shadow(0 0 2px rgba(255,220,170,.6));animation:slHoles 4.2s ease-in-out infinite}
+@keyframes slHoles{0%,100%{opacity:.1}50%{opacity:.55}}
 @keyframes slCurl{0%,55%,100%{opacity:0}65%,85%{opacity:1}}
 #sl .sl-mct{position:absolute;z-index:3;border:0;padding:0;background:transparent;cursor:pointer;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .4s}
 #sl.s3 .sl-mct{pointer-events:auto;opacity:1;animation:mctGlow 2.4s ease-in-out 1s infinite}
