@@ -2446,7 +2446,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
 
   // phones: the scene holds still, framed on the lounge + stage; swipe sideways to look around the roof.
   // One short drift on first load hints that it moves.
-  const PSP=[{x:571.5,z:1,n:"Walkway"},{x:1019.5,z:1,n:"The band"},{x:1397.5,z:1,n:"Lounge"}] /* phone only: swipe left/right from the band (Pat's artifact sections 11-22) */ /* phone: same view centres as the view bars, roof fills the full screen height (Pat 11-21) */, DSP=[{x:973,get z(){ const st=document.getElementById("stage"); return Math.max(.5,(st.clientWidth/st.clientHeight)*941/1420); },y:.5,n:"The band"}] /* every non-phone screen shows plate 263..1683 (Pat's desktop bounds) whatever its shape */; /* desktop: one view only, Pat's band bar (plate 599..1763 x 103..830, 11-22); walkway + lounge become their own scenes */ /* desktop: Pat's locked view bars (centre in play px, zoom) */ window.MSPhSpots=PSP; let spot=1, dspot=0; /* 3 stops everywhere: sitting area, band (default), partial lounge */
+  const PSP=[{x:571.5,z:.75,n:"Walkway"},{x:1019.5,z:.75,n:"The band"},{x:1397.5,z:.75,n:"Lounge"}] /* phone only: swipe left/right from the band (Pat's artifact sections 11-22) */ /* phone: same view centres as the view bars, roof fills the full screen height (Pat 11-21) */, DSP=[{x:973,get z(){ const st=document.getElementById("stage"); return Math.max(.5,(st.clientWidth/st.clientHeight)*941/1420); },y:.5,n:"The band"}] /* every non-phone screen shows plate 263..1683 (Pat's desktop bounds) whatever its shape */; /* desktop: one view only, Pat's band bar (plate 599..1763 x 103..830, 11-22); walkway + lounge become their own scenes */ /* desktop: Pat's locked view bars (centre in play px, zoom) */ window.MSPhSpots=PSP; let spot=1, dspot=0; /* 3 stops everywhere: sitting area, band (default), partial lounge */
   const TSP=[{x:973,get z(){ const st=document.getElementById("stage"); return (st.clientWidth/st.clientHeight)*941/1420; },y:.5,n:"The band"}]; /* iPad: same left/right bounds as desktop (plate 263..1683 in play px) */ /* tablets (touch, landscape): Pat's iPad view bars */
   const tablet=()=>!phone()&&innerWidth<1300&&matchMedia("(pointer:coarse)").matches;
   const SPS=()=>phone()?PSP:tablet()?TSP:DSP; window.MSSpots=SPS;
@@ -2467,7 +2467,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     if(phone()){
       if(tall()){ hinted=true; if(Math.abs(cxT-470)>500) cxT=470; }
       if(!hinted&&!still){ const k=(t-t0-1200)/2600; if(k>=0&&k<=1) cxT=clampC(OFF+760-360*Math.sin(Math.PI*k)); else if(k>1){ hinted=true; cxT=clampC(OFF+760); } }
-      ZC+=(ZT-ZC)*0.14; if(Math.abs(ZT-ZC)<.002) ZC=ZT; cxT=clampC(cxT); cx+= (cxT-cx)*(drag?0.6:0.16); py=0.5; px=toPx(cx);
+      ZC+=(ZT-ZC)*0.14; if(Math.abs(ZT-ZC)<.002) ZC=ZT; cxT=clampC(cxT); cx+= (cxT-cx)*(drag?0.6:0.16); py=0; px=toPx(cx);
       const h=$("pan-hint"); if(h) h.style.opacity=(!hinted&&t-t0>1000)?"1":"0";
       const le=$("lng-edge"), fl=$("pk-floor"); if(le&&fl){ const r=fl.getBoundingClientRect(); le.classList.toggle("off", r.left+r.width*.5 < stage.clientWidth-20); }
     } else { ZC+=(ZT-ZC)*0.12; if(Math.abs(ZT-ZC)<.002) ZC=ZT; cxT=clampC(cxT); cx+=(cxT-cx)*(drag?0.6:0.12); PYC+=(PYT-PYC)*0.12; py=PYC; px=toPx(cx); }
@@ -4796,7 +4796,7 @@ body.in-room #show-sign.ss-ph,body.jx-zoom #show-sign.ss-ph,body.bx-on #show-sig
   const home=()=>{ const ph=document.body.classList.contains("ph");
     if(ph){ if(el.parentElement!==st) st.appendChild(el); el.classList.add("ss-ph");
       const sg=document.querySelector(".sign"), sr=st.getBoundingClientRect(), r=sg&&sg.getBoundingClientRect();
-      el.style.top=(r&&r.height?(r.bottom-sr.top-r.height*.18):170)+"px";
+      el.style.top=(r&&r.height?(r.bottom-sr.top-r.height*.15):170)+"px";
       if(r&&r.width){ const w=el.offsetWidth||150, cx=r.left-sr.left+r.width*.7; el.style.setProperty("left",Math.max(12,Math.min(sr.width-w-12,cx-w/2))+"px","important"); } }
     else { if(el.parentElement!==play) play.appendChild(el); el.classList.remove("ss-ph"); el.style.top=""; } };
   home(); addEventListener("resize",home); setTimeout(home,700); setTimeout(home,2500); document.fonts&&document.fonts.ready.then(home);
@@ -4873,6 +4873,40 @@ body.ph #bar .tile{padding:10px 4px 11px!important}
 @media (max-width:360px){body.ph #bar .tile b{font-size:14.5px!important}}
 </style>
 <style>/* swipe pill: dots + name only, no arrow buttons (Pat 11-23) */ .ph-dots .ph-arw{display:none!important} body.ph .ph-dots{padding:7px 12px!important}</style>
+<style>
+/* phone: scene zoomed out + panned up; the freed space at the bottom holds bigger section buttons (Pat 11-23) */
+body.ph #bar .tile{justify-content:center!important;gap:6px!important;padding:8px 4px!important}
+body.ph #bar .tile small{font-size:12px!important;letter-spacing:.14em!important}
+body.ph #bar .tile b{font-size:21px!important}
+body.ph #bar .tile em{display:block!important;font-size:11px!important;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+body.ph #bar{background:linear-gradient(rgba(8,6,14,.0),rgba(8,6,14,.92) 22%,#07050b)!important;border-top:0!important}
+body.ph #bar .tile::before{top:22%!important}
+#ph-fade{position:absolute;left:0;right:0;height:120px;z-index:3;pointer-events:none;background:linear-gradient(rgba(7,5,11,0),#07050b);display:none}
+body.ph #ph-fade{display:block}
+@media (max-width:360px){body.ph #bar .tile b{font-size:17px!important}body.ph #bar .tile em{display:none!important}}
+</style>
+<script>
+(()=>{ const st=document.getElementById("stage"), bar=document.getElementById("bar"); if(!st||!bar) return;
+  const f=document.createElement("div"); f.id="ph-fade"; st.appendChild(f);
+  let last="";
+  const fit=()=>{ if(!document.body.classList.contains("ph")){ bar.style.height=""; return; }
+    const B=window.MSRoofBox; if(!B) return; const H=st.clientHeight, bottom=B.oy+941*B.s, gap=Math.max(0,H-bottom);
+    const h=Math.round(Math.max(96,Math.min(150,gap-34))), key=h+":"+Math.round(bottom);
+    if(key!==last){ last=key; bar.style.height=h+"px"; f.style.top=(bottom-110)+"px"; st.style.setProperty("--barh",(h-24)+"px"); } };
+  setInterval(fit,300); addEventListener("resize",fit); fit();
+})();
+</script>
+<style>
+/* phone: the three sections as big neon cards in the space under the roof */
+body.ph #bar{gap:8px;padding:10px 10px calc(12px + env(safe-area-inset-bottom,0px))!important;align-items:stretch;box-sizing:border-box}
+body.ph #bar .tile{height:auto!important;border:1.5px solid var(--c)!important;border-radius:16px!important;background:rgba(10,7,18,.78)!important;box-shadow:0 0 14px color-mix(in srgb,var(--c) 45%,transparent),inset 0 0 12px color-mix(in srgb,var(--c) 18%,transparent);justify-content:center!important;padding:6px 4px!important}
+body.ph #bar .tile::before{display:none!important}
+body.ph #bar .tile b{font-size:18px!important}
+body.ph #bar .tile em{display:none!important}
+body.ph #bar .tile small{font-size:11px!important}
+@media (max-width:360px){body.ph #bar .tile b{font-size:15px!important}body.ph #bar{gap:6px;padding:8px 6px calc(10px + env(safe-area-inset-bottom,0px))!important}}
+</style>
+<style>@media (max-width:400px){body.ph #bar .tile[data-open="follow"] b{font-size:14.5px!important;letter-spacing:-.01em!important}}@media (max-width:360px){body.ph #bar .tile[data-open="follow"] b{font-size:12.5px!important}}</style>
 
 </body>
 </html>
