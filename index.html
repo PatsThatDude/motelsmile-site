@@ -4852,6 +4852,11 @@ body.in-room #bar,body.jx-zoom #bar,body.bx-on #bar{opacity:0;pointer-events:non
 body.ph #bar .tile small{white-space:nowrap;letter-spacing:.06em!important}
 body.ph .welcome{bottom:calc(var(--barh,62px) + 58px)!important}
 </style>
+<style>
+/* 3 panels: the mailing-list tile is retired (Pat 11-23) */
+#bar .tile[data-open="list"]{display:none!important}
+#bar,body.ph #bar{grid-template-columns:repeat(3,1fr)!important}
+</style>
 
 </body>
 </html>
