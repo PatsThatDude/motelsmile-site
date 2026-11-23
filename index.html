@@ -4536,9 +4536,9 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
 #sl.s3 .sl-mct{pointer-events:auto;opacity:1;animation:mctGlow 2.4s ease-in-out 1s infinite}
 @keyframes mctGlow{0%,100%{box-shadow:0 0 0 0 rgba(70,220,255,0)}50%{box-shadow:0 0 0 2px rgba(70,220,255,.55),0 0 22px rgba(70,220,255,.45)}}
 #sl .sl-mct:hover,#sl .sl-mct:focus-visible{outline:none;box-shadow:0 0 0 2px #46dcff,0 0 26px rgba(70,220,255,.7)}
-#rq{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:rgba(5,3,10,.72);opacity:0;pointer-events:none;transition:opacity .3s;padding:16px}
+#rq{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:rgba(5,3,10,.72);opacity:0;pointer-events:none;transition:opacity .3s;padding:calc(64px + env(safe-area-inset-top,0px)) 16px 16px}
 #rq.on{opacity:1;pointer-events:auto}
-#rq .rq-box{width:min(460px,100%);max-height:calc(100% - 20px);overflow:auto;background:linear-gradient(#17101f,#0d0913);border:2px solid #ff3d7f;border-radius:18px;box-shadow:0 0 30px rgba(255,61,127,.45),inset 0 0 18px rgba(255,61,127,.18);padding:18px 18px 16px;color:#fff;transform:translateY(12px) scale(.97);transition:transform .35s}
+#rq .rq-box{width:min(460px,100%);max-height:100%;overflow:auto;background:linear-gradient(#17101f,#0d0913);border:2px solid #ff3d7f;border-radius:18px;box-shadow:0 0 30px rgba(255,61,127,.45),inset 0 0 18px rgba(255,61,127,.18);padding:18px 18px 16px;color:#fff;transform:translateY(12px) scale(.97);transition:transform .35s}
 #rq.on .rq-box{transform:none}
 #rq h3{margin:0;font:400 30px/1 var(--tube,cursive);color:#fff;text-shadow:0 0 8px #ff3d7f,0 0 18px #ff3d7f;letter-spacing:.02em}
 #rq .rq-sub{margin:6px 0 14px;font:500 12px var(--mono,monospace);letter-spacing:.08em;text-transform:uppercase;color:#46dcff}
@@ -4552,6 +4552,16 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
 #rq li button:disabled{cursor:default}
 #rq li button:not(:disabled):hover{border-color:#ff3d7f}
 #rq .rq-note{min-height:1.3em;margin:12px 0 2px;font:500 13px var(--sans,system-ui);color:#ffd27a;text-align:center}
+#rq .rq-add{margin-top:12px;padding-top:12px;border-top:1px dashed #3a2c44;display:grid;gap:8px}
+#rq .rq-add b{font:600 13px var(--sans,system-ui);color:#cfc3db}
+#rq .rq-row{display:grid;grid-template-columns:1.3fr 1fr;gap:6px}
+#rq .rq-add input{min-width:0;padding:9px 10px;border-radius:9px;border:1px solid #3a2c44;background:#0b0710;color:#fff;font:500 15px var(--sans,system-ui)}
+#rq .rq-add input:focus{outline:none;border-color:#46dcff}
+#rq .rq-add .rq-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+#rq .rq-add button{justify-self:end;padding:9px 16px;border-radius:999px;border:2px solid #46dcff;background:rgba(70,220,255,.12);color:#fff;font:600 14px var(--sans,system-ui);cursor:pointer}
+#rq .rq-add button:disabled{opacity:.5}
+#rq li button em{font-style:normal;font:600 9.5px var(--mono,monospace);letter-spacing:.08em;text-transform:uppercase;color:#46dcff;border:1px solid rgba(70,220,255,.5);border-radius:99px;padding:1px 6px;position:relative;align-self:center;white-space:nowrap}
+@media (max-width:420px){#rq .rq-row{grid-template-columns:1fr}}
 #rq .rq-x{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;padding:9px 16px;border-radius:999px;border:2px solid var(--cyan,#46dcff);background:rgba(10,6,16,.7);color:#fff;font:600 14px var(--sans,system-ui);cursor:pointer}
 #sl .sl-shade{position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 49% 50%,transparent 45%,rgba(4,2,8,.75));pointer-events:none}
 #sl .sl-x{position:absolute;left:16px;top:calc(14px + env(safe-area-inset-top,0px));z-index:2;padding:9px 16px;border-radius:999px;border:2px solid var(--cyan,#46dcff);background:rgba(10,6,16,.7);color:#fff;font:600 14px var(--sans,system-ui);cursor:pointer;box-shadow:0 0 14px rgba(70,220,255,.45)}
@@ -4565,7 +4575,7 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
   <div class="sl-shade"></div>
   <button class="sl-x" type="button">✕ Back to the roof</button>
   <div class="sl-hint">Tap the Mystery Cover Tune</div>
-  <div id="rq" role="dialog" aria-modal="true" aria-label="Request line" aria-hidden="true"><button class="rq-x" type="button">✕ Back to the setlist</button><div class="rq-box"><h3>Request Line</h3><p class="rq-sub">You pick the Mystery Cover Tune</p><ul id="rq-list"></ul><p class="rq-note" id="rq-note" role="status"></p></div></div>
+  <div id="rq" role="dialog" aria-modal="true" aria-label="Request line" aria-hidden="true"><button class="rq-x" type="button">✕ Back to the setlist</button><div class="rq-box"><h3>Request Line</h3><p class="rq-sub">You pick the Mystery Cover Tune</p><ul id="rq-list"></ul><p class="rq-note" id="rq-note" role="status"></p><form class="rq-add" id="rq-add" autocomplete="off"><b>Not on the list? Add it for everyone.</b><div class="rq-row"><input id="rq-t" maxlength="48" placeholder="Song" aria-label="Song" required><input id="rq-a" maxlength="40" placeholder="Artist" aria-label="Artist"></div><input class="rq-hp" name="hp" tabindex="-1" aria-hidden="true"><button type="submit">Add to the board</button></form></div></div>
 </div>
 <script>
 /* Band hangout: tap the milk crate, push in, the crate lifts off the taped setlist */
@@ -4644,11 +4654,11 @@ body.walking #play .bm{transition:none}
 <script>
 /* Request line: the Mystery Cover Tune on the setlist opens a fan vote (/api/covers, one vote per visitor per day) */
 (()=>{ const $=id=>document.getElementById(id), rq=$("rq"), sl=$("sl"); if(!rq||!sl) return;
-  const list=$("rq-list"), note=$("rq-note"); let S=[], mine=null, busy=false;
+  const list=$("rq-list"), note=$("rq-note"); let S=[], mine=null, busy=false; const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
   const LK="ms-cover-vote";
   const local=()=>{ try{ const v=JSON.parse(localStorage.getItem(LK)||"null"); return v&&v.d===new Date().toISOString().slice(0,10)?v.k:null; }catch(e){ return null; } };
   function draw(){ const tot=S.reduce((a,s)=>a+(s.n|0),0)||0, max=Math.max(1,...S.map(s=>s.n|0));
-    list.innerHTML=S.map(s=>`<li><button type="button" data-k="${s.k}" class="${s.k===mine?"mine":""}" ${mine?"disabled":""} style="--p:${mine?Math.round((s.n|0)/max*100):0}%"><span>${s.t}</span><i>${s.a}</i>${mine?`<b>${s.n|0}</b>`:""}</button></li>`).join("");
+    list.innerHTML=S.map(s=>`<li><button type="button" data-k="${s.k}" class="${s.k===mine?"mine":""}" ${mine?"disabled":""} style="--p:${mine?Math.round((s.n|0)/max*100):0}%"><span>${esc(s.t)}</span><i>${esc(s.a||"")}</i>${s.fan?"<em>fan pick</em>":""}${mine?`<b>${s.n|0}</b>`:""}</button></li>`).join("");
     note.textContent=mine?(`Your request is in${tot?` · ${tot} request${tot===1?"":"s"} so far`:""}.`):"Tap the song you want to hear."; }
   async function load(){ note.textContent="Ringing the request line…"; mine=local();
     try{ const r=await fetch("/api/covers",{cache:"no-store"}); const d=await r.json(); S=d.songs||[]; if(d.mine) mine=d.mine; }
@@ -4664,6 +4674,15 @@ body.walking #play .bm{transition:none}
   const open=e=>{ e&&e.preventDefault(); e&&e.stopPropagation(); rq.classList.add("on"); rq.setAttribute("aria-hidden","false"); load(); setTimeout(()=>rq.querySelector(".rq-x").focus({preventScroll:true}),50); };
   const close=e=>{ e&&e.preventDefault(); e&&e.stopPropagation(); rq.classList.remove("on"); rq.setAttribute("aria-hidden","true"); };
   sl.querySelectorAll(".sl-mct").forEach(b=>b.addEventListener("click",open));
+  const form=$("rq-add");
+  form.addEventListener("submit",async e=>{ e.preventDefault(); e.stopPropagation(); const t=$("rq-t").value.trim(), a=$("rq-a").value.trim(); if(t.length<2||busy) return;
+    busy=true; const btn=form.querySelector("button"); btn.disabled=true; note.textContent="Putting it on the board…";
+    try{ const r=await fetch("/api/covers",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({suggest:t,artist:a,hp:form.hp.value})}); const d=await r.json();
+      if(!d.ok){ note.textContent=d.error||"Couldn't add it. Try again."; }
+      else { if(d.songs) S=d.songs; if(d.mine) mine=d.mine; try{ localStorage.setItem(LK,JSON.stringify({k:mine,d:new Date().toISOString().slice(0,10)})); }catch(_){}
+        $("rq-t").value=""; $("rq-a").value=""; draw(); note.textContent=d.added?"It's on the board for everyone. Get your friends to vote.":"That one's already up. We counted you in."; } }
+    catch(err){ note.textContent="The request line is down. Try later."; }
+    busy=false; btn.disabled=false; });
   rq.querySelector(".rq-x").addEventListener("click",close);
   rq.addEventListener("click",e=>{ const b=e.target.closest("button[data-k]"); if(b){ e.stopPropagation(); vote(b.dataset.k); return; } if(e.target===rq) close(e); else e.stopPropagation(); });
   addEventListener("keydown",e=>{ if(e.key==="Escape"&&rq.classList.contains("on")){ e.stopImmediatePropagation(); close(e); } },true);
