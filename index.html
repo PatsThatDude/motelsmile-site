@@ -5269,11 +5269,14 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
     band.querySelectorAll(".cm").forEach(e=>e.remove());
     /* pick landing spots that are on screen */
     const used=new Set(), targets={};
-    for(const w of WHO){ const m=by(w.k); if(!m||!m.landPrep) continue; let best=null;
-      const order=[...Array(16).keys()].sort(()=>Math.random()-.5);
-      for(const t of order){ if(used.has(t)) continue; const r=m.landPrep(t), cx=r.left+r.width/2-SR.left; if(r.left-SR.left>12&&r.right-SR.left<SR.width-12&&r.bottom-SR.top<SR.height*.8&&r.height>40&&![...used].some(u=>Math.abs((targets.__x||{})[u]-cx)<60)){ best={t,r}; (targets.__x=targets.__x||{})[t]=cx; break; } }
-      if(!best){ const t=[9,10,11,12,13,14,15].find(t=>!used.has(t)); best={t,r:m.landPrep(t)}; }
-      used.add(best.t); targets[w.k]={m,r:m.landPrep(best.t)}; }
+    /* each lands under where he was on the card: Pat left, Jacob middle, Jordan right, spread apart */
+    const xs=[];
+    for(const w of WHO){ const m=by(w.k); if(!m||!m.landPrep) continue; const want=SR.width*w.cx; let best=null, bd=1e9;
+      for(let t=0;t<16;t++){ if(used.has(t)) continue; const r=m.landPrep(t), cx=r.left+r.width/2-SR.left;
+        if(r.left-SR.left<6||r.right-SR.left>SR.width-6||r.height<40||xs.some(x=>Math.abs(x-cx)<80)) continue;
+        const d=Math.abs(cx-want); if(d<bd){ bd=d; best={t,cx}; } }
+      if(!best){ const t=[15,9,10,4,5,8].find(t=>!used.has(t)); best={t,cx:0}; }
+      used.add(best.t); xs.push(best.cx); targets[w.k]={m,r:m.landPrep(best.t)}; }
     await Promise.all(WHO.map(async (w,i)=>{ const T=targets[w.k]; if(!T) return; const s0=starts[w.k]||{x:SR.width*w.cx,y:lw.getBoundingClientRect().top-SR.top-40,face:40};
       const [ff,style]=FALL[w.k], H0=440*s0.face/ff*.72, H1=T.r.height*1.02, ar=FAR[w.k];
       const im=document.createElement("img"); im.src=IMG+w.k+"-fall.webp"; im.alt=""; fall.appendChild(im);
