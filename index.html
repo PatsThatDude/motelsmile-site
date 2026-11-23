@@ -4532,6 +4532,27 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
 #sl.s2 .sl-f.f2,#sl.s3 .sl-f.f3,#sl.s3 .sl-f.f2{opacity:1!important}
 #play .sl-curl{position:absolute;left:478px;top:608px;width:148px;height:54px;background:url(img/hang/curl.webp?v=3) 0 0/100% 100%;pointer-events:none;opacity:0;animation:slCurl 7s ease-in-out infinite}
 @keyframes slCurl{0%,55%,100%{opacity:0}65%,85%{opacity:1}}
+#sl .sl-mct{position:absolute;z-index:3;border:0;padding:0;background:transparent;cursor:pointer;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .4s}
+#sl.s3 .sl-mct{pointer-events:auto;opacity:1;animation:mctGlow 2.4s ease-in-out 1s infinite}
+@keyframes mctGlow{0%,100%{box-shadow:0 0 0 0 rgba(70,220,255,0)}50%{box-shadow:0 0 0 2px rgba(70,220,255,.55),0 0 22px rgba(70,220,255,.45)}}
+#sl .sl-mct:hover,#sl .sl-mct:focus-visible{outline:none;box-shadow:0 0 0 2px #46dcff,0 0 26px rgba(70,220,255,.7)}
+#rq{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:rgba(5,3,10,.72);opacity:0;pointer-events:none;transition:opacity .3s;padding:16px}
+#rq.on{opacity:1;pointer-events:auto}
+#rq .rq-box{width:min(460px,100%);max-height:calc(100% - 20px);overflow:auto;background:linear-gradient(#17101f,#0d0913);border:2px solid #ff3d7f;border-radius:18px;box-shadow:0 0 30px rgba(255,61,127,.45),inset 0 0 18px rgba(255,61,127,.18);padding:18px 18px 16px;color:#fff;transform:translateY(12px) scale(.97);transition:transform .35s}
+#rq.on .rq-box{transform:none}
+#rq h3{margin:0;font:400 30px/1 var(--tube,cursive);color:#fff;text-shadow:0 0 8px #ff3d7f,0 0 18px #ff3d7f;letter-spacing:.02em}
+#rq .rq-sub{margin:6px 0 14px;font:500 12px var(--mono,monospace);letter-spacing:.08em;text-transform:uppercase;color:#46dcff}
+#rq ul{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+#rq li button{position:relative;width:100%;display:flex;align-items:baseline;gap:8px;text-align:left;padding:10px 12px;border-radius:11px;border:1px solid #3a2c44;background:#140e1b;color:#fff;cursor:pointer;overflow:hidden;font:600 15px var(--sans,system-ui)}
+#rq li button i{font-style:normal;font-weight:400;color:#a99bb5;font-size:12.5px;flex:1}
+#rq li button b{font:600 12px var(--mono,monospace);color:#ffb3cf;min-width:2.5em;text-align:right;position:relative}
+#rq li button span{position:relative}
+#rq li button::before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--p,0%);background:linear-gradient(90deg,rgba(255,61,127,.38),rgba(255,61,127,.12));transition:width .8s cubic-bezier(.2,.7,.2,1)}
+#rq li button.mine{border-color:#46dcff;box-shadow:0 0 12px rgba(70,220,255,.4)}
+#rq li button:disabled{cursor:default}
+#rq li button:not(:disabled):hover{border-color:#ff3d7f}
+#rq .rq-note{min-height:1.3em;margin:12px 0 2px;font:500 13px var(--sans,system-ui);color:#ffd27a;text-align:center}
+#rq .rq-x{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;padding:9px 16px;border-radius:999px;border:2px solid var(--cyan,#46dcff);background:rgba(10,6,16,.7);color:#fff;font:600 14px var(--sans,system-ui);cursor:pointer}
 #sl .sl-shade{position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 49% 50%,transparent 45%,rgba(4,2,8,.75));pointer-events:none}
 #sl .sl-x{position:absolute;left:16px;top:calc(14px + env(safe-area-inset-top,0px));z-index:2;padding:9px 16px;border-radius:999px;border:2px solid var(--cyan,#46dcff);background:rgba(10,6,16,.7);color:#fff;font:600 14px var(--sans,system-ui);cursor:pointer;box-shadow:0 0 14px rgba(70,220,255,.45)}
 #sl .sl-hint{position:absolute;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:2;color:#fff;font:500 13px var(--mono,monospace);letter-spacing:.08em;opacity:0;transition:opacity .5s .4s;text-shadow:0 1px 6px #000;white-space:nowrap}
@@ -4540,10 +4561,11 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
 @media (prefers-reduced-motion:reduce){#sl .sl-wrap,#sl .sl-f{transition:none}#play .sl-curl{animation:none}}
 </style>
 <div id="sl" aria-hidden="true" role="dialog" aria-label="The setlist under the crate">
-  <div class="sl-wrap"><img class="sl-f f1" alt="" data-src="img/hang/sl1.webp?v=4" width="1672" height="941"><img class="sl-f f2" alt="" data-src="img/hang/sl2.webp?v=4" width="1672" height="941"><img class="sl-f f3 sl-bg" alt="Tonight's setlist, gaffer-taped to the roof: the Big 3 (Better Free, Get Back, Fences), then Mystery Cover Tune, Mean, Dirty Little Liar, Mystery Cover Tune, Don't Mind It, Matter of Time" data-src="img/hang/sl3.webp?v=4" width="1672" height="941"></div>
+  <div class="sl-wrap"><img class="sl-f f1" alt="" data-src="img/hang/sl1.webp?v=5" width="1672" height="941"><img class="sl-f f2" alt="" data-src="img/hang/sl2.webp?v=5" width="1672" height="941"><img class="sl-f f3 sl-bg" alt="Tonight's setlist, gaffer-taped to the roof: the Big 3 (Better Free, Get Back, Fences), then Mystery Cover Tune, Mean, Dirty Little Liar, Watch Your Tone, Don't Mind It, Matter of Time" data-src="img/hang/sl3.webp?v=5" width="1672" height="941"><button class="sl-mct" type="button" style="left:35.2%;top:45.6%;width:21.8%;height:6.2%" aria-label="Mystery Cover Tune: open the request line"></button></div>
   <div class="sl-shade"></div>
   <button class="sl-x" type="button">✕ Back to the roof</button>
-  <div class="sl-hint">Tonight’s setlist</div>
+  <div class="sl-hint">Tap the Mystery Cover Tune</div>
+  <div id="rq" role="dialog" aria-modal="true" aria-label="Request line" aria-hidden="true"><button class="rq-x" type="button">✕ Back to the setlist</button><div class="rq-box"><h3>Request Line</h3><p class="rq-sub">You pick the Mystery Cover Tune</p><ul id="rq-list"></ul><p class="rq-note" id="rq-note" role="status"></p></div></div>
 </div>
 <script>
 /* Band hangout: tap the milk crate, push in, the crate lifts off the taped setlist */
@@ -4616,6 +4638,36 @@ body.walking #play .bm{transition:none}
     walk(el,()=>{ el.dataset.walked="1"; el.click(); });
   },true);
   window.MSWalk=walk;
+})();
+</script>
+
+<script>
+/* Request line: the Mystery Cover Tune on the setlist opens a fan vote (/api/covers, one vote per visitor per day) */
+(()=>{ const $=id=>document.getElementById(id), rq=$("rq"), sl=$("sl"); if(!rq||!sl) return;
+  const list=$("rq-list"), note=$("rq-note"); let S=[], mine=null, busy=false;
+  const LK="ms-cover-vote";
+  const local=()=>{ try{ const v=JSON.parse(localStorage.getItem(LK)||"null"); return v&&v.d===new Date().toISOString().slice(0,10)?v.k:null; }catch(e){ return null; } };
+  function draw(){ const tot=S.reduce((a,s)=>a+(s.n|0),0)||0, max=Math.max(1,...S.map(s=>s.n|0));
+    list.innerHTML=S.map(s=>`<li><button type="button" data-k="${s.k}" class="${s.k===mine?"mine":""}" ${mine?"disabled":""} style="--p:${mine?Math.round((s.n|0)/max*100):0}%"><span>${s.t}</span><i>${s.a}</i>${mine?`<b>${s.n|0}</b>`:""}</button></li>`).join("");
+    note.textContent=mine?(`Your request is in${tot?` · ${tot} request${tot===1?"":"s"} so far`:""}.`):"Tap the song you want to hear."; }
+  async function load(){ note.textContent="Ringing the request line…"; mine=local();
+    try{ const r=await fetch("/api/covers",{cache:"no-store"}); const d=await r.json(); S=d.songs||[]; if(d.mine) mine=d.mine; }
+    catch(e){ try{ const c=await (await fetch("content.json")).json(); S=(c.covers||[]).map(x=>({k:x.k,t:x.t,a:x.a||"",n:0})); }catch(_){ S=[]; } }
+    if(!S.length){ note.textContent="The request line is down. Try later."; list.innerHTML=""; return; } draw(); }
+  async function vote(k){ if(busy||mine) return; busy=true; note.textContent="Sending it to the band…";
+    try{ const r=await fetch("/api/covers",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({k})}); const d=await r.json();
+      if(d.songs) S=d.songs; if(d.mine) mine=d.mine; else if(d.ok) mine=k;
+      if(!d.ok&&!d.mine){ note.textContent=d.error||"Couldn't send it. Try again."; busy=false; return; } }
+    catch(e){ mine=k; const s=S.find(x=>x.k===k); if(s) s.n=(s.n|0)+1; }
+    try{ localStorage.setItem(LK,JSON.stringify({k:mine,d:new Date().toISOString().slice(0,10)})); }catch(e){}
+    busy=false; draw(); }
+  const open=e=>{ e&&e.preventDefault(); e&&e.stopPropagation(); rq.classList.add("on"); rq.setAttribute("aria-hidden","false"); load(); setTimeout(()=>rq.querySelector(".rq-x").focus({preventScroll:true}),50); };
+  const close=e=>{ e&&e.preventDefault(); e&&e.stopPropagation(); rq.classList.remove("on"); rq.setAttribute("aria-hidden","true"); };
+  sl.querySelectorAll(".sl-mct").forEach(b=>b.addEventListener("click",open));
+  rq.querySelector(".rq-x").addEventListener("click",close);
+  rq.addEventListener("click",e=>{ const b=e.target.closest("button[data-k]"); if(b){ e.stopPropagation(); vote(b.dataset.k); return; } if(e.target===rq) close(e); else e.stopPropagation(); });
+  addEventListener("keydown",e=>{ if(e.key==="Escape"&&rq.classList.contains("on")){ e.stopImmediatePropagation(); close(e); } },true);
+  sl.querySelector(".sl-x").addEventListener("click",()=>close(),true);
 })();
 </script>
 

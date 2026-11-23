@@ -221,5 +221,47 @@
    "title": "Been Wrong",
    "soon": true
   }
+ ],
+ "covers": [
+  {
+   "k": "brightside",
+   "t": "Mr. Brightside",
+   "a": "The Killers"
+  },
+  {
+   "k": "song2",
+   "t": "Song 2",
+   "a": "Blur"
+  },
+  {
+   "k": "sevennation",
+   "t": "Seven Nation Army",
+   "a": "The White Stripes"
+  },
+  {
+   "k": "lastnite",
+   "t": "Last Nite",
+   "a": "The Strokes"
+  },
+  {
+   "k": "basketcase",
+   "t": "Basket Case",
+   "a": "Green Day"
+  },
+  {
+   "k": "everlong",
+   "t": "Everlong",
+   "a": "Foo Fighters"
+  },
+  {
+   "k": "takemeout",
+   "t": "Take Me Out",
+   "a": "Franz Ferdinand"
+  },
+  {
+   "k": "usesomebody",
+   "t": "Use Somebody",
+   "a": "Kings of Leon"
+  }
  ]
 }
