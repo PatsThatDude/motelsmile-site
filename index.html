@@ -4995,6 +4995,13 @@ body.ph #bar .tile,body.ph #bar-np{background:linear-gradient(to bottom,var(--am
   setInterval(tick,400); addEventListener("resize",tick);
 })();
 </script>
+<style>
+@property --amb{syntax:"<color>";inherits:false;initial-value:rgba(255,61,127,.2)}
+@property --amb2{syntax:"<color>";inherits:false;initial-value:rgba(60,150,255,.08)}
+@property --ambE{syntax:"<color>";inherits:false;initial-value:rgba(255,255,255,.25)}
+body.ph #bar .tile,body.ph #bar-np{transition:--amb .9s ease,--amb2 .9s ease,--ambE .9s ease}
+body.ph #bar .tile[data-open="follow"]{--c:var(--blue)!important}
+</style>
 
 </body>
 </html>
