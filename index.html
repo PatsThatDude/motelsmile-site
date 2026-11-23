@@ -2519,13 +2519,13 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const today=new Date().toISOString().slice(0,10);
     const shows=(c.shows||[]).filter(x=>!x.date||x.date>=today).sort((a,b)=>(a.date||"9")<(b.date||"9")?-1:1);
     if(shows.length){
-      const d0=shows[0].date?new Date(shows[0].date+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}):"TBA";
-      $("t-shows").textContent="Next: "+d0; $("t-shows-sub").textContent=[shows[0].venue,shows[0].time].filter(Boolean).join(" · "); window.__msNext=shows[0]; window.MSShowSign&&window.MSShowSign(shows[0]);
+      const d0=shows[0].date?(+shows[0].date.slice(5,7))+"/"+(+shows[0].date.slice(8,10)):"TBA";
+      $("t-shows").textContent=d0; $("t-shows-sub").textContent=[shows[0].venue,shows[0].time].filter(Boolean).join(" · "); window.__msNext=shows[0]; window.MSShowSign&&window.MSShowSign(shows[0]);
       $("shows").innerHTML=`<ul class="rows">${shows.map(x=>{const d=x.date?new Date(x.date+"T12:00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}):"TBA";
         const extra=[x.doors&&("doors "+x.doors),x.price,x.ages,x.with&&("with "+x.with)].filter(Boolean).map(esc).join(" · ");
         return `<li><div><b>${x.tickets?`<a ${ext(x.tickets)}>${esc(x.venue)}</a>`:esc(x.venue)}</b>${extra?`<span class="extra">${extra}</span>`:""}</div><span style="text-align:right">${[d,x.time,x.city].filter(Boolean).map(esc).join(" · ")}<br><a ${ext(mapHref(x))} style="font-size:12px">Map ↗</a>${x.tickets?` · <a ${ext(x.tickets)} style="font-size:12px">Tickets ↗</a>`:""}</span></li>`;}).join("")}</ul>`;
     } else {
-      $("t-shows").textContent="Next: TBA"; $("t-shows-sub").textContent="On the roof soon";
+      $("t-shows").textContent="TBA"; $("t-shows-sub").textContent="On the roof soon";
       $("shows").innerHTML=`<p>The stage is set. No dates posted yet. People on the list hear the date and the roof first.</p><button class="btn solid" style="--c:var(--green)" id="go-list">Join the list</button>`;
       $("go-list").addEventListener("click",()=>open("list"));
     }
