@@ -5277,40 +5277,58 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
         const d=Math.abs(cx-want); if(d<bd){ bd=d; best={t,cx}; } }
       if(!best){ const t=[15,9,10,4,5,8].find(t=>!used.has(t)); best={t,cx:0}; }
       used.add(best.t); xs.push(best.cx); targets[w.k]={m,r:m.landPrep(best.t)}; }
-    await Promise.all(WHO.map(async (w,i)=>{ const T=targets[w.k]; if(!T) return; const s0=starts[w.k]||{x:SR.width*w.cx,y:lw.getBoundingClientRect().top-SR.top-40,face:40};
-      const [ff,style]=FALL[w.k], H0=440*s0.face/ff*.72, H1=T.r.height*1.02, ar=FAR[w.k];
-      const im=document.createElement("img"); im.src=IMG+w.k+"-fall.webp"; im.alt=""; fall.appendChild(im);
+    /* one at a time so each is readable: Jacob, then Jordan, then Pat */
+    const ORDER={jacob:0,jordan:700,pat:1500};
+    const anim=(dur,fn)=>new Promise(r=>{ const t0=performance.now(); const f=()=>{ const u=Math.min(1,(performance.now()-t0)/dur); fn(u); if(u<1) requestAnimationFrame(f); else r(); }; f(); });
+    await Promise.all(WHO.map(async (w)=>{ const T=targets[w.k]; if(!T) return; const s0=starts[w.k]||{x:SR.width*w.cx,y:lw.getBoundingClientRect().top-SR.top-40,face:40};
+      const [ff]=FALL[w.k], H0=440*s0.face/ff*.6, H1=T.r.height*1.02, ar=FAR[w.k];
       const fx=T.r.left+T.r.width/2-SR.left, fy=T.r.bottom-SR.top;
-      const at=(cx,cy,h,rot,sx=1,sy=1)=>{ Object.assign(im.style,{height:h+"px",width:h*ar+"px",left:(cx-h*ar/2)+"px",top:(cy-h*.18)+"px",transform:`rotate(${rot}deg) scale(${sx},${sy})`}); };
-      at(s0.x,s0.y,H0,0);
-      /* hang: the card is gone and they haven't noticed yet */
-      const h0=performance.now(), hang=520+i*140; await new Promise(r=>{ const f=()=>{ const u=(performance.now()-h0)/hang; at(s0.x,s0.y-Math.sin(Math.min(1,u)*Math.PI)*10,H0,Math.sin(u*14)*3*(style==="flail"?2:1)); if(u<1) requestAnimationFrame(f); else r(); }; f(); });
-      /* fall: gravity, shrink to roof scale, each in his own way */
-      const dur=style==="drop"?720:style==="spin"?980:1060, t0=performance.now();
-      await new Promise(r=>{ const f=()=>{ const u=Math.min(1,(performance.now()-t0)/dur), g=u*u, x=s0.x+(fx-s0.x)*(style==="flail"?u+Math.sin(u*9)*.06:u), headY=s0.y+((fy-H1*.82)-s0.y)*g - Math.sin(u*Math.PI)*(style==="spin"?40:15), h=H0+(H1-H0)*u;
-          const rot=style==="spin"?u*360:style==="flail"?Math.sin(u*16)*22:0, sy=style==="drop"?1+u*.18:1, sx=style==="drop"?1-u*.1:1;
-          at(x,headY+h*.18,h,rot,sx,sy); if(u<1) requestAnimationFrame(f); else r(); }; f(); });
-      im.remove();
-      /* land: squash, dust, brush off, then he's back on the roof for real */
-      const b=document.createElement("img"); b.src=IMG+w.k+"-brush.webp"; b.alt=""; fall.appendChild(b); const bh=T.r.height*1.02, bw=bh*BAR[w.k];
-      Object.assign(b.style,{height:bh+"px",width:bw+"px",left:(fx-bw/2)+"px",top:(fy-bh)+"px",transformOrigin:"50% 100%"});
-      const dust=(n,spread,up,dur,x0=0)=>{ for(let d=0;d<n;d++){ const p=document.createElement("i"); p.className="dust"; fall.appendChild(p); const dx=(d-(n-1)/2)*bw*spread; Object.assign(p.style,{left:(fx+x0+dx-13)+"px",top:(fy-12)+"px"});
-        p.animate([{transform:"translate(0,0) scale(.5)",opacity:.9},{transform:`translate(${dx*.9}px,${-up-Math.random()*up}px) scale(1.9)`,opacity:0}],{duration:dur+Math.random()*300,easing:"ease-out"}).finished.then(()=>p.remove()); } };
-      try{ window.MSAudio&&window.MSAudio.thunk&&window.MSAudio.thunk(); }catch(_){}
-      /* each lands his own way */
-      if(w.k==="jacob"){ /* drops straight: lands hard, flattens, bounces once */
-        dust(9,.3,22,900);
-        await b.animate([{transform:"scale(1.3,.62)"},{transform:"scale(.9,1.12) translateY(-34px)",offset:.45},{transform:"scale(1.1,.88)",offset:.8},{transform:"none"}],{duration:620,easing:"ease-out"}).finished.catch(()=>{});
-      } else if(w.k==="pat"){ /* spinning: lands off balance and skids sideways */
-        const dir=fx<SR.width/2?1:-1; b.style.left=(parseFloat(b.style.left)-dir*30)+"px"; dust(4,.15,8,600,-dir*30);
-        await b.animate([{transform:`rotate(${-dir*14}deg)`},{transform:`translateX(${dir*26}px) rotate(${dir*9}deg)`,offset:.5},{transform:`translateX(${dir*30}px) rotate(${-dir*3}deg)`,offset:.8},{transform:`translateX(${dir*30}px)`}],{duration:700,easing:"ease-out",fill:"forwards"}).finished.catch(()=>{});
-        dust(3,.12,6,500); b.style.left=(parseFloat(b.style.left)+dir*30)+"px"; b.getAnimations().forEach(a=>a.cancel());
-      } else { /* flailing: lands on one foot, windmills, nearly falls over */
-        dust(3,.2,10,600);
-        await b.animate([{transform:"rotate(0)"},{transform:"rotate(-12deg)",offset:.2},{transform:"rotate(10deg)",offset:.45},{transform:"rotate(-6deg)",offset:.65},{transform:"rotate(3deg)",offset:.82},{transform:"none"}],{duration:1000,easing:"ease-in-out"}).finished.catch(()=>{});
+      const im=document.createElement("img"); im.src=IMG+w.k+"-fall.webp"; im.alt=""; fall.appendChild(im);
+      /* place by FEET (bottom centre) so landing lines up */
+      const at=(cx,by,h,rot=0,sx=1,sy=1,o="50% 100%")=>{ Object.assign(im.style,{height:h+"px",width:h*ar+"px",left:(cx-h*ar/2)+"px",top:(by-h)+"px",transformOrigin:o,transform:`rotate(${rot}deg) scale(${sx},${sy})`}); };
+      const by0=s0.y+H0*.82; at(s0.x,by0,H0);
+      await wait(ORDER[w.k]);
+      const dust=(n,spread,up,dur,x0=0,w0=H1*.4)=>{ for(let d=0;d<n;d++){ const p=document.createElement("i"); p.className="dust"; fall.appendChild(p); const dx=(d-(n-1)/2)*w0*spread; Object.assign(p.style,{left:(fx+x0+dx-13)+"px",top:(fy-12)+"px"});
+        p.animate([{transform:"translate(0,0) scale(.6)",opacity:.95},{transform:`translate(${dx*.9}px,${-up-Math.random()*up}px) scale(2.2)`,opacity:0}],{duration:dur+Math.random()*300,easing:"ease-out"}).finished.then(()=>p.remove()); } };
+      const thunk=()=>{ try{ window.MSAudio&&window.MSAudio.thunk&&window.MSAudio.thunk(); }catch(_){} };
+      let lx=fx; /* where he ends up standing */
+      if(w.k==="jacob"){
+        /* JACOB: looks down, drops like a rock, goes flat as a pancake, springs back up */
+        await anim(220,u=>at(s0.x,by0-u*14,H0,0,1,1+u*.06));
+        await anim(520,u=>{ const g=u*u; at(s0.x+(fx-s0.x)*u,by0+(fy-by0)*g,H0+(H1-H0)*u,0,1-.12*u,1+.22*u); });
+        thunk(); dust(10,.35,26,900);
+        await anim(140,u=>at(fx,fy,H1,0,1+.45*u,1-.6*u));          /* splat */
+        await wait(450);                                           /* stays flat */
+        await anim(260,u=>at(fx,fy-Math.sin(u*Math.PI)*H1*.55,H1,0,1.45-.6*u,.4+.75*u)); /* boing */
+        await anim(220,u=>at(fx,fy-Math.sin(u*Math.PI)*H1*.18,H1,0,.85+.15*u,1.15-.15*u)); /* small boing */
+        await anim(120,u=>at(fx,fy,H1,0,1+.08*Math.sin(u*Math.PI),1-.08*Math.sin(u*Math.PI)));
+      } else if(w.k==="jordan"){
+        /* JORDAN: flaps, floats down like a leaf swinging side to side, lands on one foot, topples over, gets back up */
+        await anim(700,u=>at(s0.x,by0-Math.sin(u*Math.PI)*18,H0,Math.sin(u*20)*14));
+        await anim(1500,u=>{ const x=s0.x+(fx-s0.x)*u+Math.sin(u*Math.PI*3)*SR.width*.16*(1-u), y=by0+(fy-by0)*u, rot=Math.cos(u*Math.PI*3)*24*(1-u*.7); at(x,y,H0+(H1-H0)*u,rot); });
+        thunk(); dust(4,.25,10,600);
+        await anim(700,u=>at(fx,fy,H1,Math.sin(u*Math.PI*3.5)*28*(1+u)));   /* wobble, getting worse */
+        await anim(280,u=>at(fx,fy,H1,-70*u-20));                           /* timber */
+        dust(6,.3,14,700,-H1*.4); thunk(); await wait(550);
+        await anim(380,u=>at(fx,fy,H1,-90+90*u));                           /* gets up */
+      } else {
+        /* PAT: spins like a top all the way down, skids across the roof, dizzy */
+        const dir=fx<SR.width/2?1:-1, sk=SR.width*.2*dir, x0=fx-sk;
+        await anim(300,u=>at(s0.x,by0,H0,u*30,1,1,"50% 50%"));
+        await anim(950,u=>{ const g=u*u; at(s0.x+(x0-s0.x)*u,by0+(fy-by0)*g,H0+(H1-H0)*u,30+u*1080,1,1,"50% 50%"); });
+        thunk(); dust(3,.15,8,500,-sk);
+        await anim(700,u=>{ const e=1-Math.pow(1-u,3); at(x0+sk*e,fy,H1,-dir*18*(1-u)); if(Math.random()<.35) dust(1,0,6,400,-sk*(1-e)); });
+        /* dizzy stars circling his head */
+        const stars=[0,1,2].map(()=>{ const t=document.createElement("i"); t.textContent="★"; Object.assign(t.style,{position:"absolute",color:"#ffd36a",font:"700 14px system-ui",textShadow:"0 0 6px #ffb23d",pointerEvents:"none"}); fall.appendChild(t); return t; });
+        await anim(1200,u=>{ stars.forEach((t,k)=>{ const a=u*Math.PI*6+k*2.1; t.style.left=(fx+Math.cos(a)*H1*.16-6)+"px"; t.style.top=(fy-H1*1.02+Math.sin(a)*H1*.05)+"px"; }); at(fx,fy,H1,Math.sin(u*Math.PI*4)*6); });
+        stars.forEach(t=>t.remove());
       }
-      await wait(200); b.animate([{transform:"none"},{transform:"rotate(2deg)"},{transform:"rotate(-2deg)"},{transform:"none"}],{duration:420,iterations:2});
-      await wait(950); T.m.landShow(); b.animate([{opacity:1},{opacity:0}],{duration:250}).finished.then(()=>b.remove()); }));
+      im.remove();
+      /* then brush off, and he's back on the roof for real */
+      const b=document.createElement("img"); b.src=IMG+w.k+"-brush.webp"; b.alt=""; fall.appendChild(b); const bh=T.r.height*1.02, bw=bh*BAR[w.k];
+      Object.assign(b.style,{height:bh+"px",width:bw+"px",left:(lx-bw/2)+"px",top:(fy-bh)+"px",transformOrigin:"50% 100%"});
+      b.animate([{transform:"none"},{transform:"rotate(2deg)"},{transform:"rotate(-2deg)"},{transform:"none"}],{duration:420,iterations:2}); dust(3,.3,12,700);
+      await wait(1000); T.m.landShow(); b.animate([{opacity:1},{opacity:0}],{duration:250}).finished.then(()=>b.remove()); }));
   }
   let was=false;
   new MutationObserver(()=>{ const open=lw.classList.contains("open");
