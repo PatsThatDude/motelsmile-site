@@ -4953,7 +4953,7 @@ body.ph #bar .tile[data-open="shows"] small,body.ph #bar .tile[data-open="follow
 body.ph #bar .tile[data-open="shows"] b{font-size:18px!important}
 body.ph #bar .tile[data-open="follow"] b{font-size:13.5px!important;letter-spacing:-.01em!important}
 #bar-np{display:none}
-body.ph #bar-np{display:flex;flex-direction:column;justify-content:center;gap:5px;grid-column:1;grid-row:1/3;min-width:0;--c:var(--pink);border:1.5px solid var(--c);border-radius:16px;background:rgba(10,7,18,.82);box-shadow:0 0 14px color-mix(in srgb,var(--c) 45%,transparent),inset 0 0 12px color-mix(in srgb,var(--c) 18%,transparent);padding:7px 10px;box-sizing:border-box;color:#fff}
+body #bar-np{display:flex;flex-direction:column;justify-content:center;gap:5px;grid-column:1;grid-row:1/3;min-width:0;--c:var(--pink);border:1.5px solid var(--c);border-radius:16px;background:rgba(10,7,18,.82);box-shadow:0 0 14px color-mix(in srgb,var(--c) 45%,transparent),inset 0 0 12px color-mix(in srgb,var(--c) 18%,transparent);padding:7px 10px;box-sizing:border-box;color:#fff}
 #bar-np .np-top{display:flex;align-items:center;gap:9px;min-width:0}
 #bar-np .np-t{all:unset;cursor:pointer;display:flex;flex-direction:column;min-width:0;flex:1}
 #bar-np .np-t small{font:600 10px var(--mono,monospace);letter-spacing:.14em;text-transform:uppercase;color:var(--c)}
@@ -4987,7 +4987,7 @@ body.ph .mini{display:none!important}
 </script>
 <style>
 /* phone: the bar panels pick up the scene's light, like glass sitting on the wet roof (Pat 11-23) */
-body.ph #bar .tile,body.ph #bar-np{background:linear-gradient(to bottom,var(--amb,rgba(255,61,127,.2)) 0%,var(--amb2,rgba(60,150,255,.08)) 45%,rgba(9,6,15,.78) 100%)!important;-webkit-backdrop-filter:blur(10px) saturate(1.4);backdrop-filter:blur(10px) saturate(1.4);
+body.ph #bar .tile,body #bar-np{background:linear-gradient(to bottom,var(--amb,rgba(255,61,127,.2)) 0%,var(--amb2,rgba(60,150,255,.08)) 45%,rgba(9,6,15,.78) 100%)!important;-webkit-backdrop-filter:blur(10px) saturate(1.4);backdrop-filter:blur(10px) saturate(1.4);
  box-shadow:0 0 10px color-mix(in srgb,var(--c) 30%,transparent),inset 0 1px 0 var(--ambE,rgba(255,255,255,.25)),inset 0 10px 18px -10px var(--ambE,rgba(255,255,255,.2))!important}
 </style>
 <script>
@@ -4996,7 +4996,7 @@ body.ph #bar .tile,body.ph #bar-np{background:linear-gradient(to bottom,var(--am
   const avg=(x0,y0,x1,y1)=>{ x0=Math.max(0,Math.min(251,x0|0)); x1=Math.max(x0+1,Math.min(252,x1|0)); y0=Math.max(0,Math.min(93,y0|0)); y1=Math.max(y0+1,Math.min(94,y1|0));
     const d=cx.getImageData(x0,y0,x1-x0,y1-y0).data; let r=0,g=0,b=0,n=0; for(let i=0;i<d.length;i+=4){ const w=1+(d[i]+d[i+1]+d[i+2])/120; r+=d[i]*w; g+=d[i+1]*w; b+=d[i+2]*w; n+=w; } return [r/n,g/n,b/n]; };
   const boost=([r,g,b],k)=>{ const m=Math.max(r,g,b,1), f=Math.min(3,200/m); return `rgba(${Math.round(r*f)},${Math.round(g*f)},${Math.round(b*f)},${k})`; };
-  function tick(){ if(!cx||!document.body.classList.contains("ph")) return; const B=window.MSRoofBox; if(!B) return; const s=B.s, ox0=B.ox-106*B.s, oy=B.oy;
+  function tick(){ if(!cx) return; const B=window.MSRoofBox; if(!B) return; const s=B.s, ox0=B.ox-106*B.s, oy=B.oy;
     for(const el of document.querySelectorAll("#bar .tile,#bar-np")){ const r=el.getBoundingClientRect(); if(!r.width) continue;
       /* sample the floor just above the panel (screen -> plate px, /10 for the small canvas) */
       const px0=(r.left-ox0)/s/10, px1=(r.right-ox0)/s/10, py1=Math.min(941,(r.top-oy)/s)/10, py0=py1-14;
@@ -5008,7 +5008,7 @@ body.ph #bar .tile,body.ph #bar-np{background:linear-gradient(to bottom,var(--am
 @property --amb{syntax:"<color>";inherits:false;initial-value:rgba(255,61,127,.2)}
 @property --amb2{syntax:"<color>";inherits:false;initial-value:rgba(60,150,255,.08)}
 @property --ambE{syntax:"<color>";inherits:false;initial-value:rgba(255,255,255,.25)}
-body.ph #bar .tile,body.ph #bar-np{transition:--amb .9s ease,--amb2 .9s ease,--ambE .9s ease}
+body.ph #bar .tile,body #bar-np{transition:--amb .9s ease,--amb2 .9s ease,--ambE .9s ease}
 body.ph #bar .tile[data-open="follow"]{--c:var(--blue)!important}
 </style>
 <style>body.ph #ph-top #pill-listen{display:none!important}body.ph #ph-top{justify-content:center!important}</style>
@@ -5047,9 +5047,9 @@ body.ph #ph-brand{top:calc(1px + env(safe-area-inset-top,0px))!important}
 <style>
 /* phone Listen window: record you can spin to scrub, records to swipe, the band peeking over the top (Pat 11-23) */
 #lw,#lw-band{display:none}
-body.ph #lw{display:flex;position:absolute;left:8px;right:8px;bottom:calc(var(--barh,110px) + 30px);height:min(64vh,520px);z-index:20;flex-direction:column;align-items:center;border:1.5px solid var(--pink);border-radius:20px;background:radial-gradient(120% 60% at 50% 20%,rgba(255,61,127,.28),transparent 60%),linear-gradient(#150b1b,#07050b);box-shadow:0 0 24px rgba(255,61,127,.35),0 20px 40px rgba(0,0,0,.7);padding:14px 0 10px;box-sizing:border-box;transform:translateY(calc(100% + 200px));transition:transform .38s cubic-bezier(.2,.9,.25,1.1);visibility:hidden}
-body.ph #lw.open{transform:none;visibility:visible}
-body.ph #lw.drop{transform:translateY(calc(100% + 260px));transition:transform .26s cubic-bezier(.5,0,1,.6);visibility:visible}
+body #lw{display:flex;position:absolute;left:8px;right:8px;bottom:calc(var(--barh,110px) + 30px);height:min(64vh,520px);z-index:20;flex-direction:column;align-items:center;border:1.5px solid var(--pink);border-radius:20px;background:radial-gradient(120% 60% at 50% 20%,rgba(255,61,127,.28),transparent 60%),linear-gradient(#150b1b,#07050b);box-shadow:0 0 24px rgba(255,61,127,.35),0 20px 40px rgba(0,0,0,.7);padding:14px 0 10px;box-sizing:border-box;transform:translateY(calc(100% + 200px));transition:transform .38s cubic-bezier(.2,.9,.25,1.1);visibility:hidden}
+body #lw.open{transform:none;visibility:visible}
+body #lw.drop{transform:translateY(calc(100% + 260px));transition:transform .26s cubic-bezier(.5,0,1,.6);visibility:visible}
 #lw .lw-x{all:unset;position:absolute;right:12px;top:10px;width:30px;height:30px;display:grid;place-items:center;color:#fff;font:400 20px system-ui;cursor:pointer;opacity:.8;z-index:3}
 #lw .lw-h{font:600 11px var(--mono,monospace);letter-spacing:.22em;color:var(--pink);text-shadow:0 0 8px rgba(255,61,127,.6);text-transform:uppercase}
 #lw .lw-rec{position:relative;width:min(48vw,200px);aspect-ratio:1;margin:10px 0 6px;border-radius:50%;touch-action:none;cursor:grab;flex:none}
@@ -5079,7 +5079,7 @@ body.ph #lw.drop{transform:translateY(calc(100% + 260px));transition:transform .
 #lw-toast{position:absolute;left:50%;bottom:118px;transform:translateX(-50%);background:rgba(0,0,0,.8);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:5px 10px;font:500 11px var(--mono,monospace);color:#fff;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
 #lw-toast.on{opacity:1}
 /* the band, peeking over the top edge of the window */
-body.ph #lw-band{display:block;position:absolute;left:8px;right:8px;height:0;z-index:19;pointer-events:none}
+body #lw-band{display:block;position:absolute;left:8px;right:8px;height:0;z-index:19;pointer-events:none}
 #lw-band img{position:absolute;bottom:-230px;height:300px;transform:translateY(120%);transition:transform .5s cubic-bezier(.25,1.5,.4,1);will-change:transform}
 #lw-band.up img{transform:translateY(0)}
 #lw-band.up img:nth-child(2){transition-delay:.12s}
@@ -5143,12 +5143,12 @@ body.ph #lw-band{display:block;position:absolute;left:8px;right:8px;height:0;z-i
   lw.querySelector(".lw-x").addEventListener("click",close);
   addEventListener("keydown",e=>{ if(e.key==="Escape"&&lw.classList.contains("open")) close(); });
   window.MSListenOpen=open;
-  const t=$("np-t"); if(t) t.addEventListener("click",e=>{ if(document.body.classList.contains("ph")){ e.stopImmediatePropagation(); open(); } },true);
+  const t=$("np-t"); if(t) t.addEventListener("click",e=>{ e.stopImmediatePropagation(); open(); },true);
 })();
 </script>
 <style>#lw-band:not(.up):not(.float):not(.fall){visibility:hidden}</style>
-<style>body.ph #lw{height:min(54vh,450px)}#lw .lw-t{line-height:1.25;padding-bottom:2px;font-size:22px}#lw-band img{clip-path:inset(2px)}#lw .lw-rec{width:min(42vw,175px)}</style>
-<style>body.ph #lw{height:min(calc(100% - var(--barh,110px) - 122px),430px);bottom:calc(var(--barh,110px) + 18px);padding:10px 0 8px}#lw>*{flex:none}#lw .lw-rec{width:min(40vw,152px);margin:6px 0 4px}#lw .lw-ctl{margin:2px 0 4px}#lw .lw-ctl .lg-pp{width:44px;height:44px}#lw .lw-row{margin-top:auto}body.lw-on .ph-dots{opacity:0!important;pointer-events:none}</style>
+<style>body #lw{height:min(54vh,450px)}#lw .lw-t{line-height:1.25;padding-bottom:2px;font-size:22px}#lw-band img{clip-path:inset(2px)}#lw .lw-rec{width:min(42vw,175px)}</style>
+<style>body #lw{height:min(calc(100% - var(--barh,110px) - 122px),430px);bottom:calc(var(--barh,110px) + 18px);padding:10px 0 8px}#lw>*{flex:none}#lw .lw-rec{width:min(40vw,152px);margin:6px 0 4px}#lw .lw-ctl{margin:2px 0 4px}#lw .lw-ctl .lg-pp{width:44px;height:44px}#lw .lw-row{margin-top:auto}body.lw-on .ph-dots{opacity:0!important;pointer-events:none}</style>
 <style>
 /* Listen window: square record covers you flip through (coverflow) (Pat 11-23) */
 #lw .lw-row{display:block;position:relative;height:122px;overflow-x:auto;overflow-y:visible;white-space:nowrap;scroll-snap-type:x mandatory;padding:8px calc(50% - 40px) 2px;perspective:520px;flex:none}
@@ -5214,19 +5214,19 @@ body.ph #lw-band{display:block;position:absolute;left:8px;right:8px;height:0;z-i
 </script>
 <style>
 /* band sits in front of the window so the fingers curl over its edge; a clip box hides them below the edge until they climb up */
-body.ph #lw-band{z-index:21;margin-top:-260px;height:276px;overflow:hidden}
-body.ph #lw-band.float,body.ph #lw-band.fall{overflow:visible}
+body #lw-band{z-index:21;margin-top:-260px;height:276px;overflow:hidden}
+body #lw-band.float,body #lw-band.fall{overflow:visible}
 #lw-band .pk{top:260px!important}
 </style><style>#lw-band img{border:0!important;outline:0!important;box-shadow:none!important}</style>
 <style>
 /* Listen window v3: shorter card; the band climbs up onto it, then falls back onto the roof (Pat 11-23) */
-body.ph #lw{height:min(calc(100% - var(--barh,110px) - 214px),392px)!important}
+body #lw{height:min(calc(100% - var(--barh,110px) - 214px),392px)!important}
 #lw .lw-rec{width:min(32vw,122px)!important;margin:2px 0 2px!important}
 #lw .lw-hint{display:none}
 #lw .lw-t{font-size:20px!important;margin-top:2px!important}
 #lw .lw-ctl{margin:0 0 2px!important}#lw .lw-ctl .lg-pp{width:40px!important;height:40px!important}
 #lw-block{display:none;position:absolute;inset:0;z-index:18;touch-action:none;background:rgba(5,4,10,.25)}
-body.ph.lw-on #lw-block{display:block}
+body.lw-on #lw-block{display:block}
 #lw,#lw *{touch-action:none}#lw .lw-row{touch-action:pan-x!important}
 body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
 #lw-band .cm{position:absolute;top:260px;left:0;width:0;height:0}
@@ -5277,7 +5277,7 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
     const xs=[];
     for(const w of WHO){ const m=by(w.k); if(!m||!m.landPrep) continue; if(w.k==="jacob"&&m.kitBox){ const r=m.kitBox(); if(r&&r.width){ targets.jacob={m,kit:r,r:{left:r.left+r.width*.4,width:r.width*.2,right:r.left+r.width*.6,bottom:r.top+r.height*.85,top:r.top,height:r.height*.8}}; continue; } } const want=SR.width*(w.k==="jordan"?.92:w.k==="pat"?.3:w.cx); let best=null, bd=1e9;
       for(let t=0;t<16;t++){ if(used.has(t)) continue; const r=m.landPrep(t), cx=r.left+r.width/2-SR.left;
-        if(r.left-SR.left<6||r.right-SR.left>SR.width-6||r.height<40||xs.some(x=>Math.abs(x-cx)<80)) continue;
+        if(r.left-SR.left<6||r.right-SR.left>SR.width-6||r.height<40||r.height>SR.height*.4||xs.some(x=>Math.abs(x-cx)<80)) continue;
         const d=Math.abs(cx-want); if(d<bd){ bd=d; best={t,cx}; } }
       if(!best){ const t=[15,9,10,4,5,8].find(t=>!used.has(t)); best={t,cx:0}; }
       used.add(best.t); xs.push(best.cx); targets[w.k]={m,r:m.landPrep(best.t)}; }
@@ -5345,7 +5345,7 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
     else if(!open&&was&&lw.classList.contains("drop")){ was=false; run++; drop(run); } }).observe(lw,{attributes:true,attributeFilter:["class"]});
 })();
 </script>
-<style>body.ph #lw-band{overflow:visible!important}#lw-band .cm{top:260px}#lw-band .cw{position:absolute;left:0;top:-260px;width:100vw;height:276px;overflow:hidden}</style>
+<style>body #lw-band{overflow:visible!important}#lw-band .cm{top:260px}#lw-band .cw{position:absolute;left:0;top:-260px;width:100vw;height:276px;overflow:hidden}</style>
 <style>#lw-band .cm img{height:auto!important;bottom:auto!important;transform:none;animation:none!important;transition:none!important}#lw-band .cm .cw img{transform:none}</style>
 <style>
 /* Listen card background: EQ bars that move with the song (Pat 11-23) */
@@ -5405,6 +5405,26 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
 })();
 </script>
 <style>body:not(.ph) #show-sign:not(.ss-ph){left:745px}</style>
+<style>
+/* desktop + iPad: same bottom cards as the phone (player wide on the left, Shows + Follow), same Listen card (Pat 11-23) */
+body:not(.ph) #bar{display:grid!important;grid-template-columns:2fr 1fr 1fr!important;grid-template-rows:1fr!important;gap:12px!important;padding:12px 16px 14px!important;background:transparent!important;border-top:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+body:not(.ph) #bar .tile[data-open="listen"],body:not(.ph) #bar .tile[data-open="list"]{display:none!important}
+body:not(.ph) #bar-np{grid-column:1;grid-row:1}
+body:not(.ph) #bar .tile[data-open="shows"]{grid-column:2;grid-row:1}
+body:not(.ph) #bar .tile[data-open="follow"]{grid-column:3;grid-row:1;--c:var(--blue)!important}
+body:not(.ph) #bar .tile{border:1.5px solid var(--c)!important;border-radius:16px!important;background:linear-gradient(to bottom,var(--amb,rgba(255,61,127,.2)) 0%,var(--amb2,rgba(60,150,255,.08)) 45%,rgba(9,6,15,.78) 100%)!important;-webkit-backdrop-filter:blur(10px) saturate(1.4);backdrop-filter:blur(10px) saturate(1.4);box-shadow:0 0 10px color-mix(in srgb,var(--c) 30%,transparent),inset 0 1px 0 var(--ambE,rgba(255,255,255,.25)),inset 0 10px 18px -10px var(--ambE,rgba(255,255,255,.2))!important;padding:12px 18px!important;justify-content:center!important;transition:--amb .9s ease,--amb2 .9s ease,--ambE .9s ease}
+body:not(.ph) #bar .tile::before{display:none!important}
+body:not(.ph) #bar-np{display:flex!important;flex-direction:row!important;align-items:center;gap:16px;padding:10px 18px;border-radius:16px;background:linear-gradient(to bottom,var(--amb,rgba(255,61,127,.2)) 0%,var(--amb2,rgba(60,150,255,.08)) 45%,rgba(9,6,15,.78) 100%)!important;-webkit-backdrop-filter:blur(10px) saturate(1.4);backdrop-filter:blur(10px) saturate(1.4)}
+body:not(.ph) #bar-np .np-top{flex:0 1 auto;min-width:200px}
+body:not(.ph) #bar-np .np-t b{font-size:20px}
+body:not(.ph) #bar-np .np-row{flex:1}
+body:not(.ph) #bar-np .lg-pp{width:42px;height:42px}
+body:not(.ph) .mini{display:none!important}
+/* the Listen card sits centred above the bar */
+body:not(.ph) #lw{position:fixed!important;left:50%;right:auto;width:440px;margin-left:-220px;height:min(calc(100% - var(--barh,110px) - 230px),430px)!important;bottom:calc(var(--barh,110px) + 18px)}
+body:not(.ph) #lw-band{position:fixed!important;left:50%;right:auto;width:440px;margin-left:-220px}
+body:not(.ph) #lw .lw-rec{width:130px!important}
+</style>
 
 </body>
 </html>
