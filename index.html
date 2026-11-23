@@ -10,8 +10,8 @@
 <meta property="og:site_name" content="Motel Smile">
 <meta property="og:title" content="Motel Smile">
 <meta property="og:description" content="New York rock. Hang on the roof, spin a record, catch a show.">
-<meta property="og:url" content="https://motelsmile.com/">
-<meta property="og:image" content="https://motelsmile.com/img/og.jpg">
+<meta property="og:url" content="https://motelsmile.pages.dev/">
+<meta property="og:image" content="https://motelsmile.pages.dev/img/og.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -2516,7 +2516,8 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
     const links=Object.keys(PLAT).filter(k=>m.links[k]);
     $("m-links").innerHTML=links.length?links.map(k=>`<a class="btn" ${ext(m.links[k])}>${PLAT[k]}</a>`).join(""):(hints?`<span class="btn off">Streaming links needed</span>`:"");
     $("m-videos").innerHTML=(c.videos||[]).filter(v=>v.url).slice(0,6).map(v=>`<li>▸ <a ${ext(v.url)}>${esc(v.title)}</a> <span class="extra" style="display:inline">${esc(v.kind||"")}</span></li>`).join("");
-    const today=new Date().toISOString().slice(0,10);
+    const nyNow=new Date(new Date().toLocaleString("en-US",{timeZone:"America/New_York"})); nyNow.setHours(nyNow.getHours()-6); /* a show stays "next" until 6am after the night */
+    const today=nyNow.getFullYear()+"-"+String(nyNow.getMonth()+1).padStart(2,"0")+"-"+String(nyNow.getDate()).padStart(2,"0");
     const shows=(c.shows||[]).filter(x=>!x.date||x.date>=today).sort((a,b)=>(a.date||"9")<(b.date||"9")?-1:1);
     if(shows.length){
       const d0=shows[0].date?(+shows[0].date.slice(5,7))+"/"+(+shows[0].date.slice(8,10)):"TBA";
@@ -3268,8 +3269,8 @@ window.MST=(()=>{
 (()=>{ const $=id=>document.getElementById(id);
   // ---- next show countdown on a skyline building
   window.MSShowSign=x=>{ const el=$("show-sign"); if(!x||!x.date){ el.hidden=true; return; }
-    const ny=new Date(new Date().toLocaleString("en-US",{timeZone:"America/New_York"})); ny.setHours(0,0,0,0);
-    const d=new Date(x.date+"T00:00:00"), n=Math.round((d-ny)/864e5);
+    const ny=new Date(new Date().toLocaleString("en-US",{timeZone:"America/New_York"})), hr=ny.getHours(); ny.setHours(0,0,0,0);
+    const d=new Date(x.date+"T00:00:00"); let n=Math.round((d-ny)/864e5); if(n===-1&&hr<6) n=0; /* still the show night until 6am */
     $("ss-a").textContent=[d.toLocaleDateString("en-US",{month:"short",day:"numeric"}),x.venue].filter(Boolean).join(" · ");
     $("ss-b").textContent=n<=0?"TONIGHT":n===1?"TOMORROW":n+" DAYS"; el.hidden=false; el.setAttribute("aria-label",`Next show: ${$("ss-a").textContent}, ${$("ss-b").textContent.toLowerCase()}`); };
   if(window.__msNext) window.MSShowSign(window.__msNext);
@@ -5384,6 +5385,23 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
     const v=cx.createRadialGradient(W/2,H*.32,W*.05,W/2,H*.32,W*.6); v.addColorStop(0,"rgba(8,5,12,.35)"); v.addColorStop(1,"rgba(8,5,12,0)"); cx.fillStyle=v; cx.fillRect(0,0,W,H);
   }
   requestAnimationFrame(draw);
+})();
+</script>
+<style>
+/* phone: the mailing list lives in the Follow panel now (Pat 11-23) */
+#sheet-follow .fl-list{margin:16px 0 0;padding-top:14px;border-top:1px solid rgba(255,255,255,.1)}
+#sheet-follow .fl-list h3{margin:0 0 6px;font:600 11px var(--mono,monospace);letter-spacing:.18em;text-transform:uppercase;color:var(--amber,#ffb347)}
+#sheet-follow .fl-list p{margin:0 0 10px}
+#sheet-follow .fl-list form{display:flex;gap:8px;flex-wrap:wrap}
+#sheet-follow .fl-list input[type=email]{flex:1;min-width:0;font-size:16px}
+</style>
+<script>
+(()=>{ const f=document.getElementById("signup"), fol=document.querySelector("#sheet-follow .in"), txt=document.getElementById("nl-text"), msg=document.getElementById("msg"); if(!f||!fol) return;
+  const box=document.createElement("div"); box.className="fl-list"; box.innerHTML='<h3>The list</h3>'; fol.appendChild(box);
+  const home=f.parentNode, move=()=>{ const ph=document.body.classList.contains("ph");
+    if(ph&&f.parentNode!==box){ if(txt) box.appendChild(txt); box.appendChild(f); if(msg) box.appendChild(msg); }
+    else if(!ph&&f.parentNode===box){ if(txt) home.insertBefore(txt,home.querySelector("#signup")||null); home.appendChild(f); if(msg) home.appendChild(msg); } };
+  move(); new MutationObserver(move).observe(document.body,{attributes:true,attributeFilter:["class"]});
 })();
 </script>
 
