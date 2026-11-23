@@ -4864,6 +4864,13 @@ body.ph .welcome{bottom:calc(var(--barh,62px) + 58px)!important}
 #bar .tile[data-open="listen"]{border-left:1px solid var(--line);border-right:1px solid var(--line)!important}
 #bar .tile[data-open="follow"]{border-right:0!important}
 </style>
+<style>
+/* phone bottom bar: titles a hair bigger than Safari's address-bar text */
+body.ph #bar .tile b{font-size:17px!important;letter-spacing:0!important}
+body.ph #bar .tile small{font-size:10.5px!important}
+body.ph #bar .tile{padding:10px 4px 11px!important}
+@media (max-width:360px){body.ph #bar .tile b{font-size:14.5px!important}}
+</style>
 
 </body>
 </html>
