@@ -5366,8 +5366,8 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
     cx.clearRect(0,0,W,H);
     const base=H*.6, maxH=H*.36, gap=W*.008, bw=(W*.92-gap*(N-1))/N, x0=W*.04;
     for(let i=0;i<N;i++){ let v;
-      if(on&&an){ const lo=Math.floor(Math.pow(i/N,1.6)*data.length*.85)+1, hi=Math.max(lo+1,Math.floor(Math.pow((i+1)/N,1.6)*data.length*.85)+1); let s=0; for(let k=lo;k<hi;k++) s+=data[k]; v=s/(hi-lo)/255*(1+i/N*1.1); v=Math.min(1,Math.pow(v,1.3)); }
-      else if(on) v=.25+.35*Math.abs(Math.sin(t/260+i*.9)*Math.sin(t/410+i*.37));
+      if(on&&an){ const lo=Math.floor(Math.pow(i/N,1.6)*data.length*.85)+1, hi=Math.max(lo+1,Math.floor(Math.pow((i+1)/N,1.6)*data.length*.85)+1); let s=0; for(let k=lo;k<hi;k++) s+=data[k]; v=s/(hi-lo)/255*(1+i/N*1.1); v=Math.min(1,Math.pow(v,1.3))*.35; }
+      else if(on) v=.09+.12*Math.abs(Math.sin(t/260+i*.9)*Math.sin(t/410+i*.37));
       else v=.04+.03*Math.sin(t/900+i*.5);
       lv[i]+=(v-lv[i])*(v>lv[i]?.5:.12);
       const h=Math.max(2*dpr,lv[i]*maxH), x=x0+i*(bw+gap), c=i/(N-1);
