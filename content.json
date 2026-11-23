@@ -224,44 +224,39 @@
  ],
  "covers": [
   {
-   "k": "brightside",
-   "t": "Mr. Brightside",
-   "a": "The Killers"
+   "k": "sunshine",
+   "t": "Sunshine of Your Love",
+   "a": "Cream"
   },
   {
-   "k": "song2",
-   "t": "Song 2",
-   "a": "Blur"
+   "k": "whycantthis",
+   "t": "Why Can't This Be Love",
+   "a": "Van Halen"
   },
   {
-   "k": "sevennation",
-   "t": "Seven Nation Army",
-   "a": "The White Stripes"
+   "k": "sledgehammer",
+   "t": "Sledgehammer",
+   "a": "Peter Gabriel"
   },
   {
-   "k": "lastnite",
-   "t": "Last Nite",
-   "a": "The Strokes"
+   "k": "ishotsheriff",
+   "t": "I Shot the Sheriff",
+   "a": ""
   },
   {
-   "k": "basketcase",
-   "t": "Basket Case",
-   "a": "Green Day"
+   "k": "waituntil",
+   "t": "Wait Until Tomorrow",
+   "a": "John Mayer Trio"
   },
   {
-   "k": "everlong",
-   "t": "Everlong",
-   "a": "Foo Fighters"
+   "k": "alwaysrun",
+   "t": "Always on the Run",
+   "a": "Lenny Kravitz"
   },
   {
-   "k": "takemeout",
-   "t": "Take Me Out",
-   "a": "Franz Ferdinand"
-  },
-  {
-   "k": "usesomebody",
-   "t": "Use Somebody",
-   "a": "Kings of Leon"
+   "k": "thedoor",
+   "t": "The Door",
+   "a": "Teddy Swims"
   }
  ]
 }

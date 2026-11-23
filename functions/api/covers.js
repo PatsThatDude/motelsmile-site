@@ -1,7 +1,7 @@
 // Request line: fans vote on the next Mystery Cover Tune.
 // GET -> {ok, songs:[{k,t,a,n}], mine}   POST {k,hp} -> one vote per visitor per day
 const J=(o,s=200,c="no-store")=>new Response(JSON.stringify(o),{status:s,headers:{"content-type":"application/json","cache-control":c}});
-const DEF=[["brightside","Mr. Brightside","The Killers"],["song2","Song 2","Blur"],["sevennation","Seven Nation Army","The White Stripes"],["lastnite","Last Nite","The Strokes"],["basketcase","Basket Case","Green Day"],["everlong","Everlong","Foo Fighters"],["takemeout","Take Me Out","Franz Ferdinand"],["usesomebody","Use Somebody","Kings of Leon"]];
+const DEF=[["sunshine","Sunshine of Your Love","Cream"],["whycantthis","Why Can't This Be Love","Van Halen"],["sledgehammer","Sledgehammer","Peter Gabriel"],["ishotsheriff","I Shot the Sheriff",""],["waituntil","Wait Until Tomorrow","John Mayer Trio"],["alwaysrun","Always on the Run","Lenny Kravitz"],["thedoor","The Door","Teddy Swims"]];
 const sha=async t=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t)))].slice(0,10).map(b=>b.toString(16).padStart(2,"0")).join("");
 async function songs(request){
   try{ const r=await fetch(new URL("/content.json",request.url)); const c=await r.json(); const L=(c.covers||[]).filter(x=>x&&x.k&&x.t); if(L.length) return L.map(x=>[String(x.k),String(x.t),String(x.a||"")]); }catch(e){}
