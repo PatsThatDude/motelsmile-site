@@ -4976,6 +4976,14 @@ body.ph .mini{display:none!important}
   ["play","pause","timeupdate","ended","seeked","loadedmetadata","volumechange"].forEach(k=>audio.addEventListener(k,paint)); setTimeout(paint,1500); paint();
 })();
 </script>
+<style>
+/* phone: the neon panels light the wet roof just above them (Pat 11-23) */
+#ph-spill{display:none}
+body.ph #ph-spill{display:block;position:absolute;left:0;right:0;bottom:0;height:230px;z-index:6;pointer-events:none;mix-blend-mode:screen;
+ background:radial-gradient(60% 55% at 26% 70%,rgba(255,61,127,.42),transparent 70%),radial-gradient(42% 32% at 74% 64%,rgba(60,150,255,.48),transparent 70%),radial-gradient(42% 30% at 74% 86%,rgba(255,179,71,.30),transparent 70%);
+ -webkit-mask-image:linear-gradient(transparent,#000 45%);mask-image:linear-gradient(transparent,#000 45%)}
+</style>
+<script>(()=>{ const st=document.getElementById("stage"); if(!st) return; const d=document.createElement("div"); d.id="ph-spill"; d.setAttribute("aria-hidden","true"); st.appendChild(d); })();</script>
 
 </body>
 </html>
