@@ -4537,8 +4537,8 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
 #sl .sl-mct{position:absolute;z-index:3;border:0;padding:0;background:transparent;cursor:pointer;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .4s}
 #sl.s3 .sl-mct{pointer-events:auto;opacity:1}
 #sl .sl-glow{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;mix-blend-mode:screen;transition:opacity .5s}
-#sl.s3 .sl-glow{animation:mctPulse 2.6s ease-in-out .5s infinite}
-@keyframes mctPulse{0%,100%{opacity:.25}50%{opacity:1}}
+#sl.s3 .sl-glow.g-b{animation:mctB 3s ease-in-out .4s infinite}#sl.s3 .sl-glow.g-p{animation:mctP 3s ease-in-out .4s infinite}
+@keyframes mctB{0%,100%{opacity:.15}25%{opacity:1}50%{opacity:.35}}@keyframes mctP{0%,100%{opacity:.15}50%{opacity:.35}75%{opacity:1}}
 @keyframes mctGlow{0%,100%{box-shadow:0 0 0 0 rgba(70,220,255,0)}50%{box-shadow:0 0 0 2px rgba(70,220,255,.55),0 0 22px rgba(70,220,255,.45)}}
 #sl .sl-mct:hover,#sl .sl-mct:focus-visible{outline:none}
 #sl:has(.sl-mct:hover) .sl-glow,#sl:has(.sl-mct:focus-visible) .sl-glow{animation:none;opacity:1}
@@ -4589,7 +4589,7 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
 @media (prefers-reduced-motion:reduce){#sl .sl-wrap,#sl .sl-f{transition:none}#play .sl-curl{animation:none}}
 </style>
 <div id="sl" aria-hidden="true" role="dialog" aria-label="The setlist under the crate">
-  <div class="sl-wrap"><img class="sl-f f1" alt="" data-src="img/hang/sl1.webp?v=6" width="1672" height="941"><img class="sl-f f2" alt="" data-src="img/hang/sl2.webp?v=6" width="1672" height="941"><img class="sl-f f3 sl-bg" alt="Tonight's setlist, gaffer-taped to the roof: the Big 3 (Better Free, Get Back, Fences), then Mystery Cover Tune, Mean, Dirty Little Liar, Watch Your Tone, Don't Mind It, Matter of Time" data-src="img/hang/sl3.webp?v=7" width="1672" height="941"><img class="sl-glow" alt="" data-src="img/hang/mct-glow.png?v=1" width="1672" height="941"><button class="sl-mct" type="button" style="left:35.2%;top:45.6%;width:21.8%;height:6.2%" aria-label="Mystery Cover Tune: open the request line"></button></div>
+  <div class="sl-wrap"><img class="sl-f f1" alt="" data-src="img/hang/sl1.webp?v=6" width="1672" height="941"><img class="sl-f f2" alt="" data-src="img/hang/sl2.webp?v=6" width="1672" height="941"><img class="sl-f f3 sl-bg" alt="Tonight's setlist, gaffer-taped to the roof: the Big 3 (Better Free, Get Back, Fences), then Mystery Cover Tune, Mean, Dirty Little Liar, Watch Your Tone, Don't Mind It, Matter of Time" data-src="img/hang/sl3.webp?v=9" width="1672" height="941"><img class="sl-glow g-b" alt="" data-src="img/hang/mct-blue.png?v=1" width="1672" height="941"><img class="sl-glow g-p" alt="" data-src="img/hang/mct-pink.png?v=1" width="1672" height="941"><button class="sl-mct" type="button" style="left:35.2%;top:45.6%;width:21.8%;height:6.2%" aria-label="Mystery Cover Tune: open the request line"></button></div>
   <div class="sl-shade"></div>
   <button class="sl-x" type="button">✕ Back to the roof</button>
   <div class="sl-hint">Tap the Mystery Cover Tune</div>
