@@ -4566,6 +4566,58 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
   window.MSSetlist=open;
 })();
 </script>
+<style>
+#walk-vig{position:fixed;inset:0;z-index:80;pointer-events:none;opacity:0;background:radial-gradient(ellipse 60% 60% at var(--vx,50%) var(--vy,55%),transparent 35%,rgba(3,2,8,.85) 100%)}
+body.walking #stage>:not(#play){opacity:0!important;transition:opacity .18s}
+body.walking #stage{will-change:transform}
+body.walking #play .bm{transition:none}
+</style>
+<div id="walk-vig" aria-hidden="true"></div>
+<script>
+/* Walk-up: tap something you go to (crate, jar, binoculars, bar) -> turn toward it, a few bobbing steps in, then its own scene opens */
+(()=>{ const stage=document.getElementById("stage"), vig=document.getElementById("walk-vig"); if(!stage) return;
+  const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  const SEL="#pk-crate,#play [data-walk]"; /* the jar and binoculars already have their own camera push */
+  let walking=false;
+  function step(ctx,t,vol){ try{ const n=ctx.sampleRate*.09, b=ctx.createBuffer(1,n,ctx.sampleRate), d=b.getChannelData(0);
+      for(let i=0;i<n;i++){ const e=Math.pow(1-i/n,3); d[i]=(Math.random()*2-1)*e*(i<n*.25?1:.55); }
+      const s=ctx.createBufferSource(); s.buffer=b; const f=ctx.createBiquadFilter(); f.type="lowpass"; f.frequency.value=900+Math.random()*300;
+      const g=ctx.createGain(); g.gain.value=vol; s.connect(f); f.connect(g); g.connect(ctx.destination); s.start(t); }catch(e){} }
+  function walk(el,done){
+    if(walking) return; walking=true;
+    const r=el.getBoundingClientRect(), st=stage.getBoundingClientRect();
+    const tx=r.left+r.width/2-st.left, ty=r.top+r.height/2-st.top;
+    const ph=innerWidth<=760, S=ph?1.45:1.6, D=still?0:820, steps=3;
+    const cx=st.width/2, cy=st.height*.55, PX=(cx-tx)*.55, PY=(cy-ty)*.3;
+    const bms=[...document.querySelectorAll("#play .bm")].filter(b=>b.offsetParent).map(b=>{ const q=b.getBoundingClientRect(); return [b,(q.left+q.width/2-st.left-tx),(q.top+q.height-st.top-ty)]; });
+    vig.style.setProperty("--vx",(tx+st.left)/innerWidth*100+"%"); vig.style.setProperty("--vy",(ty+st.top)/innerHeight*100+"%");
+    document.body.classList.add("walking"); stage.style.transformOrigin=`${tx}px ${ty}px`;
+    const ctx=window.MSAC&&window.MSAC(); if(ctx&&!still){ for(let i=0;i<steps;i++) step(ctx,ctx.currentTime+.06+i*(D/1000/steps),.05+.02*i); }
+    const t0=performance.now();
+    const fin=()=>{ done(); setTimeout(reset,650); };
+    if(!D){ fin(); return; }
+    (function f(now){ const t=Math.min(1,(now-t0)/D);
+      const turn=Math.min(1,t/.3), tk=turn*turn*(3-2*turn);            // quick head turn toward it
+      const wk=t<.15?0:(t-.15)/.85, ek=wk*wk*(3-2*wk);                     // then the walk in
+      const sc=1+(S-1)*ek, bob=Math.abs(Math.sin(wk*Math.PI*steps))*-(ph?4:6)*(1-wk*.4), sway=Math.sin(wk*Math.PI*steps)*(ph?1.5:2.5);
+      const m=sc-1, px=Math.max(-(st.width-tx)*m,Math.min(tx*m,PX*tk+sway)), py=Math.max(-(st.height-ty)*m,Math.min(ty*m,PY*tk+bob));
+      stage.style.transform=`translate(${px.toFixed(1)}px,${py.toFixed(1)}px) scale(${sc.toFixed(4)})`;
+      bms.forEach(([b,dx,dy])=>{ const k=.16*ek; b.style.translate=`${(dx*k).toFixed(1)}px ${(dy*k*.5).toFixed(1)}px`; });
+      vig.style.opacity=String(.75*ek);
+      if(t<1) requestAnimationFrame(f); else fin(); })(t0);
+  }
+  function reset(){ stage.style.transform=""; stage.style.transformOrigin=""; document.querySelectorAll("#play .bm").forEach(b=>b.style.translate="");
+    vig.style.transition="opacity .35s"; vig.style.opacity="0"; setTimeout(()=>vig.style.transition="",400); document.body.classList.remove("walking"); walking=false; }
+  document.addEventListener("click",e=>{ const el=e.target.closest&&e.target.closest(SEL); if(!el||!stage.contains(el)) return;
+    if(el.dataset.walked){ delete el.dataset.walked; return; }
+    if(walking){ e.preventDefault(); e.stopImmediatePropagation(); return; }
+    if(document.body.classList.contains("jx-on")||document.body.classList.contains("bx-on")||document.body.classList.contains("in-room")) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    walk(el,()=>{ el.dataset.walked="1"; el.click(); });
+  },true);
+  window.MSWalk=walk;
+})();
+</script>
 
 </body>
 </html>
