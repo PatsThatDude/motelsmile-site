@@ -4823,6 +4823,35 @@ body.in-room #ph-top>*,body.jx-zoom #ph-top>*,body.bx-on #ph-top>*{pointer-event
   set(); addEventListener("resize",set); setTimeout(set,700);
 })();
 </script>
+<style>
+/* phone: the 4 section panels are back along the bottom, even columns (Pat 11-23); Menu button retired */
+body.ph #bar{display:grid!important;grid-template-columns:repeat(4,1fr)!important;position:absolute;left:0;right:0;bottom:0;z-index:7}
+body.ph #bar .tile{padding:9px 6px 10px!important;border-right:1px solid var(--line)!important;border-bottom:0!important;align-items:center;text-align:center;gap:3px!important}
+body.ph #bar .tile:last-child{border-right:0!important}
+body.ph #bar .tile small{font-size:9px!important;letter-spacing:.12em}
+body.ph #bar .tile b{font-size:clamp(11px,3.3vw,14px)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;line-height:1.15}
+body.ph #bar .tile em{display:none!important}
+body.ph #bar .tile::before{content:"";position:absolute;left:18%;right:18%;top:0;height:2px;background:var(--c);box-shadow:0 0 8px var(--c);opacity:.9}
+body.ph #bar .tile{position:relative}
+body.ph #ph-menu{display:none!important}
+body.ph .ph-dots{bottom:calc(var(--barh,62px) + 10px)!important;left:50%!important;transform:translateX(-50%)!important}
+body.in-room #bar,body.jx-zoom #bar,body.bx-on #bar{opacity:0;pointer-events:none}
+</style>
+<script>
+(()=>{ const bar=document.getElementById("bar"), st=document.getElementById("stage"); if(!bar||!st) return;
+  const set=()=>{ if(document.body.classList.contains("ph")) st.style.setProperty("--barh",bar.offsetHeight+"px"); };
+  set(); addEventListener("resize",set); setTimeout(set,800); if(window.ResizeObserver) new ResizeObserver(set).observe(bar);
+  // short labels on phones
+  const sh=()=>{ const ph=document.body.classList.contains("ph"), f=document.getElementById("t-follow"), s=document.getElementById("t-shows");
+    if(s&&ph&&!s.dataset.full){ s.dataset.full=s.textContent; } if(s&&s.dataset.full) s.textContent=ph?s.dataset.full.replace(/^Next:\s*/,""):s.dataset.full; };
+  sh(); setTimeout(sh,1500); setTimeout(sh,4000);
+})();
+</script>
+<style>
+#stage:has(.sheet.open) .ph-dots{opacity:0;pointer-events:none}
+body.ph #bar .tile small{white-space:nowrap;letter-spacing:.06em!important}
+body.ph .welcome{bottom:calc(var(--barh,62px) + 58px)!important}
+</style>
 
 </body>
 </html>
