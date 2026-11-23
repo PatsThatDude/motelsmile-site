@@ -3109,6 +3109,9 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     m.offRoof=async()=>{ clearTimeout(wT); for(let n=0;m.busy&&n<20;n++) await wait(100); m.busy=true; if(S&&m.seated){ kitEl.style.visibility="hidden"; kitEl.classList.remove("on"); m.seated=false; } vis(false); neon(0); m.spot=-1; };
     m.landPrep=t=>{ m.spot=t; m.pose=POSES[0]; setPose(m.pose); place(); vis(false); neon(0); return el.getBoundingClientRect(); };
     m.landShow=()=>{ vis(true); m.busy=false; schedule(6000); };
+    m.kitBox=()=>kitEl?kitEl.getBoundingClientRect():null;
+    m.landKit=f=>{ if(!S) return; m.seated=true; m.wasSeated=true; m.spot=-1; vis(false); frame(f); kitEl.style.opacity=1; kitEl.style.visibility="visible"; kitEl.classList.add("on"); };
+    m.kitFrame=f=>frame(f); m.kitDone=()=>{ frame(S.idle); m.busy=false; schedule(8000); };
     MEMBERS.push(m); window.MSMembers=MEMBERS;
     if(S&&S.start){ m.wasSeated=true; m.pose=POSES[0]; setPose(m.pose); kimg[0].onload=()=>{ sit(); }; schedule(16000+(cfg.offset||0)); return m; }
     m.spot=cfg.home!=null?cfg.home:freeSpot(m); m.pose=cfg.home!=null?POSES[0]:POSES[Math.floor(Math.random()*POSES.length)];
@@ -3122,7 +3125,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
     ar:{1:0.6404,2:0.6635,3:0.5712,4:0.5865,5:0.5096,6:0.5,7:0.5308,8:0.3865,9:0.6538,10:0.5173,11:.6231,12:.5827,13:.3596,g1:.6096,g2:.5769},f:{2:0.927,3:0.999,9:1.4,12:0.762,g1:1.071,g2:1.133,1:1.012,4:1.081,5:1.02,6:1.022,7:1.042,8:1.007,11:1.014,13:1.021}});
   // Jacob: drummer, shots v2/v3 from his master sheet (face-locked)
   const JACOB=Member({name:"Jacob",pre:"jb",v:"?v=b5",gag:"jacob",sound:"drums",anim:"zz",flash:"#ff6ae6",poses:[1,2,3,4,5,6,7,8],zap:9,fried:10,offset:2700,scale:.98,
-    seat:{pre:"jbk",frames:[1,2,3,4],idle:1,x:778,y:309,w:433,h:338,z:74,p:.5,start:true,hit:[182,58,118,150]},
+    seat:{pre:"jbk",frames:[1,2,3,4,5],idle:1,x:778,y:309,w:433,h:338,z:74,p:.5,start:true,hit:[182,58,118,150]},
     ar:{1:.4673,2:.3846,3:.2962,4:.3558,5:.5269,6:.3346,7:.3615,8:.6077,9:.6154,10:.3423,g1:.5115,g2:.4269},f:{1:1.128,7:1.114,8:0.68,9:1.06,10:1.08,g1:1.0,g2:1.29,2:0.988,3:0.979,4:0.98,5:0.987,6:0.986}});
   // every so often one of them pulls a stunt; ?gag=pat|jordan|jacob runs one right away
   const CREW={pat:PAT,jordan:JORDAN,jacob:JACOB}; window.MSGag=n=>CREW[n]&&CREW[n].gag();
@@ -5271,7 +5274,7 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
     const used=new Set(), targets={};
     /* each lands under where he was on the card: Pat left, Jacob middle, Jordan right, spread apart */
     const xs=[];
-    for(const w of WHO){ const m=by(w.k); if(!m||!m.landPrep) continue; const want=SR.width*w.cx; let best=null, bd=1e9;
+    for(const w of WHO){ const m=by(w.k); if(!m||!m.landPrep) continue; if(w.k==="jacob"&&m.kitBox){ const r=m.kitBox(); if(r&&r.width){ targets.jacob={m,kit:r,r:{left:r.left+r.width*.4,width:r.width*.2,right:r.left+r.width*.6,bottom:r.top+r.height*.85,top:r.top,height:r.height*.8}}; continue; } } const want=SR.width*(w.k==="jordan"?.92:w.k==="pat"?.3:w.cx); let best=null, bd=1e9;
       for(let t=0;t<16;t++){ if(used.has(t)) continue; const r=m.landPrep(t), cx=r.left+r.width/2-SR.left;
         if(r.left-SR.left<6||r.right-SR.left>SR.width-6||r.height<40||xs.some(x=>Math.abs(x-cx)<80)) continue;
         const d=Math.abs(cx-want); if(d<bd){ bd=d; best={t,cx}; } }
@@ -5292,36 +5295,36 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
         p.animate([{transform:"translate(0,0) scale(.6)",opacity:.95},{transform:`translate(${dx*.9}px,${-up-Math.random()*up}px) scale(2.2)`,opacity:0}],{duration:dur+Math.random()*300,easing:"ease-out"}).finished.then(()=>p.remove()); } };
       const thunk=()=>{ try{ window.MSAudio&&window.MSAudio.thunk&&window.MSAudio.thunk(); }catch(_){} };
       let lx=fx; /* where he ends up standing */
-      if(w.k==="jacob"){
-        /* JACOB: looks down, drops like a rock, goes flat as a pancake, springs back up */
+      if(w.k==="jacob"&&T.kit){
+        /* JACOB: drops straight down onto his drum stool, shocked, then relieved */
+        const K=T.kit, sx=K.left+K.width*.52-SR.left, sy=K.top+K.height*.62-SR.top;
         await anim(220,u=>at(s0.x,by0-u*14,H0,0,1,1+u*.06));
-        await anim(520,u=>{ const g=u*u; at(s0.x+(fx-s0.x)*u,by0+(fy-by0)*g,H0+(H1-H0)*u,0,1-.12*u,1+.22*u); });
-        thunk(); dust(10,.35,26,900);
-        await anim(140,u=>at(fx,fy,H1,0,1+.45*u,1-.6*u));          /* splat */
-        await wait(450);                                           /* stays flat */
-        await anim(260,u=>at(fx,fy-Math.sin(u*Math.PI)*H1*.55,H1,0,1.45-.6*u,.4+.75*u)); /* boing */
-        await anim(220,u=>at(fx,fy-Math.sin(u*Math.PI)*H1*.18,H1,0,.85+.15*u,1.15-.15*u)); /* small boing */
-        await anim(120,u=>at(fx,fy,H1,0,1+.08*Math.sin(u*Math.PI),1-.08*Math.sin(u*Math.PI)));
+        await anim(560,u=>{ const g=u*u; at(s0.x+(sx-s0.x)*u,by0+(sy-by0)*g,H0+(K.height*.95-H0)*u,0,1-.1*u,1+.15*u); });
+        im.remove(); T.m.landKit(5); thunk(); try{ window.MSPlay&&window.MSPlay.crash&&window.MSPlay.crash(); }catch(_){}
+        const kit=document.querySelector(".bm-kit.on"); kit&&kit.animate([{transform:"translateY(6px) scale(1.02,.97)"},{transform:"translateY(-3px)"},{transform:"none"}],{duration:380,easing:"ease-out"});
+        await wait(1700); T.m.kitDone(); return;
       } else if(w.k==="jordan"){
-        /* JORDAN: flaps, floats down like a leaf swinging side to side, lands on one foot, topples over, gets back up */
+        /* JORDAN: flaps, floats down like a leaf, lands on his side of the roof, drops to one knee, stands */
         await anim(700,u=>at(s0.x,by0-Math.sin(u*Math.PI)*18,H0,Math.sin(u*20)*14));
-        await anim(1500,u=>{ const x=s0.x+(fx-s0.x)*u+Math.sin(u*Math.PI*3)*SR.width*.16*(1-u), y=by0+(fy-by0)*u, rot=Math.cos(u*Math.PI*3)*24*(1-u*.7); at(x,y,H0+(H1-H0)*u,rot); });
-        thunk(); dust(4,.25,10,600);
-        await anim(700,u=>at(fx,fy,H1,Math.sin(u*Math.PI*3.5)*28*(1+u)));   /* wobble, getting worse */
-        await anim(280,u=>at(fx,fy,H1,-70*u-20));                           /* timber */
-        dust(6,.3,14,700,-H1*.4); thunk(); await wait(550);
-        await anim(380,u=>at(fx,fy,H1,-90+90*u));                           /* gets up */
+        await anim(1500,u=>{ const x=s0.x+(fx-s0.x)*u+Math.sin(u*Math.PI*3)*SR.width*.12*(1-u), y=by0+(fy-by0)*u, rot=Math.cos(u*Math.PI*3)*24*(1-u*.7); at(x,y,H0+(H1-H0)*u,rot); });
+        im.remove(); thunk(); dust(4,.25,10,600);
+        const k=document.createElement("img"); k.src=IMG+"jordan-kneel.webp"; k.alt=""; fall.appendChild(k); const kh=H1*.72, kw=kh*355/440;
+        Object.assign(k.style,{height:kh+"px",width:kw+"px",left:(fx-kw/2)+"px",top:(fy-kh)+"px",transformOrigin:"50% 100%"});
+        await k.animate([{transform:"scale(1,.9)"},{transform:"none"}],{duration:260,easing:"ease-out"}).finished.catch(()=>{});
+        await wait(1100); k.animate([{transform:"none"},{transform:"translateY(-6px) scale(1,1.06)"}],{duration:220,fill:"forwards"});
+        await wait(200); T.m.landShow(); k.animate([{opacity:1},{opacity:0}],{duration:200}).finished.then(()=>k.remove()); return;
       } else {
-        /* PAT: spins like a top all the way down, skids across the roof, dizzy */
-        const dir=fx<SR.width/2?1:-1, sk=SR.width*.2*dir, x0=fx-sk;
-        await anim(300,u=>at(s0.x,by0,H0,u*30,1,1,"50% 50%"));
-        await anim(950,u=>{ const g=u*u; at(s0.x+(x0-s0.x)*u,by0+(fy-by0)*g,H0+(H1-H0)*u,30+u*1080,1,1,"50% 50%"); });
-        thunk(); dust(3,.15,8,500,-sk);
-        await anim(700,u=>{ const e=1-Math.pow(1-u,3); at(x0+sk*e,fy,H1,-dir*18*(1-u)); if(Math.random()<.35) dust(1,0,6,400,-sk*(1-e)); });
-        /* dizzy stars circling his head */
-        const stars=[0,1,2].map(()=>{ const t=document.createElement("i"); t.textContent="★"; Object.assign(t.style,{position:"absolute",color:"#ffd36a",font:"700 14px system-ui",textShadow:"0 0 6px #ffb23d",pointerEvents:"none"}); fall.appendChild(t); return t; });
-        await anim(1200,u=>{ stars.forEach((t,k)=>{ const a=u*Math.PI*6+k*2.1; t.style.left=(fx+Math.cos(a)*H1*.16-6)+"px"; t.style.top=(fy-H1*1.02+Math.sin(a)*H1*.05)+"px"; }); at(fx,fy,H1,Math.sin(u*Math.PI*4)*6); });
-        stars.forEach(t=>t.remove());
+        /* PAT: tips over backwards, backflips down, superhero landing */
+        await anim(380,u=>at(s0.x,by0+u*6,H0,-u*28));
+        await anim(950,u=>{ const g=u*u; Object.assign(im.style,{height:(H0+(H1-H0)*u)+"px",width:(H0+(H1-H0)*u)*ar+"px",left:(s0.x+(fx-s0.x)*u-(H0+(H1-H0)*u)*ar/2)+"px",top:(by0+(fy-by0)*g-(H0+(H1-H0)*u)-Math.sin(u*Math.PI)*60)+"px",transformOrigin:"50% 50%",transform:`perspective(600px) rotateX(${-u*360}deg) rotate(${-28*(1-u)}deg)`}); });
+        im.remove(); thunk();
+        const h=document.createElement("img"); h.src=IMG+"pat-hero.webp"; h.alt=""; fall.appendChild(h); const hh=H1*.72, hw=hh*312/440;
+        Object.assign(h.style,{height:hh+"px",width:hw+"px",left:(fx-hw/2)+"px",top:(fy-hh)+"px",transformOrigin:"50% 100%"});
+        h.animate([{transform:"translateY(-10px) scale(1,1.08)"},{transform:"scale(1.06,.9)",offset:.4},{transform:"none"}],{duration:320,easing:"ease-out"});
+        dust(12,.45,10,900); st.animate([{transform:"translate(0,0)"},{transform:"translate(-4px,5px)"},{transform:"translate(4px,-3px)"},{transform:"translate(-2px,2px)"},{transform:"none"}],{duration:320});
+        const ring=document.createElement("i"); fall.appendChild(ring); Object.assign(ring.style,{position:"absolute",left:(fx-10)+"px",top:(fy-6)+"px",width:"20px",height:"12px",borderRadius:"50%",border:"2px solid rgba(255,255,255,.7)",pointerEvents:"none"});
+        ring.animate([{transform:"scale(1)",opacity:.9},{transform:"scale(9,5)",opacity:0}],{duration:600,easing:"ease-out"}).finished.then(()=>ring.remove());
+        await wait(1500); T.m.landShow(); h.animate([{opacity:1},{opacity:0}],{duration:220}).finished.then(()=>h.remove()); return;
       }
       im.remove();
       /* then brush off, and he's back on the roof for real */
