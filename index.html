@@ -2427,7 +2427,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
       $("sec-list").innerHTML=SEC.map(([k,a,h])=>`<li class="${got.has(k)?"got":""}"><i>${got.has(k)?"✓":"?"}</i><span>${got.has(k)?a:h}</span></li>`).join(""); };
     { const sp=document.querySelector(".top span"); if(sp) sp.insertBefore(hunt,sp.firstChild); }
     const NOTE={signal:"The Smile signal is up over the city.",grace:"Grace is free! She’s headed down to the lounge.",megan:"Megan is free! (She says she was never stuck.)",gianna:"Gianna is free! Right on time.",sophia:"Sophia is free! She’s getting back to the lounge.",band:"You messed with the band.",floor:"The dance floor is lit.",windows:"You peeked in every window. Nosy.",jill:"Jill is free! She’s on her way to the lounge.",jill5:"Sharpshooter: Jill freed in 5 shots or fewer."};
-    let noteT=0; const note=(t)=>{ const n=$("sec-note"); n.innerHTML=`<b>★ Secret found · ${got.size}/${SEC.length}</b>${t}`; n.classList.add("on"); clearTimeout(noteT); noteT=setTimeout(()=>n.classList.remove("on"),3800); };
+    let noteT=0; const note=(t)=>{ if(window.MSFoundBar&&window.MSFoundBar(t,got.size+"/"+SEC.length)) return; const n=$("sec-note"); n.innerHTML=`<b>★ Secret found · ${got.size}/${SEC.length}</b>${t}`; n.classList.add("on"); clearTimeout(noteT); noteT=setTimeout(()=>n.classList.remove("on"),3800); };
     window.MSSecret=k=>{ if(got.has(k)||!SEC.some(s=>s[0]===k)) return; got.add(k); showHunt(); hunt.classList.remove("pop"); void hunt.offsetWidth; hunt.classList.add("pop");
       note(k.startsWith("tag:")?`Song tag: “${k.slice(4)}”`:NOTE[k]);
       if(got.size===SEC.length) setTimeout(()=>note(`All ${SEC.length} roof secrets found. Respect.`),4200); };
@@ -5508,6 +5508,31 @@ input,textarea,.sheet .in,.sheet .in *,#rq,#rq *{-webkit-user-select:text;user-s
 document.addEventListener("dragstart",e=>{ if(e.target.closest&&e.target.closest("#stage,#bar")&&e.target.tagName==="IMG") e.preventDefault(); });
 </script>
 <style>#show-sign.gone{visibility:hidden!important}</style>
+<style>
+/* finds show inside the yellow What's here bar: ring pulses, message slides in, then it goes back (Pat 11-23) */
+.gd-btn .gd-found{position:absolute;inset:0;display:flex;align-items:center;gap:6px;padding:0 10px 0 8px;border-radius:inherit;background:inherit;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s;pointer-events:none;overflow:hidden;white-space:nowrap;color:#fff}
+.gd-btn .gd-found em{font-style:normal;color:#ffd36a;font-weight:700;flex:none}
+.gd-btn .gd-found span{display:inline-block;flex:1;min-width:0;overflow:hidden}
+.gd-btn .gd-found span i{display:inline-block;font-style:normal;padding-right:30px}
+.gd-btn.found .gd-found{opacity:1;transform:none}
+.gd-btn.found>*:not(.gd-found):not(.gd-new){opacity:0;transition:opacity .2s}
+.gd-btn.found{animation:gdFound 1s ease-out 3}
+@keyframes gdFound{0%{box-shadow:0 0 0 0 rgba(255,211,106,.95),0 0 14px #ffb23d}70%{box-shadow:0 0 0 12px rgba(255,211,106,0),0 0 22px #ffb23d}100%{box-shadow:0 0 0 0 rgba(255,211,106,0),0 0 14px #ffb23d}}
+.gd-btn .gd-found.scroll span i{animation:gdScroll var(--d,6s) linear 1s forwards}
+@keyframes gdScroll{to{transform:translateX(var(--sx,-100px))}}
+#sec-note{display:none!important}
+</style>
+<script>
+(()=>{ const b=document.getElementById("gd-btn"); if(!b) return; const box=document.createElement("div"); box.className="gd-found"; box.setAttribute("aria-hidden","true"); b.appendChild(box);
+  const live=document.getElementById("sec-note"); let T=0, q=[], busy=false;
+  const show=([t,n])=>{ busy=true; box.className="gd-found"; box.innerHTML=`<em>★ ${n}</em><span><i></i></span>`; box.querySelector("i").textContent=t;
+    if(live){ live.textContent="Secret found: "+t; }
+    b.classList.remove("found"); void b.offsetWidth; b.classList.add("found");
+    requestAnimationFrame(()=>{ const sp=box.querySelector("span"), it=box.querySelector("i"), over=it.offsetWidth-30-sp.clientWidth; if(over>4){ box.style.setProperty("--sx",-(over+8)+"px"); box.style.setProperty("--d",Math.max(2,over/40)+"s"); box.classList.add("scroll"); } });
+    const dur=3400+Math.max(0,(box.querySelector("i").offsetWidth-160))*25; clearTimeout(T); T=setTimeout(()=>{ b.classList.remove("found"); setTimeout(()=>{ busy=false; if(q.length) show(q.shift()); },350); },Math.min(7000,dur)); };
+  window.MSFoundBar=(t,n)=>{ if(!b.offsetParent) return false; if(busy) q.push([t,n]); else show([t,n]); return true; };
+})();
+</script>
 
 </body>
 </html>
