@@ -4708,8 +4708,10 @@ body.walking #play .bm{transition:none}
   ti.addEventListener("input",()=>{ picked=null; delete form.dataset.ok; ai.readOnly=false; ai.value=""; clearTimeout(acT); const q=ti.value.trim(); if(q.length<2){ acHide(); return; }
     const n=nrm(q), board=S.filter(s=>nrm(s.t).includes(n)).slice(0,3); acShow(board,[]);
     acT=setTimeout(async()=>{ const my=++acSeq; let cat=[];
-      try{ const d=await (await fetch("/api/songsearch?q="+encodeURIComponent(q))).json(); cat=d.songs||[]; if(!d.ok) throw 0; }catch(e){
-        try{ const d=await (await fetch("https://itunes.apple.com/search?entity=song&limit=10&country=US&term="+encodeURIComponent(q))).json(); cat=(d.results||[]).map(x=>({t:x.trackName,a:x.artistName,art:x.artworkUrl60})).slice(0,6); }catch(_){} }
+      const cl=t=>String(t||"").replace(/\s*[\(\[](feat\.?|ft\.?|with|remaster|remastered|live|\d{4} remaster|mono|stereo|single version|album version|radio edit)[^\)\]]*[\)\]]/ig,"").replace(/\s+-\s+(\d{4} )?(remaster(ed)?|live|single|radio edit|mono|stereo).*$/i,"").trim();
+      try{ const d=await (await fetch("https://itunes.apple.com/search?entity=song&limit=20&country=US&term="+encodeURIComponent(q))).json(); const seen=new Set();
+        cat=(d.results||[]).map(x=>({t:cl(x.trackName),a:x.artistName,art:x.artworkUrl60})).filter(x=>{ if(/karaoke|tribute|made famous|in the style of/i.test(x.t+" "+x.a)) return false; const k=nrm(x.t)+"|"+nrm(x.a); if(seen.has(k)) return false; seen.add(k); return true; }).slice(0,6); }catch(e){}
+      if(!cat.length){ try{ const d=await (await fetch("/api/songsearch?q="+encodeURIComponent(q))).json(); cat=d.songs||[]; }catch(_){} }
       if(my!==acSeq||ti.value.trim()!==q) return;
       const onB=new Set(board.map(s=>nrm(s.t))); acShow(board,cat.filter(c=>!onB.has(nrm(c.t))).slice(0,6)); },260); });
   ti.addEventListener("keydown",e=>{ if(sug.hidden) return; const opts=[...sug.querySelectorAll('[role=option]')];

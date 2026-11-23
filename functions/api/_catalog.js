@@ -11,7 +11,13 @@ export async function search(q,n=7){
     if(r.ok){ const d=await r.json(); (d.data||[]).forEach(x=>add(x.title_short||x.title,x.artist&&x.artist.name,x.album&&x.album.cover_small)); } }catch(e){} }
   return out.slice(0,n);
 }
+const match=(x,nt,na)=>norm(x.t)===nt&&(!na||norm(x.a).includes(na)||na.includes(norm(x.a)));
 export async function verify(t,a){
-  const L=await search((t+" "+(a||"")).trim(),25), nt=norm(clean(t)), na=norm(a);
-  return L.find(x=>norm(x.t)===nt&&(!na||norm(x.a).includes(na)||na.includes(norm(x.a))))||null;
+  const nt=norm(clean(t)), na=norm(a);
+  const L=await search((t+" "+(a||"")).trim(),25); const hit=L.find(x=>match(x,nt,na)); if(hit) return hit;
+  // MusicBrainz: open music database, good for catalog Deezer/Apple can't serve from here
+  try{ const q=`recording:"${t.replace(/"/g,"")}"`+(a?` AND artist:"${a.replace(/"/g,"")}"`:"");
+    const r=await fetch("https://musicbrainz.org/ws/2/recording/?fmt=json&limit=15&query="+encodeURIComponent(q),{headers:{"user-agent":"MotelSmile/1.0 ( https://motelsmile.pages.dev )","accept":"application/json"}});
+    if(r.ok){ const d=await r.json(); for(const x of d.recordings||[]){ const c={t:clean(x.title),a:((x["artist-credit"]||[])[0]||{}).name||"",art:""}; if(match(c,nt,na)) return c; } } }catch(e){}
+  return null;
 }
