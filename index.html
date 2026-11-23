@@ -4796,7 +4796,7 @@ body.in-room #show-sign.ss-ph,body.jx-zoom #show-sign.ss-ph,body.bx-on #show-sig
   const home=()=>{ const ph=document.body.classList.contains("ph");
     if(ph){ if(el.parentElement!==st) st.appendChild(el); el.classList.add("ss-ph");
       const sg=document.querySelector(".sign"), sr=st.getBoundingClientRect(), r=sg&&sg.getBoundingClientRect();
-      el.style.top=(r&&r.height?(r.bottom-sr.top+4):170)+"px";
+      el.style.top=(r&&r.height?(r.bottom-sr.top-r.height*.18):170)+"px";
       if(r&&r.width){ const w=el.offsetWidth||150, cx=r.left-sr.left+r.width*.7; el.style.setProperty("left",Math.max(12,Math.min(sr.width-w-12,cx-w/2))+"px","important"); } }
     else { if(el.parentElement!==play) play.appendChild(el); el.classList.remove("ss-ph"); el.style.top=""; } };
   home(); addEventListener("resize",home); setTimeout(home,700); setTimeout(home,2500); document.fonts&&document.fonts.ready.then(home);
