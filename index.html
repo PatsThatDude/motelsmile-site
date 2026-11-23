@@ -4534,7 +4534,7 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
 @keyframes slCurl{0%,55%,100%{opacity:0}65%,85%{opacity:1}}
 #sl .sl-shade{position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 49% 50%,transparent 45%,rgba(4,2,8,.75));pointer-events:none}
 #sl .sl-x{position:absolute;left:16px;top:calc(14px + env(safe-area-inset-top,0px));z-index:2;padding:9px 16px;border-radius:999px;border:2px solid var(--cyan,#46dcff);background:rgba(10,6,16,.7);color:#fff;font:600 14px var(--sans,system-ui);cursor:pointer;box-shadow:0 0 14px rgba(70,220,255,.45)}
-#sl .sl-hint{position:absolute;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:2;color:#fff;font:500 13px var(--mono,monospace);letter-spacing:.08em;opacity:0;transition:opacity .5s 1.2s;text-shadow:0 1px 6px #000;white-space:nowrap}
+#sl .sl-hint{position:absolute;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:2;color:#fff;font:500 13px var(--mono,monospace);letter-spacing:.08em;opacity:0;transition:opacity .5s .4s;text-shadow:0 1px 6px #000;white-space:nowrap}
 #sl.s3 .sl-hint{opacity:.85}
 #pk-crate{border-radius:10px}
 @media (prefers-reduced-motion:reduce){#sl .sl-wrap,#sl .sl-f{transition:none}#play .sl-curl{animation:none}}
@@ -4554,7 +4554,7 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
   function open(e){ e&&e.preventDefault(); e&&e.stopPropagation(); load();
     const r=hot.getBoundingClientRect(); wrap.style.setProperty("--ox",(r.left+r.width/2)/innerWidth*100+"%"); wrap.style.setProperty("--oy",(r.top+r.height/2)/innerHeight*100+"%");
     sl.classList.remove("s2","s3"); sl.setAttribute("aria-hidden","false"); document.body.classList.add("jx-on");
-    let went=false; const go=()=>{ if(went) return; went=true; requestAnimationFrame(()=>{ sl.classList.add("open"); clearTimeout(t1); t1=setTimeout(()=>{ sl.classList.add("s2"); t1=setTimeout(()=>sl.classList.add("s3"),700); },1200); }); };
+    let went=false; const go=()=>{ if(went) return; went=true; requestAnimationFrame(()=>{ sl.classList.add("open"); clearTimeout(t1); t1=setTimeout(()=>{ sl.classList.add("s2"); t1=setTimeout(()=>sl.classList.add("s3"),550); },520); }); };
     const im=sl.querySelector(".f1"); if(im.complete&&im.naturalWidth) go(); else { im.onload=go; setTimeout(go,1500); }
     try{ window.MSAudio&&window.MSAudio.thunk&&window.MSAudio.thunk(); }catch(_){}
     sl.querySelector(".sl-x").focus({preventScroll:true}); }
