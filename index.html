@@ -4562,6 +4562,16 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
 #rq .rq-add button:disabled{opacity:.5}
 #rq li button em{font-style:normal;font:600 9.5px var(--mono,monospace);letter-spacing:.08em;text-transform:uppercase;color:#46dcff;border:1px solid rgba(70,220,255,.5);border-radius:99px;padding:1px 6px;position:relative;align-self:center;white-space:nowrap}
 @media (max-width:420px){#rq .rq-row{grid-template-columns:1fr}}
+#rq .rq-ac{position:relative;min-width:0;display:grid}
+#rq #rq-sug{position:absolute;left:0;right:0;bottom:calc(100% + 6px);z-index:3;list-style:none;margin:0;padding:4px;background:#120c19;border:1px solid #46dcff;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.6),0 0 16px rgba(70,220,255,.25);max-height:300px;overflow:auto;min-width:min(330px,80vw)}
+#rq #rq-sug li{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;cursor:pointer}
+#rq #rq-sug li[aria-selected="true"],#rq #rq-sug li:hover{background:rgba(70,220,255,.14)}
+#rq #rq-sug img{width:34px;height:34px;border-radius:5px;flex:none;background:#222}
+#rq #rq-sug .sg-dot{width:34px;height:34px;border-radius:5px;flex:none;display:grid;place-items:center;background:rgba(255,61,127,.18);color:#ff9ac4;font-size:15px}
+#rq #rq-sug div{min-width:0;display:grid}
+#rq #rq-sug b{font:600 14px var(--sans,system-ui);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#rq #rq-sug span{font:400 12px var(--sans,system-ui);color:#a99bb5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#rq #rq-sug .sg-h{font:600 10px var(--mono,monospace);letter-spacing:.1em;text-transform:uppercase;color:#46dcff;padding:6px 8px 2px;cursor:default;background:none!important}
 #rq .rq-x{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;padding:9px 16px;border-radius:999px;border:2px solid var(--cyan,#46dcff);background:rgba(10,6,16,.7);color:#fff;font:600 14px var(--sans,system-ui);cursor:pointer}
 #sl .sl-shade{position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 49% 50%,transparent 45%,rgba(4,2,8,.75));pointer-events:none}
 #sl .sl-x{position:absolute;left:16px;top:calc(14px + env(safe-area-inset-top,0px));z-index:2;padding:9px 16px;border-radius:999px;border:2px solid var(--cyan,#46dcff);background:rgba(10,6,16,.7);color:#fff;font:600 14px var(--sans,system-ui);cursor:pointer;box-shadow:0 0 14px rgba(70,220,255,.45)}
@@ -4575,7 +4585,7 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
   <div class="sl-shade"></div>
   <button class="sl-x" type="button">✕ Back to the roof</button>
   <div class="sl-hint">Tap the Mystery Cover Tune</div>
-  <div id="rq" role="dialog" aria-modal="true" aria-label="Request line" aria-hidden="true"><button class="rq-x" type="button">✕ Back to the setlist</button><div class="rq-box"><h3>Request Line</h3><p class="rq-sub">You pick the Mystery Cover Tune</p><ul id="rq-list"></ul><p class="rq-note" id="rq-note" role="status"></p><form class="rq-add" id="rq-add" autocomplete="off"><b>Not on the list? Add it for everyone.</b><div class="rq-row"><input id="rq-t" maxlength="48" placeholder="Song" aria-label="Song" required><input id="rq-a" maxlength="40" placeholder="Artist" aria-label="Artist"></div><input class="rq-hp" name="hp" tabindex="-1" aria-hidden="true"><button type="submit">Add to the board</button></form></div></div>
+  <div id="rq" role="dialog" aria-modal="true" aria-label="Request line" aria-hidden="true"><button class="rq-x" type="button">✕ Back to the setlist</button><div class="rq-box"><h3>Request Line</h3><p class="rq-sub">You pick the Mystery Cover Tune</p><ul id="rq-list"></ul><p class="rq-note" id="rq-note" role="status"></p><form class="rq-add" id="rq-add" autocomplete="off"><b>Not on the list? Add it for everyone.</b><div class="rq-row"><div class="rq-ac"><input id="rq-t" maxlength="48" placeholder="Start typing a song…" aria-label="Song" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="rq-sug" required><ul id="rq-sug" role="listbox" hidden></ul></div><input id="rq-a" maxlength="40" placeholder="Artist" aria-label="Artist"></div><input class="rq-hp" name="hp" tabindex="-1" aria-hidden="true"><button type="submit">Add to the board</button></form></div></div>
 </div>
 <script>
 /* Band hangout: tap the milk crate, push in, the crate lifts off the taped setlist */
@@ -4683,6 +4693,30 @@ body.walking #play .bm{transition:none}
         $("rq-t").value=""; $("rq-a").value=""; draw(); note.textContent=d.added?"It's on the board for everyone. Get your friends to vote.":"That one's already up. We counted you in."; } }
     catch(err){ note.textContent="The request line is down. Try later."; }
     busy=false; btn.disabled=false; });
+  // autocomplete: board songs first, then Apple's catalog via /api/songsearch
+  const ti=$("rq-t"), ai=$("rq-a"), sug=$("rq-sug"); let acT=0, acSeq=0, acItems=[], acSel=-1;
+  const nrm=x=>String(x).toLowerCase().replace(/^the\s+/,"").replace(/[^a-z0-9]/g,"");
+  function acShow(board,cat){ acItems=[]; let h="";
+    if(board.length){ h+='<li class="sg-h" role="presentation">On the board · tap to vote</li>'; board.forEach(s=>{ acItems.push({vote:s.k,t:s.t,a:s.a}); h+=`<li role="option" data-i="${acItems.length-1}"><i class="sg-dot">★</i><div><b>${esc(s.t)}</b><span>${esc(s.a||"")}</span></div></li>`; }); }
+    if(cat.length){ h+='<li class="sg-h" role="presentation">Songs</li>'; cat.forEach(s=>{ acItems.push(s); h+=`<li role="option" data-i="${acItems.length-1}">${s.art?`<img src="${esc(s.art)}" alt="" loading="lazy">`:'<i class="sg-dot">♪</i>'}<div><b>${esc(s.t)}</b><span>${esc(s.a)}</span></div></li>`; }); }
+    sug.innerHTML=h; sug.hidden=!acItems.length; ti.setAttribute("aria-expanded",String(!sug.hidden)); acSel=-1; }
+  function acHide(){ sug.hidden=true; ti.setAttribute("aria-expanded","false"); acSel=-1; }
+  function acPick(i){ const it=acItems[i]; if(!it) return; acHide();
+    if(it.vote){ ti.value=""; ai.value=""; if(!mine) vote(it.vote); else note.textContent=`“${it.t}” is already on the board.`; return; }
+    ti.value=it.t.slice(0,48); ai.value=it.a.slice(0,40); form.querySelector("button").focus(); }
+  ti.addEventListener("input",()=>{ clearTimeout(acT); const q=ti.value.trim(); if(q.length<2){ acHide(); return; }
+    const n=nrm(q), board=S.filter(s=>nrm(s.t).includes(n)).slice(0,3); acShow(board,[]);
+    acT=setTimeout(async()=>{ const my=++acSeq; let cat=[];
+      try{ const d=await (await fetch("/api/songsearch?q="+encodeURIComponent(q))).json(); cat=d.songs||[]; }catch(e){
+        try{ const d=await (await fetch("https://itunes.apple.com/search?entity=song&limit=10&country=US&term="+encodeURIComponent(q))).json(); cat=(d.results||[]).map(x=>({t:x.trackName,a:x.artistName,art:x.artworkUrl60})).slice(0,6); }catch(_){} }
+      if(my!==acSeq||ti.value.trim()!==q) return;
+      const onB=new Set(board.map(s=>nrm(s.t))); acShow(board,cat.filter(c=>!onB.has(nrm(c.t))).slice(0,6)); },260); });
+  ti.addEventListener("keydown",e=>{ if(sug.hidden) return; const opts=[...sug.querySelectorAll('[role=option]')];
+    if(e.key==="ArrowDown"||e.key==="ArrowUp"){ e.preventDefault(); acSel=(acSel+(e.key==="ArrowDown"?1:-1)+opts.length)%opts.length; opts.forEach((o,i)=>o.setAttribute("aria-selected",String(i===acSel))); opts[acSel]&&opts[acSel].scrollIntoView({block:"nearest"}); }
+    else if(e.key==="Enter"&&acSel>=0){ e.preventDefault(); acPick(+opts[acSel].dataset.i); }
+    else if(e.key==="Escape"){ e.stopPropagation(); acHide(); } });
+  sug.addEventListener("pointerdown",e=>{ const li=e.target.closest("[data-i]"); if(li){ e.preventDefault(); acPick(+li.dataset.i); } });
+  ti.addEventListener("blur",()=>setTimeout(acHide,150));
   rq.querySelector(".rq-x").addEventListener("click",close);
   rq.addEventListener("click",e=>{ const b=e.target.closest("button[data-k]"); if(b){ e.stopPropagation(); vote(b.dataset.k); return; } if(e.target===rq) close(e); else e.stopPropagation(); });
   addEventListener("keydown",e=>{ if(e.key==="Escape"&&rq.classList.contains("on")){ e.stopImmediatePropagation(); close(e); } },true);
