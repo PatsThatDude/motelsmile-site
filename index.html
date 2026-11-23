@@ -2457,7 +2457,7 @@ body.gg-on .lg-panel,body.gg-on .lg-tag,body.gg-on .lg-hint,body.gg-on .lg-swipe
   const clampC=c=>{ const {half}=span(); return Math.max(half,Math.min(IMG.w-half,c)); };
   const toPx=c=>{ const {W,s}=span(), iw=IMG.w*s; return iw<=W?0.5:Math.max(0,Math.min(1,(W/2-c*s)/(W-iw))); };
   stage.style.touchAction="pan-y";
-  stage.addEventListener("pointerdown",e=>{ if(e.target.closest(".sheet,.bar,.pill,button,.top,.gd-btn,.ph-menu,.ph-dots,.dk-arw")) return; drag={x:e.clientX,c:cxT,moved:false}; });
+  stage.addEventListener("pointerdown",e=>{ if(document.body.classList.contains("lw-on")||e.target.closest(".sheet,.bar,.pill,button,.top,.gd-btn,.ph-menu,.ph-dots,.dk-arw,#lw,#lw-block")) return; drag={x:e.clientX,c:cxT,moved:false}; });
   addEventListener("pointermove",e=>{ if(!drag) return; const dx=e.clientX-drag.x; if(Math.abs(dx)>6) drag.moved=true; cxT=clampC(drag.c-dx/span().s); hinted=true; });
   addEventListener("pointerup",e=>{ const d=drag; drag=null; if(!d||!d.moved) return; const dx=e.clientX-d.x;
     if(Math.abs(dx)>40) window.MSPhGo(null,dx<0?1:-1); else { const L=SPS(); let b=0; L.forEach((p,i)=>{ if(Math.abs(clampC(spx(p))-cxT)<Math.abs(clampC(spx(L[b]))-cxT)) b=i; }); window.MSPhGo(b); } });
@@ -3104,7 +3104,12 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       inner.style.transform=""; m.spot=t; m.pose=end&&cfg[end]?P(cfg[end]):POSES[cfg.rest||0]; setPose(m.pose); place(); if(end){ await flicker(2); } m.busy=false; };
     [cfg.walkL,cfg.sit,cfg.bar].filter(Boolean).forEach(k=>{ const q=P(k); window.MSIdleLoad(q.real); window.MSIdleLoad(q.neon); });
     m.resume=()=>{ m.directed=false; schedule(4000); };
-    MEMBERS.push(m);
+    m.name=cfg.name;
+    /* Listen window: the band leaves the roof while they hang on the card, then fall back in and land at a spot */
+    m.offRoof=async()=>{ clearTimeout(wT); for(let n=0;m.busy&&n<20;n++) await wait(100); m.busy=true; if(S&&m.seated){ kitEl.style.visibility="hidden"; kitEl.classList.remove("on"); m.seated=false; } vis(false); neon(0); m.spot=-1; };
+    m.landPrep=t=>{ m.spot=t; m.pose=POSES[0]; setPose(m.pose); place(); vis(false); neon(0); return el.getBoundingClientRect(); };
+    m.landShow=()=>{ vis(true); m.busy=false; schedule(6000); };
+    MEMBERS.push(m); window.MSMembers=MEMBERS;
     if(S&&S.start){ m.wasSeated=true; m.pose=POSES[0]; setPose(m.pose); kimg[0].onload=()=>{ sit(); }; schedule(16000+(cfg.offset||0)); return m; }
     m.spot=cfg.home!=null?cfg.home:freeSpot(m); m.pose=cfg.home!=null?POSES[0]:POSES[Math.floor(Math.random()*POSES.length)];
     ir.onload=()=>{ ir.onload=null; vis(true); }; setPose(m.pose); place(); schedule((cfg.offset||0)+(cfg.home!=null?9000:0));
@@ -3222,7 +3227,7 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
 <div class="ms-warp" id="ms-warp" aria-hidden="true"></div><div class="ms-flash" id="ms-flash" aria-hidden="true"></div>
 <script>
 /* shared "travel" effect for going to the lounge / arcade: speed lines, flash, whoosh */
-window.MSAway=()=>{ const c=document.body.classList; return c.contains("in-room")||c.contains("bx-on")||c.contains("jx-on"); };
+window.MSAway=()=>{ const c=document.body.classList; return c.contains("lw-on")||c.contains("in-room")||c.contains("bx-on")||c.contains("jx-on"); };
 window.MST=(()=>{
   const W=document.getElementById("ms-warp"), F=document.getElementById("ms-flash");
   function aim(x,y,c){ [W,F].forEach(e=>{ e.style.setProperty("--x",x+"px"); e.style.setProperty("--y",y+"px"); e.style.setProperty("--wc",c); }); }
@@ -5209,6 +5214,114 @@ body.ph #lw-band{z-index:21;margin-top:-260px;height:276px;overflow:hidden}
 body.ph #lw-band.float,body.ph #lw-band.fall{overflow:visible}
 #lw-band .pk{top:260px!important}
 </style><style>#lw-band img{border:0!important;outline:0!important;box-shadow:none!important}</style>
+<style>
+/* Listen window v3: shorter card; the band climbs up onto it, then falls back onto the roof (Pat 11-23) */
+body.ph #lw{height:min(calc(100% - var(--barh,110px) - 214px),392px)!important}
+#lw .lw-rec{width:min(32vw,122px)!important;margin:2px 0 2px!important}
+#lw .lw-hint{display:none}
+#lw .lw-t{font-size:20px!important;margin-top:2px!important}
+#lw .lw-ctl{margin:0 0 2px!important}#lw .lw-ctl .lg-pp{width:40px!important;height:40px!important}
+#lw-block{display:none;position:absolute;inset:0;z-index:18;touch-action:none;background:rgba(5,4,10,.25)}
+body.ph.lw-on #lw-block{display:block}
+#lw,#lw *{touch-action:none}#lw .lw-row{touch-action:pan-x!important}
+body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
+#lw-band .cm{position:absolute;top:260px;left:0;width:0;height:0}
+#lw-band .cm img{position:absolute!important;display:block;max-width:none!important;border:0!important;transform-origin:50% 100%;visibility:hidden}
+#lw-fall{position:absolute;inset:0;z-index:23;pointer-events:none;overflow:hidden}
+#lw-fall img{position:absolute;max-width:none;transform-origin:50% 50%}
+#lw-fall .dust{position:absolute;width:26px;height:18px;border-radius:50%;background:radial-gradient(ellipse,rgba(210,200,190,.75),rgba(210,200,190,0) 70%);pointer-events:none}
+</style>
+<script>
+(()=>{ const st=document.getElementById("stage"), lw=document.getElementById("lw"), band=document.getElementById("lw-band"); if(!st||!lw||!band) return;
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+  const blk=document.createElement("div"); blk.id="lw-block"; blk.setAttribute("aria-hidden","true"); st.insertBefore(blk,band);
+  blk.addEventListener("click",()=>{ const x=lw.querySelector(".lw-x"); x&&x.click(); });
+  ["touchmove","wheel"].forEach(k=>[blk,lw].forEach(el=>el.addEventListener(k,e=>{ if(!e.target.closest(".lw-row")) e.preventDefault(); },{passive:false})));
+  const fall=document.createElement("div"); fall.id="lw-fall"; fall.setAttribute("aria-hidden","true"); st.appendChild(fall);
+  const IMG="img/band/peek/", EX=.4; /* exports are 0.4x source px */
+  /* source-pixel data: crop box, wall edge y, face centre x, face width */
+  const V={ "pat-hold":[0,113,1254,663,711,644,399], "jordan-hold":[4,263,1246,514,730,641,334], "jacob-hold":[3,117,1251,719,734,624,386],
+            "pat-chin":[31,75,1198,696,765,623,384], "jordan-over":[99,234,1082,665,826,787,241], "jordan-sit":[238,44,750,1158,704,603,173], "jacob-drape":[3,138,1053,1105,505,747,250] };
+  /* hand boxes in hold-crop px: [x0,x1] each; y from edge-150 down */
+  const HANDS={pat:[[103,367],[932,1179]],jordan:[[236,443],[799,1019]],jacob:[[165,400],[837,1075]]};
+  const FALL={pat:[52.6,"spin"],jordan:[54.6,"flail"],jacob:[51.2,"drop"]}, BRUSH={pat:48.6,jordan:64.7,jacob:54.5}, FAR={pat:273/440,jordan:376/440,jacob:261/440}, BAR={pat:175/440,jordan:187/440,jacob:170/440};
+  const WHO=[{k:"jordan",cx:.19,t:950,end:["jordan-over","jordan-sit"]},{k:"jacob",cx:.5,t:520,end:["jacob-drape"]},{k:"pat",cx:.81,t:1250,end:["pat-chin"]}];
+  let run=0, faceAt={};
+  /* place one variant image so its wall edge sits on the card edge and its face lines up with the slot */
+  function put(img,v,cx,s,face){ const d=V[v], k=face/d[6], sc=s*k; img.style.width=(d[2]*sc)+"px"; img.style.left=(cx-(d[5]-d[0])*sc)+"px"; img.style.top=(-(d[4]-d[1])*sc)+"px"; return sc; }
+  function build(){ band.querySelectorAll(".cm,.pk").forEach(e=>e.remove());
+    const W=lw.getBoundingClientRect().width, slot=W*.36, s=slot/1254;
+    return WHO.map(w=>{ const c=document.createElement("div"); c.className="cm"; band.appendChild(c); const cx=W*w.cx, hold=w.k+"-hold", face=V[hold][6];
+      const cw=document.createElement("div"); cw.className="cw"; c.appendChild(cw);
+      const mk=(v,clip)=>{ const i=document.createElement("img"); i.alt=""; i.src=IMG+v+".webp?v=1"; (clip?cw:c).appendChild(i); put(i,v,cx,s,face); if(clip) i.style.top=(parseFloat(i.style.top)+260)+"px"; return i; };
+      const hA=mk(hold,1), hB=mk(hold,1), body=mk(hold,1), full=mk(hold), ends=w.end.map(v=>mk(v));
+      const d=V[hold], ey=d[4]-d[1], H=d[3], Wd=d[2], top=Math.max(0,ey-150);
+      const box=([x0,x1])=>`polygon(${x0/Wd*100}% ${top/H*100}%,${x1/Wd*100}% ${top/H*100}%,${x1/Wd*100}% 100%,${x0/Wd*100}% 100%)`;
+      const [A,B]=HANDS[w.k]; hA.style.clipPath=box(A); hB.style.clipPath=box(B);
+      const yb=(ey-150)/H*100, yt=100; /* body: everything except the two hand boxes below the line */
+      body.style.clipPath=`polygon(0 0,100% 0,100% ${yt}%,${B[1]/Wd*100}% ${yt}%,${B[1]/Wd*100}% ${yb}%,${B[0]/Wd*100}% ${yb}%,${B[0]/Wd*100}% ${yt}%,${A[1]/Wd*100}% ${yt}%,${A[1]/Wd*100}% ${yb}%,${A[0]/Wd*100}% ${yb}%,${A[0]/Wd*100}% ${yt}%,0 ${yt}%)`;
+      return {w,c,hA,hB,body,full,ends,cx,s,face}; }); }
+  const show=(el,on)=>{ el.style.visibility=on?"visible":"hidden"; };
+  async function climb(id){ await wait(80); if(id!==run) return; band.className="up"; const P=build();
+    await Promise.all(P.map(async p=>{ await wait(p.w.t); if(id!==run) return;
+      const h=parseFloat(p.full.style.width)*(V[p.w.k+"-hold"][3]/V[p.w.k+"-hold"][2]);
+      /* hand 1 slaps on, hand 2, then he hauls himself up */
+      show(p.hA,1); p.hA.animate([{transform:"translateY(40px)"},{transform:"translateY(-4px)",offset:.7},{transform:"none"}],{duration:260,easing:"ease-out"});
+      await wait(260+Math.random()*220); if(id!==run) return;
+      show(p.hB,1); p.hB.animate([{transform:"translateY(40px)"},{transform:"translateY(-4px)",offset:.7},{transform:"none"}],{duration:260,easing:"ease-out"});
+      await wait(380+Math.random()*300); if(id!==run) return;
+      show(p.body,1); const up=p.body.animate([{transform:`translateY(${h*.75}px)`},{transform:`translateY(${h*.45}px)`,offset:.35},{transform:`translateY(${h*.5}px)`,offset:.5},{transform:"translateY(-6px)",offset:.85},{transform:"none"}],{duration:900,easing:"ease-in-out"});
+      p.hA.animate([{transform:"none"},{transform:"translateY(3px)",offset:.4},{transform:"none"}],{duration:900}); p.hB.animate([{transform:"none"},{transform:"translateY(3px)",offset:.6},{transform:"none"}],{duration:900});
+      await up.finished.catch(()=>{}); if(id!==run) return; show(p.full,1); [p.hA,p.hB,p.body].forEach(e=>show(e,0));
+      await wait(500+Math.random()*500);
+      let cur=p.full; for(const e of p.ends){ if(id!==run) return; show(e,1); show(cur,0); e.animate([{transform:"translateY(-10px) scaleY(1.04)"},{transform:"translateY(2px) scaleY(.97)",offset:.6},{transform:"none"}],{duration:380,easing:"ease-out"}); cur=e; await wait(650); }
+      p.cur=cur; }));
+    if(id===run) band.__P=P; }
+  /* close: they hang where they were, then fall into the roof and land at a spot */
+  async function drop(id){ const P=band.__P||[], SR=st.getBoundingClientRect(); fall.innerHTML="";
+    const M=(window.MSMembers||[]); const by=n=>M.find(m=>m.name&&m.name.toLowerCase()===n);
+    const starts={}; band.querySelectorAll(".cm img").forEach(i=>{});
+    for(const p of P){ const vis=[...p.c.querySelectorAll("img")].find(i=>i.style.visibility==="visible"); if(!vis) continue; const r=vis.getBoundingClientRect(); starts[p.w.k]={x:r.left+r.width*((V[vis.src.match(/peek\/([a-z-]+)\.webp/)[1]][5]-V[vis.src.match(/peek\/([a-z-]+)\.webp/)[1]][0])/V[vis.src.match(/peek\/([a-z-]+)\.webp/)[1]][2])-SR.left,y:r.top+r.height*.25-SR.top,face:p.face*p.s}; }
+    band.querySelectorAll(".cm").forEach(e=>e.remove());
+    /* pick landing spots that are on screen */
+    const used=new Set(), targets={};
+    for(const w of WHO){ const m=by(w.k); if(!m||!m.landPrep) continue; let best=null;
+      const order=[...Array(16).keys()].sort(()=>Math.random()-.5);
+      for(const t of order){ if(used.has(t)) continue; const r=m.landPrep(t), cx=r.left+r.width/2-SR.left; if(cx>40&&cx<SR.width-40&&r.bottom-SR.top<SR.height*.8&&r.height>40){ best={t,r}; break; } }
+      if(!best){ const t=[9,10,11,12,13,14,15].find(t=>!used.has(t)); best={t,r:m.landPrep(t)}; }
+      used.add(best.t); targets[w.k]={m,r:m.landPrep(best.t)}; }
+    await Promise.all(WHO.map(async (w,i)=>{ const T=targets[w.k]; if(!T) return; const s0=starts[w.k]||{x:SR.width*w.cx,y:lw.getBoundingClientRect().top-SR.top-40,face:40};
+      const [ff,style]=FALL[w.k], H0=440*s0.face/ff*.72, H1=T.r.height*1.02, ar=FAR[w.k];
+      const im=document.createElement("img"); im.src=IMG+w.k+"-fall.webp"; im.alt=""; fall.appendChild(im);
+      const fx=T.r.left+T.r.width/2-SR.left, fy=T.r.bottom-SR.top;
+      const at=(cx,cy,h,rot,sx=1,sy=1)=>{ Object.assign(im.style,{height:h+"px",width:h*ar+"px",left:(cx-h*ar/2)+"px",top:(cy-h*.18)+"px",transform:`rotate(${rot}deg) scale(${sx},${sy})`}); };
+      at(s0.x,s0.y,H0,0);
+      /* hang: the card is gone and they haven't noticed yet */
+      const h0=performance.now(), hang=520+i*140; await new Promise(r=>{ const f=()=>{ const u=(performance.now()-h0)/hang; at(s0.x,s0.y-Math.sin(Math.min(1,u)*Math.PI)*10,H0,Math.sin(u*14)*3*(style==="flail"?2:1)); if(u<1) requestAnimationFrame(f); else r(); }; f(); });
+      /* fall: gravity, shrink to roof scale, each in his own way */
+      const dur=style==="drop"?720:style==="spin"?980:1060, t0=performance.now();
+      await new Promise(r=>{ const f=()=>{ const u=Math.min(1,(performance.now()-t0)/dur), g=u*u, x=s0.x+(fx-s0.x)*(style==="flail"?u+Math.sin(u*9)*.06:u), headY=s0.y+((fy-H1*.82)-s0.y)*g - Math.sin(u*Math.PI)*(style==="spin"?40:15), h=H0+(H1-H0)*u;
+          const rot=style==="spin"?u*360:style==="flail"?Math.sin(u*16)*22:0, sy=style==="drop"?1+u*.18:1, sx=style==="drop"?1-u*.1:1;
+          at(x,headY+h*.18,h,rot,sx,sy); if(u<1) requestAnimationFrame(f); else r(); }; f(); });
+      im.remove();
+      /* land: squash, dust, brush off, then he's back on the roof for real */
+      const b=document.createElement("img"); b.src=IMG+w.k+"-brush.webp"; b.alt=""; fall.appendChild(b); const bh=T.r.height*1.02, bw=bh*BAR[w.k];
+      Object.assign(b.style,{height:bh+"px",width:bw+"px",left:(fx-bw/2)+"px",top:(fy-bh)+"px",transformOrigin:"50% 100%"});
+      b.animate([{transform:"scale(1.15,.8)"},{transform:"scale(.95,1.06)",offset:.45},{transform:"none"}],{duration:300,easing:"ease-out"});
+      for(let d=0;d<6;d++){ const p=document.createElement("i"); p.className="dust"; fall.appendChild(p); const dx=(d-2.5)*bw*.22; Object.assign(p.style,{left:(fx+dx-13)+"px",top:(fy-12)+"px"});
+        p.animate([{transform:"translate(0,0) scale(.5)",opacity:.9},{transform:`translate(${dx*.8}px,${-14-Math.random()*14}px) scale(1.8)`,opacity:0}],{duration:700+Math.random()*300,easing:"ease-out"}).finished.then(()=>p.remove()); }
+      try{ window.MSAudio&&window.MSAudio.thunk&&window.MSAudio.thunk(); }catch(_){}
+      await wait(350); b.animate([{transform:"none"},{transform:"rotate(2deg)"},{transform:"rotate(-2deg)"},{transform:"none"}],{duration:420,iterations:3});
+      await wait(1300); T.m.landShow(); b.animate([{opacity:1},{opacity:0}],{duration:250}).finished.then(()=>b.remove()); }));
+  }
+  let was=false;
+  new MutationObserver(()=>{ const open=lw.classList.contains("open");
+    if(open&&!was){ was=true; run++; (window.MSMembers||[]).forEach(m=>m.offRoof&&m.offRoof()); climb(run); }
+    else if(!open&&was&&lw.classList.contains("drop")){ was=false; run++; drop(run); } }).observe(lw,{attributes:true,attributeFilter:["class"]});
+})();
+</script>
+<style>body.ph #lw-band{overflow:visible!important}#lw-band .cm{top:260px}#lw-band .cw{position:absolute;left:0;top:-260px;width:100vw;height:276px;overflow:hidden}</style>
+<style>#lw-band .cm img{height:auto!important;bottom:auto!important;transform:none;animation:none!important;transition:none!important}#lw-band .cm .cw img{transform:none}</style>
 
 </body>
 </html>
