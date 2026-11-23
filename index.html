@@ -5281,7 +5281,7 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
       if(!best){ const t=[15,9,10,4,5,8].find(t=>!used.has(t)); best={t,cx:0}; }
       used.add(best.t); xs.push(best.cx); targets[w.k]={m,r:m.landPrep(best.t)}; }
     /* one at a time so each is readable: Jacob, then Jordan, then Pat */
-    const ORDER={jacob:0,jordan:500,pat:2700};
+    const ORDER={jacob:0,jordan:0,pat:0};
     const anim=(dur,fn)=>new Promise(r=>{ const t0=performance.now(); const f=()=>{ const u=Math.min(1,(performance.now()-t0)/dur); fn(u); if(u<1) requestAnimationFrame(f); else r(); }; f(); });
     await Promise.all(WHO.map(async (w)=>{ const T=targets[w.k]; if(!T) return; const s0=starts[w.k]||{x:SR.width*w.cx,y:lw.getBoundingClientRect().top-SR.top-40,face:40};
       const [ff]=FALL[w.k], H0=440*s0.face/ff*.6, H1=T.r.height*1.02, ar=FAR[w.k];
@@ -5305,8 +5305,8 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
         await wait(1700); T.m.kitDone(); return;
       } else if(w.k==="jordan"){
         /* JORDAN: flaps, floats down like a leaf, lands on his side of the roof, drops to one knee, stands */
-        await anim(700,u=>at(s0.x,by0-Math.sin(u*Math.PI)*18,H0,Math.sin(u*20)*14));
-        await anim(1500,u=>{ const x=s0.x+(fx-s0.x)*u+Math.sin(u*Math.PI*3)*SR.width*.12*(1-u), y=by0+(fy-by0)*u, rot=Math.cos(u*Math.PI*3)*24*(1-u*.7); at(x,y,H0+(H1-H0)*u,rot); });
+        await anim(350,u=>at(s0.x,by0-Math.sin(u*Math.PI)*18,H0,Math.sin(u*10)*14));
+        await anim(1050,u=>{ const x=s0.x+(fx-s0.x)*u+Math.sin(u*Math.PI*3)*SR.width*.12*(1-u), y=by0+(fy-by0)*u, rot=Math.cos(u*Math.PI*3)*24*(1-u*.7); at(x,y,H0+(H1-H0)*u,rot); });
         im.remove(); thunk(); dust(4,.25,10,600);
         const k=document.createElement("img"); k.src=IMG+"jordan-kneel.webp"; k.alt=""; fall.appendChild(k); const kh=H1*.72, kw=kh*355/440;
         Object.assign(k.style,{height:kh+"px",width:kw+"px",left:(fx-kw/2)+"px",top:(fy-kh)+"px",transformOrigin:"50% 100%"});
@@ -5319,7 +5319,7 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
         await anim(300,u=>at(s0.x,by0+u*6,H0,-u*18));
         im.style.visibility="hidden";
         const cy0=by0-H0*.5, cy1=fy-H1*.5, show=(i,cx,cy,hh,rot)=>{ FR.forEach((f,j)=>{ f.e.style.visibility=j===i?"visible":"hidden"; }); const f=FR[i], sc=hh/778; Object.assign(f.e.style,{width:f.w*sc+"px",height:f.h*sc+"px",left:(cx-f.w*sc/2)+"px",top:(cy-f.h*sc/2)+"px",transform:`rotate(${rot}deg)`}); };
-        await anim(1150,u=>{ const cx=s0.x+(fx-s0.x)*u, cy=cy0+(cy1-cy0)*u*u-Math.sin(u*Math.PI)*70, hh=H0+(H1-H0)*u;
+        await anim(1450,u=>{ const cx=s0.x+(fx-s0.x)*u, cy=cy0+(cy1-cy0)*u*u-Math.sin(u*Math.PI)*70, hh=H0+(H1-H0)*u;
           if(u<.22) show(0,cx,cy,hh,-18-u/.22*30); else if(u<.5) show(1,cx,cy,hh,25-(u-.22)/.28*40); else if(u<.76) show(2,cx,cy,hh,-20+(u-.5)/.26*20); else show(3,cx,cy,hh,0); });
         FR.forEach(f=>f.e.remove());
         im.remove(); thunk();
