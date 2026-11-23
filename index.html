@@ -5346,6 +5346,44 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
 </script>
 <style>body.ph #lw-band{overflow:visible!important}#lw-band .cm{top:260px}#lw-band .cw{position:absolute;left:0;top:-260px;width:100vw;height:276px;overflow:hidden}</style>
 <style>#lw-band .cm img{height:auto!important;bottom:auto!important;transform:none;animation:none!important;transition:none!important}#lw-band .cm .cw img{transform:none}</style>
+<style>
+/* Listen card background: EQ bars that move with the song (Pat 11-23) */
+#lw-eq{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;border-radius:inherit}
+#lw>*:not(#lw-eq){position:relative;z-index:1}
+#lw .lw-x{position:absolute!important}
+</style>
+<script>
+(()=>{ const lw=document.getElementById("lw"), audio=document.getElementById("lg-audio"); if(!lw||!audio) return;
+  const cv=document.createElement("canvas"); cv.id="lw-eq"; cv.setAttribute("aria-hidden","true"); lw.insertBefore(cv,lw.firstChild); const cx=cv.getContext("2d");
+  let an=null, data=null, tried=false;
+  const hook=()=>{ if(an||tried) return; tried=true; try{ const ac=window.MSAC&&window.MSAC(); if(!ac) return; const src=ac.createMediaElementSource(audio); an=ac.createAnalyser(); an.fftSize=128; an.smoothingTimeConstant=.78; src.connect(an); an.connect(ac.destination); data=new Uint8Array(an.frequencyBinCount); }catch(e){ an=null; } };
+  audio.addEventListener("play",()=>{ if(lw.classList.contains("open")) hook(); });
+  const N=24, lv=new Array(N).fill(0);
+  function draw(t){ requestAnimationFrame(draw); if(!lw.classList.contains("open")) return;
+    const r=lw.getBoundingClientRect(), dpr=Math.min(2,devicePixelRatio||1), W=Math.round(r.width*dpr), H=Math.round(r.height*dpr); if(cv.width!==W||cv.height!==H){ cv.width=W; cv.height=H; }
+    if(!an&&!audio.paused) hook();
+    const on=!audio.paused&&!audio.muted; if(on&&an) an.getByteFrequencyData(data);
+    cx.clearRect(0,0,W,H);
+    const base=H*.6, maxH=H*.36, gap=W*.008, bw=(W*.92-gap*(N-1))/N, x0=W*.04;
+    for(let i=0;i<N;i++){ let v;
+      if(on&&an){ const lo=Math.floor(Math.pow(i/N,1.6)*data.length*.85)+1, hi=Math.max(lo+1,Math.floor(Math.pow((i+1)/N,1.6)*data.length*.85)+1); let s=0; for(let k=lo;k<hi;k++) s+=data[k]; v=s/(hi-lo)/255*(1+i/N*1.1); v=Math.min(1,Math.pow(v,1.3)); }
+      else if(on) v=.25+.35*Math.abs(Math.sin(t/260+i*.9)*Math.sin(t/410+i*.37));
+      else v=.04+.03*Math.sin(t/900+i*.5);
+      lv[i]+=(v-lv[i])*(v>lv[i]?.5:.12);
+      const h=Math.max(2*dpr,lv[i]*maxH), x=x0+i*(bw+gap), c=i/(N-1);
+      const g=cx.createLinearGradient(0,base-h,0,base); g.addColorStop(0,`rgba(${Math.round(255-195*c)},${Math.round(61+169*c)},${Math.round(127+128*c)},.9)`); g.addColorStop(1,"rgba(255,61,127,.15)");
+      cx.fillStyle=g; cx.shadowColor=`rgba(${Math.round(255-195*c)},${Math.round(61+169*c)},255,.8)`; cx.shadowBlur=10*dpr;
+      /* segmented like a real meter */
+      const seg=5*dpr; for(let y=base-seg;y>base-h;y-=seg+2*dpr) cx.fillRect(x,y,bw,seg);
+      /* faint reflection below */
+      cx.shadowBlur=0; cx.fillStyle=`rgba(255,61,127,${.12*lv[i]+.03})`; cx.fillRect(x,base+3*dpr,bw,h*.35);
+    }
+    /* soft vignette so the record and text stay readable */
+    const v=cx.createRadialGradient(W/2,H*.32,W*.05,W/2,H*.32,W*.6); v.addColorStop(0,"rgba(8,5,12,.35)"); v.addColorStop(1,"rgba(8,5,12,0)"); cx.fillStyle=v; cx.fillRect(0,0,W,H);
+  }
+  requestAnimationFrame(draw);
+})();
+</script>
 
 </body>
 </html>
