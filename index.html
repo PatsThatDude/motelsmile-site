@@ -4554,7 +4554,7 @@ body.ph .sign{font-size:clamp(32px,10vw,46px)!important;margin-top:2px!important
   function open(e){ e&&e.preventDefault(); e&&e.stopPropagation(); load();
     const r=hot.getBoundingClientRect(); wrap.style.setProperty("--ox",(r.left+r.width/2)/innerWidth*100+"%"); wrap.style.setProperty("--oy",(r.top+r.height/2)/innerHeight*100+"%");
     sl.classList.remove("s2","s3"); sl.setAttribute("aria-hidden","false"); document.body.classList.add("jx-on");
-    let went=false; const go=()=>{ if(went) return; went=true; requestAnimationFrame(()=>{ sl.classList.add("open"); clearTimeout(t1); t1=setTimeout(()=>{ sl.classList.add("s2"); t1=setTimeout(()=>sl.classList.add("s3"),550); },520); }); };
+    let went=false; const go=()=>{ if(went) return; went=true; requestAnimationFrame(()=>{ sl.classList.add("open"); clearTimeout(t1); t1=setTimeout(()=>{ sl.classList.add("s2"); t1=setTimeout(()=>sl.classList.add("s3"),550); },770); }); };
     const im=sl.querySelector(".f1"); if(im.complete&&im.naturalWidth) go(); else { im.onload=go; setTimeout(go,1500); }
     try{ window.MSAudio&&window.MSAudio.thunk&&window.MSAudio.thunk(); }catch(_){}
     sl.querySelector(".sl-x").focus({preventScroll:true}); }
