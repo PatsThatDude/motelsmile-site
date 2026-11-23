@@ -4891,7 +4891,7 @@ body.ph #ph-fade{display:block}
   let last="";
   const fit=()=>{ if(!document.body.classList.contains("ph")){ bar.style.height=""; return; }
     const B=window.MSRoofBox; if(!B) return; const H=st.clientHeight, bottom=B.oy+941*B.s, gap=Math.max(0,H-(bottom-(window.MSPhShift||0)));
-    let h=Math.round(Math.max(96,Math.min(150,gap-34))); if(!window.MSFree||!window.__msH0) window.__msH0=h; else h=window.__msH0; const key=h+":"+Math.round(bottom);
+    let h=124; /* phone bar: 2 stacked tiles left + player right (Pat 11-23) */ if(!window.MSFree||!window.__msH0) window.__msH0=h; else h=window.__msH0; const key=h+":"+Math.round(bottom);
     if(key!==last){ last=key; bar.style.height=h+"px"; f.style.top=(bottom-110)+"px"; f.style.display="none"; st.style.setProperty("--barh",(h-24)+"px"); } };
   setInterval(fit,300); addEventListener("resize",fit); fit();
 })();
@@ -4933,6 +4933,49 @@ body.ph #stage-fill{display:none!important}
 })();
 </script>
 <style>body.ph #bar{background:transparent!important;border-top-color:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}body.ph #bar::before,body.ph #bar::after{display:none!important}</style>
+<style>
+/* phone bar: Shows + Follow stacked on the left, Now playing player on the right (Pat 11-23) */
+body.ph #bar{grid-template-columns:1fr 1fr!important;grid-template-rows:1fr 1fr!important;gap:7px!important;padding:8px 10px calc(10px + env(safe-area-inset-bottom,0px))!important}
+body.ph #bar .tile[data-open="listen"]{display:none!important}
+body.ph #bar .tile[data-open="shows"]{grid-column:1;grid-row:1;order:0!important}
+body.ph #bar .tile[data-open="follow"]{grid-column:1;grid-row:2;order:0!important}
+body.ph #bar .tile[data-open="shows"],body.ph #bar .tile[data-open="follow"]{flex-direction:row!important;align-items:center!important;justify-content:space-between!important;padding:0 12px!important;border-radius:13px!important;min-width:0}
+body.ph #bar .tile[data-open="shows"] small,body.ph #bar .tile[data-open="follow"] small{font-size:10.5px!important;letter-spacing:.14em!important}
+body.ph #bar .tile[data-open="shows"] b{font-size:18px!important}
+body.ph #bar .tile[data-open="follow"] b{font-size:13.5px!important;letter-spacing:-.01em!important}
+#bar-np{display:none}
+body.ph #bar-np{display:flex;flex-direction:column;justify-content:center;gap:5px;grid-column:2;grid-row:1/3;min-width:0;--c:var(--pink);border:1.5px solid var(--c);border-radius:16px;background:rgba(10,7,18,.82);box-shadow:0 0 14px color-mix(in srgb,var(--c) 45%,transparent),inset 0 0 12px color-mix(in srgb,var(--c) 18%,transparent);padding:7px 10px;box-sizing:border-box;color:#fff}
+#bar-np .np-top{display:flex;align-items:center;gap:9px;min-width:0}
+#bar-np .np-t{all:unset;cursor:pointer;display:flex;flex-direction:column;min-width:0;flex:1}
+#bar-np .np-t small{font:600 10px var(--mono,monospace);letter-spacing:.14em;text-transform:uppercase;color:var(--c)}
+#bar-np .np-t b{font:400 16px/1.15 "Tilt Neon",system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bar-np .lg-pp{width:36px;height:36px}
+#bar-np .np-row{display:flex;align-items:center;gap:8px}
+#bar-np .np-bar{flex:1;height:14px;position:relative;cursor:pointer;touch-action:none}
+#bar-np .np-bar::before{content:"";position:absolute;left:0;right:0;top:6px;height:3px;border-radius:2px;background:rgba(255,255,255,.18)}
+#bar-np .np-bar span{position:absolute;left:0;top:6px;height:3px;border-radius:2px;background:var(--c);box-shadow:0 0 6px var(--c);width:0}
+#bar-np .np-time{font:500 10px var(--mono,monospace);color:rgba(255,255,255,.7);font-variant-numeric:tabular-nums;white-space:nowrap}
+body.ph .mini{display:none!important}
+</style>
+<script>
+(()=>{ const bar=document.getElementById("bar"), audio=document.getElementById("lg-audio"), tile=document.querySelector('#bar .tile[data-open="listen"]'); if(!bar||!audio) return;
+  const np=document.createElement("div"); np.id="bar-np"; np.setAttribute("role","region"); np.setAttribute("aria-label","Now playing");
+  np.innerHTML=`<div class="np-top"><button class="np-t" id="np-t" aria-label="Open listen"><small>Now playing</small><b id="np-title">Don't Mind It</b></button><button class="lg-pp" id="np-pp" aria-label="Play"><i></i></button></div>
+  <div class="np-row"><div class="np-bar" id="np-bar" role="slider" aria-label="Seek" tabindex="0"><span id="np-prog"></span></div><span class="np-time" id="np-time">0:00 / 4:06</span></div>`;
+  bar.appendChild(np);
+  const $=id=>document.getElementById(id), fmt=s=>isFinite(s)?Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0"):"0:00";
+  $("np-t").addEventListener("click",()=>tile&&tile.click());
+  $("np-pp").addEventListener("click",e=>{ e.stopPropagation(); window.MSLgToggle&&window.MSLgToggle(); });
+  const sb=$("np-bar"); let sk=false;
+  const seek=e=>{ const r=sb.getBoundingClientRect(), u=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)); if(!audio.duration){ window.MSLgDirect&&window.MSLgDirect(); return; } audio.currentTime=u*audio.duration; };
+  sb.addEventListener("pointerdown",e=>{ sk=true; try{sb.setPointerCapture(e.pointerId);}catch(_){} seek(e); });
+  sb.addEventListener("pointermove",e=>{ if(sk&&audio.duration) seek(e); }); sb.addEventListener("pointerup",()=>sk=false); sb.addEventListener("pointercancel",()=>sk=false);
+  const paint=()=>{ const on=!audio.paused&&!audio.muted, d=audio.duration||246.7, t=audio.currentTime||0;
+    $("np-pp").classList.toggle("playing",on); $("np-pp").setAttribute("aria-label",on?"Pause":"Play");
+    $("np-title").textContent=(window.MSLgTitle&&window.MSLgTitle())||"Don't Mind It"; $("np-prog").style.width=(t/d*100)+"%"; $("np-time").textContent=fmt(t)+" / "+fmt(d); };
+  ["play","pause","timeupdate","ended","seeked","loadedmetadata","volumechange"].forEach(k=>audio.addEventListener(k,paint)); setTimeout(paint,1500); paint();
+})();
+</script>
 
 </body>
 </html>
