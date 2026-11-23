@@ -5023,6 +5023,18 @@ body.ph #ph-top .gd-btn .gd-star img{display:none!important}
 body.ph #ph-top .gd-btn .gd-star::before{content:"★";font:700 14px/1 system-ui;color:#1a0f00}
 </style>
 <style>body.ph #enter-lng{display:none!important}</style>
+<style>
+/* What's here: no pulse ring or bobbing, just the NEW tag; slimmer and higher on phone (Pat 11-23) */
+.gd-btn::after{display:none!important;animation:none!important}
+.gd-btn .gd-new{animation:none!important}
+body.ph #ph-top{top:calc(4px + env(safe-area-inset-top,0px))!important}
+body.ph #ph-top .gd-btn{height:32px!important}
+body.ph #ph-top .gd-btn .gd-star{width:21px!important;height:21px!important}
+body.ph #ph-top .gd-btn .gd-star::before{font-size:12px}
+body.ph #ph-top .gd-btn .gd-cnt{padding:2px 6px!important}
+body.ph #ph-brand{top:calc(1px + env(safe-area-inset-top,0px))!important}
+</style>
+<style>body.ph #ph-top{top:calc(7px + env(safe-area-inset-top,0px))!important}body.ph #ph-top .gd-btn .gd-new{top:-7px!important;right:6px!important;font-size:8px!important;padding:1px 5px!important}body.ph #ph-brand{top:calc(4px + env(safe-area-inset-top,0px))!important}</style>
 
 </body>
 </html>
