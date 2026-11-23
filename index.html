@@ -3076,14 +3076,16 @@ Reply with ONLY JSON: {"reply":"one short friendly sentence","changes":["plain-E
       neon(1); rf.style.opacity=.15; await wait(kind==="big"?900:450);
       for(let i=0;i<(kind==="big"?4:2);i++){ neon(0); await wait(40); neon(1); await wait(40); } neon(0); rf.style.opacity=""; return true; };
     function puff(n){ const R=m.rect(); for(let i=0;i<n;i++) smoke.push({x:R.x+R.w*(.3+Math.random()*.4),y:R.y+R.h*(.02+Math.random()*.25),vx:(Math.random()-.5)*.6,vy:-(0.8+Math.random()*1.2),r:5+Math.random()*6,a:.45,t:0,life:90+Math.random()*60}); kick(); }
-    async function zap(e){ e&&e.stopPropagation(); if(m.busy) return; if(window.MSMomentTry&&Math.random()<.4&&window.MSMomentTry(m)) return; m.busy=true; clearTimeout(wT); (cfg.sound==="chord"?guitarZap:cfg.sound==="drums"?drumZap:bassZap)(1.5); m.zapping=true; kick(); el.classList.add(cfg.anim||"zz");
+    async function zap(e){ e&&e.stopPropagation(); if(m.busy) return; m.busy=true; clearTimeout(wT); (cfg.sound==="chord"?guitarZap:cfg.sound==="drums"?drumZap:bassZap)(1.5); m.zapping=true; kick(); el.classList.add(cfg.anim||"zz");
       setPose(ZAP); place(ZAP); const end=performance.now()+1500; let on=false;
       while(performance.now()<end){ on=!on; neon(on); await wait(55); }
       m.zapping=false; el.classList.remove(cfg.anim||"zz"); neon(0);
       setPose(FRIED); place(FRIED); sizzle(1.4); for(let i=0;i<7;i++){ puff(4); await wait(220); }
       await wait(300); [el,rf,sh].forEach(e=>{ e.style.transition="opacity .45s"; e.style.opacity=0; }); await wait(480);
       vis(false); [el,rf,sh].forEach(e=>{ e.style.transition=""; e.style.opacity=""; });
-      m.spot=-1; await wait(700+Math.random()*600); await appear(); m.busy=false; schedule(); }
+      m.spot=-1; await wait(700+Math.random()*600); await appear(); m.busy=false; schedule();
+      /* every zap ends in a band moment with whoever got zapped (Pat 11-23) */
+      await wait(900); for(let n=0;n<10&&!(window.MSMomentTry&&window.MSMomentTry(m));n++) await wait(500); }
     el.addEventListener("click",()=>window.MSSecret&&window.MSSecret("band")); el.addEventListener("click",zap);
     // dancing with Grace: swap poses on the beat with a neon pop (the drummer plays the kit instead)
     m.away=async()=>{ if(m.busy||gagOn) return false; m.busy=true; clearTimeout(wT); if(m.seated) await stand(); else { await flicker(2); vis(false); neon(0); } m.spot=-1; return true; };
