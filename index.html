@@ -5368,7 +5368,7 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
     for(let i=0;i<N;i++){ let v;
       if(on&&an){ const lo=Math.floor(Math.pow(i/N,1.6)*data.length*.85)+1, hi=Math.max(lo+1,Math.floor(Math.pow((i+1)/N,1.6)*data.length*.85)+1); let s=0; for(let k=lo;k<hi;k++) s+=data[k]; const raw=s/(hi-lo)/255; /* adaptive floor/peak per band: show the jumps, not the constant loudness */
         fl[i]+= (raw-fl[i])*(raw<fl[i]?.3:.07); pk[i]=Math.max(raw,pk[i]*.985,fl[i]+.12);
-        v=Math.max(0,(raw-fl[i])/(pk[i]-fl[i])); v=Math.min(1,Math.pow(v,1.7)); }
+        const dyn=Math.min(1,Math.pow(Math.max(0,(raw-fl[i])/(pk[i]-fl[i])),1.7)), old=Math.min(1,Math.pow(raw*(1+i/N*1.1),1.3)); v=.2*old+.8*dyn; }
       else if(on) v=.25+.35*Math.abs(Math.sin(t/260+i*.9)*Math.sin(t/410+i*.37));
       else v=.04+.03*Math.sin(t/900+i*.5);
       lv[i]+=(v-lv[i])*(v>lv[i]?.65:.22);
