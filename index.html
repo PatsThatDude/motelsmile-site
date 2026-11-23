@@ -5271,7 +5271,7 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
     const used=new Set(), targets={};
     for(const w of WHO){ const m=by(w.k); if(!m||!m.landPrep) continue; let best=null;
       const order=[...Array(16).keys()].sort(()=>Math.random()-.5);
-      for(const t of order){ if(used.has(t)) continue; const r=m.landPrep(t), cx=r.left+r.width/2-SR.left; if(cx>40&&cx<SR.width-40&&r.bottom-SR.top<SR.height*.8&&r.height>40){ best={t,r}; break; } }
+      for(const t of order){ if(used.has(t)) continue; const r=m.landPrep(t), cx=r.left+r.width/2-SR.left; if(r.left-SR.left>12&&r.right-SR.left<SR.width-12&&r.bottom-SR.top<SR.height*.8&&r.height>40&&![...used].some(u=>Math.abs((targets.__x||{})[u]-cx)<60)){ best={t,r}; (targets.__x=targets.__x||{})[t]=cx; break; } }
       if(!best){ const t=[9,10,11,12,13,14,15].find(t=>!used.has(t)); best={t,r:m.landPrep(t)}; }
       used.add(best.t); targets[w.k]={m,r:m.landPrep(best.t)}; }
     await Promise.all(WHO.map(async (w,i)=>{ const T=targets[w.k]; if(!T) return; const s0=starts[w.k]||{x:SR.width*w.cx,y:lw.getBoundingClientRect().top-SR.top-40,face:40};
@@ -5291,12 +5291,23 @@ body.lw-on #play,body.lw-on #play *{animation-play-state:paused!important}
       /* land: squash, dust, brush off, then he's back on the roof for real */
       const b=document.createElement("img"); b.src=IMG+w.k+"-brush.webp"; b.alt=""; fall.appendChild(b); const bh=T.r.height*1.02, bw=bh*BAR[w.k];
       Object.assign(b.style,{height:bh+"px",width:bw+"px",left:(fx-bw/2)+"px",top:(fy-bh)+"px",transformOrigin:"50% 100%"});
-      b.animate([{transform:"scale(1.15,.8)"},{transform:"scale(.95,1.06)",offset:.45},{transform:"none"}],{duration:300,easing:"ease-out"});
-      for(let d=0;d<6;d++){ const p=document.createElement("i"); p.className="dust"; fall.appendChild(p); const dx=(d-2.5)*bw*.22; Object.assign(p.style,{left:(fx+dx-13)+"px",top:(fy-12)+"px"});
-        p.animate([{transform:"translate(0,0) scale(.5)",opacity:.9},{transform:`translate(${dx*.8}px,${-14-Math.random()*14}px) scale(1.8)`,opacity:0}],{duration:700+Math.random()*300,easing:"ease-out"}).finished.then(()=>p.remove()); }
+      const dust=(n,spread,up,dur,x0=0)=>{ for(let d=0;d<n;d++){ const p=document.createElement("i"); p.className="dust"; fall.appendChild(p); const dx=(d-(n-1)/2)*bw*spread; Object.assign(p.style,{left:(fx+x0+dx-13)+"px",top:(fy-12)+"px"});
+        p.animate([{transform:"translate(0,0) scale(.5)",opacity:.9},{transform:`translate(${dx*.9}px,${-up-Math.random()*up}px) scale(1.9)`,opacity:0}],{duration:dur+Math.random()*300,easing:"ease-out"}).finished.then(()=>p.remove()); } };
       try{ window.MSAudio&&window.MSAudio.thunk&&window.MSAudio.thunk(); }catch(_){}
-      await wait(350); b.animate([{transform:"none"},{transform:"rotate(2deg)"},{transform:"rotate(-2deg)"},{transform:"none"}],{duration:420,iterations:3});
-      await wait(1300); T.m.landShow(); b.animate([{opacity:1},{opacity:0}],{duration:250}).finished.then(()=>b.remove()); }));
+      /* each lands his own way */
+      if(w.k==="jacob"){ /* drops straight: lands hard, flattens, bounces once */
+        dust(9,.3,22,900);
+        await b.animate([{transform:"scale(1.3,.62)"},{transform:"scale(.9,1.12) translateY(-34px)",offset:.45},{transform:"scale(1.1,.88)",offset:.8},{transform:"none"}],{duration:620,easing:"ease-out"}).finished.catch(()=>{});
+      } else if(w.k==="pat"){ /* spinning: lands off balance and skids sideways */
+        const dir=fx<SR.width/2?1:-1; b.style.left=(parseFloat(b.style.left)-dir*30)+"px"; dust(4,.15,8,600,-dir*30);
+        await b.animate([{transform:`rotate(${-dir*14}deg)`},{transform:`translateX(${dir*26}px) rotate(${dir*9}deg)`,offset:.5},{transform:`translateX(${dir*30}px) rotate(${-dir*3}deg)`,offset:.8},{transform:`translateX(${dir*30}px)`}],{duration:700,easing:"ease-out",fill:"forwards"}).finished.catch(()=>{});
+        dust(3,.12,6,500); b.style.left=(parseFloat(b.style.left)+dir*30)+"px"; b.getAnimations().forEach(a=>a.cancel());
+      } else { /* flailing: lands on one foot, windmills, nearly falls over */
+        dust(3,.2,10,600);
+        await b.animate([{transform:"rotate(0)"},{transform:"rotate(-12deg)",offset:.2},{transform:"rotate(10deg)",offset:.45},{transform:"rotate(-6deg)",offset:.65},{transform:"rotate(3deg)",offset:.82},{transform:"none"}],{duration:1000,easing:"ease-in-out"}).finished.catch(()=>{});
+      }
+      await wait(200); b.animate([{transform:"none"},{transform:"rotate(2deg)"},{transform:"rotate(-2deg)"},{transform:"none"}],{duration:420,iterations:2});
+      await wait(950); T.m.landShow(); b.animate([{opacity:1},{opacity:0}],{duration:250}).finished.then(()=>b.remove()); }));
   }
   let was=false;
   new MutationObserver(()=>{ const open=lw.classList.contains("open");
