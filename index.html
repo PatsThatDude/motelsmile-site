@@ -4937,14 +4937,14 @@ body.ph #stage-fill{display:none!important}
 /* phone bar: Shows + Follow stacked on the left, Now playing player on the right (Pat 11-23) */
 body.ph #bar{grid-template-columns:1fr 1fr!important;grid-template-rows:1fr 1fr!important;gap:7px!important;padding:8px 10px calc(10px + env(safe-area-inset-bottom,0px))!important}
 body.ph #bar .tile[data-open="listen"]{display:none!important}
-body.ph #bar .tile[data-open="shows"]{grid-column:1;grid-row:1;order:0!important}
-body.ph #bar .tile[data-open="follow"]{grid-column:1;grid-row:2;order:0!important}
+body.ph #bar .tile[data-open="shows"]{grid-column:2;grid-row:1;order:0!important}
+body.ph #bar .tile[data-open="follow"]{grid-column:2;grid-row:2;order:0!important}
 body.ph #bar .tile[data-open="shows"],body.ph #bar .tile[data-open="follow"]{flex-direction:row!important;align-items:center!important;justify-content:space-between!important;padding:0 12px!important;border-radius:13px!important;min-width:0}
 body.ph #bar .tile[data-open="shows"] small,body.ph #bar .tile[data-open="follow"] small{font-size:10.5px!important;letter-spacing:.14em!important}
 body.ph #bar .tile[data-open="shows"] b{font-size:18px!important}
 body.ph #bar .tile[data-open="follow"] b{font-size:13.5px!important;letter-spacing:-.01em!important}
 #bar-np{display:none}
-body.ph #bar-np{display:flex;flex-direction:column;justify-content:center;gap:5px;grid-column:2;grid-row:1/3;min-width:0;--c:var(--pink);border:1.5px solid var(--c);border-radius:16px;background:rgba(10,7,18,.82);box-shadow:0 0 14px color-mix(in srgb,var(--c) 45%,transparent),inset 0 0 12px color-mix(in srgb,var(--c) 18%,transparent);padding:7px 10px;box-sizing:border-box;color:#fff}
+body.ph #bar-np{display:flex;flex-direction:column;justify-content:center;gap:5px;grid-column:1;grid-row:1/3;min-width:0;--c:var(--pink);border:1.5px solid var(--c);border-radius:16px;background:rgba(10,7,18,.82);box-shadow:0 0 14px color-mix(in srgb,var(--c) 45%,transparent),inset 0 0 12px color-mix(in srgb,var(--c) 18%,transparent);padding:7px 10px;box-sizing:border-box;color:#fff}
 #bar-np .np-top{display:flex;align-items:center;gap:9px;min-width:0}
 #bar-np .np-t{all:unset;cursor:pointer;display:flex;flex-direction:column;min-width:0;flex:1}
 #bar-np .np-t small{font:600 10px var(--mono,monospace);letter-spacing:.14em;text-transform:uppercase;color:var(--c)}
