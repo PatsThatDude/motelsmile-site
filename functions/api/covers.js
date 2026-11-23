@@ -1,8 +1,9 @@
 // Request line: fans vote on the next Mystery Cover Tune, and can add songs for everyone to see.
 // GET -> {ok, songs:[{k,t,a,n,fan}], mine}
-// POST {k}            -> vote (one per visitor per day)
+// POST {k}            -> vote (one per visitor per day; voting again moves it)
 // POST {suggest,artist,hp} -> adds a fan pick to the board (and votes for it if they haven't voted today)
 // Admin: POST {admin:<key>, action:"remove", k}
+import {verify} from "./_catalog.js";
 const J=(o,s=200,c="no-store")=>new Response(JSON.stringify(o),{status:s,headers:{"content-type":"application/json","cache-control":c}});
 const ADMIN_SHA256="361ee6ece6ff7358d56d103110a6ddda8ff5b8ce0291147ebe4faadb983bde7a";
 const DEF=[["sunshine","Sunshine of Your Love","Cream"],["whycantthis","Why Can't This Be Love","Van Halen"],["sledgehammer","Sledgehammer","Peter Gabriel"],["ishotsheriff","I Shot the Sheriff","Clapton/Marley"],["waituntil","Wait Until Tomorrow","John Mayer Trio"],["alwaysrun","Always on the Run","Lenny Kravitz"],["thedoor","The Door","Teddy Swims"]];
@@ -38,28 +39,33 @@ export async function onRequestPost({request,env}){
   const w=await who(request), prev=await env.LIST.get(w);
   let b=await board(request,env);
   if(d.suggest!==undefined){
-    const t=String(d.suggest||"").replace(/\s+/g," ").trim(), a=String(d.artist||"").replace(/\s+/g," ").trim();
+    let t=String(d.suggest||"").replace(/\s+/g," ").trim(), a=String(d.artist||"").replace(/\s+/g," ").trim();
     if(t.length<2||t.length>48||a.length>40||!OK.test(t)||(a&&!OK.test(a))) return J({ok:false,error:"Song up to 48 characters, artist up to 40."},400);
     if(BAD.test((t+" "+a).replace(/[^a-z.]/gi,""))) return J({ok:false,error:"Keep it clean for the roof."},400);
     const n=norm(t), hit=b.songs.find(s=>norm(s.t)===n);
     let k=hit&&hit.k;
     if(!hit){
+      const real=await verify(t,a);
+      if(!real) return J({ok:false,error:"Couldn't find that song. Pick it from the list as you type."},400);
+      t=real.t; a=real.a;
       const ip=request.headers.get("cf-connecting-ip")||"x", rl="cov:rl:"+(await hx(ip)).slice(0,20);
       if(await env.LIST.get(rl)) return J({ok:false,error:"One new song every few minutes. Vote for one on the board instead."},429);
       if(b.F.length>=60) return J({ok:false,error:"The board is full. Vote for one that's already up."},429);
       await env.LIST.put(rl,"1",{expirationTtl:300});
-      k="f"+(await hx(n)).slice(0,10);
+      k="f"+(await hx(norm(t))).slice(0,10);
       b.F.push({k,t,a,at:new Date().toISOString(),country:(request.cf&&request.cf.country)||""});
       await env.LIST.put("cov:fan",JSON.stringify(b.F));
     }
-    if(!prev){ await env.LIST.put(w,k,{expirationTtl:60*60*26}); b.T[k]=(b.T[k]|0)+1; await env.LIST.put("cov:tally",JSON.stringify(b.T)); }
+    if(prev!==k){ if(prev&&b.T[prev]>0) b.T[prev]--; await env.LIST.put(w,k,{expirationTtl:60*60*26}); b.T[k]=(b.T[k]|0)+1; await env.LIST.put("cov:tally",JSON.stringify(b.T)); }
     b=await board(request,env);
-    return J({ok:true,added:!hit,k,mine:prev||k,songs:b.songs});
+    return J({ok:true,added:!hit,moved:!!prev&&prev!==k,k,mine:k,songs:b.songs});
   }
   const k=String(d.k||"");
   if(!b.songs.some(s=>s.k===k)) return J({ok:false,error:"Pick one from the list."},400);
-  if(prev) return J({ok:false,error:"One request per night. Come back tomorrow.",mine:prev,songs:b.songs},429);
+  if(prev===k) return J({ok:true,mine:k,songs:b.songs});
+  if(prev&&b.T[prev]>0) b.T[prev]--;
   await env.LIST.put(w,k,{expirationTtl:60*60*26});
   b.T[k]=(b.T[k]|0)+1; await env.LIST.put("cov:tally",JSON.stringify(b.T));
-  return J({ok:true,mine:k,songs:b.songs.map(s=>s.k===k?{...s,n:b.T[k]}:s)});
+  b=await board(request,env);
+  return J({ok:true,moved:!!prev,mine:k,songs:b.songs});
 }
