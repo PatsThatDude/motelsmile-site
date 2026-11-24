@@ -61,18 +61,6 @@
   body.ms-in #lw{z-index:80!important}
   body.ms-in.lw-on #play,body.ms-in.lw-on #play *{animation-play-state:running!important}
   #ms-in.lwon>*{opacity:.18;transition:opacity .3s}
-  /* phone on its side: the Listen window had no room (collapsed); lay it out in a row like desktop */
-  @media (max-height:500px) and (orientation:landscape){
-    body.ph #lw{position:fixed!important;top:12px!important;bottom:12px!important;left:max(12px,env(safe-area-inset-left))!important;right:max(12px,env(safe-area-inset-right))!important;
-      height:auto!important;display:grid!important;grid-template-columns:auto minmax(150px,1fr) minmax(0,1.4fr);grid-template-rows:1fr auto auto auto 1fr;
-      column-gap:22px;align-items:center;justify-items:start;padding:12px 52px 12px 20px!important}
-    body.ph #lw .lw-rec{grid-column:1;grid-row:1/6;width:min(150px,calc(100vh - 70px))!important;margin:0!important;align-self:center}
-    body.ph #lw .lw-h{grid-column:2;grid-row:2;align-self:end}
-    body.ph #lw .lw-t{grid-column:2;grid-row:3;font-size:22px!important;margin:2px 0 0!important;max-width:100%}
-    body.ph #lw .lw-ctl{grid-column:2;grid-row:4;margin:6px 0 0!important}
-    body.ph #lw .lw-row{grid-column:3;grid-row:1/6;align-self:center;margin:0!important;width:100%}
-    body.ph #lw .lw-x{top:8px;right:10px}
-  }
 `;
   const s = document.createElement("style"); s.textContent = css; document.head.appendChild(s);
 
