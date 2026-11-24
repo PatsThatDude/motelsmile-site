@@ -59,7 +59,11 @@
 
   // camera: frame the band (sprites + kit) tight, faces in the upper third
   function cam() {
-    const els = [...play.querySelectorAll(".bm,.bm-kit")].map(e => e.getBoundingClientRect()).filter(r => r.width > 20);
+    // measure in un-zoomed screen space (undo the current camera if one is applied)
+    const k = cur || { z: 1, tx: 0, ty: 0 };
+    const els = [...play.querySelectorAll(".bm,.bm-kit")].map(e => e.getBoundingClientRect())
+      .filter(r => r.width > 20 * k.z)
+      .map(r => ({ left: (r.left - k.tx) / k.z, right: (r.right - k.tx) / k.z, top: (r.top - k.ty) / k.z, bottom: (r.bottom - k.ty) / k.z }));
     if (!els.length) return null;
     const x0 = Math.min(...els.map(r => r.left)), x1 = Math.max(...els.map(r => r.right));
     const y0 = Math.min(...els.map(r => r.top)), y1 = Math.max(...els.map(r => r.bottom));
@@ -70,7 +74,8 @@
     z = Math.max(1.15, z);
     return { z, tx: W() / 2 - z * cx, ty: ty - z * cy };
   }
-  const setCam = c => { st.style.scale = c ? String(c.z) : ""; st.style.translate = c ? `${c.tx}px ${c.ty}px` : ""; };
+  let cur = null;
+  const setCam = c => { cur = c; st.style.scale = c ? String(c.z) : ""; st.style.translate = c ? `${c.tx}px ${c.ty}px` : ""; };
 
   let ui, bv, timer, idle = 20000, live = false;
 
@@ -178,14 +183,24 @@
 
   window.MSIntro = { start, reveal, replay };
   const go = () => {
-    // wait until the band sprites are laid out
-    let n = 0; const t = setInterval(() => {
-      if (cam() || ++n > 40) { clearInterval(t); if (seen && !force) bandBtn(); else start(); document.documentElement.classList.remove("ms-pre"); }
-    }, 100);
+    // start as soon as the band is laid out and holding still (no waiting for every image on the page)
+    let n = 0, last = "";
+    const t = setInterval(() => {
+      const c = cam(), key = c ? [c.z, c.tx, c.ty].map(v => Math.round(v)).join() : "";
+      const ready = c && key === last;
+      last = key;
+      if (ready || ++n > 60) {
+        clearInterval(t);
+        if (seen && !force) bandBtn(); else start();
+        document.documentElement.classList.remove("ms-pre");
+        // re-frame once everything has loaded, in case the roof fit shifted
+        const refit = () => { if (live && !st.classList.contains("ms-cam")) setCam(cam()); };
+        if (document.readyState === "complete") refit(); else addEventListener("load", () => setTimeout(refit, 50));
+      }
+    }, 50);
   };
   const unpre = () => document.documentElement.classList.remove("ms-pre");
   setTimeout(unpre, 6000);   // never leave the page blank
   window.__msUnpre = unpre;
-  const go2 = () => setTimeout(go, 250);
-  if (document.readyState === "complete") go2(); else addEventListener("load", go2);
+  if (document.readyState !== "loading") go(); else addEventListener("DOMContentLoaded", go);
 })();
