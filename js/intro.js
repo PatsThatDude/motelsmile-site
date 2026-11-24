@@ -56,6 +56,59 @@
     #ms-in .row{gap:8px}#ms-in .row .pill{font-size:13px;padding:6px 12px}
     #ms-in .go{font-size:15px;padding:8px 10px 8px 16px;right:max(20px,env(safe-area-inset-right));bottom:16px}
     #ms-in .go .cd{font-size:12px}
+  }
+  /* intro music player: full-screen on phones, big centered card on desktop */
+  #ms-pl{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:rgba(5,4,10,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    animation:msFade .35s both;text-align:center;font-family:var(--mono)}
+  #ms-pl[hidden]{display:none}
+  #ms-pl .card{position:relative;width:min(480px,92vw);max-height:92vh;box-sizing:border-box;padding:30px 34px 28px;border-radius:24px;border:1.5px solid var(--pink);
+    background:radial-gradient(120% 60% at 50% 18%,rgba(255,61,127,.28),transparent 60%),linear-gradient(#150b1b,#07050b);
+    box-shadow:0 0 30px rgba(255,61,127,.35),0 30px 60px rgba(0,0,0,.7);display:flex;flex-direction:column;align-items:center;animation:msUp .4s cubic-bezier(.2,.9,.25,1.1) both}
+  @keyframes msUp{from{transform:translateY(40px);opacity:0}}
+  #ms-pl .x{all:unset;cursor:pointer;position:absolute;top:12px;right:14px;width:40px;height:40px;display:grid;place-items:center;font:400 24px system-ui;color:#fff;opacity:.8}
+  #ms-pl .x:hover{opacity:1}
+  #ms-pl .h{font-size:11px;letter-spacing:.26em;color:var(--pink);text-transform:uppercase;text-shadow:0 0 8px rgba(255,61,127,.6)}
+  #ms-pl .rec{position:relative;width:min(300px,62vw,38vh);aspect-ratio:1;margin:18px 0 20px;border-radius:50%;
+    background:repeating-radial-gradient(circle,#0b0b0e 0 2px,#17171c 2px 3px);box-shadow:0 0 0 2px #26262e,0 16px 36px rgba(0,0,0,.75),0 0 46px rgba(255,61,127,.25);
+    animation:msSpin 3.2s linear infinite;animation-play-state:paused}
+  #ms-pl.on .rec{animation-play-state:running}
+  #ms-pl .rec::after{content:"";position:absolute;inset:0;border-radius:50%;background:linear-gradient(130deg,rgba(255,255,255,.1),transparent 40%)}
+  #ms-pl .rec img{position:absolute;inset:30%;width:40%;height:40%;border-radius:50%;object-fit:cover;box-shadow:0 0 0 6px #ff3d7f;background:#ff3d7f}
+  @keyframes msSpin{to{transform:rotate(360deg)}}
+  #ms-pl .t{font-family:var(--tube);font-size:32px;color:#fff;text-shadow:0 0 12px rgba(255,61,127,.6);line-height:1.15}
+  #ms-pl .a{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:rgba(214,240,255,.75);margin-top:4px}
+  #ms-pl .sk{display:flex;align-items:center;gap:10px;width:100%;margin-top:22px;font-size:12px;color:rgba(255,255,255,.75);font-variant-numeric:tabular-nums;user-select:none;-webkit-user-select:none}
+  #ms-pl .sk span{min-width:40px;text-align:left}#ms-pl .sk span:last-child{text-align:right}
+  #ms-pl .tr{position:relative;flex:1;height:30px;cursor:pointer;touch-action:none}
+  #ms-pl .tr::before{content:"";position:absolute;left:0;right:0;top:50%;height:4px;margin-top:-2px;border-radius:4px;background:rgba(255,255,255,.18)}
+  #ms-pl .tr i{position:absolute;left:0;top:50%;height:4px;margin-top:-2px;border-radius:4px;background:var(--pink);box-shadow:0 0 8px rgba(255,61,127,.7)}
+  #ms-pl .tr b{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px rgba(255,61,127,.55),0 0 10px rgba(255,61,127,.8);transition:transform .15s}
+  #ms-pl .tr.drag b{transform:scale(1.3)}
+  #ms-pl .ctl{display:flex;align-items:center;justify-content:center;gap:30px;margin-top:12px}
+  #ms-pl .ctl button{all:unset;cursor:pointer;display:grid;place-items:center;color:#fff;border-radius:50%}
+  #ms-pl .ctl svg{fill:currentColor}
+  #ms-pl .ctl .s{width:48px;height:48px;opacity:.85}#ms-pl .ctl .s svg{width:26px;height:26px}
+  #ms-pl .ctl .s:hover{opacity:1;background:rgba(255,255,255,.07)}
+  #ms-pl .ctl .pp{width:74px;height:74px;border:2.5px solid var(--pink);box-shadow:0 0 18px rgba(255,61,127,.6),inset 0 0 12px rgba(255,61,127,.3);background:rgba(255,61,127,.12)}
+  #ms-pl .ctl .pp svg{width:30px;height:30px}
+  #ms-pl .vol{display:flex;align-items:center;gap:10px;margin-top:18px;color:rgba(255,255,255,.7)}
+  #ms-pl .vol svg{width:18px;height:18px;fill:currentColor}
+  #ms-pl .vol input{width:160px;accent-color:#ff3d7f;cursor:pointer}
+  @media (hover:none){#ms-pl .vol{display:none}}
+  #ms-pl .nx{margin-top:18px;font-size:11px;letter-spacing:.14em;color:rgba(255,255,255,.45);min-height:1.2em;transition:color .3s}
+  #ms-pl .nx.hi{color:#ffb23d}
+  @media (max-width:700px){
+    #ms-pl{background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+    #ms-pl .card{width:100%;height:100%;max-height:none;border-radius:0;border:0;justify-content:center;
+      padding:calc(54px + env(safe-area-inset-top)) 26px calc(26px + env(safe-area-inset-bottom))}
+    #ms-pl .x{top:calc(10px + env(safe-area-inset-top));right:auto;left:10px;font-size:30px}
+    #ms-pl .rec{width:min(78vw,44vh)}
+    #ms-pl .t{font-size:30px}
+  }
+  @media (max-height:500px) and (orientation:landscape){
+    #ms-pl .card{width:min(720px,94vw);display:grid;grid-template-columns:auto 1fr;column-gap:28px;align-items:center;text-align:left;padding:20px 28px}
+    #ms-pl .rec{grid-row:1/8;width:min(42vh,200px);margin:0}
+    #ms-pl .ctl{justify-content:flex-start}
   }`;
   const s = document.createElement("style"); s.textContent = css; document.head.appendChild(s);
 
@@ -96,8 +149,7 @@
     document.body.appendChild(ui);
     ui.addEventListener("click", e => {
       const k = (e.target.closest("[data-k]") || {}).dataset?.k;
-      if (k === "play") { const b = document.getElementById("np-pp"); b && b.click(); bump(30000);
-        const pl = ui.querySelector(".pl"); setTimeout(() => { const on = b && /pause/i.test(b.getAttribute("aria-label") || ""); pl.textContent = on ? "Playing…" : pl.textContent; }, 300); return; }
+      if (k === "play") { openPlayer(); return; }
       if (k === "follow" || k === "shows") { reveal(() => { const t = document.querySelector(`#bar [data-open="${k}"]`); t && t.click(); }); return; }
       if (k === "go") reveal();   // taps elsewhere don't leave the close-up
     });
@@ -124,11 +176,79 @@
     raf = requestAnimationFrame(tick);
     timer = setTimeout(() => reveal(), ms);
   }
-  const onWheel = () => reveal();
+
+  // ---------- intro music player ----------
+  const au = document.getElementById("lg-audio");
+  let pl = null, plOn = false, plRaf = 0, dragging = false;
+  const fmt = x => { x = Math.max(0, Math.floor(x || 0)); return Math.floor(x / 60) + ":" + String(x % 60).padStart(2, "0"); };
+  const I = d => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>`;
+  const P_PLAY = "M8 5v14l11-7z", P_PAUSE = "M6 5h4v14H6zM14 5h4v14h-4z";
+  const isOn = () => au && !au.paused;
+  const toggle = () => { const b = document.getElementById("np-pp"); if (b) b.click(); else if (au) au.paused ? au.play() : au.pause(); };
+  function buildPlayer() {
+    pl = document.createElement("div"); pl.id = "ms-pl"; pl.setAttribute("role", "dialog"); pl.setAttribute("aria-label", "Music player");
+    const title = (txt("np-title") || "Don't Mind It").trim();
+    pl.innerHTML = `<div class="card"><button class="x" aria-label="Close player">✕</button><div class="h">Now playing</div>
+      <div class="rec"><img src="img/smile-label-256.webp" alt=""></div>
+      <div class="t">${title}</div><div class="a">Motel Smile</div>
+      <div class="sk"><span class="el">0:00</span><div class="tr" role="slider" tabindex="0" aria-label="Song position"><i></i><b></b></div><span class="rm">-0:00</span></div>
+      <div class="ctl"><button class="s pv" aria-label="Previous">${I("M6 5h2v14H6zM20 5v14L9 12z")}</button>
+        <button class="pp" aria-label="Play">${I(P_PLAY)}</button>
+        <button class="s nx-b" aria-label="Next">${I("M16 5h2v14h-2zM4 5v14l11-7z")}</button></div>
+      <label class="vol">${I("M4 9v6h4l5 4V5L8 9H4zm12.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4z")}<input type="range" min="0" max="1" step="0.01" aria-label="Volume"></label>
+      <div class="nx">Up next: more songs coming soon</div></div>`;
+    ui.appendChild(pl);
+    const q = c => pl.querySelector(c), tr = q(".tr"), vin = q(".vol input");
+    pl.addEventListener("click", e => { e.stopPropagation(); if (e.target === pl) closePlayer(); });
+    q(".x").addEventListener("click", closePlayer);
+    q(".pp").addEventListener("click", toggle);
+    q(".pv").addEventListener("click", () => { if (au) { au.currentTime = 0; paintP(); } });
+    q(".nx-b").addEventListener("click", () => { const n = q(".nx"); n.textContent = "More songs coming soon"; n.classList.add("hi"); setTimeout(() => n.classList.remove("hi"), 1400); });
+    if (au) { vin.value = au.volume; vin.addEventListener("input", () => { au.volume = +vin.value; }); }
+    const at = x => { const r = tr.getBoundingClientRect(); return Math.min(1, Math.max(0, (x - r.left) / r.width)); };
+    let f = 0;
+    tr.addEventListener("pointerdown", e => { if (!au || !isFinite(au.duration)) return; dragging = true; tr.classList.add("drag"); tr.setPointerCapture(e.pointerId); f = at(e.clientX); showP(f * au.duration); });
+    tr.addEventListener("pointermove", e => { if (dragging) { f = at(e.clientX); showP(f * au.duration); } });
+    const end = () => { if (!dragging) return; dragging = false; tr.classList.remove("drag"); au.currentTime = f * au.duration; paintP(); };
+    tr.addEventListener("pointerup", end); tr.addEventListener("pointercancel", end);
+    tr.addEventListener("keydown", e => {
+      if (!au) return;
+      if (e.key === "ArrowRight") { au.currentTime = Math.min(au.duration || 0, au.currentTime + 5); e.preventDefault(); }
+      if (e.key === "ArrowLeft") { au.currentTime = Math.max(0, au.currentTime - 5); e.preventDefault(); }
+      paintP();
+    });
+  }
+  function showP(t) {
+    if (!pl) return;
+    const d = au && isFinite(au.duration) ? au.duration : 0, f = d ? t / d : 0;
+    pl.querySelector(".tr i").style.width = f * 100 + "%"; pl.querySelector(".tr b").style.left = f * 100 + "%";
+    pl.querySelector(".el").textContent = fmt(t); pl.querySelector(".rm").textContent = "-" + fmt(d - t);
+    const on = isOn(); pl.classList.toggle("on", on);
+    const pp = pl.querySelector(".pp"); pp.setAttribute("aria-label", on ? "Pause" : "Play"); pp.querySelector("path").setAttribute("d", on ? P_PAUSE : P_PLAY);
+  }
+  function paintP() { if (pl && !dragging) showP(au ? au.currentTime : 0); }
+  function openPlayer() {
+    if (!ui) return;
+    if (!pl) buildPlayer();
+    pl.hidden = false; plOn = true;
+    clearTimeout(timer); cancelAnimationFrame(raf);          // the countdown waits while the player is open
+    if (!isOn()) toggle();
+    const loop = () => { paintP(); if (plOn) plRaf = requestAnimationFrame(loop); };
+    cancelAnimationFrame(plRaf); plRaf = requestAnimationFrame(loop);
+    setTimeout(() => pl && pl.querySelector(".pp").focus({ preventScroll: true }), 50);
+  }
+  function closePlayer() {
+    if (!pl || !plOn) return;
+    plOn = false; pl.hidden = true; cancelAnimationFrame(plRaf);
+    const lab = ui && ui.querySelector(".pl"); if (lab) lab.textContent = isOn() ? "Now playing" : lab.textContent;
+    if (ui && live) bump(idle);
+  }
+
+  const onWheel = () => { if (!plOn) reveal(); };
   let ty0 = null;
   const onTs = e => { ty0 = e.touches[0].clientY; };
-  const onTm = e => { if (ty0 != null && Math.abs(e.touches[0].clientY - ty0) > 30) reveal(); };
-  const onKey = e => { if (["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", " ", "PageDown", "Enter", "Escape"].includes(e.key)) reveal(); };
+  const onTm = e => { if (!plOn && ty0 != null && Math.abs(e.touches[0].clientY - ty0) > 30) reveal(); };
+  const onKey = e => { if (plOn) { if (e.key === "Escape") closePlayer(); return; } if (["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", " ", "PageDown", "Enter", "Escape"].includes(e.key)) reveal(); };
   const onResize = () => { if (live && !st.classList.contains("ms-cam")) setCam(cam()); };
 
   function start() {
@@ -147,7 +267,7 @@
   }
 
   function reveal(after) {
-    if (!live) return; live = false; clearTimeout(timer); cancelAnimationFrame(raf);
+    if (!live) return; live = false; clearTimeout(timer); cancelAnimationFrame(raf); plOn = false; cancelAnimationFrame(plRaf); pl = null;
     removeEventListener("wheel", onWheel); removeEventListener("touchstart", onTs);
     removeEventListener("touchmove", onTm); removeEventListener("keydown", onKey); removeEventListener("resize", onResize);
     try { localStorage.setItem("ms-intro-seen", "1"); } catch (e) {}
