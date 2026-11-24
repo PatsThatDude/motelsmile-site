@@ -72,8 +72,10 @@
   #ms-pl .h{font:600 11px var(--mono);letter-spacing:.22em;color:var(--pink);text-shadow:0 0 8px rgba(255,61,127,.6);text-transform:uppercase}
   #ms-pl .rec{position:relative;width:min(230px,52vw,30vh);aspect-ratio:1;margin:14px 0 12px;border-radius:50%;flex:none}
   #ms-pl .disc{position:absolute;inset:0;border-radius:50%;background:repeating-radial-gradient(circle,#0b0b0e 0 2px,#17171c 2px 3px);
-    box-shadow:0 0 0 2px #26262e,0 12px 30px rgba(0,0,0,.75),0 0 40px rgba(255,61,127,.2);animation:msSpin 1.8s linear infinite;animation-play-state:paused}
-  #ms-pl.on .disc{animation-play-state:running}
+    box-shadow:0 0 0 2px #26262e,0 12px 30px rgba(0,0,0,.75),0 0 40px rgba(255,61,127,.2);will-change:transform}
+  #ms-pl .rec{cursor:grab;touch-action:none}#ms-pl .rec.grab{cursor:grabbing}
+  #ms-pl .hint{font:500 9.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45);margin:-4px 0 6px;transition:opacity .4s}
+  #ms-pl .hint.off{opacity:0}
   #ms-pl .disc::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 20deg,transparent 0 12%,rgba(255,255,255,.08) 16%,transparent 22% 62%,rgba(255,255,255,.06) 66%,transparent 72%)}
   #ms-pl .lab{position:absolute;inset:31%;border-radius:50%;background:center/cover no-repeat #ff3d7f;box-shadow:0 0 0 5px #ff3d7f}
   #ms-pl .sheen{position:absolute;inset:0;border-radius:50%;pointer-events:none;background:linear-gradient(130deg,rgba(255,255,255,.09),transparent 40%)}
@@ -123,7 +125,7 @@
   }
   @media (max-height:500px) and (orientation:landscape){
     #ms-pl .card{width:min(760px,94vw);display:grid;grid-template-columns:auto 1fr;column-gap:24px;align-items:center;padding:16px 24px 10px;height:auto}
-    #ms-pl .rec{grid-row:1/7;width:min(40vh,170px);margin:0}
+    #ms-pl .rec{grid-row:1/9;width:min(40vh,170px);margin:0}
     #ms-pl .sk{width:100%}#ms-pl .shelf{grid-column:1/3;height:100px;margin-top:6px}
   }
 `;
@@ -219,7 +221,7 @@
     try { const c = window.MSAC && window.MSAC(); if (!c) return; const src = c.createMediaElementSource(au);
       an = c.createAnalyser(); an.fftSize = 128; an.smoothingTimeConstant = .5; src.connect(an); abuf = new Uint8Array(an.frequencyBinCount); } catch (e) { an = null; }
   };
-  let pl = null, plOn = false, plRaf = 0, dragging = false;
+  let pl = null, plOn = false, plRaf = 0, dragging = false, spinning = false, ang = 0, lastNow = 0;
   const fmt = x => { x = Math.max(0, Math.floor(x || 0)); return Math.floor(x / 60) + ":" + String(x % 60).padStart(2, "0"); };
   const I = d => `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg>`;
   const isOn = () => au && !au.paused;
@@ -234,7 +236,8 @@
     const recs = shelf();
     const lab = (document.getElementById("lw-lab") || {}).style?.backgroundImage;
     pl.innerHTML = `<div class="card"><canvas class="eq" aria-hidden="true"></canvas><button class="x" aria-label="Close player">✕</button><div class="h">Listen</div>
-      <div class="rec"><div class="disc"><div class="lab"></div></div><div class="sheen"></div></div>
+      <div class="rec" title="Spin the record to rewind or fast-forward"><div class="disc"><div class="lab"></div></div><div class="sheen"></div></div>
+      <div class="hint">↺ spin the record to rewind · fast-forward ↻</div>
       <div class="t">${title}</div><div class="a">Motel Smile</div>
       <div class="sk"><span class="el">0:00</span><div class="tr" role="slider" tabindex="0" aria-label="Song position"><i></i><b></b></div><span class="rm">-0:00</span></div>
       <div class="ctl"><button class="s pv" aria-label="Previous">${I("M6 5h2v14H6zM20 5v14L9 12z")}</button>
@@ -276,6 +279,24 @@
     const vend = () => { vd = false; vl.classList.remove("drag"); };
     vl.addEventListener("pointerup", vend); vl.addEventListener("pointercancel", vend);
     vl.addEventListener("keydown", e => { if (!au) return; if (e.key === "ArrowRight") setV(Math.min(1, au.volume + .05)); if (e.key === "ArrowLeft") setV(Math.max(0, au.volume - .05)); });
+    // spin the record by hand to rewind / fast-forward (one full turn = 12 s), like the roof's record
+    const rec = q(".rec");
+    let last = null, acc = 0, seekT = 0;
+    const angAt = e => { const r = rec.getBoundingClientRect(); return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI; };
+    rec.addEventListener("pointerdown", e => {
+      if (!au || !isFinite(au.duration)) return;
+      spinning = true; rec.classList.add("grab"); rec.setPointerCapture(e.pointerId); last = angAt(e); acc = au.currentTime; seekT = 0;
+      q(".hint").classList.add("off");
+    });
+    rec.addEventListener("pointermove", e => {
+      if (!spinning) return;
+      const a = angAt(e); let d = a - last; if (d > 180) d -= 360; if (d < -180) d += 360; last = a;
+      ang += d; acc = Math.min(au.duration - .1, Math.max(0, acc + d / 360 * 12));
+      showP(acc);
+      const now = performance.now(); if (now - seekT > 90) { seekT = now; au.currentTime = acc; }
+    });
+    const spinEnd = () => { if (!spinning) return; spinning = false; rec.classList.remove("grab"); au.currentTime = acc; paintP(); };
+    rec.addEventListener("pointerup", spinEnd); rec.addEventListener("pointercancel", spinEnd);
     const cur = q(".r.cur"); if (cur) requestAnimationFrame(() => cur.scrollIntoView({ inline: "center", block: "nearest" }));
   }
   function showP(t) {
@@ -286,7 +307,13 @@
     const on = isOn(); pl.classList.toggle("on", on);
     const pp = pl.querySelector(".lg-pp"); pp.classList.toggle("playing", on); pp.setAttribute("aria-label", on ? "Pause" : "Play");
   }
-  function paintP() { if (pl && !dragging) showP(au ? au.currentTime : 0); }
+  function paintP() { if (pl && !dragging && !spinning) showP(au ? au.currentTime : 0); }
+  // the record turns on its own while the song plays (33 rpm-ish look: one turn per 1.8 s) and follows your hand when held
+  function spin(now) {
+    const dt = lastNow ? Math.min(.1, (now - lastNow) / 1000) : 0; lastNow = now;
+    if (!spinning && isOn()) ang += dt * 200;
+    const d = pl && pl.querySelector(".disc"); if (d) d.style.transform = `rotate(${ang}deg)`;
+  }
   // EQ bars: same drawing as the roof's Listen window
   const NB = 24, eh = new Array(NB).fill(0), ef = new Array(NB).fill(.3), ec = new Array(NB).fill(.6);
   function drawEq(now) {
@@ -324,7 +351,8 @@
     pl.hidden = false; plOn = true;
     clearTimeout(timer); cancelAnimationFrame(raf);          // the countdown waits while the player is open
     tap(); if (!isOn()) toggle();
-    const loop = now => { paintP(); drawEq(now); if (plOn) plRaf = requestAnimationFrame(loop); };
+    lastNow = 0;
+    const loop = now => { paintP(); spin(now); drawEq(now); if (plOn) plRaf = requestAnimationFrame(loop); };
     cancelAnimationFrame(plRaf); plRaf = requestAnimationFrame(loop);
     setTimeout(() => pl && pl.querySelector(".lg-pp").focus({ preventScroll: true }), 50);
   }
