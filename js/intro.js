@@ -51,6 +51,15 @@
     #ms-in .row{justify-content:center}
     #ms-in .go{position:relative;right:auto;bottom:auto;margin-top:16px}
     #ms-bv{top:62px;right:auto;left:14px}
+  }
+  @media (max-height:500px) and (orientation:landscape){
+    #ms-in{padding:0 max(20px,env(safe-area-inset-right)) 16px max(20px,env(safe-area-inset-left));
+      background:linear-gradient(90deg,rgba(5,6,10,.8),rgba(5,6,10,.25) 45%,rgba(5,6,10,.25) 62%,rgba(5,6,10,.85)),linear-gradient(transparent 55%,rgba(5,6,10,.85))}
+    #ms-in h1{font-size:46px}#ms-in .tag{margin:2px 0 8px 2px;font-size:10px}
+    #ms-in .show{font-size:15px;margin:0 0 10px 2px}#ms-in .show small{font-size:9px}
+    #ms-in .row{gap:8px}#ms-in .row .pill{font-size:13px;padding:6px 12px}
+    #ms-in .go{font-size:15px;padding:8px 10px 8px 16px;right:max(20px,env(safe-area-inset-right));bottom:16px}
+    #ms-in .go .cd{font-size:12px}
   }`;
   const s = document.createElement("style"); s.textContent = css; document.head.appendChild(s);
 
@@ -69,7 +78,8 @@
     const y0 = Math.min(...els.map(r => r.top)), y1 = Math.max(...els.map(r => r.bottom));
     const bw = x1 - x0, bh = y1 - y0;
     let z, cx = (x0 + x1) / 2, cy, ty;
-    if (phone()) { z = Math.min(1.75, 1.08 * W() / bw); cy = y0 + bh * .42; ty = H() * .36; }   // waist-up
+    if (H() <= 500 && W() > H()) { z = Math.min(2.2, .9 * H() / bh, .62 * W() / bw); cy = y0 + bh * .5; ty = H() * .48; }   // phone on its side
+    else if (phone()) { z = Math.min(1.75, 1.08 * W() / bw); cy = y0 + bh * .42; ty = H() * .36; }   // waist-up
     else { z = Math.min(2.2, .78 * H() / bh, .9 * W() / bw); cy = y0 + bh * .47; ty = H() * .44; }
     z = Math.max(1.15, z);
     return { z, tx: W() / 2 - z * cx, ty: ty - z * cy };
