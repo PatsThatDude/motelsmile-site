@@ -1,5 +1,5 @@
 /* Motel Smile: band close-up intro (test). Opens tight on the band like a classic band homepage,
-   then pulls back to the full roof on "Step onto the roof", scroll/swipe/keys, or ~7 s idle.
+   then pulls back to the full roof on "Step onto the roof", scroll/swipe/keys, or a 20 s countdown on the button.
    Returning visitors skip it (localStorage ms-intro-seen); ?intro forces it; "Band view" pill replays it. */
 (() => {
   const st = document.getElementById("stage"), play = document.getElementById("play");
@@ -31,13 +31,15 @@
   #ms-in .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
   #ms-in .row .pill{font-size:17px}
   #ms-in .go{all:unset;cursor:pointer;position:absolute;right:max(28px,5vw);bottom:max(34px,5vh);font-family:var(--tube);font-size:19px;
-    padding:12px 22px;border-radius:40px;border:2.5px solid #ffb23d;color:#fff;background:rgba(5,6,10,.55);
-    box-shadow:0 0 14px #ffb23d;text-shadow:0 0 8px #ffb23d;animation:msPulse 2.4s 2s infinite}
-  #ms-in .go i{font-style:normal;display:inline-block;margin-left:8px;animation:msNudge 1.2s infinite}
-  @keyframes msPulse{50%{box-shadow:0 0 26px #ffb23d,0 0 4px #fff}}
+    padding:13px 18px 13px 24px;border-radius:40px;border:2.5px solid rgba(255,178,61,.28);color:#fff;background:rgba(5,6,10,.6);
+    box-shadow:0 0 14px rgba(255,178,61,.45);text-shadow:0 0 8px #ffb23d;animation:msPulse 2.4s 2s infinite;display:inline-flex;align-items:center;gap:10px}
+  #ms-in .go svg{position:absolute;left:-2.5px;top:-2.5px;overflow:visible;pointer-events:none}
+  #ms-in .go rect{fill:none;stroke:#ffb23d;stroke-width:3px;stroke-linecap:round;filter:drop-shadow(0 0 5px #ffb23d)}
+  #ms-in .go .cd{font-family:var(--mono);font-weight:600;font-size:14px;min-width:2.2em;height:2.2em;line-height:2.2em;text-align:center;border-radius:50%;
+    background:#ffb23d;color:#14090a;text-shadow:none;box-shadow:0 0 10px #ffb23d}
+  #ms-in .go i{font-style:normal;display:inline-block;margin-left:-2px;animation:msNudge 1.2s infinite}
+  @keyframes msPulse{50%{box-shadow:0 0 26px rgba(255,178,61,.7),0 0 4px #fff}}
   @keyframes msNudge{50%{transform:translate(4px,-3px)}}
-  #ms-in .bar{position:absolute;left:0;bottom:0;height:3px;width:0;background:#ffb23d;box-shadow:0 0 8px #ffb23d;opacity:.7}
-  #ms-in .bar.run{width:100%;transition:width linear}
   .ms-poi{animation:msPoi 1.6s ease-out 2}
   @keyframes msPoi{0%,100%{filter:none}40%{filter:drop-shadow(0 0 10px #ffe27a) drop-shadow(0 0 22px #ffb23d) brightness(1.35)}}
   #ms-bv{position:fixed;z-index:55;right:14px;top:56px;font-size:14px!important;padding:6px 14px!important;opacity:0;transition:opacity .6s;pointer-events:none}
@@ -47,7 +49,7 @@
     #ms-in{align-items:center;text-align:center;padding:0 18px calc(26px + env(safe-area-inset-bottom))}
     #ms-in .tag{margin:6px 0 12px}#ms-in .show{margin:0 0 16px}
     #ms-in .row{justify-content:center}
-    #ms-in .go{position:static;margin-top:16px}
+    #ms-in .go{position:relative;right:auto;bottom:auto;margin-top:16px}
     #ms-bv{top:62px;right:auto;left:14px}
   }`;
   const s = document.createElement("style"); s.textContent = css; document.head.appendChild(s);
@@ -70,7 +72,7 @@
   }
   const setCam = c => { st.style.scale = c ? String(c.z) : ""; st.style.translate = c ? `${c.tx}px ${c.ty}px` : ""; };
 
-  let ui, bv, timer, idle = 7000, live = false;
+  let ui, bv, timer, idle = 20000, live = false;
 
   function build() {
     ui = document.createElement("div"); ui.id = "ms-in";
@@ -79,20 +81,36 @@
       ${when ? `<button class="show" data-k="shows"><small>Next show</small>${when}${cnt ? " · " + cnt : ""}</button>` : ""}
       <div class="row"><button class="pill" style="--c:var(--pink)" data-k="play"><span class="tri"></span> <span class="pl">Play “${(txt("np-title") || "Don't Mind It").trim()}”</span></button>
       <button class="pill" style="--c:var(--blue)" data-k="follow">Follow</button></div>
-      <button class="go" data-k="go">Step onto the roof<i>↗</i></button><div class="bar"></div>`;
+      <button class="go" data-k="go"><svg><rect pathLength="100"/></svg>Step onto the roof<i>↗</i><b class="cd"></b></button>`;
     document.body.appendChild(ui);
     ui.addEventListener("click", e => {
       const k = (e.target.closest("[data-k]") || {}).dataset?.k;
-      if (k === "play") { const b = document.getElementById("np-pp"); b && b.click(); bump(10000);
+      if (k === "play") { const b = document.getElementById("np-pp"); b && b.click(); bump(30000);
         const pl = ui.querySelector(".pl"); setTimeout(() => { const on = b && /pause/i.test(b.getAttribute("aria-label") || ""); pl.textContent = on ? "Playing…" : pl.textContent; }, 300); return; }
       if (k === "follow" || k === "shows") { reveal(() => { const t = document.querySelector(`#bar [data-open="${k}"]`); t && t.click(); }); return; }
-      reveal();   // "Step onto the roof" or a tap anywhere else
+      if (k === "go") reveal();   // taps elsewhere don't leave the close-up
     });
   }
+  // countdown: seconds in the badge, ring around the button drains as the time runs out
+  let raf = 0;
   function bump(ms) {
-    clearTimeout(timer); const b = ui && ui.querySelector(".bar"); if (!b) return;
-    b.classList.remove("run"); b.style.transitionDuration = "0s"; void b.offsetWidth;
-    b.style.transitionDuration = ms + "ms"; b.classList.add("run");
+    clearTimeout(timer); cancelAnimationFrame(raf);
+    const go = ui && ui.querySelector(".go"); if (!go) return;
+    const svg = go.querySelector("svg"), r = svg.querySelector("rect"), cd = go.querySelector(".cd");
+    const fit = () => { const w = go.offsetWidth, h = go.offsetHeight;
+      svg.setAttribute("width", w); svg.setAttribute("height", h);
+      r.setAttribute("x", 1.25); r.setAttribute("y", 1.25); r.setAttribute("width", w - 2.5); r.setAttribute("height", h - 2.5);
+      r.setAttribute("rx", (h - 2.5) / 2); r.style.strokeDasharray = "100 100"; };
+    fit();
+    const t0 = performance.now();
+    const tick = now => {
+      if (!ui) return;
+      const left = Math.max(0, ms - (now - t0));
+      r.style.strokeDashoffset = String(-100 * (1 - left / ms));
+      cd.textContent = Math.ceil(left / 1000);
+      if (left > 0) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
     timer = setTimeout(() => reveal(), ms);
   }
   const onWheel = () => reveal();
@@ -118,7 +136,7 @@
   }
 
   function reveal(after) {
-    if (!live) return; live = false; clearTimeout(timer);
+    if (!live) return; live = false; clearTimeout(timer); cancelAnimationFrame(raf);
     removeEventListener("wheel", onWheel); removeEventListener("touchstart", onTs);
     removeEventListener("touchmove", onTm); removeEventListener("keydown", onKey); removeEventListener("resize", onResize);
     try { localStorage.setItem("ms-intro-seen", "1"); } catch (e) {}
@@ -152,7 +170,7 @@
     document.documentElement.classList.add("ms-lock");
     st.classList.add("ms-cam"); document.body.classList.add("ms-in");
     void st.offsetWidth; setCam(c);
-    setTimeout(() => { st.classList.remove("ms-cam"); live = true; build(); bump(12000);
+    setTimeout(() => { st.classList.remove("ms-cam"); live = true; build(); bump(idle);
       addEventListener("wheel", onWheel, { passive: true }); addEventListener("touchstart", onTs, { passive: true });
       addEventListener("touchmove", onTm, { passive: true }); addEventListener("keydown", onKey); addEventListener("resize", onResize);
     }, 2200);
