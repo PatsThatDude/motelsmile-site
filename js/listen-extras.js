@@ -37,6 +37,18 @@
   body.ph #lw{height:min(calc(100% - var(--barh,110px) - 190px),430px)!important}
   body.ph #lw .lw-ctl{margin:2px 0 0!important}
 
+  /* short phones (iPhone SE etc.): everything a bit smaller so the shelf stays inside the card */
+  @media (max-height:700px) and (orientation:portrait){
+    body.ph #lw{height:min(calc(100% - var(--barh,110px) - 140px),430px)!important;padding-top:10px!important}
+    body.ph #lw .lw-rec{width:84px!important;margin:2px 0!important}
+    body.ph #lw .lw-t{font-size:18px!important}
+    body.ph #lw .lw-sk{margin-top:2px}
+    body.ph #lw .lw-ctl .lg-pp{width:36px!important;height:36px!important}
+    body.ph #lw .lw-skb{width:32px;height:32px}
+    body.ph #lw .lw-row{height:112px!important;padding-top:4px!important}
+    body.ph #lw .lw-h{display:none}
+  }
+
   /* phone on its side: row layout (record | title, bar, controls | shelf) */
   @media (max-height:500px) and (orientation:landscape){
     body.ph #lw{position:fixed!important;top:12px!important;bottom:12px!important;left:max(12px,env(safe-area-inset-left))!important;right:max(12px,env(safe-area-inset-right))!important;
