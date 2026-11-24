@@ -1,6 +1,6 @@
 /* Motel Smile: band close-up intro (test). Opens tight on the band like a classic band homepage,
    then pulls back to the full roof on "Step onto the roof", scroll/swipe/keys, or a 20 s countdown on the button.
-   Returning visitors skip it (localStorage ms-intro-seen); ?intro forces it; "Band view" pill replays it. */
+   Returning visitors skip it (localStorage ms-intro-seen); ?intro forces it; the Motel Smile logo (top left) replays it. */
 (() => {
   const st = document.getElementById("stage"), play = document.getElementById("play");
   if (!st || !play) return;
@@ -42,15 +42,11 @@
   @keyframes msNudge{50%{transform:translate(4px,-3px)}}
   .ms-poi{animation:msPoi 1.6s ease-out 2}
   @keyframes msPoi{0%,100%{filter:none}40%{filter:drop-shadow(0 0 10px #ffe27a) drop-shadow(0 0 22px #ffb23d) brightness(1.35)}}
-  #ms-bv{position:fixed;z-index:55;right:14px;top:56px;font-size:14px!important;padding:6px 14px!important;opacity:0;transition:opacity .6s;pointer-events:none}
-  #ms-bv.on{opacity:1;pointer-events:auto}
-  body.ms-in #ms-bv{opacity:0;pointer-events:none}
   @media (max-width:700px){
     #ms-in{align-items:center;text-align:center;padding:0 18px calc(26px + env(safe-area-inset-bottom))}
     #ms-in .tag{margin:6px 0 12px}#ms-in .show{margin:0 0 16px}
     #ms-in .row{justify-content:center}
     #ms-in .go{position:relative;right:auto;bottom:auto;margin-top:16px}
-    #ms-bv{top:62px;right:auto;left:14px}
   }
   @media (max-height:500px) and (orientation:landscape){
     #ms-in{padding:0 max(20px,env(safe-area-inset-right)) 16px max(20px,env(safe-area-inset-left));
@@ -172,13 +168,18 @@
     }, 2300);
   }
 
+  // the Motel Smile logo (top left) takes you back to the band close-up
   function bandBtn() {
-    if (!bv) {
-      bv = document.createElement("button"); bv.id = "ms-bv"; bv.className = "pill"; bv.style.setProperty("--c", "var(--pink)");
-      bv.textContent = "Band view"; document.body.appendChild(bv);
-      bv.addEventListener("click", () => { bv.classList.remove("on"); replay(); });
-    }
-    setTimeout(() => bv.classList.add("on"), 600);
+    if (bv) return;
+    bv = document.querySelector("header.top > div"); if (!bv) return;
+    bv.setAttribute("role", "button"); bv.setAttribute("tabindex", "0"); bv.setAttribute("aria-label", "Motel Smile: band view");
+    bv.style.cursor = "pointer";
+    const busy = () => live || st.classList.contains("ms-cam") || document.querySelector(".sheet.open, .lounge.open, .arcade.open, #lw.open")
+      || /\b(in-room|dk-on|jx-on|jx-zoom|gg-on|gm-on|lw-on|gr-big)\b/.test(document.body.className);
+    const goBand = () => { if (!busy()) replay(); };
+    // on phones the logo box collapses, so listen on the whole header and ignore its right-hand buttons
+    bv.closest("header").addEventListener("click", e => { if (e.clientX < 230 && !e.target.closest("header.top > span, button, a")) goBand(); });
+    bv.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goBand(); } });
   }
   function replay() {
     const c = cam(); if (!c) return;
