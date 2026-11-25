@@ -209,13 +209,29 @@
       const a = g(bms[0]), b = g(bms[bms.length - 1]);
       const h = b.h * .92, w = h * 166 / 520, cx = (a.l + a.w / 2 + b.l + b.w / 2) / 2, feet = Math.max(a.t + a.h, b.t + b.h) - 14 * (b.h / 520);
       standEl = document.createElement("img"); standEl.src = "img/band/jbh-real.webp?v=1"; standEl.alt = ""; standEl.className = "ms-stand";
-      Object.assign(standEl.style, { position: "absolute", left: cx - w / 2 + "px", top: feet - h + "px", width: w + "px", height: h + "px", zIndex: 80, pointerEvents: "none", transition: "opacity .6s" });
+      Object.assign(standEl.style, { position: "absolute", left: cx - w / 2 + w * .12 + "px", top: feet - h + "px", width: w + "px", height: h + "px", zIndex: 80, pointerEvents: "none", transition: "opacity .6s" });
       bms[0].parentNode.appendChild(standEl);
       kit.style.visibility = "hidden";
+      jordanIn(bms[bms.length - 1]);
     } else if (standEl) {
       const s = standEl; standEl = null; s.style.opacity = 0; setTimeout(() => s.remove(), 700);
       if (kit) kit.style.visibility = "visible";
+      jordanOut();
     }
+  }
+  // Jordan's close-up pose: standing with the Les Paul in front of him, hands on the headstock (intro only)
+  let jd = null;
+  function jordanIn(j) {
+    if (jd || !j) return;
+    const r = j.querySelector("img.r"), n = j.querySelector("img.n"); if (!r) return;
+    jd = { j, r, n, src: r.src, left: j.style.left, width: j.style.width, nd: n ? n.style.display : "" };
+    const l = parseFloat(j.style.left), w = parseFloat(j.style.width), h = parseFloat(j.style.height), nw = h * 223 / 520;
+    r.src = "img/band/jdh3b-real.webp?v=1"; if (n) n.style.display = "none";
+    j.style.left = l + w / 2 - nw / 2 + "px"; j.style.width = nw + "px";
+  }
+  function jordanOut() {
+    if (!jd) return; const d = jd; jd = null;
+    d.r.src = d.src; if (d.n) d.n.style.display = d.nd; d.j.style.left = d.left; d.j.style.width = d.width;
   }
   function start() {
     const c = cam(); if (!c) return;
