@@ -30,8 +30,8 @@
   #ms-in .show small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.24em;color:#b3bccd;text-shadow:none;margin-bottom:3px}
   #ms-in .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
   #ms-in .row .pill{font-size:17px}
-  #ms-in .go{all:unset;cursor:pointer;position:absolute;right:max(28px,5vw);bottom:max(34px,5vh);font-family:var(--tube);font-size:19px;
-    padding:13px 18px 13px 24px;border-radius:40px;border:2.5px solid rgba(255,178,61,.28);color:#fff;background:rgba(5,6,10,.6);
+  #ms-in .go{all:unset;cursor:pointer;position:relative;font-family:var(--tube);font-size:17px;
+    padding:6px 7px 6px 20px;border-radius:40px;border:2.5px solid rgba(255,178,61,.28);color:#fff;background:rgba(5,6,10,.6);
     box-shadow:0 0 14px rgba(255,178,61,.45);text-shadow:0 0 8px #ffb23d;animation:msPulse 2.4s 2s infinite;display:inline-flex;align-items:center;gap:10px}
   #ms-in .go svg{position:absolute;left:-2.5px;top:-2.5px;overflow:visible;pointer-events:none}
   #ms-in .go rect{fill:none;stroke:#ffb23d;stroke-width:3px;stroke-linecap:round;filter:drop-shadow(0 0 5px #ffb23d)}
@@ -46,7 +46,6 @@
     #ms-in{align-items:center;text-align:center;padding:0 18px calc(26px + env(safe-area-inset-bottom))}
     #ms-in .tag{margin:6px 0 12px}#ms-in .show{margin:0 0 16px}
     #ms-in .row{justify-content:center}
-    #ms-in .go{position:relative;right:auto;bottom:auto;margin-top:16px}
   }
   @media (max-height:500px) and (orientation:landscape){
     #ms-in{padding:0 max(20px,env(safe-area-inset-right)) 16px max(20px,env(safe-area-inset-left));
@@ -54,7 +53,7 @@
     #ms-in h1{font-size:46px}#ms-in .tag{margin:2px 0 8px 2px;font-size:10px}
     #ms-in .show{font-size:15px;margin:0 0 10px 2px}#ms-in .show small{font-size:9px}
     #ms-in .row{gap:8px}#ms-in .row .pill{font-size:13px;padding:6px 12px}
-    #ms-in .go{font-size:15px;padding:8px 10px 8px 16px;right:max(20px,env(safe-area-inset-right));bottom:16px}
+    #ms-in .go{font-size:13px;padding:4px 5px 4px 13px}
     #ms-in .go .cd{font-size:12px}
   }
   /* Play on the close-up opens the site's own Listen window (#lw), moved above the intro, with no band peek */
@@ -96,8 +95,8 @@
     ui.innerHTML = `<h1>Motel Smile</h1><div class="tag">New York Rock</div>
       ${when ? `<button class="show" data-k="shows"><small>Next show</small>${when}${cnt ? " · " + cnt : ""}</button>` : ""}
       <div class="row"><button class="pill" style="--c:var(--pink)" data-k="play"><span class="tri"></span> <span class="pl">Play “${(txt("np-title") || "Don't Mind It").trim()}”</span></button>
-      <button class="pill" style="--c:var(--blue)" data-k="follow">Follow</button></div>
-      <button class="go" data-k="go"><svg><rect pathLength="100"/></svg>Step onto the roof<i>↗</i><b class="cd"></b></button>`;
+      <button class="pill" style="--c:var(--blue)" data-k="follow">Follow</button>
+      <button class="go" data-k="go"><svg><rect pathLength="100"/></svg>Step onto the roof<i>↗</i><b class="cd"></b></button></div>`;
     document.body.appendChild(ui);
     ui.addEventListener("click", e => {
       const k = (e.target.closest("[data-k]") || {}).dataset?.k;
@@ -161,9 +160,17 @@
   const onKey = e => { if (plOn) return; if (["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", " ", "PageDown", "Enter", "Escape"].includes(e.key)) reveal(); };
   const onResize = () => { if (live && !st.classList.contains("ms-cam")) setCam(cam()); };
 
+  // keep the band where the camera framed them: no director scenes or wandering during the close-up
+  let held = false;
+  const hold = on => {
+    if (on === held) return; held = on;
+    try { const d = window.MSDir; if (d) on ? d.start() : d.end(); } catch (e) {}
+  };
+  const away0 = window.MSAway;
+  window.MSAway = () => (document.body.classList.contains("ms-in") || (away0 ? away0() : false));
   function start() {
     const c = cam(); if (!c) return;
-    live = true;
+    live = true; hold(true);
     document.documentElement.classList.add("ms-lock");
     document.body.classList.add("ms-in");
     st.classList.remove("ms-cam"); setCam(c);
@@ -177,7 +184,7 @@
   }
 
   function reveal(after) {
-    if (!live) return; live = false; clearTimeout(timer); cancelAnimationFrame(raf); if (plOn) closePlayer();
+    if (!live) return; live = false; hold(false); clearTimeout(timer); cancelAnimationFrame(raf); if (plOn) closePlayer();
     removeEventListener("wheel", onWheel); removeEventListener("touchstart", onTs);
     removeEventListener("touchmove", onTm); removeEventListener("keydown", onKey); removeEventListener("resize", onResize);
     try { localStorage.setItem("ms-intro-seen", "1"); } catch (e) {}
@@ -213,7 +220,7 @@
   }
   function replay() {
     const c = cam(); if (!c) return;
-    document.documentElement.classList.add("ms-lock");
+    document.documentElement.classList.add("ms-lock"); hold(true);
     st.classList.add("ms-cam"); document.body.classList.add("ms-in");
     void st.offsetWidth; setCam(c);
     setTimeout(() => { st.classList.remove("ms-cam"); live = true; build(); bump(idle);
