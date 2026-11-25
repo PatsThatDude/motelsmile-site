@@ -35,8 +35,9 @@
     box-shadow:0 0 14px rgba(255,178,61,.45);text-shadow:0 0 8px #ffb23d;animation:msPulse 2.4s 2s infinite;display:inline-flex;align-items:center;gap:10px}
   #ms-in .go svg{position:absolute;left:-2.5px;top:-2.5px;overflow:visible;pointer-events:none}
   #ms-in .go rect{fill:none;stroke:#ffb23d;stroke-width:3px;stroke-linecap:round;filter:drop-shadow(0 0 5px #ffb23d)}
-  #ms-in .go .cd{font-family:var(--mono);font-weight:600;font-size:14px;min-width:2.2em;height:2.2em;line-height:2.2em;text-align:center;border-radius:50%;
-    background:#ffb23d;color:#14090a;text-shadow:none;box-shadow:0 0 10px #ffb23d}
+  #ms-in .go .cd{width:2.2em;height:2.2em;border-radius:50%;flex:none;filter:drop-shadow(0 0 6px rgba(255,61,127,.7));animation:msSmile 9s linear infinite}
+  @keyframes msSmile{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){#ms-in .go .cd{animation:none}}
   #ms-in .go i{font-style:normal;display:inline-block;margin-left:-2px;animation:msNudge 1.2s infinite}
   @keyframes msPulse{50%{box-shadow:0 0 26px rgba(255,178,61,.7),0 0 4px #fff}}
   @keyframes msNudge{50%{transform:translate(4px,-3px)}}
@@ -54,7 +55,7 @@
     #ms-in .show{font-size:15px;margin:0 0 10px 2px}#ms-in .show small{font-size:9px}
     #ms-in .row{gap:8px}#ms-in .row .pill{font-size:13px;padding:6px 12px}
     #ms-in .go{font-size:13px;padding:4px 5px 4px 13px}
-    #ms-in .go .cd{font-size:12px}
+
   }
   /* Play on the close-up opens the site's own Listen window (#lw), moved above the intro, with no band peek */
   body.ms-in #lw{z-index:80!important}
@@ -124,7 +125,7 @@
     const when = txt("ss-a").trim(), cnt = txt("ss-b").trim();
     ui.innerHTML = `<h1>Motel Smile</h1><div class="tag">New York Rock</div>
       ${when ? `<button class="show" data-k="shows"><small>Next show</small>${when}${cnt ? " · " + cnt : ""}</button>` : ""}
-      <div class="row"><button class="go" data-k="go"><svg><rect pathLength="100"/></svg>Step onto the roof<i>↗</i><b class="cd"></b></button></div>`;
+      <div class="row"><button class="go" data-k="go"><svg><rect pathLength="100"/></svg>Step onto the roof<i>↗</i><img class="cd" src="img/smile-logo-96.webp" alt=""></button></div>`;
     document.body.appendChild(ui);
     liftBar();
     ui.addEventListener("click", e => {
@@ -145,16 +146,15 @@
       r.setAttribute("x", 1.25); r.setAttribute("y", 1.25); r.setAttribute("width", w - 2.5); r.setAttribute("height", h - 2.5);
       r.setAttribute("rx", (h - 2.5) / 2); r.style.strokeDasharray = "100 100"; };
     fit();
-    const t0 = performance.now();
+    // no auto-leave any more (Pat): the ring just drains and refills on a loop
+    const t0 = performance.now(), cyc = 6000;
     const tick = now => {
       if (!ui) return;
-      const left = Math.max(0, ms - (now - t0));
-      r.style.strokeDashoffset = String(-100 * (1 - left / ms));
-      cd.textContent = Math.ceil(left / 1000);
-      if (left > 0) raf = requestAnimationFrame(tick);
+      const f = ((now - t0) % cyc) / cyc;
+      r.style.strokeDashoffset = String(-100 * f);
+      raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    timer = setTimeout(() => reveal(), ms);
   }
 
   // ---------- Play: the site's own player (Listen window), no band animations ----------
