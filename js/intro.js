@@ -207,9 +207,9 @@
       if (bms.length < 2) return;
       const g = e => ({ l: parseFloat(e.style.left), t: parseFloat(e.style.top), w: parseFloat(e.style.width), h: parseFloat(e.style.height) });
       const a = g(bms[0]), b = g(bms[bms.length - 1]);
-      const h = b.h * .92, w = h * 166 / 520, cx = (a.l + a.w / 2 + b.l + b.w / 2) / 2, feet = Math.max(a.t + a.h, b.t + b.h) - 14 * (b.h / 520);
+      const h = b.h * .92 * .96, w = h * 166 / 520, cx = (a.l + a.w / 2 + b.l + b.w / 2) / 2, feet = Math.max(a.t + a.h, b.t + b.h) - 14 * (b.h / 520) - .045 * b.h * .92;   // a step behind Pat and Jordan
       standEl = document.createElement("img"); standEl.src = "img/band/jbh-real.webp?v=1"; standEl.alt = ""; standEl.className = "ms-stand";
-      Object.assign(standEl.style, { position: "absolute", left: cx - w / 2 + w * .12 + "px", top: feet - h + "px", width: w + "px", height: h + "px", zIndex: 80, pointerEvents: "none", transition: "opacity .6s" });
+      Object.assign(standEl.style, { position: "absolute", left: cx - w / 2 + w * .125 + "px", top: feet - h + "px", width: w + "px", height: h + "px", zIndex: 80, pointerEvents: "none", transition: "opacity .6s" });
       bms[0].parentNode.appendChild(standEl);
       kit.style.visibility = "hidden";
       jordanIn(bms[bms.length - 1]);
@@ -224,18 +224,20 @@
   function jordanIn(j) {
     if (jd || !j) return;
     const r = j.querySelector("img.r"), n = j.querySelector("img.n"); if (!r) return;
-    jd = { j, r, n, src: r.src, left: j.style.left, width: j.style.width, nd: n ? n.style.display : "" };
-    const l = parseFloat(j.style.left), w = parseFloat(j.style.width), h = parseFloat(j.style.height), nw = h * 223 / 520;
+    jd = { j, r, n, src: r.src, left: j.style.left, width: j.style.width, top: j.style.top, height: j.style.height, z: j.style.zIndex, nd: n ? n.style.display : "" };
+    const l = parseFloat(j.style.left), w = parseFloat(j.style.width), t = parseFloat(j.style.top), h0 = parseFloat(j.style.height);
+    const h = h0 * 1.04, nw = h * 223 / 520, feet = t + h0 + .03 * h0;   // front row: a step closer to camera
     r.src = "img/band/jdh3b-real.webp?v=1"; if (n) n.style.display = "none";
-    j.style.left = l + w / 2 - nw / 2 + "px"; j.style.width = nw + "px";
+    j.style.left = l + w / 2 - nw / 2 + "px"; j.style.width = nw + "px"; j.style.top = feet - h + "px"; j.style.height = h + "px"; j.style.zIndex = 83;
   }
   function jordanOut() {
     if (!jd) return; const d = jd; jd = null;
-    d.r.src = d.src; if (d.n) d.n.style.display = d.nd; d.j.style.left = d.left; d.j.style.width = d.width;
+    d.r.src = d.src; if (d.n) d.n.style.display = d.nd; d.j.style.left = d.left; d.j.style.width = d.width; d.j.style.top = d.top; d.j.style.height = d.height; d.j.style.zIndex = d.z;
   }
   function start() {
-    const c = cam(); if (!c) return;
-    live = true; hold(true); standIn(true);
+    hold(true); standIn(true);
+    const c = cam(); if (!c) { standIn(false); hold(false); return; }
+    live = true;
     document.documentElement.classList.add("ms-lock");
     document.body.classList.add("ms-in");
     st.classList.remove("ms-cam"); setCam(c);
@@ -284,8 +286,9 @@
     bv.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goBand(); } });
   }
   function replay() {
-    const c = cam(); if (!c) return;
-    document.documentElement.classList.add("ms-lock"); hold(true); standIn(true);
+    hold(true); standIn(true);
+    const c = cam(); if (!c) { standIn(false); hold(false); return; }
+    document.documentElement.classList.add("ms-lock");
     st.classList.add("ms-cam"); document.body.classList.add("ms-in");
     void st.offsetWidth; setCam(c);
     setTimeout(() => { st.classList.remove("ms-cam"); live = true; build(); bump(idle);
