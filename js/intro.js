@@ -7,7 +7,7 @@
   const q = new URLSearchParams(location.search);
   if (q.has("nointro")) return;
   let seen = false;
-  try { seen = localStorage.getItem("ms-intro-seen") === "1"; } catch (e) {}
+  // shows on every visit (Pat, 2026-11-25); the old once-per-browser skip is off
   const force = q.has("intro");
 
   const css = `
