@@ -49,6 +49,8 @@
     #ms-in .row{justify-content:center}
   }
   @media (max-height:500px) and (orientation:landscape){
+    body.ms-barup #bar{zoom:.6}
+    #ms-in{align-items:flex-start;text-align:left}#ms-in .row{justify-content:flex-start}
     #ms-in{padding:0 max(20px,env(safe-area-inset-right)) 16px max(20px,env(safe-area-inset-left));
       background:linear-gradient(90deg,rgba(5,6,10,.8),rgba(5,6,10,.25) 45%,rgba(5,6,10,.25) 62%,rgba(5,6,10,.85)),linear-gradient(transparent 55%,rgba(5,6,10,.85))}
     #ms-in h1{font-size:46px}#ms-in .tag{margin:2px 0 8px 2px;font-size:10px}
@@ -68,6 +70,9 @@
   body.ms-barup.ph #bar{grid-template-columns:1.15fr 1fr!important}
   body.ms-barup.ph #bar [data-open=follow]{grid-column:2!important;grid-row:1/-1!important;align-self:stretch!important;height:auto!important;min-height:0!important}
   body.ms-in #lw{z-index:80!important}
+  /* the roof's big neon sign sits above the band layer; during the close-up it crossed their faces (and doubled the title) */
+  .sky .sign{transition:opacity .8s}
+  body.ms-in .sky .sign{opacity:0!important}
 `;
   const s = document.createElement("style"); s.textContent = css; document.head.appendChild(s);
 
@@ -85,12 +90,12 @@
     const x0 = Math.min(...els.map(r => r.left)), x1 = Math.max(...els.map(r => r.right));
     const y0 = Math.min(...els.map(r => r.top)), y1 = Math.max(...els.map(r => r.bottom));
     const bw = x1 - x0, bh = y1 - y0;
-    let z, cx = (x0 + x1) / 2, cy, ty;
-    if (H() <= 500 && W() > H()) { z = Math.min(2.2, .9 * H() / bh, .62 * W() / bw); cy = y0 + bh * .5; ty = H() * .48; }   // phone on its side
+    let z, cx = (x0 + x1) / 2, cy, ty, ox = W() / 2;
+    if (H() <= 500 && W() > H()) { const av = H() * .8; z = Math.min(2.2, .9 * av / bh, .62 * W() / bw); cy = y0 + bh * .5; ty = av * .5; ox = W() * .62; }   // phone on its side (band above the small bar)
     else if (phone()) { z = Math.min(1.75, 1.08 * W() / bw); cy = y0 + bh * .42; ty = H() * .36; }   // waist-up
     else { z = Math.min(2.2, .78 * H() / bh, .9 * W() / bw); cy = y0 + bh * .47; ty = H() * .44; }
     z = Math.max(1.15, z);
-    return { z, tx: W() / 2 - z * cx, ty: ty - z * cy };
+    return { z, tx: ox - z * cx, ty: ty - z * cy };
   }
   let cur = null;
   const setCam = c => { cur = c; st.style.scale = c ? String(c.z) : ""; st.style.translate = c ? `${c.tx}px ${c.ty}px` : ""; };
@@ -141,7 +146,8 @@
     clearTimeout(timer); cancelAnimationFrame(raf);
     const go = ui && ui.querySelector(".go"); if (!go) return;
     const svg = go.querySelector("svg"), r = svg.querySelector("rect"), cd = go.querySelector(".cd");
-    const fit = () => { const w = go.offsetWidth, h = go.offsetHeight;
+    let fw = 0, fh = 0;
+    const fit = () => { const w = go.offsetWidth, h = go.offsetHeight; fw = w; fh = h;
       svg.setAttribute("width", w); svg.setAttribute("height", h);
       r.setAttribute("x", 1.25); r.setAttribute("y", 1.25); r.setAttribute("width", w - 2.5); r.setAttribute("height", h - 2.5);
       r.setAttribute("rx", (h - 2.5) / 2); r.style.strokeDasharray = "100 100"; };
@@ -150,6 +156,7 @@
     const t0 = performance.now(), cyc = 6000;
     const tick = now => {
       if (!ui) return;
+      if (go.offsetWidth !== fw || go.offsetHeight !== fh) fit();   // the button changes size on rotate / resize
       const f = ((now - t0) % cyc) / cyc;
       r.style.strokeDashoffset = String(-100 * f);
       raf = requestAnimationFrame(tick);
@@ -187,7 +194,10 @@
   const onTs = e => { ty0 = e.touches[0].clientY; };
   const onTm = e => { if (!plOn && ty0 != null && Math.abs(e.touches[0].clientY - ty0) > 30) reveal(); };
   const onKey = e => { if (plOn) return; if (["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", " ", "PageDown", "Enter", "Escape"].includes(e.key)) reveal(); };
-  const onResize = () => { if (live && !st.classList.contains("ms-cam")) setCam(cam()); };
+  // re-frame on resize/rotate: measure with the camera off (a stale transform mid-rotation threw the band off screen), then again once the roof has re-laid out
+  let rzT = 0;
+  const reframe = () => { if (!live || st.classList.contains("ms-cam")) return; setCam(null); void st.offsetWidth; const c = cam(); if (c) setCam(c); };
+  const onResize = () => { reframe(); clearTimeout(rzT); rzT = setTimeout(reframe, 450); };
 
   // keep the band where the camera framed them: no director scenes or wandering during the close-up
   let held = false;
