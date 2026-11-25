@@ -197,9 +197,29 @@
   };
   const away0 = window.MSAway;
   window.MSAway = () => (document.body.classList.contains("ms-in") || (away0 ? away0() : false));
+  // Jacob stands between Pat and Jordan for the close-up (hero shot), half a step back; back on his kit after the pull-back
+  let standEl = null;
+  function standIn(on) {
+    const kit = play.querySelector(".bm-kit");
+    if (on) {
+      if (standEl || !kit || getComputedStyle(kit).visibility === "hidden") return;   // only when he's sitting at the kit
+      const bms = [...play.querySelectorAll(".bm")].filter(e => e.offsetWidth > 20).sort((x, y) => parseFloat(x.style.left) - parseFloat(y.style.left));
+      if (bms.length < 2) return;
+      const g = e => ({ l: parseFloat(e.style.left), t: parseFloat(e.style.top), w: parseFloat(e.style.width), h: parseFloat(e.style.height) });
+      const a = g(bms[0]), b = g(bms[bms.length - 1]);
+      const h = b.h * .92, w = h * 166 / 520, cx = (a.l + a.w / 2 + b.l + b.w / 2) / 2, feet = Math.max(a.t + a.h, b.t + b.h) - 14 * (b.h / 520);
+      standEl = document.createElement("img"); standEl.src = "img/band/jbh-real.webp?v=1"; standEl.alt = ""; standEl.className = "ms-stand";
+      Object.assign(standEl.style, { position: "absolute", left: cx - w / 2 + "px", top: feet - h + "px", width: w + "px", height: h + "px", zIndex: 80, pointerEvents: "none", transition: "opacity .6s" });
+      bms[0].parentNode.appendChild(standEl);
+      kit.style.visibility = "hidden";
+    } else if (standEl) {
+      const s = standEl; standEl = null; s.style.opacity = 0; setTimeout(() => s.remove(), 700);
+      if (kit) kit.style.visibility = "visible";
+    }
+  }
   function start() {
     const c = cam(); if (!c) return;
-    live = true; hold(true);
+    live = true; hold(true); standIn(true);
     document.documentElement.classList.add("ms-lock");
     document.body.classList.add("ms-in");
     st.classList.remove("ms-cam"); setCam(c);
@@ -213,7 +233,7 @@
   }
 
   function reveal(after) {
-    if (!live) return; live = false; hold(false); clearTimeout(timer); cancelAnimationFrame(raf); if (plOn) closePlayer();
+    if (!live) return; live = false; hold(false); standIn(false); clearTimeout(timer); cancelAnimationFrame(raf); if (plOn) closePlayer();
     removeEventListener("wheel", onWheel); removeEventListener("touchstart", onTs);
     removeEventListener("touchmove", onTm); removeEventListener("keydown", onKey); removeEventListener("resize", onResize);
     try { localStorage.setItem("ms-intro-seen", "1"); } catch (e) {}
@@ -249,7 +269,7 @@
   }
   function replay() {
     const c = cam(); if (!c) return;
-    document.documentElement.classList.add("ms-lock"); hold(true);
+    document.documentElement.classList.add("ms-lock"); hold(true); standIn(true);
     st.classList.add("ms-cam"); document.body.classList.add("ms-in");
     void st.offsetWidth; setCam(c);
     setTimeout(() => { st.classList.remove("ms-cam"); live = true; build(); bump(idle);
