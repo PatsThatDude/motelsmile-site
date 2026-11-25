@@ -60,6 +60,13 @@
   body.ms-in #lw{z-index:80!important}
   body.ms-in.lw-on #play,body.ms-in.lw-on #play *{animation-play-state:running!important}
   #ms-in.lwon>*{opacity:.18;transition:opacity .3s}
+  body.ms-barup #bar{position:fixed!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;z-index:66!important;opacity:1!important;pointer-events:auto!important;transform:none!important}
+  body.ms-barup #bar [data-open=shows],body.ms-barup #bar [data-open=list]{display:none!important}
+  body.ms-barup:not(.ph) #bar{grid-template-columns:7fr 2fr!important}
+  body.ms-barup:not(.ph) #bar [data-open=follow]{grid-column:2!important;grid-row:1!important}
+  body.ms-barup.ph #bar{grid-template-columns:1.15fr 1fr!important}
+  body.ms-barup.ph #bar [data-open=follow]{grid-column:2!important;grid-row:1/-1!important;align-self:stretch!important;height:auto!important;min-height:0!important}
+  body.ms-in #lw{z-index:80!important}
 `;
   const s = document.createElement("style"); s.textContent = css; document.head.appendChild(s);
 
@@ -89,15 +96,37 @@
 
   let ui, bv, timer, idle = 20000, live = false;
 
+  // the roof's own Now playing + Follow cards sit under the close-up (same cards, lifted out of the zoomed roof); Shows stays as the text line
+  let barHome = null, barHooked = false;
+  function liftBar() {
+    const bar = document.getElementById("bar"); if (!bar || !ui) return;
+    if (!barHome) barHome = { p: bar.parentNode, n: bar.nextSibling };
+    document.body.appendChild(bar); document.body.classList.add("ms-barup");
+    const fit = () => { if (ui) ui.style.paddingBottom = (bar.getBoundingClientRect().height + 16) + "px"; };
+    fit(); requestAnimationFrame(fit);
+    if (!barHooked) {
+      barHooked = true;
+      bar.addEventListener("click", e => {
+        if (!live) return;
+        if (e.target.closest("#np-t")) { e.stopPropagation(); e.preventDefault(); openPlayer(); return; }
+        const fo = e.target.closest('[data-open="follow"]');
+        if (fo) { e.stopPropagation(); e.preventDefault(); reveal(() => fo.click()); return; }
+        if (e.target.closest("#np-pp")) bump(30000);
+      }, true);
+    }
+  }
+  function dropBar() {
+    const bar = document.getElementById("bar"); document.body.classList.remove("ms-barup");
+    if (bar && barHome) barHome.p.insertBefore(bar, barHome.n && barHome.n.parentNode === barHome.p ? barHome.n : null);
+  }
   function build() {
     ui = document.createElement("div"); ui.id = "ms-in";
     const when = txt("ss-a").trim(), cnt = txt("ss-b").trim();
     ui.innerHTML = `<h1>Motel Smile</h1><div class="tag">New York Rock</div>
       ${when ? `<button class="show" data-k="shows"><small>Next show</small>${when}${cnt ? " · " + cnt : ""}</button>` : ""}
-      <div class="row"><button class="pill" style="--c:var(--pink)" data-k="play"><span class="tri"></span> <span class="pl">Play “${(txt("np-title") || "Don't Mind It").trim()}”</span></button>
-      <button class="pill" style="--c:var(--blue)" data-k="follow">Follow</button>
-      <button class="go" data-k="go"><svg><rect pathLength="100"/></svg>Step onto the roof<i>↗</i><b class="cd"></b></button></div>`;
+      <div class="row"><button class="go" data-k="go"><svg><rect pathLength="100"/></svg>Step onto the roof<i>↗</i><b class="cd"></b></button></div>`;
     document.body.appendChild(ui);
+    liftBar();
     ui.addEventListener("click", e => {
       const k = (e.target.closest("[data-k]") || {}).dataset?.k;
       if (k === "play") { openPlayer(); return; }
@@ -199,7 +228,7 @@
       setTimeout(() => { e.classList.add("ms-poi"); setTimeout(() => e.classList.remove("ms-poi"), 3300); }, 900 + i * 380);
     });
     setTimeout(() => {
-      ui.remove(); ui = null; st.classList.remove("ms-cam"); document.body.classList.remove("ms-out");
+      dropBar(); ui.remove(); ui = null; st.classList.remove("ms-cam"); document.body.classList.remove("ms-out");
       document.documentElement.classList.remove("ms-lock"); scrollTo(0, 0);
       bandBtn(); after && after();
     }, 2300);
