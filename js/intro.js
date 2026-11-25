@@ -207,17 +207,27 @@
       if (bms.length < 2) return;
       const g = e => ({ l: parseFloat(e.style.left), t: parseFloat(e.style.top), w: parseFloat(e.style.width), h: parseFloat(e.style.height) });
       const a = g(bms[0]), b = g(bms[bms.length - 1]);
-      const h = b.h * .92 * .96, w = h * 166 / 520, cx = (a.l + a.w / 2 + b.l + b.w / 2) / 2, feet = Math.max(a.t + a.h, b.t + b.h) - 14 * (b.h / 520) - .045 * b.h * .92;   // a step behind Pat and Jordan
-      standEl = document.createElement("img"); standEl.src = "img/band/jbh-real.webp?v=1"; standEl.alt = ""; standEl.className = "ms-stand";
-      Object.assign(standEl.style, { position: "absolute", left: cx - w / 2 + w * .125 + "px", top: feet - h + "px", width: w + "px", height: h + "px", zIndex: 80, pointerEvents: "none", transition: "opacity .6s" });
+      const h = b.h * .92 * .96, w0 = h * 166 / 520, w = h * 153 / 520, cx = (a.l + a.w / 2 + b.l + b.w / 2) / 2, feet = Math.max(a.t + a.h, b.t + b.h) - 14 * (b.h / 520) - .045 * b.h * .92;   // a step behind Pat and Jordan
+      standEl = document.createElement("img"); standEl.src = "img/band/jbh2-real.webp?v=1"; standEl.alt = ""; standEl.className = "ms-stand";
+      Object.assign(standEl.style, { position: "absolute", left: cx - w0 / 2 + w0 * .125 + "px", top: feet - h + "px", width: w + "px", height: h + "px", zIndex: 80, pointerEvents: "none", transition: "opacity .6s" });
       bms[0].parentNode.appendChild(standEl);
       kit.style.visibility = "hidden";
       jordanIn(bms[bms.length - 1]);
+      shadow(standEl, 79, .9, .985); shadow(bms[bms.length - 1], 82, .95, .955);
     } else if (standEl) {
       const s = standEl; standEl = null; s.style.opacity = 0; setTimeout(() => s.remove(), 700);
       if (kit) kit.style.visibility = "visible";
       jordanOut();
+      document.querySelectorAll(".ms-shad").forEach(e => { e.style.opacity = 0; setTimeout(() => e.remove(), 700); });
     }
+  }
+  // soft contact shadow under a band member's feet so the line-up sits on the floor
+  function shadow(el, z, wf, yf) {
+    const l = parseFloat(el.style.left), t = parseFloat(el.style.top), w = parseFloat(el.style.width), h = parseFloat(el.style.height);
+    const d = document.createElement("div"); d.className = "ms-shad";
+    Object.assign(d.style, { position: "absolute", left: l + w * (.5 - wf / 2) + "px", top: t + h * yf - h * .025 + "px", width: w * wf + "px", height: h * .05 + "px",
+      borderRadius: "50%", background: "radial-gradient(closest-side,rgba(0,0,0,.75),rgba(0,0,0,0))", zIndex: z, pointerEvents: "none", transition: "opacity .6s" });
+    el.parentNode.appendChild(d);
   }
   // Jordan's close-up pose: standing with the Les Paul in front of him, hands on the headstock (intro only)
   let jd = null;
