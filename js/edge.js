@@ -14,16 +14,16 @@
     c: { pat: -.30, jac: .02, jor: .33 }          // like b, but pushed right of the title on wide screens
   }[MODE];
   const SP = {
-    pat: { src: "img/band/p1-real.webp?v=b4", ar: 267 / 520, h: 1, z: 2 },
-    jac: { src: "img/band/jbh2-real.webp?v=1", ar: 153 / 520, h: .95, z: 1, dy: -.02 },   // Pat is only an inch taller; Jacob a small step back
-    jor: { src: "img/band/jdh3b-real.webp?v=1", ar: 223 / 520, h: 1.04, z: 3, dy: .02 }
+    pat: { src: "img/band/rl-pat.webp?v=1", ar: 266 / 520, h: 1, z: 2 },
+    jac: { src: "img/band/rl-jac.webp?v=1", ar: 154 / 520, h: .95, z: 1, dy: -.02 },   // Pat is only an inch taller; Jacob a small step back
+    jor: { src: "img/band/rl-jor.webp?v=1", ar: 224 / 520, h: 1.04, z: 3, dy: .02 }
   };
   const css = `
   #ms-edge{position:fixed;inset:0;z-index:58;pointer-events:none;opacity:0;transition:opacity .9s;background:#04050a}
   #ms-edge .bd{position:absolute;inset:0;background:url(img/roof-edge.webp?v=1) 50% 100%/cover no-repeat}
   #ms-edge .pp{position:absolute}
   #ms-edge .pp img{position:absolute;inset:0;width:100%;height:100%;display:block;
-    filter:saturate(.72) brightness(.92) contrast(1.06)}   /* calm the old pink/cyan side light a bit */
+  }   /* rl-*: relit in ChatGPT with a hard overhead spotlight (2026-11-26) */
   /* overhead spotlight on each of us, masked to our own outline: hot top light on head and shoulders, falling into shade at the legs */
   #ms-edge .pp i{position:absolute;inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
   #ms-edge .pp .tl{background:linear-gradient(to bottom,rgba(255,246,228,.55),rgba(255,246,228,.18) 16%,rgba(255,246,228,0) 38%);mix-blend-mode:soft-light}
@@ -42,7 +42,7 @@
   for (const k of ["jac", "pat", "jor"]) {
     const d = document.createElement("div"); d.className = "pp"; d.style.zIndex = SP[k].z;
     const mk = `-webkit-mask-image:url(${SP[k].src});mask-image:url(${SP[k].src})`;
-    d.innerHTML = `<img src="${SP[k].src}" alt=""><i class="tl" style="${mk}"></i><i class="tl2" style="${mk}"></i><i class="sh" style="${mk}"></i>`;
+    d.innerHTML = `<img src="${SP[k].src}" alt="">`;
     box.appendChild(d); imgs[k] = d;
   }
   const fl = document.createElement("div"); fl.className = "fl"; box.appendChild(fl);   // our shadow pooled on the floor under the spot
