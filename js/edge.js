@@ -21,7 +21,15 @@
   const css = `
   #ms-edge{position:fixed;inset:0;z-index:58;pointer-events:none;opacity:0;transition:opacity .9s;background:#04050a}
   #ms-edge .bd{position:absolute;inset:0;background:url(img/roof-edge.webp?v=1) 50% 100%/cover no-repeat}
-  #ms-edge img{position:absolute;display:block;filter:drop-shadow(0 0 1px rgba(0,0,0,.6))}
+  #ms-edge .pp{position:absolute}
+  #ms-edge .pp img{position:absolute;inset:0;width:100%;height:100%;display:block;
+    filter:saturate(.72) brightness(.92) contrast(1.06)}   /* calm the old pink/cyan side light a bit */
+  /* overhead spotlight on each of us, masked to our own outline: hot top light on head and shoulders, falling into shade at the legs */
+  #ms-edge .pp i{position:absolute;inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+  #ms-edge .pp .tl{background:linear-gradient(to bottom,rgba(255,246,228,.55),rgba(255,246,228,.18) 16%,rgba(255,246,228,0) 38%);mix-blend-mode:soft-light}
+  #ms-edge .pp .tl2{background:linear-gradient(to bottom,rgba(255,250,240,.22),rgba(255,250,240,0) 22%);mix-blend-mode:screen}
+  #ms-edge .pp .sh{background:linear-gradient(to bottom,rgba(3,4,9,0) 34%,rgba(3,4,9,.35) 62%,rgba(3,4,9,.7) 100%)}
+  #ms-edge .fl{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.75),rgba(0,0,0,0));z-index:0}
   #ms-edge .lt{position:absolute;pointer-events:none}
   body.ms-edge-on #ms-edge{opacity:1}
   body.ms-edge-on #stage{opacity:0!important}
@@ -31,7 +39,13 @@
   const st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
   const box = document.createElement("div"); box.id = "ms-edge"; box.innerHTML = `<div class="bd"></div>`;
   const imgs = {};
-  for (const k of ["jac", "pat", "jor"]) { const i = document.createElement("img"); i.src = SP[k].src; i.alt = ""; i.style.zIndex = SP[k].z; box.appendChild(i); imgs[k] = i; }
+  for (const k of ["jac", "pat", "jor"]) {
+    const d = document.createElement("div"); d.className = "pp"; d.style.zIndex = SP[k].z;
+    const mk = `-webkit-mask-image:url(${SP[k].src});mask-image:url(${SP[k].src})`;
+    d.innerHTML = `<img src="${SP[k].src}" alt=""><i class="tl" style="${mk}"></i><i class="tl2" style="${mk}"></i><i class="sh" style="${mk}"></i>`;
+    box.appendChild(d); imgs[k] = d;
+  }
+  const fl = document.createElement("div"); fl.className = "fl"; box.appendChild(fl);   // our shadow pooled on the floor under the spot
   // top light on heads/shoulders, legs falling into shade (spotlight from above)
   const lt = document.createElement("div"); lt.className = "lt"; box.appendChild(lt);
   document.body.appendChild(box);
@@ -51,9 +65,10 @@
       const s = SP[k], h = H * s.h, w = h * s.ar, x = cx + LAYOUT[k] * H - w / 2, y = base + (s.dy || 0) * H - h;
       Object.assign(imgs[k].style, { left: x + "px", top: y + "px", width: w + "px", height: h + "px" });
     }
-    Object.assign(lt.style, { left: 0, top: 0, width: W + "px", height: Hh + "px",
-      background: `linear-gradient(to bottom, rgba(0,0,0,0) ${Math.round(base - H * .55)}px, rgba(4,5,10,.55) ${Math.round(base)}px)` });
-    lt.style.zIndex = 4;
+    Object.assign(lt.style, { left: 0, top: 0, width: W + "px", height: Hh + "px", zIndex: 4,
+      background: `linear-gradient(to bottom, rgba(0,0,0,0) ${Math.round(base - H * .4)}px, rgba(4,5,10,.35) ${Math.round(base)}px)` });
+    const gw = span * H;
+    Object.assign(fl.style, { left: cx - gw * .55 + "px", top: base - H * .06 + "px", width: gw * 1.1 + "px", height: H * .12 + "px" });
   }
   // follow the intro: on while the close-up is up, cross-fade out when it reveals
   const sync = () => {
