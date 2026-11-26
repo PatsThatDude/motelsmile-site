@@ -34,9 +34,9 @@
   #ms-edge .pp .sh{background:linear-gradient(to bottom,rgba(3,4,9,0) 34%,rgba(3,4,9,.35) 62%,rgba(3,4,9,.7) 100%)}
   #ms-edge .fl{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.75),rgba(0,0,0,0));z-index:0}
   #ms-edge .lt{position:absolute;pointer-events:none}
-  /* a faint spotlight beam, 5% (Pat): a soft cone of light from above, drawn by the page instead of baked into the photo */
+  /* a faint spotlight beam, 10% (Pat): a soft cone of light from above, drawn by the page instead of baked into the photo */
   #ms-edge .bm5{position:absolute;inset:0;pointer-events:none;z-index:0;mix-blend-mode:screen;
-    background:conic-gradient(from 180deg at 50% -12%,transparent 0deg,transparent 163deg,rgba(255,250,238,.05) 172deg,rgba(255,250,238,.05) 188deg,transparent 197deg,transparent 360deg);
+    background:conic-gradient(from 180deg at 50% -12%,transparent 0deg,transparent 163deg,rgba(255,250,238,.1) 172deg,rgba(255,250,238,.1) 188deg,transparent 197deg,transparent 360deg);
     -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 92%);mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 92%);filter:blur(14px)}
   body.ms-edge-on #ms-edge{opacity:1}
   body.ms-edge-on #stage{opacity:0!important}
