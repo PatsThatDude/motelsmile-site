@@ -26,7 +26,7 @@
   }   /* bl-*: relit in ChatGPT as BACKLIT by the spotlight behind/above (Pat preferred it behind us); rl-* = the overhead version */
   /* dim the beam and the floor pool in the backdrop shot */
   #ms-edge .bd::after{content:"";position:absolute;inset:0;
-    background:radial-gradient(28% 55% at 50% 22%,rgba(4,5,10,.25),rgba(4,5,10,0)),radial-gradient(40% 22% at 50% 92%,rgba(4,5,10,.45),rgba(4,5,10,0))}
+    background:radial-gradient(30% 60% at 50% 12%,rgba(4,5,10,.55),rgba(4,5,10,0)),radial-gradient(40% 22% at 50% 92%,rgba(4,5,10,.45),rgba(4,5,10,0))}
   /* overhead spotlight on each of us, masked to our own outline: hot top light on head and shoulders, falling into shade at the legs */
   #ms-edge .pp i{position:absolute;inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
   #ms-edge .pp .tl{background:linear-gradient(to bottom,rgba(255,246,228,.55),rgba(255,246,228,.18) 16%,rgba(255,246,228,0) 38%);mix-blend-mode:soft-light}
