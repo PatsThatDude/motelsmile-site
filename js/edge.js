@@ -4,8 +4,9 @@
    stands at the front of it from the ankles up. On "Step onto the roof" it cross-fades back to the
    normal roof while the camera pulls back. */
 (() => {
-  const m = location.search.match(/[?&]edge(?:=([abc]))?/);
-  if (!m) return;
+  // LIVE for everyone since 2026-11-26 (Pat: "push it live"); ?noedge shows the old roof close-up, ?edge=a|c the other framings
+  if (/[?&]noedge\b/.test(location.search)) return;
+  const m = location.search.match(/[?&]edge=([abc])/) || [];
   const MODE = m[1] || "b";   // Pat picked B
   // where each of us stands, in band heights (H) from the centre line; z = drawing order (Jordan in front)
   const LAYOUT = {
