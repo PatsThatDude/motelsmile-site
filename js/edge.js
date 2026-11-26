@@ -17,7 +17,7 @@
   const SP = {
     pat: { src: "img/band/fn-pat.webp?v=3", ar: 261 / 520, h: 1, z: 2 },
     jac: { src: "img/band/fn-jac.webp?v=3", ar: 157 / 520, h: .95, z: 1, dy: -.02 },   // Pat is only an inch taller; Jacob a small step back
-    jor: { src: "img/band/fn-jor.webp?v=3", ar: 223 / 520, h: 1.04, z: 3, dy: .02 }
+    jor: { src: "img/band/fn-jor.webp?v=4", ar: 223 / 520, h: 1.04, z: 3, dy: .02 }
   };
   const css = `
   #ms-edge{position:fixed;inset:0;z-index:58;pointer-events:none;opacity:0;transition:opacity .9s;background:#04050a}
