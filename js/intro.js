@@ -133,7 +133,7 @@
         <linearGradient id="msLow" gradientUnits="userSpaceOnUse" x1="0" y1="${y0}" x2="0" y2="${y1}"><stop offset=".35" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>
         <radialGradient id="msPl"><stop offset="0" stop-color="#fff3df" stop-opacity=".45"/><stop offset="1" stop-color="#fff3df" stop-opacity="0"/></radialGradient>
       </defs>
-      <rect width="100%" height="100%" fill="rgb(2,3,6)" fill-opacity=".94" mask="url(#msM)"/>
+      <rect width="100%" height="100%" fill="rgb(2,3,6)" fill-opacity=".86" mask="url(#msM)"/>
       <g mask="url(#msS)"><rect x="${x0}" y="${y0}" width="${bw}" height="${bh}" fill="url(#msLow)"/></g>
       <g style="mix-blend-mode:screen">
         <g mask="url(#msH)"><polygon points="${cone}" fill="url(#msHz)" filter="url(#msB)"/></g>
