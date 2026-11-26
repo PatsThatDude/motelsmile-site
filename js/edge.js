@@ -14,9 +14,9 @@
     c: { pat: -.30, jac: .02, jor: .33 }          // like b, but pushed right of the title on wide screens
   }[MODE];
   const SP = {
-    pat: { src: "img/band/bl-pat.webp?v=1", ar: 262 / 520, h: 1, z: 2 },
-    jac: { src: "img/band/bl-jac.webp?v=1", ar: 154 / 520, h: .95, z: 1, dy: -.02 },   // Pat is only an inch taller; Jacob a small step back
-    jor: { src: "img/band/bl-jor.webp?v=1", ar: 225 / 520, h: 1.04, z: 3, dy: .02 }
+    pat: { src: "img/band/bl-pat.webp?v=3", ar: 262 / 520, h: 1, z: 2 },
+    jac: { src: "img/band/bl-jac.webp?v=3", ar: 154 / 520, h: .95, z: 1, dy: -.02 },   // Pat is only an inch taller; Jacob a small step back
+    jor: { src: "img/band/bl-jor.webp?v=3", ar: 225 / 520, h: 1.04, z: 3, dy: .02 }
   };
   const css = `
   #ms-edge{position:fixed;inset:0;z-index:58;pointer-events:none;opacity:0;transition:opacity .9s;background:#04050a}
