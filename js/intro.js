@@ -109,33 +109,37 @@
   const SPOT = /[?&]spot\b/.test(location.search);   // preview flag until Pat okays it
   function placeSpot() {
     if (!SPOT || !document.body.classList.contains("ms-in")) return;
-    const els = [...play.querySelectorAll(".bm")].filter(e => e.offsetWidth > 20 && getComputedStyle(e).visibility !== "hidden").concat([...document.querySelectorAll("img.ms-stand")]);
-    if (!els.length) return;
-    const rs = els.map(e => e.getBoundingClientRect());
+    // the lit people: their sprite images, so only the band (and the pool at their feet) comes out of the dark
+    const imgs = [...play.querySelectorAll(".bm")].filter(e => e.offsetWidth > 20 && getComputedStyle(e).visibility !== "hidden").map(e => e.querySelector("img.r")).concat([...document.querySelectorAll("img.ms-stand")]).filter(Boolean);
+    if (!imgs.length) return;
+    const rs = imgs.map(e => e.getBoundingClientRect());
     const x0 = Math.min(...rs.map(r => r.left)), x1 = Math.max(...rs.map(r => r.right)), y0 = Math.min(...rs.map(r => r.top)), y1 = Math.max(...rs.map(r => r.bottom));
     const bw = x1 - x0, bh = y1 - y0, cx = (x0 + x1) / 2, W_ = innerWidth, H_ = innerHeight;
-    const wt = bw * .45, wh = bw * 1.04, yh = y0 - bh * .04, wb = bw * 1.15, py = y1 - bh * .02, pr = wb * .55, prY = Math.max(14, bh * .07), blur = Math.max(14, bw * .03);
-    const cone = `${cx - wt / 2},-40 ${cx + wt / 2},-40 ${cx + wh / 2},${yh} ${cx + wb / 2},${py} ${cx - wb / 2},${py} ${cx - wh / 2},${yh}`;   // narrow up top, opens to the band at head height
-    const heads = rs.map(r => `<ellipse cx="${(r.left + r.right) / 2}" cy="${r.top + r.height * .1}" rx="${r.width * .34}" ry="${r.height * .1}" fill="url(#msHd)"/>`).join("");
-    if (!spotEl) {
-      spotEl = document.createElement("div"); spotEl.id = "ms-spot";
-      document.body.appendChild(spotEl);
-    }
+    const wt = bw * .3, wh = bw * 1.0, yh = y0 - bh * .03, wb = bw * 1.12, py = y1 - bh * .015, pr = wb * .56, prY = Math.max(14, bh * .075);
+    const cone = `${cx - wt / 2},-40 ${cx + wt / 2},-40 ${cx + wh / 2},${yh} ${cx + wb / 2},${py} ${cx - wb / 2},${py} ${cx - wh / 2},${yh}`;
+    const sil = f => imgs.map((im, k) => `<image href="${im.currentSrc || im.src}" x="${rs[k].left}" y="${rs[k].top}" width="${rs[k].width}" height="${rs[k].height}" preserveAspectRatio="none" filter="url(#${f})"/>`).join("");
+    if (!spotEl) { spotEl = document.createElement("div"); spotEl.id = "ms-spot"; document.body.appendChild(spotEl); }
     spotEl.innerHTML = `<svg width="${W_}" height="${H_}" viewBox="0 0 ${W_} ${H_}" aria-hidden="true">
       <defs>
-        <filter id="msB" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${blur}"/></filter>
-        <filter id="msB2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${blur * .5}"/></filter>
-        <mask id="msM"><rect width="100%" height="100%" fill="#fff"/><g filter="url(#msB)"><polygon points="${cone}" fill="#000"/><ellipse cx="${cx}" cy="${py}" rx="${pr}" ry="${prY * 1.6}" fill="#000"/></g></mask>
-        <linearGradient id="msHz" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6e6" stop-opacity=".30"/><stop offset=".45" stop-color="#fff6e6" stop-opacity=".09"/><stop offset="1" stop-color="#fff6e6" stop-opacity=".03"/></linearGradient>
-        <radialGradient id="msPl"><stop offset="0" stop-color="#fff3df" stop-opacity=".40"/><stop offset="1" stop-color="#fff3df" stop-opacity="0"/></radialGradient>
-        <radialGradient id="msHd"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+        <filter id="msK" color-interpolation-filters="sRGB"><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0"/><feGaussianBlur stdDeviation=".6"/></filter>
+        <filter id="msW" color-interpolation-filters="sRGB"><feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/></filter>
+        <filter id="msB" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${Math.max(10, bw * .025)}"/></filter>
+        <filter id="msB3" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${Math.max(16, bh * .05)}"/></filter>
+        <mask id="msM"><rect width="100%" height="100%" fill="#fff"/>${sil("msK")}<ellipse cx="${cx}" cy="${py}" rx="${pr}" ry="${prY}" fill="#000" fill-opacity=".6" filter="url(#msB3)"/></mask>
+        <mask id="msH"><rect width="100%" height="100%" fill="#fff"/>${sil("msK")}</mask>
+        <mask id="msS"><rect width="100%" height="100%" fill="#000"/>${sil("msW")}</mask>
+        <linearGradient id="msHz" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4e0" stop-opacity=".26"/><stop offset=".5" stop-color="#fff4e0" stop-opacity=".07"/><stop offset="1" stop-color="#fff4e0" stop-opacity=".03"/></linearGradient>
+        <linearGradient id="msTop" gradientUnits="userSpaceOnUse" x1="0" y1="${y0}" x2="0" y2="${y1}"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".3" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        <linearGradient id="msLow" gradientUnits="userSpaceOnUse" x1="0" y1="${y0}" x2="0" y2="${y1}"><stop offset=".35" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>
+        <radialGradient id="msPl"><stop offset="0" stop-color="#fff3df" stop-opacity=".45"/><stop offset="1" stop-color="#fff3df" stop-opacity="0"/></radialGradient>
       </defs>
-      <rect width="100%" height="100%" fill="rgba(2,3,7,.84)" mask="url(#msM)"/>
+      <rect width="100%" height="100%" fill="rgb(2,3,6)" fill-opacity=".94" mask="url(#msM)"/>
+      <g mask="url(#msS)"><rect x="${x0}" y="${y0}" width="${bw}" height="${bh}" fill="url(#msLow)"/></g>
       <g style="mix-blend-mode:screen">
-        <polygon points="${cone}" fill="url(#msHz)" filter="url(#msB2)"/>
+        <g mask="url(#msH)"><polygon points="${cone}" fill="url(#msHz)" filter="url(#msB)"/></g>
+        <g mask="url(#msS)"><rect x="${x0}" y="${y0}" width="${bw}" height="${bh}" fill="url(#msTop)"/></g>
         <ellipse cx="${cx}" cy="${py}" rx="${pr}" ry="${prY}" fill="url(#msPl)"/>
-        ${heads}
-        <ellipse cx="${cx}" cy="-10" rx="${Math.max(60, bw * .2)}" ry="${Math.max(40, bh * .12)}" fill="url(#msPl)"/>
+        <ellipse cx="${cx}" cy="-10" rx="${Math.max(50, bw * .12)}" ry="${Math.max(36, bh * .08)}" fill="url(#msPl)"/>
       </g></svg>`;
     spotEl.classList.add("on");
   }
