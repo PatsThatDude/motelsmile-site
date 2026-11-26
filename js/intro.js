@@ -74,6 +74,7 @@
   .sky .sign{transition:opacity .8s}
   body.ms-in .sky .sign{opacity:0!important}
   body.ms-standon #play .bm-kit{visibility:hidden!important}
+  body.ms-pull #stage{overflow:visible!important}body.ms-pull{background:#04050a!important}
   #ms-spot{position:fixed;inset:0;z-index:59;pointer-events:none;opacity:0;transition:opacity 1s}
   #ms-spot.on{opacity:1}#ms-spot svg{position:absolute;inset:0;display:block}
   body.ms-standon #play .bm:has(img.r[src*="band/jb"]){visibility:hidden!important}
@@ -98,7 +99,9 @@
     if (H() <= 500 && W() > H()) { const av = H() * .8; z = Math.min(2.2, .9 * av / bh, .62 * W() / bw); cy = y0 + bh * .5; ty = av * .5; ox = W() * .62; }   // phone on its side (band above the small bar)
     else if (phone()) { z = Math.min(1.75, 1.08 * W() / bw); cy = y0 + bh * .42; ty = H() * .36; }   // waist-up
     else { z = Math.min(2.2, .78 * H() / bh, .9 * W() / bw); cy = y0 + bh * .47; ty = H() * .44; }
-    z = Math.max(1.15, z);
+    // never zoom out past the edge of the roof picture (the pulled-forward band asks for a wide shot)
+    const sr = st.getBoundingClientRect(), sw = sr.width / k.z, sh = sr.height / k.z;
+    z = Math.max(PULL > 1 ? Math.max(W() / sw, H() / sh) * .62 : 1.15, z);
     return { z, tx: ox - z * cx, ty: ty - z * cy };
   }
   let cur = null;
@@ -131,9 +134,11 @@
         <linearGradient id="msHz" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4e0" stop-opacity=".26"/><stop offset=".5" stop-color="#fff4e0" stop-opacity=".07"/><stop offset="1" stop-color="#fff4e0" stop-opacity=".03"/></linearGradient>
         <linearGradient id="msTop" gradientUnits="userSpaceOnUse" x1="0" y1="${y0}" x2="0" y2="${y1}"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".3" stop-color="#fff" stop-opacity="0"/></linearGradient>
         <linearGradient id="msLow" gradientUnits="userSpaceOnUse" x1="0" y1="${y0}" x2="0" y2="${y1}"><stop offset=".35" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>
+        <radialGradient id="msVg" gradientUnits="userSpaceOnUse" cx="${cx}" cy="${(y0 + y1) / 2}" r="${Math.max(bw * .95, bh * .85)}"><stop offset=".45" stop-color="#04050a" stop-opacity="0"/><stop offset="1" stop-color="#04050a" stop-opacity="1"/></radialGradient>
         <radialGradient id="msPl"><stop offset="0" stop-color="#fff3df" stop-opacity=".45"/><stop offset="1" stop-color="#fff3df" stop-opacity="0"/></radialGradient>
       </defs>
       <rect width="100%" height="100%" fill="rgb(2,3,6)" fill-opacity=".86" mask="url(#msM)"/>
+      <rect width="100%" height="100%" fill="url(#msVg)"/>
       <g mask="url(#msS)"><rect x="${x0}" y="${y0}" width="${bw}" height="${bh}" fill="url(#msLow)"/></g>
       <g style="mix-blend-mode:screen">
         <g mask="url(#msH)"><polygon points="${cone}" fill="url(#msHz)" filter="url(#msB)"/></g>
@@ -277,14 +282,29 @@
       document.body.classList.add("ms-standon");
       jordanIn(jor);
       shadow(standEl, 79, .9, .985); shadow(jor, 82, .95, .955);
+      pull([pat, jor, standEl, ...document.querySelectorAll(".ms-shad")], true);
     } else {
       standTry = 99;
       if (standEl) { const s = standEl; standEl = null; s.style.opacity = 0; setTimeout(() => s.remove(), 700); }
       document.body.classList.remove("ms-standon");
+      pull([...play.querySelectorAll(".bm"), ...document.querySelectorAll("img.ms-stand,.ms-shad")], false);
       jordanOut();
       document.querySelectorAll(".ms-shad").forEach(e => { e.style.opacity = 0; setTimeout(() => e.remove(), 700); });
       setTimeout(() => { standTry = 0; }, 0);
     }
+  }
+  // pull the band toward the camera (Pat, 2026-11-26: "zoom out on everything except the characters"):
+  // they are scaled up about their shared feet point, so cam() frames them at the same size and the roof behind shrinks
+  const PULL = /[?&]spot\b/.test(location.search) ? 1.7 : 1;
+  function pull(els, on) {
+    els = els.filter(Boolean);
+    if (!on) { setTimeout(() => document.body.classList.remove("ms-pull"), 2100); els.forEach(e => { if (e.style.transform) { e.style.transition = "transform 2s cubic-bezier(.3,.1,.2,1)"; e.style.transform = ""; setTimeout(() => { e.style.transition = ""; e.style.transformOrigin = ""; }, 2100); } }); return; }
+    if (PULL === 1) return;
+    document.body.classList.add("ms-pull");
+    const g = e => ({ l: parseFloat(e.style.left), t: parseFloat(e.style.top), w: parseFloat(e.style.width), h: parseFloat(e.style.height) });
+    const bs = els.filter(e => !e.classList.contains("ms-shad")).map(g);
+    const fx = (Math.min(...bs.map(b => b.l)) + Math.max(...bs.map(b => b.l + b.w))) / 2, fy = Math.max(...bs.map(b => b.t + b.h));
+    els.forEach(e => { const b = g(e); e.style.transformOrigin = `${fx - b.l}px ${fy - b.t}px`; e.style.transform = `scale(${PULL})`; });
   }
   // soft contact shadow under a band member's feet so the line-up sits on the floor
   function shadow(el, z, wf, yf) {
