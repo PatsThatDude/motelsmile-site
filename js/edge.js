@@ -10,7 +10,7 @@
   // where each of us stands, in band heights (H) from the centre line; z = drawing order (Jordan in front)
   const LAYOUT = {
     a: { pat: -.25, jac: .0, jor: .27 },          // tight: shoulders overlapping
-    b: { pat: -.34, jac: .02, jor: .37 },         // spread (the mock)
+    b: { pat: -.38, jac: .02, jor: .37 },   // Pat nudged left (Pat)         // spread (the mock)
     c: { pat: -.30, jac: .02, jor: .33 }          // like b, but pushed right of the title on wide screens
   }[MODE];
   const SP = {
