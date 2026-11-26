@@ -23,7 +23,10 @@
   #ms-edge .bd{position:absolute;inset:0;background:url(img/roof-edge.webp?v=1) 50% 100%/cover no-repeat}
   #ms-edge .pp{position:absolute}
   #ms-edge .pp img{position:absolute;inset:0;width:100%;height:100%;display:block;
-  }   /* rl-*: relit in ChatGPT with a hard overhead spotlight (2026-11-26) */
+    filter:brightness(.8) contrast(1.04)}   /* rl-*: relit in ChatGPT with a hard overhead spotlight (2026-11-26); dimmed a notch (Pat) */
+  /* dim the beam and the floor pool in the backdrop shot */
+  #ms-edge .bd::after{content:"";position:absolute;inset:0;
+    background:radial-gradient(28% 55% at 50% 22%,rgba(4,5,10,.5),rgba(4,5,10,0)),radial-gradient(40% 22% at 50% 92%,rgba(4,5,10,.45),rgba(4,5,10,0))}
   /* overhead spotlight on each of us, masked to our own outline: hot top light on head and shoulders, falling into shade at the legs */
   #ms-edge .pp i{position:absolute;inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
   #ms-edge .pp .tl{background:linear-gradient(to bottom,rgba(255,246,228,.55),rgba(255,246,228,.18) 16%,rgba(255,246,228,0) 38%);mix-blend-mode:soft-light}
