@@ -14,19 +14,19 @@
     c: { pat: -.30, jac: .02, jor: .33 }          // like b, but pushed right of the title on wide screens
   }[MODE];
   const SP = {
-    pat: { src: "img/band/rl-pat.webp?v=1", ar: 266 / 520, h: 1, z: 2 },
-    jac: { src: "img/band/rl-jac.webp?v=1", ar: 154 / 520, h: .95, z: 1, dy: -.02 },   // Pat is only an inch taller; Jacob a small step back
-    jor: { src: "img/band/rl-jor.webp?v=1", ar: 224 / 520, h: 1.04, z: 3, dy: .02 }
+    pat: { src: "img/band/bl-pat.webp?v=1", ar: 262 / 520, h: 1, z: 2 },
+    jac: { src: "img/band/bl-jac.webp?v=1", ar: 154 / 520, h: .95, z: 1, dy: -.02 },   // Pat is only an inch taller; Jacob a small step back
+    jor: { src: "img/band/bl-jor.webp?v=1", ar: 225 / 520, h: 1.04, z: 3, dy: .02 }
   };
   const css = `
   #ms-edge{position:fixed;inset:0;z-index:58;pointer-events:none;opacity:0;transition:opacity .9s;background:#04050a}
   #ms-edge .bd{position:absolute;inset:0;background:url(img/roof-edge.webp?v=1) 50% 100%/cover no-repeat}
   #ms-edge .pp{position:absolute}
   #ms-edge .pp img{position:absolute;inset:0;width:100%;height:100%;display:block;
-    filter:brightness(.8) contrast(1.04)}   /* rl-*: relit in ChatGPT with a hard overhead spotlight (2026-11-26); dimmed a notch (Pat) */
+  }   /* bl-*: relit in ChatGPT as BACKLIT by the spotlight behind/above (Pat preferred it behind us); rl-* = the overhead version */
   /* dim the beam and the floor pool in the backdrop shot */
   #ms-edge .bd::after{content:"";position:absolute;inset:0;
-    background:radial-gradient(28% 55% at 50% 22%,rgba(4,5,10,.5),rgba(4,5,10,0)),radial-gradient(40% 22% at 50% 92%,rgba(4,5,10,.45),rgba(4,5,10,0))}
+    background:radial-gradient(28% 55% at 50% 22%,rgba(4,5,10,.25),rgba(4,5,10,0)),radial-gradient(40% 22% at 50% 92%,rgba(4,5,10,.45),rgba(4,5,10,0))}
   /* overhead spotlight on each of us, masked to our own outline: hot top light on head and shoulders, falling into shade at the legs */
   #ms-edge .pp i{position:absolute;inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
   #ms-edge .pp .tl{background:linear-gradient(to bottom,rgba(255,246,228,.55),rgba(255,246,228,.18) 16%,rgba(255,246,228,0) 38%);mix-blend-mode:soft-light}
