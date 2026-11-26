@@ -73,6 +73,10 @@
   /* the roof's big neon sign sits above the band layer; during the close-up it crossed their faces (and doubled the title) */
   .sky .sign{transition:opacity .8s}
   body.ms-in .sky .sign{opacity:0!important}
+  body.ms-standon #play .bm-kit{visibility:hidden!important}
+  #ms-spot{position:fixed;inset:0;z-index:59;pointer-events:none;opacity:0;transition:opacity 1s}
+  #ms-spot.on{opacity:1}#ms-spot svg{position:absolute;inset:0;display:block}
+  body.ms-standon #play .bm:has(img.r[src*="band/jb"]){visibility:hidden!important}
 `;
   const s = document.createElement("style"); s.textContent = css; document.head.appendChild(s);
 
@@ -98,7 +102,44 @@
     return { z, tx: ox - z * cx, ty: ty - z * cy };
   }
   let cur = null;
-  const setCam = c => { cur = c; st.style.scale = c ? String(c.z) : ""; st.style.translate = c ? `${c.tx}px ${c.ty}px` : ""; };
+  const setCam = c => { cur = c; st.style.scale = c ? String(c.z) : ""; st.style.translate = c ? `${c.tx}px ${c.ty}px` : ""; if (c && !st.classList.contains("ms-cam")) requestAnimationFrame(placeSpot); };
+
+  // overhead spotlight (Pat, 2026-11-26): the roof goes dark, a soft cone from above lands on the band, light pool on the floor
+  let spotEl = null;
+  const SPOT = /[?&]spot\b/.test(location.search);   // preview flag until Pat okays it
+  function placeSpot() {
+    if (!SPOT || !document.body.classList.contains("ms-in")) return;
+    const els = [...play.querySelectorAll(".bm")].filter(e => e.offsetWidth > 20 && getComputedStyle(e).visibility !== "hidden").concat([...document.querySelectorAll("img.ms-stand")]);
+    if (!els.length) return;
+    const rs = els.map(e => e.getBoundingClientRect());
+    const x0 = Math.min(...rs.map(r => r.left)), x1 = Math.max(...rs.map(r => r.right)), y0 = Math.min(...rs.map(r => r.top)), y1 = Math.max(...rs.map(r => r.bottom));
+    const bw = x1 - x0, bh = y1 - y0, cx = (x0 + x1) / 2, W_ = innerWidth, H_ = innerHeight;
+    const wt = bw * .45, wh = bw * 1.04, yh = y0 - bh * .04, wb = bw * 1.15, py = y1 - bh * .02, pr = wb * .55, prY = Math.max(14, bh * .07), blur = Math.max(14, bw * .03);
+    const cone = `${cx - wt / 2},-40 ${cx + wt / 2},-40 ${cx + wh / 2},${yh} ${cx + wb / 2},${py} ${cx - wb / 2},${py} ${cx - wh / 2},${yh}`;   // narrow up top, opens to the band at head height
+    const heads = rs.map(r => `<ellipse cx="${(r.left + r.right) / 2}" cy="${r.top + r.height * .1}" rx="${r.width * .34}" ry="${r.height * .1}" fill="url(#msHd)"/>`).join("");
+    if (!spotEl) {
+      spotEl = document.createElement("div"); spotEl.id = "ms-spot";
+      document.body.appendChild(spotEl);
+    }
+    spotEl.innerHTML = `<svg width="${W_}" height="${H_}" viewBox="0 0 ${W_} ${H_}" aria-hidden="true">
+      <defs>
+        <filter id="msB" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${blur}"/></filter>
+        <filter id="msB2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${blur * .5}"/></filter>
+        <mask id="msM"><rect width="100%" height="100%" fill="#fff"/><g filter="url(#msB)"><polygon points="${cone}" fill="#000"/><ellipse cx="${cx}" cy="${py}" rx="${pr}" ry="${prY * 1.6}" fill="#000"/></g></mask>
+        <linearGradient id="msHz" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6e6" stop-opacity=".30"/><stop offset=".45" stop-color="#fff6e6" stop-opacity=".09"/><stop offset="1" stop-color="#fff6e6" stop-opacity=".03"/></linearGradient>
+        <radialGradient id="msPl"><stop offset="0" stop-color="#fff3df" stop-opacity=".40"/><stop offset="1" stop-color="#fff3df" stop-opacity="0"/></radialGradient>
+        <radialGradient id="msHd"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="rgba(2,3,7,.84)" mask="url(#msM)"/>
+      <g style="mix-blend-mode:screen">
+        <polygon points="${cone}" fill="url(#msHz)" filter="url(#msB2)"/>
+        <ellipse cx="${cx}" cy="${py}" rx="${pr}" ry="${prY}" fill="url(#msPl)"/>
+        ${heads}
+        <ellipse cx="${cx}" cy="-10" rx="${Math.max(60, bw * .2)}" ry="${Math.max(40, bh * .12)}" fill="url(#msPl)"/>
+      </g></svg>`;
+    spotEl.classList.add("on");
+  }
+  const spotOff = () => { if (spotEl) spotEl.classList.remove("on"); };
 
   let ui, bv, timer, idle = 20000, live = false;
 
@@ -209,26 +250,36 @@
   window.MSAway = () => (document.body.classList.contains("ms-in") || (away0 ? away0() : false));
   // Jacob stands between Pat and Jordan for the close-up (hero shot), half a step back; back on his kit after the pull-back
   let standEl = null;
+  let standTry = 0;
+  const who = e => { const m = ((e.querySelector("img.r") || {}).getAttribute?.("src") || "").match(/band\/(jj|jd|jb|p)/); return m ? (m[1] === "jd" ? "jj" : m[1]) : ""; };
   function standIn(on) {
-    const kit = play.querySelector(".bm-kit");
     if (on) {
-      if (standEl || !kit || getComputedStyle(kit).visibility === "hidden") return;   // only when he's sitting at the kit
-      const bms = [...play.querySelectorAll(".bm")].filter(e => e.offsetWidth > 20).sort((x, y) => parseFloat(x.style.left) - parseFloat(y.style.left));
-      if (bms.length < 2) return;
+      if (standEl) return;
+      // find Pat and Jordan by their sprites (not by position: Jacob can be off the kit, wandering, and would be picked up)
+      const bms = [...play.querySelectorAll(".bm")].filter(e => e.offsetWidth > 20);
+      const pat = bms.find(e => who(e) === "p"), jor = bms.find(e => who(e) === "jj");
+      if (!pat || !jor) {   // band not on stage yet: try again shortly, then re-frame
+        if (standTry++ < 40) setTimeout(() => { if (live || document.body.classList.contains("ms-in")) { standIn(true); if (standEl) reframe(); } }, 150);
+        return;
+      }
+      standTry = 0;
       const g = e => ({ l: parseFloat(e.style.left), t: parseFloat(e.style.top), w: parseFloat(e.style.width), h: parseFloat(e.style.height) });
-      const a = g(bms[0]), b = g(bms[bms.length - 1]);
+      const a = g(pat), b = g(jor);
       const h = b.h * .92 * .96, w0 = h * 166 / 520, w = h * 153 / 520, cx = (a.l + a.w / 2 + b.l + b.w / 2) / 2, feet = Math.max(a.t + a.h, b.t + b.h) - 14 * (b.h / 520) - .045 * b.h * .92;   // a step behind Pat and Jordan
       standEl = document.createElement("img"); standEl.src = "img/band/jbh2-real.webp?v=1"; standEl.alt = ""; standEl.className = "ms-stand";
       Object.assign(standEl.style, { position: "absolute", left: cx - w0 / 2 + w0 * .125 + "px", top: feet - h + "px", width: w + "px", height: h + "px", zIndex: 80, pointerEvents: "none", transition: "opacity .6s" });
-      bms[0].parentNode.appendChild(standEl);
-      kit.style.visibility = "hidden";
-      jordanIn(bms[bms.length - 1]);
-      shadow(standEl, 79, .9, .985); shadow(bms[bms.length - 1], 82, .95, .955);
-    } else if (standEl) {
-      const s = standEl; standEl = null; s.style.opacity = 0; setTimeout(() => s.remove(), 700);
-      if (kit) kit.style.visibility = "visible";
+      pat.parentNode.appendChild(standEl);
+      // Jacob's kit seat and his walking sprite stay hidden for the whole close-up, even if he sits down / walks on after this
+      document.body.classList.add("ms-standon");
+      jordanIn(jor);
+      shadow(standEl, 79, .9, .985); shadow(jor, 82, .95, .955);
+    } else {
+      standTry = 99;
+      if (standEl) { const s = standEl; standEl = null; s.style.opacity = 0; setTimeout(() => s.remove(), 700); }
+      document.body.classList.remove("ms-standon");
       jordanOut();
       document.querySelectorAll(".ms-shad").forEach(e => { e.style.opacity = 0; setTimeout(() => e.remove(), 700); });
+      setTimeout(() => { standTry = 0; }, 0);
     }
   }
   // soft contact shadow under a band member's feet so the line-up sits on the floor
@@ -275,7 +326,7 @@
     removeEventListener("wheel", onWheel); removeEventListener("touchstart", onTs);
     removeEventListener("touchmove", onTm); removeEventListener("keydown", onKey); removeEventListener("resize", onResize);
     try { localStorage.setItem("ms-intro-seen", "1"); } catch (e) {}
-    ui.classList.add("bye");
+    ui.classList.add("bye"); spotOff();
     document.body.classList.add("ms-out");
     st.classList.add("ms-cam"); void st.offsetWidth;
     requestAnimationFrame(() => setCam(null));
@@ -311,7 +362,7 @@
     document.documentElement.classList.add("ms-lock");
     st.classList.add("ms-cam"); document.body.classList.add("ms-in");
     void st.offsetWidth; setCam(c);
-    setTimeout(() => { st.classList.remove("ms-cam"); live = true; build(); bump(idle);
+    setTimeout(() => { st.classList.remove("ms-cam"); live = true; placeSpot(); build(); bump(idle);
       addEventListener("wheel", onWheel, { passive: true }); addEventListener("touchstart", onTs, { passive: true });
       addEventListener("touchmove", onTm, { passive: true }); addEventListener("keydown", onKey); addEventListener("resize", onResize);
     }, 2200);
