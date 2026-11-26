@@ -63,7 +63,7 @@
     const cx = W * (MODE === "c" && !ph ? .6 : .5);
     // phone: lift the whole framing (the top of the shot was just black sky): heads near the top, the shot zoomed so the skyline rises with us
     const base = ph ? Math.min(barTop + H * .06, Hh * .09 + H * 1.0) : barTop + H * .06;
-    box.querySelector(".bd").style.cssText = ph ? "background-size:auto 128%;background-position:50% 78%" : "";
+    box.querySelector(".bd").style.cssText = ph ? "background-size:auto 150%;background-position:50% 88%" : `background-size:max(100%, ${Math.round(Hh * 1.35 * 1.5)}px) auto;background-position:50% 100%`;   // zoomed so the skyline rises above our heads (Pat)
     for (const k of Object.keys(LAYOUT)) {
       const s = SP[k], h = H * s.h, w = h * s.ar, x = cx + LAYOUT[k] * H - w / 2, y = base + (s.dy || 0) * H - h;
       Object.assign(imgs[k].style, { left: x + "px", top: y + "px", width: w + "px", height: h + "px" });
