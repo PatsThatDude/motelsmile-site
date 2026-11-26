@@ -6,7 +6,7 @@
 (() => {
   const m = location.search.match(/[?&]edge(?:=([abc]))?/);
   if (!m) return;
-  const MODE = m[1] || "b";
+  const MODE = m[1] || "b";   // Pat picked B
   // where each of us stands, in band heights (H) from the centre line; z = drawing order (Jordan in front)
   const LAYOUT = {
     a: { pat: -.25, jac: .0, jor: .27 },          // tight: shoulders overlapping
@@ -15,7 +15,7 @@
   }[MODE];
   const SP = {
     pat: { src: "img/band/p1-real.webp?v=b4", ar: 267 / 520, h: 1, z: 2 },
-    jac: { src: "img/band/jbh2-real.webp?v=1", ar: 153 / 520, h: .88, z: 1, dy: -.03 },
+    jac: { src: "img/band/jbh2-real.webp?v=1", ar: 153 / 520, h: .95, z: 1, dy: -.02 },   // Pat is only an inch taller; Jacob a small step back
     jor: { src: "img/band/jdh3b-real.webp?v=1", ar: 223 / 520, h: 1.04, z: 3, dy: .02 }
   };
   const css = `
@@ -43,7 +43,10 @@
     // band height: ankles at the top of the bar, heads well clear of the top; fit the group to the width
     const span = Math.max(...Object.keys(LAYOUT).map(k => Math.abs(LAYOUT[k]) + SP[k].ar * SP[k].h / 2)) * 2;
     let H = Math.min(barTop * (ph ? .86 : .9), (W * (ph ? 1.12 : .62)) / span);
-    const cx = W * (MODE === "c" && !ph ? .6 : .5), base = barTop + H * .06;
+    const cx = W * (MODE === "c" && !ph ? .6 : .5);
+    // phone: lift the whole framing (the top of the shot was just black sky): heads near the top, the shot zoomed so the skyline rises with us
+    const base = ph ? Math.min(barTop + H * .06, Hh * .09 + H * 1.0) : barTop + H * .06;
+    box.querySelector(".bd").style.cssText = ph ? "background-size:auto 128%;background-position:50% 78%" : "";
     for (const k of Object.keys(LAYOUT)) {
       const s = SP[k], h = H * s.h, w = h * s.ar, x = cx + LAYOUT[k] * H - w / 2, y = base + (s.dy || 0) * H - h;
       Object.assign(imgs[k].style, { left: x + "px", top: y + "px", width: w + "px", height: h + "px" });
