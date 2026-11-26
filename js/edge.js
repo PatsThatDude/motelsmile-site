@@ -34,13 +34,17 @@
   #ms-edge .pp .sh{background:linear-gradient(to bottom,rgba(3,4,9,0) 34%,rgba(3,4,9,.35) 62%,rgba(3,4,9,.7) 100%)}
   #ms-edge .fl{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.75),rgba(0,0,0,0));z-index:0}
   #ms-edge .lt{position:absolute;pointer-events:none}
+  /* a faint spotlight beam, 5% (Pat): a soft cone of light from above, drawn by the page instead of baked into the photo */
+  #ms-edge .bm5{position:absolute;inset:0;pointer-events:none;z-index:0;mix-blend-mode:screen;
+    background:conic-gradient(from 180deg at 50% -12%,transparent 0deg,transparent 163deg,rgba(255,250,238,.05) 172deg,rgba(255,250,238,.05) 188deg,transparent 197deg,transparent 360deg);
+    -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 92%);mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 92%);filter:blur(14px)}
   body.ms-edge-on #ms-edge{opacity:1}
   body.ms-edge-on #stage{opacity:0!important}
   body.ms-edge-on.ms-out #stage{opacity:1!important;transition:opacity 1.2s .2s}
   body.ms-edge-on.ms-out #ms-edge{opacity:0;transition:opacity 1.1s}
   body.ms-edge-on .sky .sign{opacity:0!important}`;
   const st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
-  const box = document.createElement("div"); box.id = "ms-edge"; box.innerHTML = `<div class="bd"></div>`;
+  const box = document.createElement("div"); box.id = "ms-edge"; box.innerHTML = `<div class="bd"></div><div class="bm5"></div>`;
   const imgs = {};
   for (const k of ["jac", "pat", "jor"]) {
     const d = document.createElement("div"); d.className = "pp"; d.style.zIndex = SP[k].z;
