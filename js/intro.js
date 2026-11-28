@@ -173,7 +173,7 @@
       barHooked = true;
       bar.addEventListener("click", e => {
         if (!live) return;
-        if (e.target.closest("#np-t")) { e.stopPropagation(); e.preventDefault(); openPlayer(); return; }
+        if (e.target.closest("#bar-np") && !e.target.closest("#np-pp")) { e.stopPropagation(); e.preventDefault(); openPlayer(); return; }   // Pat: tap anywhere on Now playing opens the player (play button excepted)
         const fo = e.target.closest('[data-open="follow"]');
         if (fo) { e.stopPropagation(); e.preventDefault(); followBox(); bump(60000); return; }   // Pat: Follow opens its box right here on the landing
         if (e.target.closest("#np-pp")) bump(30000);
