@@ -11,13 +11,13 @@
   // where each of us stands, in band heights (H) from the centre line; z = drawing order (Jordan in front)
   const LAYOUT = {
     a: { pat: -.25, jac: .0, jor: .27 },          // tight: shoulders overlapping
-    b: { pat: -.44, jac: .0, jor: .43 },   // Pat nudged left (Pat)         // spread (the mock)
+    b: { pat: -.29, jac: .0, jor: .31 },   // Pat nudged left (Pat)         // spread (the mock)
     c: { pat: -.30, jac: .02, jor: .33 }          // like b, but pushed right of the title on wide screens
   }[MODE];
   const SP = {
-    pat: { src: "img/band/fn-pat.webp?v=4", ar: 261 / 520, h: 1, z: 2 },
-    jac: { src: "img/band/fn-jac.webp?v=17", ar: 157 / 520, h: .9725, z: 1 },   // Pat: Jacob only 1 in shorter than Pat (eye level)
-    jor: { src: "img/band/fn-jor.webp?v=8", ar: 223 / 520, h: .970, z: 3 }   // Pat: Jordan the same height as Pat (eye level; his sprite has less headroom)
+    pat: { src: "img/band/fn-pat.webp?v=4", ar: 261 / 520, h: .83, z: 1, dy: -.105 },
+    jac: { src: "img/band/fn-jac.webp?v=17", ar: 157 / 520, h: 0.8940, z: 2, dy: -0.045 },   // Pat: Jacob only 1 in shorter than Pat (eye level)
+    jor: { src: "img/band/fn-jor.webp?v=8", ar: 223 / 520, h: 1.0, z: 3, dy: .025 }   // Pat: Jordan the same height as Pat (eye level; his sprite has less headroom)
   };
   const css = `
   #ms-edge{position:fixed;inset:0;z-index:58;pointer-events:none;opacity:0;transition:opacity .9s;background:#04050a}
@@ -73,7 +73,7 @@
     const tH = Math.max(Hh, W * 1.5), tY = Math.max(Hh - tH, Math.min(0, base - tH * .69));   // tall phone plate: spotlight pool (69% down) under our feet
     box.querySelector(".bd").style.cssText = ph ? `background-image:url(img/roof-edge-tall.webp?v=1);background-size:auto ${Math.round(tH)}px;background-position:50% ${Math.round(tY)}px` : `background-size:max(100%, ${Math.round(Hh * 1.35 * 1.5)}px) auto;background-position:50% 100%`;   // zoomed so the skyline rises above our heads (Pat)
     for (const k of Object.keys(LAYOUT)) {
-      const s = SP[k], h = H * s.h, w = h * s.ar, x = cx + LAYOUT[k] * PS * H - w / 2, y = base + (s.dy || 0) * H - h;
+      const s = SP[k], h = H * s.h, w = h * s.ar, x = cx + (LAYOUT[k] + (k === "pat" && !ph ? -.05 : 0)) * PS * H - w / 2, y = base + (s.dy || 0) * H - h;
       Object.assign(imgs[k].style, { left: x + "px", top: y + "px", width: w + "px", height: h + "px" });
     }
     Object.assign(lt.style, { left: 0, top: 0, width: W + "px", height: Hh + "px", zIndex: 4,
