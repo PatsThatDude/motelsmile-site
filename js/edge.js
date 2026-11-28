@@ -63,16 +63,17 @@
     const barTop = document.body.classList.contains("ms-barup") && bar ? bar.getBoundingClientRect().top : Hh;
     const ph = W < 700 || Hh > W;
     // band height: ankles at the top of the bar, heads well clear of the top; fit the group to the width
-    const span = Math.max(...Object.keys(LAYOUT).map(k => Math.abs(LAYOUT[k]) + SP[k].ar * SP[k].h / 2)) * 2;
+    const PS = ph ? .8 : 1;   // phone: stand closer together (Pat)
+    const span = Math.max(...Object.keys(LAYOUT).map(k => Math.abs(LAYOUT[k]) * PS + SP[k].ar * SP[k].h / 2)) * 2;
     let H = Math.min(barTop * (ph ? .86 : .9), (W * (ph ? 1.12 : .62)) / span);
-    if (ph) H = Math.min(H, Hh * .44);   // phone: tall plate, skyline kept clear above our heads (Pat)
+    if (ph) H = Math.min(H, Hh * .52);   // phone: tall plate, skyline kept clear above our heads (Pat)
     const cx = W * (MODE === "c" && !ph ? .6 : .5);
     // phone: lift the whole framing (the top of the shot was just black sky): heads near the top, the shot zoomed so the skyline rises with us
-    const base = ph ? Math.min(barTop + H * .06, Hh * .64) : barTop + H * .06;
+    const base = ph ? Math.min(barTop + H * .06, Hh * .66) : barTop + H * .06;
     const tH = Math.max(Hh, W * 1.5), tY = Math.max(Hh - tH, Math.min(0, base - tH * .69));   // tall phone plate: spotlight pool (69% down) under our feet
     box.querySelector(".bd").style.cssText = ph ? `background-image:url(img/roof-edge-tall.webp?v=1);background-size:auto ${Math.round(tH)}px;background-position:50% ${Math.round(tY)}px` : `background-size:max(100%, ${Math.round(Hh * 1.35 * 1.5)}px) auto;background-position:50% 100%`;   // zoomed so the skyline rises above our heads (Pat)
     for (const k of Object.keys(LAYOUT)) {
-      const s = SP[k], h = H * s.h, w = h * s.ar, x = cx + LAYOUT[k] * H - w / 2, y = base + (s.dy || 0) * H - h;
+      const s = SP[k], h = H * s.h, w = h * s.ar, x = cx + LAYOUT[k] * PS * H - w / 2, y = base + (s.dy || 0) * H - h;
       Object.assign(imgs[k].style, { left: x + "px", top: y + "px", width: w + "px", height: h + "px" });
     }
     Object.assign(lt.style, { left: 0, top: 0, width: W + "px", height: Hh + "px", zIndex: 4,
