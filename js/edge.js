@@ -37,10 +37,10 @@
   #ms-edge .lt{position:absolute;pointer-events:none}
   /* ON THE ROOF (Pat): a tight dark shadow under each shoe, our reflection in the wet pavement, neon spill on our legs */
   #ms-edge .pp .ct{position:absolute;left:-15%;width:130%;top:94%;height:9%;z-index:-1}
-  #ms-edge .pp .rf{top:99%;bottom:auto;height:100%;transform:scaleY(-1);opacity:.32;filter:blur(2px) brightness(.8);z-index:-2;
-    -webkit-mask-image:linear-gradient(to top,#000 0%,rgba(0,0,0,.5) 7%,transparent 22%);mask-image:linear-gradient(to top,#000 0%,rgba(0,0,0,.5) 7%,transparent 22%)}
+  #ms-edge .pp .rf{top:99%;bottom:auto;height:100%;transform:scaleY(-1);opacity:.45;filter:blur(1.5px) brightness(.85);z-index:-2;
+    -webkit-mask-image:linear-gradient(to top,#000 0%,rgba(0,0,0,.55) 9%,transparent 28%);mask-image:linear-gradient(to top,#000 0%,rgba(0,0,0,.55) 9%,transparent 28%)}
   #ms-edge .pp .sp{position:absolute;inset:0;mix-blend-mode:screen;opacity:.5;
-    background:linear-gradient(to bottom,transparent 55%,#000 100%),linear-gradient(to right,rgba(0,0,0,0),rgba(0,0,0,0) 40%,rgba(0,0,0,0) 55%,rgba(255,40,170,.3));
+    background:linear-gradient(to bottom,transparent 55%,#000 100%),linear-gradient(to right,rgba(0,0,0,0),rgba(0,0,0,0) 40%,rgba(0,0,0,0) 55%,rgba(255,40,170,.42));
     background-blend-mode:multiply;-webkit-mask-size:100% 100%;mask-size:100% 100%}
   /* a faint spotlight beam, 10% (Pat): a soft cone of light from above, drawn by the page instead of baked into the photo */
   #ms-edge .bm5{position:absolute;inset:0;pointer-events:none;z-index:0;mix-blend-mode:screen;
@@ -57,7 +57,7 @@
   for (const k of ["jac", "pat", "jor"]) {
     const d = document.createElement("div"); d.className = "pp"; d.style.zIndex = SP[k].z;
     const mk = `-webkit-mask-image:url(${SP[k].src});mask-image:url(${SP[k].src})`;
-    const ct = SP[k].ft.map(([x, y, w]) => `radial-gradient(${w / 2 / 1.3 * 100}% 30% at ${(x + .15) / 1.3 * 100}% ${(y - .94) / .09 * 100 - 4}%,rgba(0,0,0,.95),rgba(0,0,0,.6) 40%,rgba(0,0,0,0))`).join(",");
+    const ct = SP[k].ft.map(([x, y, w]) => `radial-gradient(${w / 2 / 1.3 * 115}% 36% at ${(x + .15) / 1.3 * 100}% ${(y - .94) / .09 * 100 - 4}%,rgba(0,0,0,1),rgba(0,0,0,.78) 45%,rgba(0,0,0,0))`).join(",");
     d.innerHTML = `<div class="ct" style="background:${ct}"></div><img class="rf" src="${SP[k].src}" alt=""><img src="${SP[k].src}" alt=""><i class="sp" style="${mk}"></i>`;
     box.appendChild(d); imgs[k] = d;
   }
