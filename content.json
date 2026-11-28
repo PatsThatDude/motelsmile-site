@@ -60,7 +60,7 @@
  ],
  "videos": [],
  "newsletter": {
-  "text": "Hear the album first. Get show dates before they're posted.",
+  "text": "Band updates. Booking inquiries. Tell us how much you love us.",
   "formAction": "",
   "endpoint": "/api/subscribe"
  },
