@@ -159,7 +159,9 @@
     if (!barHome) barHome = { p: bar.parentNode, n: bar.nextSibling };
     document.body.appendChild(bar); document.body.classList.add("ms-barup");
     const fit = () => { if (ui) ui.style.paddingBottom = (bar.getBoundingClientRect().height + 16) + "px"; };
-    fit(); requestAnimationFrame(fit);
+    fit(); requestAnimationFrame(fit); setTimeout(fit, 400); setTimeout(fit, 1200);
+    if (document.fonts) document.fonts.ready.then(fit);
+    if (window.ResizeObserver && !bar._msRO) { bar._msRO = new ResizeObserver(() => { if (document.body.classList.contains("ms-barup")) fit(); }); bar._msRO.observe(bar); addEventListener("resize", () => { if (document.body.classList.contains("ms-barup")) fit(); }); }   // the cards grow after fonts/content load (Pat: button sat under them on first load)
     if (!barHooked) {
       barHooked = true;
       bar.addEventListener("click", e => {
