@@ -11,13 +11,13 @@
   // where each of us stands, in band heights (H) from the centre line; z = drawing order (Jordan in front)
   const LAYOUT = {
     a: { pat: -.25, jac: .0, jor: .27 },          // tight: shoulders overlapping
-    b: { pat: -.38, jac: .02, jor: .37 },   // Pat nudged left (Pat)         // spread (the mock)
+    b: { pat: -.44, jac: .0, jor: .43 },   // Pat nudged left (Pat)         // spread (the mock)
     c: { pat: -.30, jac: .02, jor: .33 }          // like b, but pushed right of the title on wide screens
   }[MODE];
   const SP = {
     pat: { src: "img/band/fn-pat.webp?v=4", ar: 261 / 520, h: 1, z: 2 },
-    jac: { src: "img/band/fn-jac.webp?v=17", ar: 157 / 520, h: .9575, z: 1 },   // real heights (Pat): Jacob 2 in shorter than Pat, matched at eye level
-    jor: { src: "img/band/fn-jor.webp?v=8", ar: 223 / 520, h: .985, z: 3 }   // Jordan 1 in taller than Pat (his sprite has less headroom, so h < 1)
+    jac: { src: "img/band/fn-jac.webp?v=17", ar: 157 / 520, h: .9725, z: 1 },   // Pat: Jacob only 1 in shorter than Pat (eye level)
+    jor: { src: "img/band/fn-jor.webp?v=8", ar: 223 / 520, h: .970, z: 3 }   // Pat: Jordan the same height as Pat (eye level; his sprite has less headroom)
   };
   const css = `
   #ms-edge{position:fixed;inset:0;z-index:58;pointer-events:none;opacity:0;transition:opacity .9s;background:#04050a}
@@ -65,7 +65,7 @@
     // band height: ankles at the top of the bar, heads well clear of the top; fit the group to the width
     const PS = ph ? .8 : 1;   // phone: stand closer together (Pat)
     const span = Math.max(...Object.keys(LAYOUT).map(k => Math.abs(LAYOUT[k]) * PS + SP[k].ar * SP[k].h / 2)) * 2;
-    let H = Math.min(barTop * (ph ? .86 : .9), (W * (ph ? 1.12 : .62)) / span);
+    let H = Math.min(barTop * (ph ? .86 : .9), (W * (ph ? 1.12 : .70)) / span);
     if (ph) H = Math.min(H, Hh * .52);   // phone: tall plate, skyline kept clear above our heads (Pat)
     const cx = W * (MODE === "c" && !ph ? .6 : .5);
     // phone: lift the whole framing (the top of the shot was just black sky): heads near the top, the shot zoomed so the skyline rises with us
