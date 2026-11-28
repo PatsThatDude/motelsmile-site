@@ -73,7 +73,7 @@
     const tH = Math.max(Hh, W * 1.5), tY = Math.max(Hh - tH, Math.min(0, base - tH * .69));   // tall phone plate: spotlight pool (69% down) under our feet
     box.querySelector(".bd").style.cssText = ph ? `background-image:url(img/roof-edge-tall.webp?v=1);background-size:auto ${Math.round(tH)}px;background-position:50% ${Math.round(tY)}px` : `background-size:max(100%, ${Math.round(Hh * 1.35 * 1.5)}px) auto;background-position:50% 100%`;   // zoomed so the skyline rises above our heads (Pat)
     for (const k of Object.keys(LAYOUT)) {
-      const s = SP[k], h = H * s.h, w = h * s.ar, x = cx + (LAYOUT[k] + (k === "pat" && !ph ? -.05 : 0)) * PS * H - w / 2, y = base + (s.dy || 0) * H - h;
+      const s = SP[k], h = H * s.h, w = h * s.ar, x = cx + (LAYOUT[k] + (k === "pat" && !ph ? -.025 : 0)) * PS * H - w / 2, y = base + (s.dy || 0) * H - h;
       Object.assign(imgs[k].style, { left: x + "px", top: y + "px", width: w + "px", height: h + "px" });
     }
     Object.assign(lt.style, { left: 0, top: 0, width: W + "px", height: Hh + "px", zIndex: 4,
