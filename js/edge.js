@@ -15,9 +15,9 @@
     c: { pat: -.30, jac: .02, jor: .33 }          // like b, but pushed right of the title on wide screens
   }[MODE];
   const SP = {
-    pat: { src: "img/band/fn-pat.webp?v=4", ar: 261 / 520, h: .83, z: 1, dy: -.105 },
-    jac: { src: "img/band/fn-jac.webp?v=17", ar: 157 / 520, h: 0.8940, z: 2, dy: -0.045 },   // Pat: Jacob only 1 in shorter than Pat (eye level)
-    jor: { src: "img/band/fn-jor.webp?v=8", ar: 223 / 520, h: 1.0, z: 3, dy: .025 }   // Pat: Jordan the same height as Pat (eye level; his sprite has less headroom)
+    pat: { src: "img/band/fn-pat.webp?v=4", ar: 261 / 520, h: .83, z: 1, dy: -.105, ft: [[.29, .997, .2], [.72, .975, .2]] },
+    jac: { src: "img/band/fn-jac.webp?v=17", ar: 157 / 520, h: 0.8940, z: 2, dy: -0.045, ft: [[.11, .997, .3], [.85, .99, .3]] },   // Pat: Jacob only 1 in shorter than Pat (eye level)
+    jor: { src: "img/band/fn-jor.webp?v=8", ar: 223 / 520, h: 1.0, z: 3, dy: .025, ft: [[.07, .975, .2], [.52, .995, .34], [.93, .975, .18]] }   // Pat: Jordan the same height as Pat (eye level; his sprite has less headroom)
   };
   const css = `
   #ms-edge{position:fixed;inset:0;z-index:58;pointer-events:none;opacity:0;transition:opacity .9s;background:#04050a}
@@ -35,6 +35,13 @@
   #ms-edge .pp .sh{background:linear-gradient(to bottom,rgba(3,4,9,0) 34%,rgba(3,4,9,.35) 62%,rgba(3,4,9,.7) 100%)}
   #ms-edge .fl{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.75),rgba(0,0,0,0));z-index:0}
   #ms-edge .lt{position:absolute;pointer-events:none}
+  /* ON THE ROOF (Pat): a tight dark shadow under each shoe, our reflection in the wet pavement, neon spill on our legs */
+  #ms-edge .pp .ct{position:absolute;left:-15%;width:130%;top:94%;height:9%;z-index:-1}
+  #ms-edge .pp .rf{top:99%;bottom:auto;height:100%;transform:scaleY(-1);opacity:.32;filter:blur(2px) brightness(.8);z-index:-2;
+    -webkit-mask-image:linear-gradient(to top,#000 0%,rgba(0,0,0,.5) 7%,transparent 22%);mask-image:linear-gradient(to top,#000 0%,rgba(0,0,0,.5) 7%,transparent 22%)}
+  #ms-edge .pp .sp{position:absolute;inset:0;mix-blend-mode:screen;opacity:.5;
+    background:linear-gradient(to bottom,transparent 55%,#000 100%),linear-gradient(to right,rgba(0,0,0,0),rgba(0,0,0,0) 40%,rgba(0,0,0,0) 55%,rgba(255,40,170,.3));
+    background-blend-mode:multiply;-webkit-mask-size:100% 100%;mask-size:100% 100%}
   /* a faint spotlight beam, 10% (Pat): a soft cone of light from above, drawn by the page instead of baked into the photo */
   #ms-edge .bm5{position:absolute;inset:0;pointer-events:none;z-index:0;mix-blend-mode:screen;
     background:conic-gradient(from 180deg at 50% -12%,transparent 0deg,transparent 163deg,rgba(255,250,238,.1) 172deg,rgba(255,250,238,.1) 188deg,transparent 197deg,transparent 360deg);
@@ -50,7 +57,8 @@
   for (const k of ["jac", "pat", "jor"]) {
     const d = document.createElement("div"); d.className = "pp"; d.style.zIndex = SP[k].z;
     const mk = `-webkit-mask-image:url(${SP[k].src});mask-image:url(${SP[k].src})`;
-    d.innerHTML = `<img src="${SP[k].src}" alt="">`;
+    const ct = SP[k].ft.map(([x, y, w]) => `radial-gradient(${w / 2 / 1.3 * 100}% 30% at ${(x + .15) / 1.3 * 100}% ${(y - .94) / .09 * 100 - 4}%,rgba(0,0,0,.95),rgba(0,0,0,.6) 40%,rgba(0,0,0,0))`).join(",");
+    d.innerHTML = `<div class="ct" style="background:${ct}"></div><img class="rf" src="${SP[k].src}" alt=""><img src="${SP[k].src}" alt=""><i class="sp" style="${mk}"></i>`;
     box.appendChild(d); imgs[k] = d;
   }
   const fl = document.createElement("div"); fl.className = "fl"; box.appendChild(fl);   // our shadow pooled on the floor under the spot
@@ -65,11 +73,11 @@
     // band height: ankles at the top of the bar, heads well clear of the top; fit the group to the width
     const PS = ph ? .8 : 1;   // phone: stand closer together (Pat)
     const span = Math.max(...Object.keys(LAYOUT).map(k => Math.abs(LAYOUT[k]) * PS + SP[k].ar * SP[k].h / 2)) * 2;
-    let H = Math.min(barTop * (ph ? .86 : .9), (W * (ph ? 1.12 : .70)) / span);
+    let H = Math.min(barTop * (ph ? .86 : .87), (W * (ph ? 1.12 : .70)) / span);
     if (ph) H = Math.min(H, Hh * .52);   // phone: tall plate, skyline kept clear above our heads (Pat)
     const cx = W * (MODE === "c" && !ph ? .6 : .5);
     // phone: lift the whole framing (the top of the shot was just black sky): heads near the top, the shot zoomed so the skyline rises with us
-    const base = ph ? Math.min(barTop + H * .06, Hh * .66) : barTop + H * .06;
+    const base = ph ? Math.min(barTop + H * .06, Hh * .66) : barTop - H * .035;   // desktop: feet clear of the cards so you can see us standing on the pavement (Pat)
     const tH = Math.max(Hh, W * 1.5), tY = Math.max(Hh - tH, Math.min(0, base - tH * .69));   // tall phone plate: spotlight pool (69% down) under our feet
     box.querySelector(".bd").style.cssText = ph ? `background-image:url(img/roof-edge-tall.webp?v=1);background-size:auto ${Math.round(tH)}px;background-position:50% ${Math.round(tY)}px` : `background-size:max(100%, ${Math.round(Hh * 1.35 * 1.5)}px) auto;background-position:50% 100%`;   // zoomed so the skyline rises above our heads (Pat)
     for (const k of Object.keys(LAYOUT)) {
