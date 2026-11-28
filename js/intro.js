@@ -62,6 +62,7 @@
   body.ms-barup #ms-in.hasbar{padding-bottom:0!important}
   body.ms-barup #ms-in.hasbar>#bar{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;transform:none!important;flex:none;align-self:stretch;width:auto!important;margin:16px -18px 0;text-align:left;animation:none}
   #ms-in.lwon>#bar{opacity:1}
+  #sheet-follow.ms-sheet{position:fixed!important;z-index:75!important;left:0;right:0}
   /* Play on the close-up opens the site's own Listen window (#lw), moved above the intro, with no band peek */
   body.ms-in #lw{z-index:80!important}
   body.ms-in.lw-on #play,body.ms-in.lw-on #play *{animation-play-state:running!important}
@@ -174,12 +175,30 @@
         if (!live) return;
         if (e.target.closest("#np-t")) { e.stopPropagation(); e.preventDefault(); openPlayer(); return; }
         const fo = e.target.closest('[data-open="follow"]');
-        if (fo) { e.stopPropagation(); e.preventDefault(); reveal(() => fo.click()); return; }
+        if (fo) { e.stopPropagation(); e.preventDefault(); followBox(); bump(60000); return; }   // Pat: Follow opens its box right here on the landing
         if (e.target.closest("#np-pp")) bump(30000);
       }, true);
     }
   }
+  // Follow box over the close-up: the roof's own Follow sheet, lifted out of the (hidden, zoomed) roof while the intro is up
+  let sheetHome = null;
+  function followBox() {
+    const sh = document.getElementById("sheet-follow"), bar = document.getElementById("bar"); if (!sh) return;
+    if (!sheetHome) { sheetHome = { p: sh.parentNode, n: sh.nextSibling }; document.body.appendChild(sh); sh.classList.add("ms-sheet"); }
+    sh.style.bottom = (bar ? innerHeight - bar.getBoundingClientRect().top : 0) + "px";
+    const open = !sh.classList.contains("open");
+    document.querySelectorAll(".sheet").forEach(x => x.classList.remove("open"));
+    sh.classList.toggle("open", open);
+    document.querySelectorAll('.tile[data-open="follow"]').forEach(t => t.setAttribute("aria-expanded", String(open)));
+  }
+  function followHome() {
+    const sh = document.getElementById("sheet-follow"); if (!sh || !sheetHome) return;
+    sh.classList.remove("open", "ms-sheet"); sh.style.bottom = "";
+    sheetHome.p.insertBefore(sh, sheetHome.n && sheetHome.n.parentNode === sheetHome.p ? sheetHome.n : null); sheetHome = null;
+    document.querySelectorAll('.tile[data-open="follow"]').forEach(t => t.setAttribute("aria-expanded", "false"));
+  }
   function dropBar() {
+    followHome();
     const bar = document.getElementById("bar"); document.body.classList.remove("ms-barup");
     if (bar && barHome) barHome.p.insertBefore(bar, barHome.n && barHome.n.parentNode === barHome.p ? barHome.n : null);
   }
@@ -358,6 +377,7 @@
     removeEventListener("wheel", onWheel); removeEventListener("touchstart", onTs);
     removeEventListener("touchmove", onTm); removeEventListener("keydown", onKey); removeEventListener("resize", onResize);
     try { localStorage.setItem("ms-intro-seen", "1"); } catch (e) {}
+    followHome();
     { const b = document.getElementById("bar"); if (b && b.parentNode === ui) document.body.appendChild(b); }   // cards stay put while the close-up fades
     ui.classList.add("bye"); spotOff();
     document.body.classList.add("ms-out");
