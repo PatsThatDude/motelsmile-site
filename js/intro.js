@@ -59,6 +59,9 @@
     #ms-in .go{font-size:13px;padding:4px 5px 4px 13px}
 
   }
+  body.ms-barup #ms-in.hasbar{padding-bottom:0!important}
+  body.ms-barup #ms-in.hasbar>#bar{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;transform:none!important;flex:none;align-self:stretch;width:auto!important;margin:16px -18px 0;text-align:left;animation:none}
+  #ms-in.lwon>#bar{opacity:1}
   /* Play on the close-up opens the site's own Listen window (#lw), moved above the intro, with no band peek */
   body.ms-in #lw{z-index:80!important}
   body.ms-in.lw-on #play,body.ms-in.lw-on #play *{animation-play-state:running!important}
@@ -157,8 +160,11 @@
   function liftBar() {
     const bar = document.getElementById("bar"); if (!bar || !ui) return;
     if (!barHome) barHome = { p: bar.parentNode, n: bar.nextSibling };
-    document.body.appendChild(bar); document.body.classList.add("ms-barup");
-    const fit = () => { if (ui) ui.style.paddingBottom = (bar.getBoundingClientRect().height + 16) + "px"; };
+    document.body.classList.add("ms-barup");
+    // phone: the cards are the last item in the close-up's own column, so the button can never sit under them (Pat, option 1)
+    if (phone()) { ui.appendChild(bar); ui.classList.add("hasbar"); ui.style.paddingBottom = ""; }
+    else document.body.appendChild(bar);
+    const fit = () => { if (ui && !ui.classList.contains("hasbar")) ui.style.paddingBottom = (bar.getBoundingClientRect().height + 16) + "px"; };
     fit(); requestAnimationFrame(fit); setTimeout(fit, 400); setTimeout(fit, 1200);
     if (document.fonts) document.fonts.ready.then(fit);
     if (window.ResizeObserver && !bar._msRO) { bar._msRO = new ResizeObserver(() => { if (document.body.classList.contains("ms-barup")) fit(); }); bar._msRO.observe(bar); addEventListener("resize", () => { if (document.body.classList.contains("ms-barup")) fit(); }); }   // the cards grow after fonts/content load (Pat: button sat under them on first load)
@@ -352,6 +358,7 @@
     removeEventListener("wheel", onWheel); removeEventListener("touchstart", onTs);
     removeEventListener("touchmove", onTm); removeEventListener("keydown", onKey); removeEventListener("resize", onResize);
     try { localStorage.setItem("ms-intro-seen", "1"); } catch (e) {}
+    { const b = document.getElementById("bar"); if (b && b.parentNode === ui) document.body.appendChild(b); }   // cards stay put while the close-up fades
     ui.classList.add("bye"); spotOff();
     document.body.classList.add("ms-out");
     st.classList.add("ms-cam"); void st.offsetWidth;
